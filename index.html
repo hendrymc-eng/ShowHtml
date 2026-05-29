@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Michael Prototypes · 创意原型工作台</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ee;
+  --paper:#fffdf8;
+  --ink:#171714;
+  --muted:#716f67;
+  --soft:#e9e2d6;
+  --line:#ddd3c4;
+  --red:#ef3d31;
+  --green:#00a86b;
+  --blue:#315ee8;
+  --amber:#f4a62a;
+  --shadow:0 18px 50px rgba(35,29,17,.12);
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background:var(--bg)}
+body{
+  min-height:100vh;
+  font-family:"Inter","Noto Sans SC",-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--ink);
+  background:
+    linear-gradient(90deg,rgba(23,23,20,.045) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(23,23,20,.045) 1px,transparent 1px),
+    radial-gradient(circle at 20% 10%,rgba(239,61,49,.12),transparent 28%),
+    radial-gradient(circle at 84% 18%,rgba(0,168,107,.12),transparent 28%),
+    var(--bg);
+  background-size:44px 44px,44px 44px,auto,auto,auto;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.app{min-height:100vh;padding:18px;display:grid;grid-template-columns:280px 1fr;gap:18px}
+.side{
+  position:sticky;
+  top:18px;
+  height:calc(100vh - 36px);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:18px;
+  border:1px solid rgba(23,23,20,.1);
+  background:rgba(255,253,248,.82);
+  backdrop-filter:blur(18px);
+  border-radius:var(--radius);
+  box-shadow:0 12px 36px rgba(35,29,17,.08);
+}
+.brand{display:flex;align-items:center;gap:11px;margin-bottom:28px}
+.mark{
+  width:42px;height:42px;border-radius:var(--radius);
+  display:grid;place-items:center;
+  color:#fff;font:700 16px "DM Mono",monospace;
+  background:
+    linear-gradient(135deg,var(--red) 0 46%,var(--green) 46% 100%);
+  box-shadow:0 10px 24px rgba(239,61,49,.18);
+}
+.brand strong{display:block;font-size:15px;font-weight:900;line-height:1.1}
+.brand span{display:block;margin-top:4px;font:500 10px "DM Mono",monospace;color:var(--muted);text-transform:uppercase}
+.intro h1{font-size:34px;line-height:1.06;font-weight:900;letter-spacing:0;margin-bottom:12px}
+.intro p{font-size:13px;line-height:1.75;color:var(--muted)}
+.nav-block{margin-top:30px}
+.nav-title{font:600 11px "DM Mono",monospace;color:#9a9488;text-transform:uppercase;margin-bottom:9px}
+.filter-row{display:grid;gap:8px}
+.chip{
+  min-height:40px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:0 12px;
+  font-size:13px;
+  font-weight:800;
+  background:#fffaf1;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.chip:hover{transform:translateX(3px);border-color:#a99f90}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip i{font-style:normal;font:600 11px "DM Mono",monospace;color:inherit;opacity:.72}
+.side-bottom{display:grid;gap:10px}
+.metric-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini-stat{padding:10px 8px;border:1px solid var(--line);border-radius:var(--radius);background:#fffaf1}
+.mini-stat b{display:block;font-size:18px;font-weight:900}
+.mini-stat span{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
+.hint{
+  border:1px dashed #bdb2a4;
+  border-radius:var(--radius);
+  padding:11px;
+  font-size:12px;
+  line-height:1.6;
+  color:#625d54;
+  background:rgba(255,255,255,.44);
+}
+.main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.hero{
+  position:relative;
+  min-height:360px;
+  border-radius:var(--radius);
+  border:1px solid rgba(23,23,20,.1);
+  overflow:hidden;
+  background:#161614;
+  color:#fff;
+  box-shadow:var(--shadow);
+}
+.hero::before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    linear-gradient(125deg,rgba(239,61,49,.82),transparent 42%),
+    linear-gradient(245deg,rgba(0,168,107,.7),transparent 40%),
+    linear-gradient(0deg,rgba(255,255,255,.08),rgba(255,255,255,0));
+  mix-blend-mode:screen;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  opacity:.22;
+  background-image:
+    linear-gradient(90deg,rgba(255,255,255,.28) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,255,255,.28) 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:linear-gradient(90deg,#000,transparent 82%);
+}
+.hero-noise{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 5px);
+  opacity:.18;
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;min-height:360px;display:grid;grid-template-columns:minmax(260px,440px) 1fr;gap:28px;padding:32px}
+.hero-copy{align-self:end;padding-bottom:6px}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:28px;
+  padding:0 10px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  font:600 11px "DM Mono",monospace;
+  color:rgba(255,255,255,.78);
+  background:rgba(255,255,255,.08);
+}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:#2cf29b;box-shadow:0 0 16px rgba(44,242,155,.8)}
+.hero h2{margin-top:18px;font-size:54px;line-height:.98;font-weight:900;letter-spacing:0;max-width:430px}
+.hero p{margin-top:16px;max-width:370px;color:rgba(255,255,255,.76);font-size:14px;line-height:1.78}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.command{
+  height:42px;
+  border-radius:var(--radius);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 15px;
+  font-weight:900;
+  font-size:13px;
+  background:#fff;
+  color:#151512;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.command:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(0,0,0,.22)}
+.command.secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.24)}
+.lab-panel{align-self:center;justify-self:end;width:min(100%,520px)}
+.signal-board{
+  position:relative;
+  aspect-ratio:1.24;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);
+  overflow:hidden;
+}
+.signal-board::before{
+  content:"";
+  position:absolute;left:8%;right:8%;top:50%;height:1px;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  opacity:.42;
+}
+.orbit{
+  position:absolute;
+  width:52%;
+  aspect-ratio:1;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:50%;
+  left:24%;
+  top:17%;
+  animation:spin 18s linear infinite;
+}
+.orbit.two{width:70%;left:15%;top:8%;animation-duration:28s;animation-direction:reverse}
+.node{
+  position:absolute;
+  width:12px;height:12px;border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 22px rgba(255,255,255,.8);
+}
+.orbit .node{left:50%;top:-6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.preview-stack{position:absolute;inset:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center}
+.specimen{
+  min-height:178px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:var(--radius);
+  background:rgba(20,20,18,.72);
+  padding:13px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transform:rotate(-3deg);
+}
+.specimen:nth-child(2){transform:rotate(4deg) translateY(24px);background:rgba(255,253,248,.9);color:var(--ink)}
+.specimen-head{display:flex;justify-content:space-between;align-items:center;font:600 10px "DM Mono",monospace;color:inherit;opacity:.72}
+.mini-phone{
+  margin:12px auto 6px;
+  width:86px;
+  height:146px;
+  border:3px solid currentColor;
+  border-radius:18px;
+  padding:9px 7px;
+  display:grid;
+  gap:5px;
+  opacity:.95;
+}
+.number-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.number-grid span{display:grid;place-items:center;aspect-ratio:1;border-radius:5px;background:#fff;color:#181814;font-weight:900;font-size:11px}
+.number-grid span.hot{background:var(--red);color:#fff}
+.shop-visual{display:grid;gap:7px}
+.shop-visual .banner{height:42px;border-radius:7px;background:linear-gradient(135deg,#15152a,#315ee8);display:grid;place-items:center;color:#fff;font-size:20px}
+.shop-visual .tiles{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.shop-visual .tiles span{height:34px;border-radius:6px;background:#ffe5a8;display:grid;place-items:center;font-size:15px}
+.specimen-name{font-size:13px;font-weight:900}
+.toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.toolbar h2{font-size:24px;font-weight:900}
+.toolbar p{font-size:12px;color:var(--muted);margin-top:4px}
+.sort-pill{
+  min-height:36px;
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:0 12px;
+  background:#fffaf1;
+  font:600 11px "DM Mono",monospace;
+  color:#6c665d;
+}
+.content{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.card{
+  position:relative;
+  min-height:520px;
+  display:grid;
+  grid-template-rows:1fr auto;
+  overflow:hidden;
+  border:1px solid rgba(23,23,20,.12);
+  border-radius:var(--radius);
+  background:var(--paper);
+  box-shadow:0 12px 34px rgba(35,29,17,.08);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:rgba(23,23,20,.26)}
+.card-visual{
+  position:relative;
+  min-height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+  overflow:hidden;
+}
+.card-visual.game{background:linear-gradient(145deg,#fff7f3,#f2fff8)}
+.card-visual.commerce{background:linear-gradient(145deg,#f8f3ff,#fff7df)}
+.card-visual.admin{background:linear-gradient(145deg,#f0f4ff,#e8f0fe)}
+.card-visual.merchant{background:linear-gradient(145deg,#fff9e6,#fff3cc)}
+.card-visual.opulrich{background:linear-gradient(145deg,#e8f0fe,#d0e0ff)}
+.card-visual::before{
+  content:"";
+  position:absolute;inset:18px;
+  border:1px dashed rgba(23,23,20,.18);
+  border-radius:var(--radius);
+}
+.card-code{
+  position:absolute;
+  left:18px;top:14px;
+  font:600 10px "DM Mono",monospace;
+  color:rgba(23,23,20,.46);
+}
+.status-light{
+  position:absolute;
+  right:18px;top:16px;
+  display:flex;gap:6px;
+}
+.status-light span{width:8px;height:8px;border-radius:50%;background:var(--soft)}
+.status-light span:nth-child(1){background:var(--red)}
+.status-light span:nth-child(2){background:var(--amber)}
+.status-light span:nth-child(3){background:var(--green)}
+.phone-wrap{position:relative;width:178px;height:352px;transform-style:preserve-3d;transition:transform .28s ease}
+.phone-wrap.idle{animation:float 4.4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotateX(0) rotateY(0)}50%{transform:translateY(-8px) rotateX(2deg) rotateY(-3deg)}}
+.phone{
+  width:100%;height:100%;
+  border-radius:26px;
+  border:3px solid #171714;
+  background:#111;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 22px 42px rgba(24,21,15,.16);
+}
+.phone::before{content:"";position:absolute;top:9px;left:50%;width:56px;height:15px;transform:translateX(-50%);border-radius:0 0 12px 12px;background:#111;z-index:3}
+.phone-screen{position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#fff}
+.phone-inner{height:100%;display:flex;flex-direction:column}
+.phone-1{background:linear-gradient(180deg,#fff,#f4f8f5)}
+.phone-1 .ph-bar{height:34px;display:grid;place-items:center;background:linear-gradient(90deg,#e53935,#00a86b);color:#fff;font-size:10px;font-weight:900}
+.phone-1 .ph-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:14px}
+.phone-1 .ph-num{aspect-ratio:1;border-radius:8px;background:#fff;border:1px solid #e3e7e3;display:grid;place-items:center;font-size:15px;font-weight:900;color:#1a1a1a;transition:.24s ease}
+.phone-1 .ph-num.hit{background:#e53935;color:#fff;border-color:#e53935;transform:scale(1.04)}
+.phone-1 .ph-num.fade{opacity:.42;transform:scale(.92)}
+.phone-1 .ph-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 14px}
+.phone-1 .ph-btn{height:34px;border-radius:8px;display:grid;place-items:center;font-size:10px;font-weight:900}
+.phone-1 .ph-btn.red{background:#e53935;color:#fff}
+.phone-1 .ph-btn.outline{border:1px solid #d9ded9;background:#fff;color:#58635d}
+.phone-1 .ticker{margin:14px;border-radius:10px;background:#ecfff6;color:#087a53;padding:10px;font-size:10px;font-weight:800;line-height:1.5}
+.phone-2{background:linear-gradient(180deg,#fbf6ef,#fff)}
+.phone-2 .ph-bar{height:34px;display:grid;place-items:center;background:#15152a;color:#ffd36e;font-size:10px;font-weight:900}
+.phone-2 .ph-hero{height:86px;margin:10px;border-radius:12px;background:linear-gradient(135deg,#15152a,#315ee8);display:grid;place-items:center;color:#fff;font-size:30px;position:relative;overflow:hidden}
+.phone-2 .ph-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 28%,rgba(255,255,255,.2) 48%,transparent 68%);animation:shimmer 2.5s ease-in-out infinite}
+@keyframes shimmer{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+.phone-2 .ph-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 10px}
+.phone-2 .ph-card{background:#fff;border:1px solid #ede6d8;border-radius:10px;padding:8px;transition:.22s ease}
+.phone-2 .ph-card.active{transform:translateY(-3px);box-shadow:0 8px 18px rgba(35,29,17,.1)}
+.phone-2 .thumb{height:42px;border-radius:8px;background:linear-gradient(135deg,#ffe5a8,#fff1ca);display:grid;place-items:center;font-size:18px;margin-bottom:5px}
+.phone-2 .name{font-size:9px;font-weight:800}
+.phone-2 .price{font-size:9px;color:#c76f00;font-weight:900;margin-top:2px}
+.phone-2 .flow{display:flex;gap:5px;margin:12px 10px 0}
+.phone-2 .flow span{flex:1;height:22px;border-radius:7px;background:#f1ecdf;color:#6d6251;display:grid;place-items:center;font-size:8px;font-weight:900}
+.visual-caption{
+  position:absolute;
+  bottom:18px;left:18px;right:18px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  font:600 10px "DM Mono",monospace;
+  color:rgba(23,23,20,.54);
+}
+.card-info{padding:20px;border-top:1px solid rgba(23,23,20,.09);background:rgba(255,253,248,.9)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font:700 10px "DM Mono",monospace;border-radius:999px;padding:5px 8px;background:#efe8dc;color:#5d574d}
+.tag-game{background:#ffe2de;color:#b7271d}
+.tag-mobile{background:#e6edff;color:#2445a5}
+.tag-ecommerce{background:#fff0cc;color:#946006}
+.tag-frontend{background:#ddf8eb;color:#05724b}
+.tag-admin{background:#e0e8ff;color:#2240a5}
+.tag-merchant{background:#fff3c4;color:#7a5500}
+.tag-opulrich{background:linear-gradient(90deg,#1e3a5f,#0f2744);color:#fbbf24}
+.name-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}
+.name-row h3{font-size:22px;font-weight:900}
+.ver{font:600 11px "DM Mono",monospace;color:#918a7d;margin-top:5px}
+.desc{min-height:46px;font-size:13px;color:var(--muted);line-height:1.72;margin-bottom:16px}
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.meta{font:600 10px "DM Mono",monospace;color:#8c8578}
+.action{
+  height:36px;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:0 12px;
+  border-radius:var(--radius);
+  background:var(--ink);
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+}
+.toast{position:fixed;right:22px;bottom:22px;z-index:10;background:#171714;color:#fff;padding:12px 16px;border-radius:var(--radius);font-size:13px;font-weight:800;box-shadow:0 14px 34px rgba(0,0,0,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s ease}
+.toast.show{opacity:1;transform:translateY(0)}
+#emptyState{display:none;grid-column:1/-1;min-height:260px;border:1px dashed #bdb2a4;border-radius:var(--radius);place-items:center;color:var(--muted);font-weight:800;background:rgba(255,255,255,.35)}
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .side{position:relative;top:auto;height:auto}
+  .side-bottom{margin-top:22px}
+  .hero-inner{grid-template-columns:1fr;padding:24px}
+  .hero-copy{align-self:start}
+  .hero h2{font-size:42px}
+  .lab-panel{justify-self:stretch;width:100%}
+  .signal-board{aspect-ratio:1.8}
+  .preview-stack{inset:20px}
+}
+@media(max-width:760px){
+  body{background-size:32px 32px,32px 32px,auto,auto,auto}
+  .app{padding:12px;gap:12px}
+  .intro h1{font-size:28px}
+  .filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chip{font-size:12px}
+  .metric-strip{grid-template-columns:repeat(3,1fr)}
+  .hero{min-height:auto}
+  .hero-inner{min-height:auto}
+  .hero h2{font-size:34px}
+  .signal-board{aspect-ratio:1.1}
+  .preview-stack{grid-template-columns:1fr}
+  .specimen{min-height:118px;transform:none}
+  .specimen:nth-child(2){transform:none}
+  .mini-phone{display:none}
+  .content{grid-template-columns:1fr}
+  .card{min-height:auto}
+  .card-visual{min-height:280px}
+  .phone-wrap{width:148px;height:292px}
+}
+@media(max-width:460px){
+  .side{padding:15px}
+  .hero-inner{padding:18px}
+  .hero-actions{display:grid}
+  .command{width:100%}
+  .toolbar{align-items:flex-start}
+  .card-info{padding:16px}
+  .bottom{align-items:flex-start;flex-direction:column}
+  .action{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div>
+      <div class="brand">
+        <div class="mark">M</div>
+        <div>
+          <strong>Michael Prototypes</strong>
+          <span>Creative HQ</span>
+        </div>
+      </div>
+
+      <section class="intro">
+        <h1>把原型做成一间小型实验室。</h1>
+        <p>这里不是文件夹，而是每个想法的第一现场。筛选、预览、打开，快速判断哪个创意值得继续推进。</p>
+      </section>
+
+      <nav class="nav-block" aria-label="原型分类">
+        <div class="nav-title">Filter</div>
+        <div class="filter-row">
+          <button class="chip active" type="button" onclick="filter('all',this)">全部 <i id="countAll">05</i></button>
+          <button class="chip" type="button" onclick="filter('game',this)">游戏娱乐 <i>01</i></button>
+          <button class="chip" type="button" onclick="filter('ecommerce',this)">电商平台 <i>01</i></button>
+          <button class="chip" type="button" onclick="filter('admin',this)">管理后台 <i>02</i></button>
+        </div>
+      </nav>
+    </div>
+
+    <div class="side-bottom">
+      <div class="metric-strip">
+        <div class="mini-stat"><b id="protoCount">5</b><span>可查看</span></div>
+        <div class="mini-stat"><b>11</b><span>流程点</span></div>
+        <div class="mini-stat"><b>4</b><span>方向</span></div>
+      </div>
+      <div class="hint">提示：移动鼠标到手机预览上，卡片会跟随角度变化；点击黑色按钮打开真实原型。</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-noise"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">LIVE PROTOTYPE INDEX</span>
+          <h2>让创意先被看见。</h2>
+          <p>用更强的视觉节奏展示作品：每张卡片都有项目性格、动效预览和清晰入口，让用户进来第一眼就感觉这里有东西在发生。</p>
+          <div class="hero-actions">
+            <button class="command" type="button" onclick="scrollToGallery()">浏览作品 <span>↓</span></button>
+            <button class="command secondary" type="button" onclick="openProto('leguanle_admin.html')">打开最新原型 <span>↗</span></button>
+          </div>
+        </div>
+        <div class="lab-panel" aria-hidden="true">
+          <div class="signal-board">
+            <div class="orbit"><span class="node"></span></div>
+            <div class="orbit two"><span class="node"></span></div>
+            <div class="preview-stack">
+              <div class="specimen">
+                <div class="specimen-head"><span>GAME LOOP</span><span>v2.0</span></div>
+                <div class="mini-phone">
+                  <div class="number-grid">
+                    <span class="hot">9</span><span>7</span><span>3</span>
+                    <span>6</span><span class="hot">1</span><span>8</span>
+                    <span class="hot">9</span><span>4</span><span class="hot">1</span>
+                  </div>
+                </div>
+                <div class="specimen-name">数字乾坤</div>
+              </div>
+              <div class="specimen">
+                <div class="specimen-head"><span>SHOP FLOW</span><span>FIGMA</span></div>
+                <div class="shop-visual">
+                  <div class="banner">KUMOO</div>
+                  <div class="tiles"><span>🎟</span><span>🎁</span></div>
+                </div>
+                <div class="specimen-name">乐签乐 · 前端</div>
+              </div>
+              <div class="specimen" style="transform:rotate(-2deg)">
+                <div class="specimen-head"><span>ADMIN</span><span>v1.0</span></div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0 4px">
+                  <div style="background:#fef3c7;border-radius:4px;padding:4px;text-align:center;font-size:9px;font-weight:900;color:#92400e">12K</div>
+                  <div style="background:#dbeafe;border-radius:4px;padding:4px;text-align:center;font-size:9px;font-weight:900;color:#1e40af">3.2K</div>
+                  <div style="background:#dcfce7;border-radius:4px;padding:4px;text-align:center;font-size:9px;font-weight:900;color:#166534">¥98K</div>
+                </div>
+                <div class="specimen-name">运营后台</div>
+              </div>
+              <div class="specimen" style="transform:rotate(3deg)">
+                <div class="specimen-head"><span>MERCHANT</span><span>v1.0</span></div>
+                <div style="margin:8px 0 4px;display:flex;flex-direction:column;gap:4px">
+                  <div style="display:flex;align-items:center;gap:4px;background:#fffbeb;border-radius:4px;padding:4px">
+                    <span style="font-size:10px">🎧</span>
+                    <div><div style="font-size:7px;font-weight:800">蓝牙耳机</div><div style="font-size:6px;color:#9ca3af">¥299 · 42件</div></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;background:#fffbeb;border-radius:4px;padding:4px">
+                    <span style="font-size:10px">🎟</span>
+                    <div><div style="font-size:7px;font-weight:800">签筒套装</div><div style="font-size:6px;color:#9ca3af">¥88 · 15件</div></div>
+                  </div>
+                </div>
+                <div class="specimen-name">商家管理</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="toolbar" id="gallery">
+      <div>
+        <h2>原型展台</h2>
+        <p>当前显示 <span id="visibleCount">5</span> 个作品，点击项目进入体验。</p>
+      </div>
+      <div class="sort-pill">UPDATED · 2026.05</div>
+    </div>
+
+    <section class="content" id="content">
+      <article class="card" id="card1" data-cat="admin">
+        <div class="card-visual admin">
+          <span class="card-code">KUMOO / ADMIN DASHBOARD</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap3">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner" style="background:#f0f4ff;flex-direction:column;">
+                  <div style="height:30px;background:#1a1a2e;display:flex;align-items:center;padding:0 10px;gap:6px;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#ff5f56"></span>
+                    <span style="width:6px;height:6px;border-radius:50%;background:#ffbd2e"></span>
+                    <span style="width:6px;height:6px;border-radius:50%;background:#27c93f"></span>
+                    <span style="flex:1"></span>
+                    <span style="font:700 8px 'DM Mono',monospace;color:rgba(255,255,255,.6)">KUMOO ADMIN</span>
+                  </div>
+                  <div style="flex:1;display:grid;grid-template-columns:60px 1fr;gap:0;font-size:8px;">
+                    <div style="background:#1a1a2e;padding:8px 0;display:flex;flex-direction:column;gap:8px;align-items:center">
+                      <div style="width:28px;height:28px;border-radius:6px;background:#ef3d31;display:grid;place-items:center;color:#fff;font-size:14px;margin:0 auto">📊</div>
+                      <div style="width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.5)">👥</div>
+                      <div style="width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.5)">📦</div>
+                      <div style="width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.5)">⚠️</div>
+                    </div>
+                    <div style="padding:8px;display:flex;flex-direction:column;gap:7px;">
+                      <div style="background:#fff;border-radius:7px;padding:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px">
+                        <div style="background:#fef3c7;border-radius:5px;padding:5px;text-align:center"><div style="font-weight:900;font-size:10px;color:#92400e">12,480</div><div style="color:#92400e;font-size:7px">用户</div></div>
+                        <div style="background:#dbeafe;border-radius:5px;padding:5px;text-align:center"><div style="font-weight:900;font-size:10px;color:#1e40af">3,250</div><div style="color:#1e40af;font-size:7px">订单</div></div>
+                        <div style="background:#dcfce7;border-radius:5px;padding:5px;text-align:center"><div style="font-weight:900;font-size:10px;color:#166534">¥98K</div><div style="color:#166534;font-size:7px">收入</div></div>
+                      </div>
+                      <div style="background:#fff;border-radius:7px;padding:8px">
+                        <div style="font-size:7px;color:#6b7280;margin-bottom:5px">最近活动</div>
+                        <div style="display:grid;gap:4px">
+                          <div style="display:flex;justify-content:space-between;align-items:center;font-size:7px"><span style="color:#374151;font-weight:700">用户注册</span><span style="color:#16a34a;font-weight:800">+24</span></div>
+                          <div style="display:flex;justify-content:space-between;align-items:center;font-size:7px"><span style="color:#374151;font-weight:700">新订单</span><span style="color:#2563eb;font-weight:800">+18</span></div>
+                          <div style="display:flex;justify-content:space-between;align-items:center;font-size:7px"><span style="color:#374151;font-weight:700">风控预警</span><span style="color:#dc2626;font-weight:800">2</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>ADMIN DASHBOARD</span><span>USERS · ORDERS · RISK</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-admin">管理后台</span></div>
+          <div class="name-row"><h3>乐签乐 · 运营后台</h3><span class="ver">v1.0</span></div>
+          <p class="desc">KUMOO 平台运营管理后台，覆盖用户管理、订单物流、商家管理、风控监控等核心模块，支持平台日常运营决策。</p>
+          <div class="bottom"><span class="meta">2026.05 · 2900+行 · 9 大模块</span><button class="action" type="button" onclick="openProto('leguanle_admin.html')">查看原型 <span>↗</span></button></div>
+        </div>
+      </article>
+
+<article class="card" id="card2" data-cat="admin">
+        <div class="card-visual merchant">
+          <span class="card-code">KUMOO / MERCHANT PANEL</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap4">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner" style="background:#fff9e6;flex-direction:column;">
+                  <div style="height:30px;background:#92400e;display:flex;align-items:center;padding:0 10px;gap:6px;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#ff5f56"></span>
+                    <span style="width:6px;height:6px;border-radius:50%;background:#ffbd2e"></span>
+                    <span style="width:6px;height:6px;border-radius:50%;background:#27c93f"></span>
+                    <span style="flex:1"></span>
+                    <span style="font:700 8px 'DM Mono',monospace;color:rgba(255,255,255,.6)">商家中心</span>
+                  </div>
+                  <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:7px;">
+                    <div style="background:#fff;border-radius:8px;padding:9px">
+                      <div style="font-size:7px;color:#6b7280;margin-bottom:6px">店铺数据概览</div>
+                      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px">
+                        <div style="background:#fef9c3;border-radius:5px;padding:5px"><div style="font-weight:900;font-size:10px;color:#854d0e">¥ 24,680</div><div style="font-size:7px;color:#92400e">今日销售额</div></div>
+                        <div style="background:#fef9c3;border-radius:5px;padding:5px"><div style="font-weight:900;font-size:10px;color:#854d0e">186</div><div style="font-size:7px;color:#92400e">订单数</div></div>
+                      </div>
+                    </div>
+                    <div style="background:#fff;border-radius:8px;padding:9px;flex:1">
+                      <div style="font-size:7px;color:#6b7280;margin-bottom:5px">商品管理</div>
+                      <div style="display:grid;gap:4px">
+                        <div style="display:flex;align-items:center;gap:5px;padding:5px;background:#fffbeb;border-radius:5px">
+                          <div style="width:22px;height:22px;border-radius:4px;background:#fde68a;display:grid;place-items:center;font-size:12px">🎧</div>
+                          <div style="flex:1"><div style="font-size:7px;font-weight:800;color:#374151">蓝牙耳机 Pro</div><div style="font-size:6px;color:#9ca3af">库存 42 · 已售 128</div></div>
+                          <div style="font-size:7px;font-weight:900;color:#d97706">¥299</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:5px;padding:5px;background:#fffbeb;border-radius:5px">
+                          <div style="width:22px;height:22px;border-radius:4px;background:#fde68a;display:grid;place-items:center;font-size:12px">🎟</div>
+                          <div style="flex:1"><div style="font-size:7px;font-weight:800;color:#374151">限定签筒套装</div><div style="font-size:6px;color:#9ca3af">库存 15 · 已售 86</div></div>
+                          <div style="font-size:7px;font-weight:900;color:#d97706">¥88</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>MERCHANT PANEL</span><span>SALES · PRODUCTS · ORDERS</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-merchant">商家后台</span></div>
+          <div class="name-row"><h3>乐签乐 · 商家管理</h3><span class="ver">v1.0</span></div>
+          <p class="desc">KUMOO 商家自营后台，支持商品上下架、订单处理、数据分析、退换货管理等，商家自主运营的核心工具。</p>
+          <div class="bottom"><span class="meta">2026.05 · HTML · 6 大模块</span><button class="action" type="button" onclick="openProto('leguanle_merchant.html')">查看原型 <span>↗</span></button></div>
+        </div>
+      </article>
+
+<article class="card" id="card3" data-cat="game">
+        <div class="card-visual game">
+          <span class="card-code">SQK / MOBILE GAME</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap1">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner phone-1">
+                  <div class="ph-bar">数字乾坤</div>
+                  <div class="ph-grid" id="grid1">
+                    <div class="ph-num hit">9</div><div class="ph-num fade">7</div><div class="ph-num fade">3</div>
+                    <div class="ph-num fade">7</div><div class="ph-num fade">1</div><div class="ph-num fade">1</div>
+                    <div class="ph-num hit">9</div><div class="ph-num hit">1</div><div class="ph-num hit">1</div>
+                  </div>
+                  <div class="ph-actions">
+                    <div class="ph-btn red" id="btnBet">投注 ¥10</div>
+                    <div class="ph-btn outline">随机</div>
+                  </div>
+                  <div class="ticker">开奖倒计时 00:18<br>命中数字自动高亮，反馈更直接。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>INTERACTIVE PREVIEW</span><span>RED · GREEN · WHITE</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-game">游戏娱乐</span><span class="tag tag-mobile">移动端</span></div>
+          <div class="name-row"><h3>数字乾坤</h3><span class="ver">v2.0</span></div>
+          <p class="desc">移动端数字彩票游戏原型，覆盖投注、开奖、结算全流程。视觉反馈更强调数字命中与下注节奏。</p>
+          <div class="bottom"><span class="meta">2026.05 · 52KB · 3 流程</span><button class="action" type="button" onclick="openProto('shuziqiankun.html')">查看原型 <span>↗</span></button></div>
+        </div>
+      </article>
+
+<article class="card" id="card4" data-cat="frontend ecommerce">
+        <div class="card-visual commerce">
+          <span class="card-code">KUMOO / FIGMA SITE</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap2">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner phone-2">
+                  <div class="ph-bar">乐签乐 KUMOO</div>
+                  <div class="ph-hero">🎁</div>
+                  <div class="ph-cards" id="ecards">
+                    <div class="ph-card"><div class="thumb">📱</div><div class="name">数码好物</div><div class="price">¥299 起</div></div>
+                    <div class="ph-card active"><div class="thumb">🎟</div><div class="name">限时抽签</div><div class="price">免费参与</div></div>
+                  </div>
+                  <div class="flow"><span>浏览</span><span>抽签</span><span>详情</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>HIGH FIDELITY</span><span>SHOP · DRAW · DETAIL</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-ecommerce">电商平台</span><span class="tag tag-frontend">前端页面</span></div>
+          <div class="name-row"><h3>乐签乐 · 前端</h3><span class="ver">v2.0</span></div>
+          <p class="desc">乐签乐 KUMOO 用户端高保真原型，覆盖浏览、抽签、商品详情等核心场景，偏年轻化电商体验。</p>
+          <div class="bottom"><span class="meta">2026.05 · Figma · 4 场景</span><button class="action" type="button" onclick="openProto('https://funnel-cabin-67528323.figma.site')">Figma 查看 <span>↗</span></button></div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="opulrich" id="card5">
+        <div class="card-visual opulrich">
+          <span class="card-code">OPULRICH · WEB PLATFORM</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap5">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner" style="background:#d8e8ff;flex-direction:column;">
+                  <div style="height:32px;background:#1e3a5f;display:flex;align-items:center;padding:0 12px;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:grid;place-items:center;font-size:9px;font-weight:900;color:#0a1628;">OP</div>
+                      <span style="font:700 9px 'DM Mono',monospace;color:#fbbf24">OpulRich</span>
+                    </div>
+                    <div style="display:flex;gap:4px;">
+                      <div style="width:5px;height:5px;border-radius:50%;background:#22c55e"></div>
+                      <div style="width:5px;height:5px;border-radius:50%;background:#fbbf24"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="background:linear-gradient(135deg,#1e3a5f,#0f2744);border-radius:8px;padding:10px;">
+                      <div style="font-size:7px;color:#93c5fd;margin-bottom:5px">星链质押总额</div>
+                      <div style="font-size:18px;font-weight:900;color:#fbbf24;font-family:'DM Mono',monospace;">$2,847,293</div>
+                      <div style="display:flex;gap:12px;margin-top:6px;">
+                        <div><div style="font-size:7px;color:#60a5fa">APY</div><div style="font-size:10px;font-weight:800;color:#34d399">+24.8%</div></div>
+                        <div><div style="font-size:7px;color:#60a5fa">TVL</div><div style="font-size:10px;font-weight:800;color:#fff">$12.4M</div></div>
+                      </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px">
+                      <div style="background:#0f2744;border-radius:5px;padding:6px;text-align:center"><div style="font-size:14px">🔗</div><div style="font-size:7px;color:#94a3b8">质押</div></div>
+                      <div style="background:#0f2744;border-radius:5px;padding:6px;text-align:center"><div style="font-size:14px">📊</div><div style="font-size:7px;color:#94a3b8">收益</div></div>
+                      <div style="background:#0f2744;border-radius:5px;padding:6px;text-align:center"><div style="font-size:14px">🏦</div><div style="font-size:7px;color:#94a3b8">质押</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>DEFI PLATFORM</span><span>STAKING · YIELD · GOVERNANCE</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-opulrich">DeFi 平台</span></div>
+          <div class="name-row"><h3>企业星链 · OpulRich</h3><span class="ver">v1.0</span></div>
+          <p class="desc">OpulRich 企业级 DeFi 质押平台原型，提供星链质押、收益复投、节点治理等核心功能，支持机构与个人投资者参与分布式网络。</p>
+          <div class="bottom"><span class="meta">2026.05 · HTML · 7 大模块</span><button class="action" type="button" onclick="openProto('OpulRich/index.html')">查看原型 <span>↗</span></button></div>
+        </div>
+      </article>
+
+      <div id="emptyState">没有匹配的原型</div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast">正在打开原型...</div>
+
+<script>
+document.querySelectorAll(".card-visual").forEach(area=>{
+  const wrap=area.querySelector(".phone-wrap");
+  if(!wrap)return;
+  area.addEventListener("mousemove",e=>{
+    const rect=area.getBoundingClientRect();
+    const x=(e.clientX-rect.left)/rect.width-.5;
+    const y=(e.clientY-rect.top)/rect.height-.5;
+    wrap.classList.remove("idle");
+    wrap.style.transform=`rotateY(${x*18}deg) rotateX(${-y*12}deg) translateZ(0)`;
+  });
+  area.addEventListener("mouseleave",()=>{
+    wrap.classList.add("idle");
+    wrap.style.transform="";
+  });
+});
+
+(function loopDraw(){
+  const grid=document.getElementById("grid1");
+  if(!grid)return;
+  if(grid.closest(".card").style.display==="none"){setTimeout(loopDraw,1800);return}
+  const nums=grid.querySelectorAll(".ph-num");
+  nums.forEach(n=>{n.classList.remove("hit","fade");n.textContent=Math.floor(Math.random()*9)+1});
+  const hits=new Set();while(hits.size<4)hits.add(Math.floor(Math.random()*9));
+  nums.forEach((n,i)=>n.classList.add(hits.has(i)?"hit":"fade"));
+  setTimeout(loopDraw,2100);
+})();
+
+function filter(cat,btn){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  btn.classList.add("active");
+  let n=0;
+  document.querySelectorAll(".card").forEach(card=>{
+    const cats=card.dataset.cat.split(" ");
+    const show=cat==="all"||cats.includes(cat);
+    card.style.display=show?"":"none";
+    if(show)n++;
+  });
+  document.getElementById("protoCount").textContent=n;
+  document.getElementById("visibleCount").textContent=n;
+  document.getElementById("emptyState").style.display=n===0?"grid":"none";
+}
+
+function openProto(url){
+  const t=document.getElementById("toast");
+  t.textContent="正在打开原型...";
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1300);
+  setTimeout(()=>window.open(url,"_blank"),120);
+}
+
+function scrollToGallery(){
+  document.getElementById("gallery").scrollIntoView({behavior:"smooth",block:"start"});
+}
+</script>
+</body>
+</html>

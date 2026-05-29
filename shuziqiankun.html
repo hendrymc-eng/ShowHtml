@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>数字乾坤 · 手机端原型</title>
+<style>
+:root{
+  --red:#E53935;--red-dark:#B71C1C;--red-soft:#FFF0F0;
+  --green:#00A86B;--green-dark:#087A53;--green-soft:#E9FFF5;
+  --white:#FFFFFF;--bg:#F6F8F7;--ink:#18221D;--muted:#748079;
+  --line:#E5EBE7;--gold:#F6B73C;--blue:#367BF5;
+  --shadow:0 12px 40px rgba(19,37,28,.12);
+  --radius-xl:28px;--radius-lg:22px;--radius-md:16px;--radius-sm:12px;
+  --safe-bottom:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  min-height:100dvh;margin:0;background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  color:var(--ink);
+}
+button,input,select,textarea{font:inherit}
+button{border:0;background:none;cursor:pointer;color:inherit}
+.phone{
+  width:100%;min-height:100dvh;background:var(--bg);
+  position:relative;display:flex;flex-direction:column;
+}
+.pages{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg)}
+.page-wrap{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;overflow-y:auto;scrollbar-width:none;background:var(--bg);animation:pageIn .22s ease both}
+.page::-webkit-scrollbar{display:none}
+.page.active{display:block}
+#page-home.active{display:flex;flex-direction:column;overflow-y:auto}
+#page-home .hero{margin-top:0;padding:16px 22px}
+#page-home .hero h1{font-size:24px;margin-bottom:6px}
+#page-home .hero p{font-size:12px;max-width:260px}
+#page-home .hero-actions{margin-top:12px}
+#page-home .section{padding:10px 16px}
+#page-home .stat-card{padding:10px}
+#page-home .stat-card .value{font-size:18px}
+#page-home .notice{padding:10px;margin:0 16px 8px}
+#page-home .poster{padding:12px 18px;margin:0 16px 8px}
+#page-home .poster h3{font-size:18px}
+#page-home .poster .hero-actions{margin-top:10px}
+#page-home .grid-3 .stat-card .value{font-size:13px}
+/* Home one-screen */
+.home-hero{background:linear-gradient(135deg,#E53935 0%,#E8573F 40%,#00A86B 100%);border-radius:24px;margin:8px 16px 0;padding:24px 20px;color:#fff;position:relative;overflow:hidden;flex-shrink:0}
+.home-hero:after{content:"乾坤";position:absolute;right:4px;top:-4px;font-size:80px;font-weight:900;letter-spacing:-6px;color:rgba(255,255,255,.06)}
+.home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1}
+.home-hero-top h1{font-size:28px;letter-spacing:-.5px;line-height:1.2}
+.home-hero-top h1 span{display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);margin-top:4px;letter-spacing:0}
+.home-hero-balance{background:rgba(255,255,255,.14);border-radius:18px;padding:14px 18px;text-align:right;line-height:1.3}
+.home-hero-balance b{display:block;font-size:28px;letter-spacing:-.5px}
+.home-hero-balance small{font-size:10px;color:rgba(255,255,255,.6)}
+.home-hero-rule{display:flex;gap:8px;margin-top:18px;position:relative;z-index:1}
+.home-hero-rule span{background:rgba(255,255,255,.13);border-radius:999px;padding:7px 14px;font-size:11px;font-weight:750}
+.home-hero-actions{margin-top:18px;display:flex;gap:10px;position:relative;z-index:1}
+.home-hero-actions .btn{flex:1;height:48px;border-radius:16px;font-size:14px}
+.home-rooms{flex:1;padding:10px 16px;display:flex;flex-direction:column;min-height:0}
+.home-rooms h4{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-shrink:0;color:var(--ink)}
+.home-rooms h4 span{font-size:11px;color:var(--muted);font-weight:600;margin-left:auto}
+.home-room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1}
+.home-room-item{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 8px;text-align:center;position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .15s}
+.home-room-item:active{transform:scale(.97)}
+.home-room-item.hot{border-color:#FFD4CC;background:#FFF8F6}
+.home-room-item:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);border-radius:0 0 3px 3px}
+.home-room-item.hot:before{background:var(--red)}
+.home-room-item strong{display:block;font-size:15px;margin-top:6px}
+.home-room-item small{display:block;font-size:10px;color:var(--muted)}
+.home-room-item .odds-tag{font-size:18px;font-weight:900;color:var(--green-dark);margin-top:8px}
+.home-room-item.hot .odds-tag{color:var(--red)}
+.home-room-item .players{font-size:9px;color:var(--muted);margin-top:4px}
+.home-rules{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 16px;flex-shrink:0;cursor:pointer}
+.home-rules-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 4px;text-align:center}
+.home-rules-item b{display:block;width:22px;height:22px;border-radius:10px;background:var(--green-soft);color:var(--green-dark);font-size:12px;line-height:22px;margin:0 auto 5px}
+.home-rules-item span{display:block;font-size:11px;font-weight:800;color:var(--ink)}
+.home-rules-item small{display:block;font-size:9px;color:var(--muted);font-weight:600;margin-top:2px}
+.home-bottom{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--green-soft);border-radius:18px;margin:8px 16px 0;font-size:12px;color:var(--green-dark);font-weight:750;flex-shrink:0}
+.home-bottom span{display:flex;align-items:center;gap:4px}
+@keyframes pageIn{from{opacity:.4;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Top Bar */
+.topbar{position:sticky;top:0;z-index:10;background:rgba(246,248,247,.92);backdrop-filter:blur(16px);padding:12px 18px;border-bottom:1px solid rgba(229,235,231,.75)}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;border-radius:15px;background:linear-gradient(135deg,var(--red),#ff735f);display:grid;place-items:center;color:#fff;box-shadow:0 8px 20px rgba(229,57,53,.22);font-weight:900;position:relative;overflow:hidden}
+.logo:after{content:"";position:absolute;right:-8px;top:-8px;width:22px;height:22px;background:var(--green);border-radius:50%;border:3px solid #fff}
+.brand h2{font-size:18px;letter-spacing:-.4px}
+.brand small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+.icon-btn{width:38px;height:38px;border-radius:15px;background:#fff;box-shadow:0 3px 12px rgba(13,31,22,.06);display:grid;place-items:center;position:relative}
+.icon-btn .dot{position:absolute;right:8px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.titlebar h2{font-size:18px}.titlebar p{font-size:11px;color:var(--muted);margin-top:2px}
+.back-btn{width:34px;height:34px;border-radius:13px;background:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 3px 12px rgba(13,31,22,.06);cursor:pointer}
+
+/* Hero */
+.hero{margin:14px 16px 0;border-radius:32px;padding:22px;background:linear-gradient(135deg,#E53935 0%,#F35A44 42%,#00A86B 100%);color:#fff;position:relative;overflow:hidden;box-shadow:0 18px 40px rgba(229,57,53,.18)}
+.hero:before{content:"";position:absolute;right:-36px;top:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.15)}
+.hero:after{content:"乾坤";position:absolute;right:8px;bottom:-10px;font-size:78px;font-weight:900;letter-spacing:-8px;color:rgba(255,255,255,.09)}
+.hero-kicker{font-size:12px;font-weight:800;background:rgba(255,255,255,.18);display:inline-flex;gap:6px;padding:7px 11px;border-radius:999px;margin-bottom:15px;position:relative;z-index:1}
+.hero h1{font-size:28px;line-height:1.16;letter-spacing:-.8px;margin-bottom:10px;position:relative;z-index:1}
+.hero p{font-size:13px;line-height:1.65;color:rgba(255,255,255,.88);max-width:290px;position:relative;z-index:1}
+.hero-actions{display:flex;gap:10px;margin-top:18px;position:relative;z-index:1}
+
+/* Buttons */
+.btn{height:44px;border-radius:16px;padding:0 16px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.18s ease;white-space:nowrap;cursor:pointer}
+.btn:active{transform:scale(.98)}
+.btn-white{background:#fff;color:var(--red)}
+.btn-ghost{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.28)}
+.btn-red{background:linear-gradient(135deg,var(--red),#ff6d57);color:#fff;box-shadow:0 10px 22px rgba(229,57,53,.2)}
+.btn-green{background:linear-gradient(135deg,var(--green),#20C987);color:#fff;box-shadow:0 10px 22px rgba(0,168,107,.18)}
+.btn-light{background:#fff;border:1px solid var(--line);color:#33443a}
+.btn:disabled{background:#DCE4DF;color:#8A958F;box-shadow:none;cursor:not-allowed}
+
+/* Section */
+.section{padding:16px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-head h3{font-size:17px;letter-spacing:-.3px}
+.section-head span,.link{font-size:12px;color:var(--green-dark);font-weight:800;cursor:pointer}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(18,34,25,.05)}
+.stat-card{padding:14px}
+.stat-card .label{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.stat-card .value{font-size:21px;font-weight:900;margin-top:6px;letter-spacing:-.5px}
+.stat-card .trend{font-size:11px;margin-top:5px;color:var(--green-dark);font-weight:750}
+.stat-red .trend{color:var(--red)}
+
+/* Notice */
+.announce-bar{background:linear-gradient(90deg,#FFF5F0,#FFF0E8,#FFFAF0,#FFF0E8,#FFF5F0);border-bottom:1px solid #FFE8D6;padding:9px 0;overflow:hidden;position:relative}
+.announce-track{display:flex;gap:40px;white-space:nowrap;animation:marquee 24s linear infinite;padding:0 16px}
+.announce-track span{font-size:11px;color:#A05A2C;font-weight:750;display:flex;align-items:center;gap:6px}
+.announce-track span i{font-style:normal;font-size:14px}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.announce-bar:hover .announce-track{animation-play-state:paused}
+.notice{margin:0 16px 12px;border-radius:18px;background:#fff;border:1px solid var(--line);padding:12px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 20px rgba(18,34,25,.04)}
+.notice i{width:28px;height:28px;border-radius:11px;background:var(--green-soft);display:grid;place-items:center;font-style:normal}
+.notice strong{font-size:13px}.notice p{font-size:11px;color:var(--muted);line-height:1.5;margin-top:2px}
+
+/* Chip Filter */
+.chip-row{display:flex;gap:8px;overflow:auto;padding:0 16px 12px;scrollbar-width:none}.chip-row::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#526058;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:800;box-shadow:0 4px 10px rgba(18,34,25,.04);cursor:pointer}
+.chip.active{background:var(--green);border-color:var(--green);color:#fff}.chip.red.active{background:var(--red);border-color:var(--red);color:#fff}
+
+/* Room Card */
+.room-card{margin:0 16px 12px;padding:14px;border-radius:24px;background:#fff;border:1px solid var(--line);box-shadow:0 9px 24px rgba(18,34,25,.06);position:relative;overflow:hidden}
+.room-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--green)}
+.room-card.hot:before{background:var(--red)}
+.room-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.room-name{font-size:17px;font-weight:900;letter-spacing:-.3px}.room-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:900;border-radius:999px;padding:5px 8px;background:var(--green-soft);color:var(--green-dark);white-space:nowrap}
+.badge.red{background:var(--red-soft);color:var(--red)}.badge.gold{background:#FFF6DE;color:#A96B00}
+.room-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.meta-box{background:#F8FAF9;border:1px solid #EEF2EF;border-radius:15px;padding:9px 6px;text-align:center}
+.meta-box b{display:block;font-size:14px}.meta-box span{font-size:10px;color:var(--muted)}
+.capacity{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.avatars{display:flex}.av{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-size:12px;border:2px solid #fff;margin-left:-7px;background:#DDEBE4}.av:first-child{margin-left:0}
+.capacity small{font-size:11px;color:var(--muted)}
+.progress{height:7px;background:#EEF3F0;border-radius:99px;overflow:hidden;margin-top:8px;flex:1}
+.progress b{display:block;height:100%;background:linear-gradient(90deg,var(--green),#53D69E);border-radius:99px}
+.progress.red b{background:linear-gradient(90deg,var(--red),#FF7A64)}
+
+/* Poster */
+.poster{margin:0 16px 14px;border-radius:28px;padding:18px;background:linear-gradient(145deg,#FFFFFF 0%,#FFF7F6 52%,#EFFFF7 100%);border:1px solid #fff;box-shadow:0 16px 40px rgba(18,34,25,.08);position:relative;overflow:hidden}
+.poster:before{content:"";position:absolute;right:-25px;bottom:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--green-soft),transparent 68%)}
+.poster .tag{font-size:11px;font-weight:900;color:#fff;background:var(--red);padding:6px 10px;border-radius:999px;display:inline-flex;margin-bottom:10px}
+.poster h3{font-size:22px;line-height:1.2;letter-spacing:-.5px;margin-bottom:8px}
+.poster p{font-size:12px;color:var(--muted);line-height:1.6;max-width:250px}
+
+/* Game Stage */
+.game-stage{padding:12px 16px 0}
+.stage-card{background:linear-gradient(180deg,#fff,#F8FBF9);border:1px solid var(--line);border-radius:28px;padding:14px;box-shadow:0 10px 28px rgba(18,34,25,.06)}
+.phase-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.phase-pill{font-size:12px;font-weight:900;padding:7px 10px;border-radius:999px;background:var(--green-soft);color:var(--green-dark)}
+.timer{font-size:22px;font-weight:950;color:var(--red);letter-spacing:-.5px}.timer.safe{color:var(--green)}
+.vs-area{display:grid;grid-template-columns:1fr 52px 1fr;gap:8px;align-items:center}
+.vs{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:950;color:var(--red);box-shadow:0 8px 20px rgba(18,34,25,.06)}
+.disk{border:1px solid var(--line);border-radius:24px;padding:12px;background:#fff;text-align:center;position:relative;transition:.2s ease;cursor:pointer}
+.disk.selected{border-color:var(--green);box-shadow:0 0 0 4px rgba(0,168,107,.1)}
+.disk.left.selected{border-color:var(--red);box-shadow:0 0 0 4px rgba(229,57,53,.1)}
+.disk label{font-size:12px;color:var(--muted);font-weight:900}
+.big-number{width:72px;height:72px;border-radius:50%;margin:10px auto;background:conic-gradient(from 140deg,var(--green),#fff,var(--red),var(--green));padding:3px}
+.big-number span{display:grid;place-items:center;width:100%;height:100%;background:#fff;border-radius:50%;font-size:30px;font-weight:950;color:var(--ink)}
+.num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.num{height:36px;border-radius:13px;border:1px solid var(--line);background:#fff;font-weight:900;color:#4D5B53;cursor:pointer}
+.num.active{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 7px 14px rgba(0,168,107,.18)}
+.num.left-active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 7px 14px rgba(229,57,53,.18)}
+
+/* Bet Sheet */
+.bet-sheet{position:sticky;bottom:0;z-index:8;margin-top:12px;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:12px 16px calc(14px + var(--safe-bottom));box-shadow:0 -12px 32px rgba(18,34,25,.08)}
+.bet-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.amount{height:42px;border-radius:15px;border:1px solid var(--line);background:#F9FBFA;font-size:12px;font-weight:900;cursor:pointer}
+.amount.active{background:#FFF1F0;border-color:var(--red);color:var(--red)}
+.summary-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:10px}
+.summary-line b{color:var(--ink)}
+
+/* Live Players */
+.live-list{padding:0 16px 14px}
+.live-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.live-item:last-child{border-bottom:0}
+.live-item strong{display:flex;align-items:center;gap:8px}
+.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 4px rgba(0,168,107,.12)}
+
+/* Form */
+.form-card{margin:14px 16px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:0 10px 28px rgba(18,34,25,.06)}
+.form-group{margin-bottom:14px}
+.form-group label{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px;color:#59675F;font-weight:850}
+.form-group label em{font-style:normal;color:var(--muted);font-weight:600}
+.input,select{width:100%;height:48px;border:1px solid var(--line);border-radius:16px;background:#F9FBFA;padding:0 13px;color:var(--ink);outline:none}
+.input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(0,168,107,.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cost-card{border-radius:22px;background:linear-gradient(135deg,var(--green-soft),#fff);border:1px solid #D8F4E8;padding:14px;margin-top:6px}
+.cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cost-grid div{background:#fff;border-radius:16px;padding:10px}
+.cost-grid span{font-size:10px;color:var(--muted)}.cost-grid b{display:block;font-size:16px;margin-top:4px;color:var(--green-dark)}
+.switch-row{display:flex;gap:10px;align-items:flex-start;background:#F9FBFA;border:1px solid var(--line);border-radius:18px;padding:12px;cursor:pointer}
+.check{width:22px;height:22px;border-radius:8px;border:2px solid var(--green);display:grid;place-items:center;color:#fff;flex:0 0 auto}
+.check.on{background:var(--green)}.switch-row strong{font-size:13px}.switch-row p{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
+
+/* Banker */
+.banker-panel{padding:14px 16px}
+.alert{padding:12px;border-radius:18px;background:var(--red-soft);border:1px solid #FFD2CD;color:#7D201C;font-size:12px;line-height:1.55;margin-bottom:12px}
+.lock-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lock-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:14px;text-align:center}
+.lock-card h4{font-size:13px;margin-bottom:10px}
+.picker{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.pick{height:38px;border-radius:14px;border:1px solid var(--line);background:#F9FBFA;font-weight:900;cursor:pointer}
+.pick.active{background:var(--red);color:#fff;border-color:var(--red)}
+.pick.green.active{background:var(--green);border-color:var(--green)}
+
+/* Wallet */
+.wallet-hero{margin:14px 16px;border-radius:30px;padding:20px;color:#fff;background:linear-gradient(135deg,#16251E,#00A86B);position:relative;overflow:hidden}
+.wallet-hero:before{content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.12)}
+.wallet-hero span{font-size:12px;color:rgba(255,255,255,.72)}
+.wallet-hero h2{font-size:36px;letter-spacing:-1.2px;margin:7px 0}
+.wallet-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.wallet-actions button{height:42px;border-radius:15px;background:rgba(255,255,255,.14);color:#fff;font-size:12px;font-weight:900}
+
+/* Flow */
+.flow{padding:0 16px}
+.flow-item{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.flow-icon{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;background:var(--green-soft);color:var(--green-dark);flex:0 0 auto}
+.flow-text b{font-size:13px}.flow-text p{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
+.flow-amount{margin-left:auto;font-weight:900;font-size:13px}.plus{color:var(--green-dark)}.minus{color:var(--red)}
+
+/* Rank */
+.rank-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:20px;margin:0 16px 10px;padding:12px}
+.rank-no{width:30px;height:30px;border-radius:12px;background:#F1F4F2;display:grid;place-items:center;font-weight:950}
+.rank-no.top{background:linear-gradient(135deg,#FFD86B,#FFAF2D);color:#fff}
+.rank-main{flex:1}.rank-main b{font-size:14px}.rank-main p{font-size:11px;color:var(--muted);margin-top:2px}
+.rank-score{text-align:right;font-size:12px;color:var(--muted)}.rank-score b{display:block;color:var(--ink);font-size:15px}
+
+/* Rules */
+.rules-card{margin:0 16px 12px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px}
+.rules-card h4{font-size:15px;margin-bottom:8px;display:flex;gap:8px}
+.rules-card p,.rules-card li{font-size:12px;color:#56645D;line-height:1.75}
+.rules-card ul{padding-left:18px}
+.formula{background:#F9FBFA;border:1px dashed #CBD8D0;border-radius:15px;padding:10px;margin-top:8px;font-size:12px;color:#33443A}
+
+/* Modal */
+.modal-layer{position:fixed;inset:0;background:rgba(11,24,17,.42);z-index:40;display:none;align-items:flex-end;justify-content:center}
+.modal-layer.show{display:flex}
+.sheet{width:100%;background:#fff;border-radius:30px 30px 0 0;padding:20px 18px calc(20px + var(--safe-bottom));box-shadow:0 -22px 60px rgba(0,0,0,.18);animation:sheetUp .24s ease both;max-height:70vh;overflow-y:auto}
+.sheet.center{margin:auto 18px;border-radius:30px;padding:22px;max-height:80vh}
+.sheet h3{font-size:20px;letter-spacing:-.4px;margin-bottom:8px}
+.sheet p{font-size:13px;color:var(--muted);line-height:1.65}
+.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.result-emoji{font-size:52px;text-align:center;margin:6px 0 10px}
+.result-list{background:#F9FBFA;border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:12px}
+.result-list div{display:flex;justify-content:space-between;font-size:12px;padding:6px 0}
+.result-list b{color:var(--ink)}
+@keyframes sheetUp{from{transform:translateY(26px);opacity:.2}to{transform:translateY(0);opacity:1}}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:#18221D;color:#fff;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.2);z-index:60;opacity:0;pointer-events:none;transition:.22s ease;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Tabbar — replaced by drawer */
+/* Drawer */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:35;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.drawer-overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;width:280px;height:100dvh;background:#fff;z-index:36;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 30px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.drawer.show{transform:translateX(0)}
+.drawer-head{padding:20px 18px 16px;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer-head .avatar{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--red),#ff735f);display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px;margin-bottom:10px}
+.drawer-head h3{font-size:17px;letter-spacing:-.3px}
+.drawer-head small{font-size:11px;color:var(--muted)}
+.drawer-menu{flex:1;padding:12px 0;overflow-y:auto}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:15px;font-weight:750;color:var(--ink);cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.drawer-item:active{background:var(--bg)}
+.drawer-item.active{background:var(--green-soft);color:var(--green-dark);border-left-color:var(--green);font-weight:850}
+.drawer-item i{font-style:normal;font-size:22px;width:32px;text-align:center}
+.drawer-bottom{padding:14px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);flex-shrink:0}
+.menu-btn{width:38px;height:38px;border-radius:13px;background:var(--bg);display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.menu-btn span{display:block;width:20px;height:2px;background:var(--ink);position:relative;transition:.2s}
+.menu-btn span:before,.menu-btn span:after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--ink);transition:.2s}
+.menu-btn span:before{top:-6px}.menu-btn span:after{top:6px}
+
+/* Misc */
+.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+.divider{height:1px;background:var(--line);margin:14px 0}
+.small-note{font-size:10px;color:var(--muted);line-height:1.55}
+.pill-line{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.mini-pill{font-size:10px;border:1px solid var(--line);border-radius:999px;padding:5px 7px;color:#5E6A64;background:#fff}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<main class="phone" id="phone">
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head"><div class="avatar">数</div><h3>数字乾坤</h3><small>快节奏双盘博弈</small></div>
+    <nav class="drawer-menu" id="drawerMenu"></nav>
+    <div class="drawer-bottom">🪙 52,680 金花 · 💎 1,280 VIC</div>
+  </aside>
+  <div class="pages">
+    <div class="announce-bar"><div class="announce-track" id="announceTrack"></div></div>
+    <div class="page-wrap">
+
+    <!-- ======== HOME ======== -->
+    <section class="page active" id="page-home">
+      <div class="topbar">
+        <div class="nav-row">
+          <button class="menu-btn" onclick="openDrawer()"><span></span></button>
+          <div class="brand"><div class="logo">数</div><div><h2>数字乾坤</h2><small>公平透明 · 快节奏双盘博弈</small></div></div>
+          <button class="icon-btn" onclick="nav('wallet')">💎<span class="dot"></span></button>
+        </div>
+      </div>
+      <div class="home-hero">
+        <div class="home-hero-top">
+          <h1>左右双盘夺宝<span>30秒一局 · 15秒锁盘</span></h1>
+          <div class="home-hero-balance"><small>🪙 金花余额</small><b id="homeGold">52,680</b></div>
+        </div>
+        <div class="home-hero-rule">
+          <span>玩家抽佣10%</span><span>庄家抽佣20%</span><span>7种玩法</span>
+        </div>
+        <div class="home-hero-actions">
+          <button class="btn btn-white" onclick="nav('lobby')">🎯 进入大厅</button>
+          <button class="btn btn-ghost" onclick="nav('create')">🏠 开房坐庄</button>
+        </div>
+      </div>
+      <div class="home-rooms">
+        <h4>🔥 热门房间<span onclick="nav('lobby')">全部 ›</span></h4>
+        <div class="home-room-grid" id="homeRoomGrid"></div>
+      </div>
+      <div class="home-rules" onclick="nav('rules')">
+        <div class="home-rules-item"><b>1</b><span>庄家锁数<small>左右盘可相同</small></span></div>
+        <div class="home-rules-item"><b>2</b><span>玩家下注<small>只能二选一</small></span></div>
+        <div class="home-rules-item"><b>3</b><span>命中开奖<small>按赔率赔付</small></span></div>
+        <div class="home-rules-item"><b>4</b><span>自动抽佣<small>玩家10%·庄家20%</small></span></div>
+      </div>
+      <div class="home-bottom">
+        <span>🛡 结算透明</span><span>⚡ 30秒一局</span><span onclick="nav('rules')" style="cursor:pointer">📖 完整规则 ›</span>
+      </div>
+    </section>
+
+    <!-- ======== LOBBY ======== -->
+    <section class="page" id="page-lobby">
+      <div class="topbar">
+        <div class="nav-row">
+          <button class="menu-btn" onclick="openDrawer()"><span></span></button>
+          <div class="brand"><div class="logo">房</div><div><h2>房间大厅</h2><small>系统房最少 5 间，自建房最多 30 间</small></div></div>
+          <button class="icon-btn" onclick="nav('create')">＋</button>
+        </div>
+      </div>
+      <div class="chip-row" id="roomFilters">
+        <button class="chip active" onclick="filterRooms('all',this)">全部</button>
+        <button class="chip" onclick="filterRooms('system',this)">系统房</button>
+        <button class="chip" onclick="filterRooms('private',this)">自建房</button>
+        <button class="chip red" onclick="filterRooms('hot',this)">热门高倍</button>
+        <button class="chip" onclick="nav('queue')">排队/预约</button>
+      </div>
+      <div class="notice"><i>⏱</i><div><strong>本局提示</strong><p>下注阶段 30 秒，封盘后禁止下注；若自建房资金池不足，会限制本局最大参与人数。</p></div></div>
+      <div id="roomList"></div>
+    </section>
+
+    <!-- ======== GAME ======== -->
+    <section class="page" id="page-game">
+      <div class="topbar">
+        <div class="titlebar"><div class="back-btn" onclick="nav('lobby')">‹</div><div><h2 id="gameTitle">青铜房</h2><p id="gameSub">系统房 · 4个数 · 3.4倍</p></div><button class="icon-btn" onclick="nav('rules')">?</button></div>
+      </div>
+      <div class="game-stage">
+        <div class="stage-card">
+          <div class="phase-row"><span class="phase-pill" id="phaseText">下注阶段 · 选择一个方向</span><span class="timer safe" id="timerText">30s</span></div>
+          <div class="vs-area">
+            <div class="disk left" id="leftDisk" onclick="selectSide('left')"><label>左盘</label><div class="big-number"><span id="leftReveal">?</span></div><div class="small-note">命中左盘开奖号即中奖</div></div>
+            <div class="vs">VS</div>
+            <div class="disk" id="rightDisk" onclick="selectSide('right')"><label>右盘</label><div class="big-number"><span id="rightReveal">?</span></div><div class="small-note">命中右盘开奖号即中奖</div></div>
+          </div>
+          <div class="num-grid" id="numGrid"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><h3>当前房间</h3><span id="capacityText">6/20 人</span></div>
+        <div class="grid-2">
+          <div class="card stat-card"><div class="label">💰 本局资金池</div><div class="value" id="poolText">38,400</div><div class="trend">足够赔付 8 人</div></div>
+          <div class="card stat-card"><div class="label">🎯 当前赔率</div><div class="value" id="oddsText">3.4x</div><div class="trend">含本金赔付</div></div>
+        </div>
+      </div>
+      <div class="live-list">
+        <div class="section-head"><h3>实时参与</h3><span>先到先得</span></div>
+        <div id="livePlayers"></div>
+      </div>
+      <div class="bet-sheet">
+        <div class="bet-amounts" id="amountGrid"></div>
+        <div class="summary-line"><span>已选：<b id="choiceText">未选择</b></span><span>预计命中奖励：<b id="rewardText">--</b></span></div>
+        <button class="btn btn-red" style="width:100%" id="betBtn" onclick="confirmBet()" disabled>请选择盘面、数字和金额</button>
+      </div>
+    </section>
+
+    <!-- ======== BANKER ======== -->
+    <section class="page" id="page-banker">
+      <div class="topbar"><div class="titlebar"><div class="back-btn" onclick="nav('lobby')">‹</div><div><h2>庄家控制台</h2><p>15 秒内设定左右盘开奖号，锁定后不可修改</p></div><button class="icon-btn" onclick="toast('庄家不能参与其他房间下注')">!</button></div></div>
+      <div class="banker-panel">
+        <div class="alert">⚠️ 庄家设定结果后由系统锁定；若超时未设定，平台将自动随机生成开奖结果。</div>
+        <div class="lock-grid">
+          <div class="lock-card"><h4>左盘开奖数字</h4><div class="picker" id="bankerLeft"></div></div>
+          <div class="lock-card"><h4>右盘开奖数字</h4><div class="picker" id="bankerRight"></div></div>
+        </div>
+        <div class="form-card" style="margin:14px 0 0">
+          <div class="section-head"><h3>资金池安全</h3><span>自动核定</span></div>
+          <div class="grid-2">
+            <div class="card stat-card"><div class="label">房间资金池</div><div class="value">68,000</div><div class="trend">可继续开局</div></div>
+            <div class="card stat-card stat-red"><div class="label">本局人数上限</div><div class="value">12</div><div class="trend">余额不足会降额</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="small-note">最低携带金额 = 最大参与人数 × 最大下注额 × 赔率。余额不足维持最低 1 人赔付时，系统提示充值；未充值则房间关闭且 VIC/EP 消耗不退。</div>
+        </div>
+        <button class="btn btn-red" style="width:100%;margin-top:14px" id="lockBtn" onclick="lockNumbers()" disabled>请选择左右盘数字</button>
+        <button class="btn btn-light" style="width:100%;margin-top:10px" onclick="showTopupSheet()">补充房间资金池</button>
+      </div>
+    </section>
+
+    <!-- ======== CREATE ======== -->
+    <section class="page" id="page-create">
+      <div class="topbar"><div class="titlebar"><div class="back-btn" onclick="nav('lobby')">‹</div><div><h2>创建自建房</h2><p>有效期 1 小时，建房者自动成为庄家</p></div><button class="icon-btn" onclick="nav('queue')">📅</button></div></div>
+      <div class="form-card">
+        <div class="form-group"><label>游戏玩法 <em>1-7种房型</em></label><select id="createTier" onchange="calcCreateCost()"></select></div>
+        <div class="form-row">
+          <div class="form-group"><label>最小下注</label><input class="input" id="minBet" type="number" value="8" oninput="calcCreateCost()"></div>
+          <div class="form-group"><label>最大下注</label><input class="input" id="maxBet" type="number" value="4000" oninput="calcCreateCost()"></div>
+        </div>
+        <div class="form-group"><label>额外下注选项 <em>最多4个</em></label><input class="input" id="extraBets" value="8,400,2000,4000" oninput="calcCreateCost()"><div class="small-note">玩家只能选择庄家设置的金额，不允许手动输入。</div></div>
+        <div class="form-row">
+          <div class="form-group"><label>最大参与人数</label><select id="maxPlayers" onchange="calcCreateCost()"><option>5</option><option>10</option><option selected>15</option><option>20</option></select></div>
+          <div class="form-group"><label>可补充金额</label><input class="input" id="autoTopup" value="12000" oninput="calcCreateCost()"></div>
+        </div>
+        <div class="form-group"><label>房间名称</label><input class="input" value="我的乾坤房" placeholder="请输入房间名称"></div>
+        <div class="switch-row" onclick="toggleAgree()"><div class="check on" id="agreeCheck">✓</div><div><strong>同意平台超时代设定开奖数字</strong><p>若庄家 15 秒内没有完成锁定，平台将自动随机生成左右盘结果。勾选后才可创建。</p></div></div>
+        <div class="cost-card"><div class="section-head" style="margin-bottom:10px"><h3>建房成本预估</h3><span>实时计算</span></div>
+          <div class="cost-grid"><div><span>最低携带金额</span><b id="carryCost">204,000 金花</b></div><div><span>开房消耗</span><b id="openCost">2.5VIC + 200EP</b></div></div>
+          <div class="small-note">公式：最大参与人数 × 最大下注额 × 房间赔率。</div>
+        </div>
+        <button class="btn btn-green" style="width:100%;margin-top:14px" id="createBtn" onclick="showCreateSuccess()">确认创建房间</button>
+      </div>
+    </section>
+
+    <!-- ======== QUEUE ======== -->
+    <section class="page" id="page-queue">
+      <div class="topbar"><div class="titlebar"><div class="back-btn" onclick="nav('create')">‹</div><div><h2>排队与预约</h2><p>自建房满 30 间后启用，MB 会员优先</p></div><button class="icon-btn" onclick="toast('预约功能：选择未来时间开房')">?</button></div></div>
+      <div class="section">
+        <div class="grid-2">
+          <div class="card stat-card"><div class="label">当前自建房</div><div class="value">30/30</div><div class="trend">已满，可排队</div></div>
+          <div class="card stat-card"><div class="label">我的排队</div><div class="value">#08</div><div class="trend">MB预计 12 分钟</div></div>
+        </div>
+      </div>
+      <div class="form-card"><div class="section-head"><h3>快速排队</h3><span>先到先得</span></div><p class="small-note">按申请顺序等待建房，MB 会员拥有优先队列；轮到后需在 3 分钟内确认，否则自动顺延。</p><button class="btn btn-red" style="width:100%;margin-top:12px" onclick="toast('已加入排队：当前第 8 位')">加入排队</button></div>
+      <div class="form-card"><div class="section-head"><h3>预约开房</h3><span>日期/时间</span></div><div class="form-row"><input class="input" type="date"><input class="input" type="time" value="20:00"></div><button class="btn btn-green" style="width:100%;margin-top:12px" onclick="toast('预约成功：系统将在开房前提醒')">确认预约</button></div>
+    </section>
+
+    <!-- ======== WALLET ======== -->
+    <section class="page" id="page-wallet">
+      <div class="topbar"><div class="nav-row"><button class="menu-btn" onclick="openDrawer()"><span></span></button><div class="brand"><div class="logo">钱</div><div><h2>钱包中心</h2><small>金花 / VIC / EP / UMDT</small></div></div></div></div>
+      <div class="wallet-hero"><span style="font-size:14px;font-weight:800;color:rgba(255,255,255,.95);display:flex;align-items:center;gap:6px">🪙 可用金花余额</span><h2>52,680</h2>
+        <p style="font-size:13px;color:rgba(255,255,255,.88);margin-top:4px"><b style="color:#FFD700">冻结中 4000 金花</b> · 今日输返 2.2 VIC · 1 UMDT = 4 金花</p>
+        <div class="wallet-actions"><button onclick="toast('充值入口')">充值</button><button onclick="toast('提现入口')">提现</button><button onclick="showExchangeSheet()">💱 兑换</button></div>
+      </div>
+      <div class="section">
+        <div class="grid-2">
+          <div class="card stat-card"><div class="label">💎 VIC</div><div class="value">1,280</div><div class="trend">可用于开房</div></div>
+          <div class="card stat-card"><div class="label">⭐ EP</div><div class="value">3,420</div><div class="trend">开房消耗</div></div>
+        </div>
+        <div class="grid-2" style="margin-top:12px">
+          <div class="card stat-card"><div class="label">🅿️ UMDT</div><div class="value">8,500</div><div class="trend">1 UMDT = 4 金花</div></div>
+          <div class="card stat-card stat-red"><div class="label">❄️ 冻结中</div><div class="value">4000</div><div class="trend">房间资金池 · 金花</div></div>
+        </div>
+      </div>
+      <div class="section-head" style="padding:0 16px"><h3>资金流向</h3><span onclick="showAllFlow()" style="cursor:pointer">全部 ›</span></div>
+      <div class="flow">
+        <div class="flow-item"><div class="flow-icon">❄️</div><div class="flow-text"><b>青铜房下注冻结</b><p>左盘 2 · 400 金花 · 等待开奖</p></div><div class="flow-amount minus">-400</div></div>
+        <div class="flow-item"><div class="flow-icon">🎯</div><div class="flow-text"><b>命中奖励到账</b><p>白银房 · 奖金 1,512 · 抽佣 168</p></div><div class="flow-amount plus">+1,512</div></div>
+        <div class="flow-item"><div class="flow-icon">🏠</div><div class="flow-text"><b>创建自建房</b><p>消耗 3 VIC + 700 EP</p></div><div class="flow-amount minus">-3 VIC</div></div>
+      </div>
+    </section>
+
+    <!-- ======== RANK ======== -->
+    <section class="page" id="page-rank">
+      <div class="topbar"><div class="nav-row"><button class="menu-btn" onclick="openDrawer()"><span></span></button><div class="brand"><div class="logo">榜</div><div><h2>排行榜</h2><small>玩家收益 / 庄家收益 / 房间热度</small></div></div><button class="icon-btn" onclick="toast('榜单每 5 分钟刷新')">↻</button></div></div>
+      <div class="chip-row"><button class="chip active">玩家收益</button><button class="chip">庄家收益</button><button class="chip">房间热度</button></div>
+      <div id="rankList"></div>
+    </section>
+
+    <!-- ======== RULES ======== -->
+    <section class="page" id="page-rules">
+      <div class="topbar"><div class="titlebar"><div class="back-btn" onclick="nav('home')">‹</div><div><h2>规则说明</h2><p>简单直接，一局就懂</p></div><button class="icon-btn" onclick="toast('可接入客服解释规则')">💬</button></div></div>
+      <div class="rules-card"><h4>🎮 基础玩法</h4><p>庄家先设定左盘和右盘的开奖数字，数字范围跟房间档位有关；玩家只能选择左盘或右盘中的一个数字下注。命中所选方向的开奖号即中奖。</p></div>
+      <div class="rules-card"><h4>🏠 房间类型</h4><ul><li>系统房：24 小时开放，默认 7 种玩法各 1 间，最多 20 名玩家。</li><li>自建房：有效期 1 小时，可自定义玩法、人数、下注金额，建房者自动成为庄家。</li><li>自建房最多 30 间，满房后支持排队或预约。</li></ul></div>
+      <div class="rules-card"><h4>💰 下注与金额</h4><ul><li>下注时间 30 秒，封盘后禁止下注。</li><li>系统房金额：8 / 400 / 2000 / 4000 金花。</li><li>自建房金额由庄家设置，最多 4 个选项，玩家不可手动输入。</li></ul></div>
+      <div class="rules-card"><h4>🧮 结算公式</h4><div class="formula">玩家收益 = 下注本金 × 最终赔率<br>玩家中奖抽佣 = 玩家收益 × 10%<br>庄家收益 = 本局总下注 - 本局总赔付<br>庄家盈利抽佣 = 庄家收益 × 20%</div></div>
+      <div class="rules-card"><h4>🛡 风险与限制</h4><ul><li>庄家在房间有效期内不能参与其他所有房间下注。</li><li>自建房资金池不足时，系统会提示充值，不充值则关闭房间。</li><li>房间到期时若正在游戏，会完成本局后再关闭。</li><li>奖励由庄家承担，房间结束后统一结算，并受单房/单日上限限制。</li></ul></div>
+    </section>
+
+  </div>
+</div>
+
+  <div class="modal-layer" id="modal"><div class="sheet" id="modalSheet"></div></div>
+  <div class="toast" id="toast">提示</div>
+</main>
+
+<script>
+const tiers=[
+  {id:'bronze',name:'青铜房',nums:4,odds:3,mb:'4VIC + 600EP',non:'8VIC + 1200EP',type:'system',players:6,max:20,hot:false},
+  {id:'silver',name:'白银房',nums:5,odds:4,mb:'5VIC + 700EP',non:'10VIC + 1400EP',type:'system',players:12,max:20,hot:false},
+  {id:'gold',name:'黄金房',nums:6,odds:5,mb:'6VIC + 800EP',non:'12VIC + 1600EP',type:'system',players:17,max:20,hot:true},
+  {id:'platinum',name:'铂金房',nums:7,odds:6,mb:'6VIC + 900EP',non:'12VIC + 1800EP',type:'system',players:8,max:20,hot:false},
+  {id:'diamond',name:'钻石房',nums:8,odds:6.8,mb:'7VIC + 1000EP',non:'14VIC + 2000EP',type:'system',players:19,max:20,hot:true},
+  {id:'king',name:'王者房',nums:9,odds:7.6,mb:'8VIC + 1100EP',non:'16VIC + 2200EP',type:'system',players:13,max:20,hot:true},
+  {id:'supreme',name:'至尊房',nums:10,odds:8.5,mb:'8VIC + 1200EP',non:'16VIC + 2400EP',type:'system',players:10,max:20,hot:true},
+  {id:'private1',name:'高手过招',nums:6,odds:5.1,mb:'庄家自设',non:'庄家自设',type:'private',players:4,max:10,hot:false,banker:'张三'},
+  {id:'private2',name:'晚八点冲榜房',nums:8,odds:6.8,mb:'庄家自设',non:'庄家自设',type:'private',players:14,max:15,hot:true,banker:'李四'}
+];
+let currentRoom=tiers[0],selectedSide=null,selectedNum=null,selectedAmount=null,agree=true,bankerLeft=null,bankerRight=null,timer=null,timeLeft=30;
+const $=id=>document.getElementById(id);
+function nav(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=$('page-'+name); if(page) page.classList.add('active');
+  document.querySelectorAll('.drawer-item').forEach(d=>d.classList.toggle('active',d.dataset.page===name));
+  if(name==='lobby') renderRooms('all');
+  if(name==='rank') renderRanks();
+  if(name==='banker') renderBankerPickers();
+  if(name==='create') initCreate();
+  closeDrawer();
+}
+function openDrawer(){$('drawer').classList.add('show');$('drawerOverlay').classList.add('show')}
+function closeDrawer(){$('drawer').classList.remove('show');$('drawerOverlay').classList.remove('show')}
+(function initDrawer(){
+  const items=[
+    {page:'home',icon:'🏠',label:'首页'},
+    {page:'lobby',icon:'🎯',label:'房间大厅'},
+    {page:'banker',icon:'👑',label:'庄家控制台'},
+    {page:'rank',icon:'🏆',label:'排行榜'},
+    {page:'wallet',icon:'💎',label:'钱包中心'},
+  ];
+  $('drawerMenu').innerHTML=items.map(i=>`<div class="drawer-item ${i.page==='home'?'active':''}" data-page="${i.page}" onclick="nav('${i.page}')"><i>${i.icon}</i>${i.label}</div>`).join('');
+  document.addEventListener('click',e=>{if(e.target.id==='drawerOverlay')closeDrawer()});
+})();
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),1800)}
+const announceTemplates=[
+  {user:'小明',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'老王',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'阿强',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'大壮',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'小丽',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'阿花',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'龙哥',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+  {user:'Yuki',rooms:['青铜房','白银房','黄金房','铂金房','钻石房','王者房','至尊房'],odds:['3倍','4倍','5倍','6倍','6.8倍','7.6倍','8.5倍']},
+];
+function genAnnounce(){
+  const t=announceTemplates[Math.floor(Math.random()*announceTemplates.length)];
+  const ri=Math.floor(Math.random()*t.rooms.length);
+  const gold=Math.floor(Math.random()*50000+400);
+  return t.user+'在'+t.rooms[ri]+'赢了'+t.odds[ri]+'奖励，共'+gold.toLocaleString()+'金花';
+}
+function initHomeRooms(){
+  const rooms=tiers.filter(r=>r.type==='system').slice(0,6);
+  $('homeRoomGrid').innerHTML=rooms.map(r=>`<div class="home-room-item ${r.hot?'hot':''}" onclick="enterRoom('${r.id}')">
+    <strong>${r.name}</strong><small>0-${r.nums-1}个数字</small>
+    <div class="odds-tag">${r.odds}x</div>
+    <div class="players">👤 ${r.players}/${r.max}在线</div>
+  </div>`).join('');
+}
+initHomeRooms();
+function initAnnouncements(){
+  function build(msgs){
+    return msgs.map(m=>'<span><i>📢</i>'+m+'</span>').join('');
+  }
+  const msgs=[];
+  for(let i=0;i<10;i++) msgs.push(genAnnounce());
+  $('announceTrack').innerHTML=build(msgs)+build(msgs);
+  setInterval(()=>{
+    const ns=[];
+    for(let i=0;i<10;i++) ns.push(genAnnounce());
+    $('announceTrack').innerHTML=build(ns)+build(ns);
+  },30000);
+}
+initAnnouncements();
+function filterRooms(type,el){
+  document.querySelectorAll('#roomFilters .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');renderRooms(type);
+}
+function renderRooms(type='all'){
+  const list=$('roomList');
+  const data=tiers.filter(r=>type==='all'||(type==='hot'?r.hot:r.type===type));
+  list.innerHTML=data.map(r=>`<div class="room-card ${r.hot?'hot':''}">
+    <div class="room-top"><div><div class="room-name">${r.name}</div><div class="room-sub">${r.type==='system'?'系统房 · 24小时开放':'自建房 · 庄家 '+r.banker+' · 剩余 42分钟'}</div></div><span class="badge ${r.hot?'red':r.type==='private'?'gold':''}">${r.hot?'🔥 热门':r.type==='system'?'🏛 系统':'🏠 自建'}</span></div>
+    <div class="room-meta"><div class="meta-box"><b>0-${r.nums-1}</b><span>数字范围</span></div><div class="meta-box"><b>${r.odds}x</b><span>赔率含本金</span></div><div class="meta-box"><b>${r.players}/${r.max}</b><span>参与人数</span></div><div class="meta-box"><b>${r.type==='system'?'20':'1h'}</b><span>${r.type==='system'?'人数上限':'有效期'}</span></div></div>
+    <div class="capacity"><div style="flex:1"><div class="avatars"><span class="av">😎</span><span class="av">🤠</span><span class="av">🧠</span><span class="av">🐲</span></div><div class="progress ${r.hot?'red':''}"><b style="width:${Math.min(100,r.players/r.max*100)}%"></b></div></div><small>${r.players>=r.max?'已满，可旁观':'可参与下注'}</small><button class="btn ${r.hot?'btn-red':'btn-green'}" onclick="enterRoom('${r.id}')">进入</button></div>
+  </div>`).join('');
+}
+function enterRoom(id){
+  currentRoom=tiers.find(r=>r.id===id)||tiers[0];selectedSide=null;selectedNum=null;selectedAmount=null;
+  $('gameTitle').textContent=currentRoom.name;
+  $('gameSub').textContent=`${currentRoom.type==='system'?'系统房':'自建房'} · ${currentRoom.nums}个数 · ${currentRoom.odds}倍`;
+  $('poolText').textContent=(currentRoom.max*4000*currentRoom.odds).toLocaleString();
+  $('oddsText').textContent=currentRoom.odds+'x';
+  $('capacityText').textContent=`${currentRoom.players}/${currentRoom.max} 人`;
+  renderNumbers();renderAmounts();renderLivePlayers();resetReveal();
+  nav('game');startCountdown();
+}
+function renderNumbers(){
+  const nums=Array.from({length:currentRoom.nums},(_,i)=>i);
+  $('numGrid').innerHTML=nums.map(n=>`<button class="num ${selectedNum===n?(selectedSide==='left'?'left-active':'active'):''}" onclick="selectNum(${n})">${n}</button>`).join('');
+}
+function renderAmounts(){
+  const arr=currentRoom.type==='system'?[8,400,2000,4000]:[8,400,2000,4000];
+  $('amountGrid').innerHTML=arr.map(a=>`<button class="amount ${selectedAmount===a?'active':''}" onclick="selectAmount(${a})">${a} 金花</button>`).join('');
+}
+function renderLivePlayers(){
+  const names=['小明','老王','阿强','大壮','小丽','阿花','龙哥'];
+  $('livePlayers').innerHTML=names.slice(0,Math.min(currentRoom.players,7)).map((n,i)=>`<div class="live-item"><strong><span class="live-dot"></span>${n}</strong><span>${i%2?'右盘':'左盘'} ${i%currentRoom.nums} · ${[8,400,2000,4000][i%4]} 金花</span></div>`).join('');
+}
+function selectSide(side){selectedSide=side;$('leftDisk').classList.toggle('selected',side==='left');$('rightDisk').classList.toggle('selected',side==='right');renderNumbers();updateChoice();}
+function selectNum(n){selectedNum=n;renderNumbers();updateChoice();}
+function selectAmount(a){selectedAmount=a;renderAmounts();updateChoice();}
+function updateChoice(){
+  const ok=selectedSide&&selectedNum!==null&&selectedAmount;
+  $('choiceText').textContent=selectedSide?`${selectedSide==='left'?'左盘':'右盘'} ${selectedNum??'-'} · ${selectedAmount??'-'} 金花`:'未选择';
+  $('rewardText').textContent=selectedAmount?Math.floor(selectedAmount*currentRoom.odds*0.9).toLocaleString()+' 金花':'--';
+  $('betBtn').disabled=!ok;$('betBtn').textContent=ok?`确认下注 ${selectedAmount} 金花`:'请选择盘面、数字和金额';
+}
+function resetReveal(){$('leftReveal').textContent='?';$('rightReveal').textContent='?';$('phaseText').textContent='下注阶段 · 选择一个方向';}
+function startCountdown(){
+  clearInterval(timer);timeLeft=30;$('timerText').textContent='30s';$('timerText').classList.add('safe');
+  timer=setInterval(()=>{timeLeft--;$('timerText').textContent=timeLeft+'s';if(timeLeft<=5){$('timerText').classList.remove('safe');$('phaseText').textContent='即将封盘 · 请尽快确认'}if(timeLeft<=0){clearInterval(timer);settleRound(false)}},1000);
+}
+function confirmBet(){toast('下注成功，资金已冻结，等待开奖');$('betBtn').textContent='✅ 已下注 · 等待开奖';$('betBtn').disabled=true;setTimeout(()=>settleRound(true),1100);}
+function settleRound(force){
+  clearInterval(timer);
+  const l=bankerLeft??Math.floor(Math.random()*currentRoom.nums),r=bankerRight??Math.floor(Math.random()*currentRoom.nums);
+  $('leftReveal').textContent=l;$('rightReveal').textContent=r;$('timerText').textContent='封盘';$('phaseText').textContent='开奖完成 · 自动结算';
+  const win=selectedSide&&selectedNum!==null&&((selectedSide==='left'&&selectedNum===l)||(selectedSide==='right'&&selectedNum===r));
+  const gross=selectedAmount?Math.floor(selectedAmount*currentRoom.odds):0,fee=Math.floor(gross*.1),net=gross-fee;
+  showResult(win,l,r,gross,fee,net);
+}
+function showResult(win,l,r,gross,fee,net){
+  $('modalSheet').className='sheet center';
+  $('modalSheet').innerHTML=`<div class="result-emoji">${win?'🎉':'💸'}</div><h3 style="text-align:center">${win?'恭喜命中！':'本局未命中'}</h3><p style="text-align:center">左盘开奖号 ${l} · 右盘开奖号 ${r}</p>
+    <div class="result-list"><div><span>我的选择</span><b>${selectedSide?selectedSide==='left'?'左盘':'右盘':'未下注'} ${selectedNum??'-'}</b></div>
+    <div><span>下注金额</span><b>${selectedAmount??0} 金花</b></div>
+    <div><span>赔率</span><b>${currentRoom.odds}x</b></div>
+    <div><span>平台抽佣</span><b>${win?fee:0} 金花</b></div>
+    <div><span>实际到账</span><b style="color:${win?'var(--green-dark)':'var(--red)'}">${win?net:0} 金花</b></div></div>
+    <div class="sheet-actions"><button class="btn btn-light" onclick="closeModal();nav('lobby')">返回大厅</button><button class="btn btn-green" onclick="closeModal();enterRoom('${currentRoom.id}')">继续下一局</button></div>`;
+  openModal();
+}
+function openModal(){$('modal').classList.add('show')}
+function closeModal(){$('modal').classList.remove('show')}
+$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+function initCreate(){const s=$('createTier');if(!s.innerHTML)s.innerHTML=tiers.slice(0,7).map((t,i)=>`<option value="${i}">${i+1} · ${t.nums}个数（0-${t.nums-1}）${t.odds}倍 — ${t.name}</option>`).join('');calcCreateCost()}
+function calcCreateCost(){const t=tiers[+$('createTier').value||0],maxBet=+$('maxBet').value||0,maxPlayers=+$('maxPlayers').value||0;$('carryCost').textContent=Math.floor(maxPlayers*maxBet*t.odds).toLocaleString()+' 金花';$('openCost').textContent=t.mb}
+function toggleAgree(){agree=!agree;$('agreeCheck').classList.toggle('on',agree);$('agreeCheck').textContent=agree?'✓':'';$('createBtn').disabled=!agree}
+function showCreateSuccess(){
+  $('modalSheet').className='sheet center';
+  $('modalSheet').innerHTML='<div class="result-emoji">🏠</div><h3 style="text-align:center">房间创建成功</h3><p style="text-align:center">你已成为庄家。系统已划入最低携带金额到房间资金池，房间有效期 1 小时。</p><div class="sheet-actions"><button class="btn btn-light" onclick="closeModal();nav(\'lobby\')">稍后设置</button><button class="btn btn-red" onclick="closeModal();nav(\'banker\')">去锁定开奖号</button></div>';
+  openModal();
+}
+function renderBankerPickers(){
+  const nums=Array.from({length:currentRoom?.nums||6},(_,i)=>i);
+  $('bankerLeft').innerHTML=nums.map(n=>`<button class="pick ${bankerLeft===n?'active':''}" onclick="setBanker('left',${n})">${n}</button>`).join('');
+  $('bankerRight').innerHTML=nums.map(n=>`<button class="pick green ${bankerRight===n?'active':''}" onclick="setBanker('right',${n})">${n}</button>`).join('');
+  updateLockBtn();
+}
+function setBanker(side,n){if(side==='left')bankerLeft=n;else bankerRight=n;renderBankerPickers()}
+function updateLockBtn(){const ok=bankerLeft!==null&&bankerRight!==null;$('lockBtn').disabled=!ok;$('lockBtn').textContent=ok?`锁定开奖结果：左${bankerLeft} · 右${bankerRight}`:'请选择左右盘数字'}
+function lockNumbers(){toast('开奖结果已锁定，本局不可修改');setTimeout(()=>enterRoom(currentRoom.id),500)}
+function showExchangeSheet(){
+  $('modalSheet').className='sheet center';
+  $('modalSheet').innerHTML=`<h3 style="text-align:center">💱 UMDT 兑换金花</h3><p style="text-align:center">兑换比例：1 UMDT = 4 金花</p>
+    <div class="form-group" style="margin-top:16px"><label>兑换数量（UMDT）</label>
+    <input class="input" id="exchangeInput" type="number" value="100" min="1" max="8500" oninput="updateExchangePreview()">
+    <div class="small-note" style="margin-top:6px">可用 UMDT：8,500</div></div>
+    <div class="cost-card" style="margin-top:12px"><div class="section-head" style="margin-bottom:6px"><h3>兑换预览</h3><span>实时</span></div>
+    <div class="cost-grid"><div><span>消耗 UMDT</span><b id="exCost">100</b></div><div><span>获得金花</span><b id="exGet" style="color:var(--green-dark)">400</b></div></div></div>
+    <div class="sheet-actions"><button class="btn btn-light" onclick="closeModal()">取消</button><button class="btn btn-green" onclick="confirmExchange()">确认兑换</button></div>`;
+  openModal();
+}
+function updateExchangePreview(){
+  const val=parseInt($('exchangeInput').value)||0;
+  $('exCost').textContent=val;$('exGet').textContent=val*4;
+}
+function confirmExchange(){
+  const val=parseInt($('exchangeInput').value)||0;
+  closeModal();toast('✅ 兑换成功：消耗 '+val+' UMDT，获得 '+(val*4)+' 金花');
+}
+function showAllFlow(){
+  $('modalSheet').className='sheet';
+  $('modalSheet').innerHTML=`<h3>全部资金流向</h3><p>最近 30 条记录</p>
+    <div class="result-list"><div><span>白银房 · 命中奖励</span><b style="color:var(--green-dark)">+1,512 金花</b></div>
+    <div><span>青铜房 · 下注冻结</span><b style="color:var(--red)">-400 金花</b></div>
+    <div><span>创建自建房 · 消耗</span><b style="color:var(--red)">-3 VIC</b></div>
+    <div><span>至尊房 · 命中奖励</span><b style="color:var(--green-dark)">+6,800 金花</b></div>
+    <div><span>钻石房 · 下注未中</span><b style="color:var(--red)">-2,000 金花</b></div>
+    <div><span>王者房 · 庄家收益</span><b style="color:var(--green-dark)">+7,500 金花</b></div>
+    <div><span>UMDT 兑换金花</span><b style="color:var(--green-dark)">+400 金花</b></div>
+    <div><span>铂金房 · 下注冻结</span><b style="color:var(--red)">-2,000 金花</b></div>
+    <div><span>黄金房 · 命中奖励</span><b style="color:var(--green-dark)">+5,100 金花</b></div>
+    <div><span>系统返水 · 今日输返</span><b style="color:var(--green-dark)">+1.2 VIC</b></div></div>
+    <button class="btn btn-light" style="width:100%;margin-top:14px" onclick="closeModal()">关闭</button>`;
+  openModal();
+}
+function showTopupSheet(){
+  $('modalSheet').className='sheet';
+  $('modalSheet').innerHTML='<h3>补充房间资金池</h3><p>当资金池不足以支撑下一局最大赔付时，需要充值后继续开局。</p><div class="form-group" style="margin-top:12px"><label>补充金额</label><input class="input" value="12000 金花"></div><div class="sheet-actions"><button class="btn btn-light" onclick="closeModal()">取消</button><button class="btn btn-green" onclick="closeModal();toast(\'资金池补充成功\')">确认补充</button></div>';
+  openModal();
+}
+function renderRanks(){
+  const data=[['乾坤小霸王','今日净收益 +12,800','98.6%'],['左盘狙击手','今日净收益 +9,420','91.2%'],['老庄家A','庄家收益 +7,700','88.1%'],['好运锦鲤','连续命中 4 局','76.4%'],['稳健玩家','低风险房间胜率高','68.9%']];
+  $('rankList').innerHTML=data.map((r,i)=>`<div class="rank-item"><div class="rank-no ${i<3?'top':''}">${i+1}</div><div class="rank-main"><b>${r[0]}</b><p>${r[1]}</p></div><div class="rank-score"><span>胜率</span><b>${r[2]}</b></div></div>`).join('');
+}
+renderRooms();initCreate();renderRanks();renderBankerPickers();
+</script>
+</body>
+</html>

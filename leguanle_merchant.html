@@ -1,0 +1,2989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乐签乐KUMOO · 商家后台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#FAF8F5;
+--bg2:#F4F0E8;
+--text:#1A1A1A;
+--text2:#6B6560;
+--text3:#A09890;
+--accent:#D93A2E;
+--accent2:#E85C50;
+--gold:#C4922A;
+--gold2:#D4A843;
+--border:#E8E2D8;
+--white:#FFFFFF;
+--shadow:0 2px 20px rgba(0,0,0,0.06);
+--shadow2:0 8px 40px rgba(0,0,0,0.10);
+--radius:14px;
+}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+.dm{font-family:'DM Mono',monospace}
+
+/* ===== LOGIN PAGE ===== */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.login-page::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(217,58,46,0.06) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.login-page::after{content:'';position:absolute;bottom:-100px;left:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(196,146,42,0.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.login-card{position:relative;z-index:1;width:400px;padding:48px 44px;border-radius:var(--radius);background:var(--white);box-shadow:var(--shadow2);border:1px solid var(--border)}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.login-logo-mark{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.login-logo-mark svg{width:26px;height:26px;fill:#fff}
+.login-logo-text{display:flex;flex-direction:column}
+.login-logo-name{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;line-height:1.1}
+.login-logo-sub{font-size:11px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace}
+.login-title{font-size:22px;font-weight:600;margin:28px 0 6px;color:var(--text)}
+.login-desc{font-size:13px;color:var(--text2);margin-bottom:32px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:0.5px}
+.form-group input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Noto Sans SC',sans-serif;color:var(--text);background:var(--bg);transition:all .2s;outline:none}
+.form-group input:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(217,58,46,0.08)}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+.verify-btn{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-size:12px;font-family:'DM Mono',monospace;color:var(--accent);cursor:pointer;transition:all .2s;font-weight:500;white-space:nowrap}
+.verify-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.login-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px;letter-spacing:0.5px}
+.login-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(217,58,46,0.25)}
+.login-btn:active{transform:translateY(0)}
+.login-footer{display:flex;justify-content:space-between;margin-top:20px;font-size:12px;color:var(--text3)}
+.login-footer a{color:var(--accent);text-decoration:none}
+.login-footer a:hover{text-decoration:underline}
+.login-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text3);font-size:12px}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-wechat{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-size:14px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.login-wechat:hover{border-color:var(--accent);color:var(--text)}
+.login-wechat svg{width:20px;height:20px}
+
+/* ===== ADMIN LAYOUT ===== */
+.admin{display:none;min-height:100vh}
+.admin.active{display:block}
+.admin-wrap{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:220px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.sidebar-logo{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sidebar-logo svg{width:22px;height:22px;fill:#fff}
+.sidebar-brand{display:flex;flex-direction:column;overflow:hidden}
+.sidebar-brand-name{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.sidebar-brand-sub{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase}
+.sidebar-nav{flex:1;overflow-y:auto;padding:16px 12px}
+.nav-section{margin-bottom:24px}
+.nav-section-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;color:var(--text2);font-size:13px;font-weight:500;user-select:none}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.8}
+.nav-item .nav-badge{margin-left:auto;background:var(--accent);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-family:'DM Mono',monospace;display:inline-flex;align-items:center;justify-content:center;min-width:18px;box-sizing:border-box}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.25);color:#fff}
+.sidebar-footer{padding:16px 12px;border-top:1px solid var(--border)}
+.sidebar-merchant{background:var(--bg);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px}
+.merchant-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;font-family:'DM Mono',monospace}
+.merchant-info{flex:1;overflow:hidden}
+.merchant-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.merchant-level{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:4px}
+.merchant-level::before{content:'Lv.3';font-weight:500}
+
+/* Main Content */
+.main{flex:1;margin-left:220px;display:flex;flex-direction:column;min-height:100vh}
+.main-header{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-title{font-size:16px;font-weight:600;color:var(--text)}
+.header-date{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.header-right{display:flex;align-items:center;gap:16px}
+.header-balance{background:var(--bg);border-radius:10px;padding:8px 16px;display:flex;align-items:center;gap:8px}
+.header-balance-label{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.header-balance-value{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace}
+.header-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.header-btn-outline{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.header-btn-outline:hover{background:var(--border)}
+.header-btn-primary{background:var(--accent);color:#fff}
+.header-btn-primary:hover{background:var(--accent2)}
+.header-btn svg{width:14px;height:14px}
+.main-content{padding:28px;flex:1}
+
+/* ===== DASHBOARD ===== */
+.page{display:none}
+.page.active{display:block}
+.page-title{margin-bottom:24px}
+.page-title h1{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.page-title p{font-size:13px;color:var(--text3)}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border);transition:all .2s;cursor:default}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.stat-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.stat-card-label{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.stat-card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.stat-card-icon svg{width:18px;height:18px}
+.stat-card-value{font-size:28px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;letter-spacing:-1px;line-height:1}
+.stat-card-value span{font-size:16px;color:var(--text2);font-weight:400}
+.stat-card-change{margin-top:10px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:4px}
+.stat-card-change.up{color:#2EAB5A}
+.stat-card-change.down{color:var(--accent)}
+.stat-card-change::before{content:'';display:inline-block;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent}
+.stat-card-change.up::before{border-bottom:5px solid #2EAB5A}
+.stat-card-change.down::before{border-top:5px solid var(--accent)}
+
+/* Quick Actions */
+.quick-actions{margin-bottom:28px}
+.section-label{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.quick-actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.qa-card{background:var(--white);border-radius:10px;padding:18px 16px;border:1px solid var(--border);cursor:pointer;transition:all .2s;text-align:center;box-shadow:var(--shadow)}
+.qa-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2);border-color:var(--accent)}
+.qa-icon{width:40px;height:40px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all .2s}
+.qa-card:hover .qa-icon{background:rgba(217,58,46,0.08)}
+.qa-icon svg{width:20px;height:20px;color:var(--accent)}
+.qa-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.qa-desc{font-size:11px;color:var(--text3)}
+
+/* Product Zone Cards */
+.zone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px}
+.zone-card{background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .2s}
+.zone-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.zone-card-tag{position:absolute;top:16px;right:16px;font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;font-weight:500}
+.zone-card-tag.red{background:rgba(217,58,46,0.1);color:var(--accent)}
+.zone-card-tag.gold{background:rgba(196,146,42,0.1);color:var(--gold)}
+.zone-card-tag.green{background:rgba(46,171,90,0.1);color:#2EAB5A}
+.zone-card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.zone-card-icon svg{width:22px;height:22px}
+.zone-card h3{font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.zone-card p{font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.5}
+.zone-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:16px;border-top:1px solid var(--border)}
+.zone-stat{text-align:center}
+.zone-stat-val{font-size:16px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace}
+.zone-stat-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.zone-card-btn{margin-top:16px;width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:transparent;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;transition:all .15s;font-family:'Noto Sans SC',sans-serif}
+.zone-card-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Recent Orders Table */
+.table-card{background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.table-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.table-card-title{font-size:15px;font-weight:600;color:var(--text)}
+.table-card-link{font-size:12px;color:var(--accent);cursor:pointer;text-decoration:none;font-family:'DM Mono',monospace}
+.table-card-link:hover{text-decoration:underline}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;padding:10px 12px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:500}
+.data-table td{padding:12px 12px;font-size:13px;color:var(--text);border-bottom:1px solid rgba(232,226,216,0.5);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(250,248,245,0.6)}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;font-family:'DM Mono',monospace}
+.status-badge.green{background:rgba(46,171,90,0.1);color:#2EAB5A}
+.status-badge.yellow{background:rgba(196,146,42,0.1);color:var(--gold)}
+.status-badge.red{background:rgba(217,58,46,0.1);color:var(--accent)}
+.status-badge.gray{background:rgba(160,152,144,0.1);color:var(--text3)}
+.table-id{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)}
+
+/* ===== PRODUCTS PAGE ===== */
+.products-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.products-filters{display:flex;align-items:center;gap:10px}
+.filter-tab{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:var(--white);color:var(--text2);border:1px solid var(--border);transition:all .15s;font-family:'Noto Sans SC',sans-serif}
+.filter-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-tab:hover:not(.active){background:var(--bg)}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px;width:220px}
+.search-box input{border:none;outline:none;font-size:13px;font-family:'Noto Sans SC',sans-serif;background:transparent;flex:1;color:var(--text)}
+.search-box svg{width:15px;height:15px;color:var(--text3);flex-shrink:0}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.product-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:all .2s}
+.product-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.product-img{height:160px;background:var(--bg2);display:flex;align-items:center;justify-content:center;position:relative}
+.product-img-text{font-size:40px;opacity:.3;color:var(--text3)}
+.product-img .product-zone-tag{position:absolute;top:10px;left:10px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.product-img .product-zone-tag.爆金{background:rgba(217,58,46,0.9);color:#fff}
+.product-img .product-zone-tag.鉴宝{background:rgba(196,146,42,0.9);color:#fff}
+.product-img .product-status{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%}
+.product-img .product-status.online{background:#2EAB5A;box-shadow:0 0 0 3px rgba(46,171,90,0.2)}
+.product-img .product-status.offline{background:var(--text3)}
+.product-info{padding:16px}
+.product-name{font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4}
+.product-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.product-price{font-size:16px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace}
+.product-price span{font-size:11px;font-weight:400;color:var(--text3);margin-left:4px}
+.product-participants{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px}
+.product-participants svg{width:13px;height:13px}
+.product-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.5px}
+.tag.solo{background:rgba(217,58,46,0.1);color:var(--accent)}
+.tag.free{background:rgba(46,171,90,0.1);color:#2EAB5A}
+.tag.auth{background:rgba(196,146,42,0.1);color:var(--gold)}
+.product-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.product-actions button{flex:1;padding:7px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'Noto Sans SC',sans-serif;transition:all .15s}
+.btn-edit{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-edit:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-del{background:rgba(217,58,46,0.08);color:var(--accent)}
+.btn-del:hover{background:var(--accent);color:#fff}
+
+/* ===== ORDERS PAGE ===== */
+.filter-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-select{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Noto Sans SC',sans-serif;background:var(--white);color:var(--text);cursor:pointer;outline:none}
+.filter-select:focus{border-color:var(--accent)}
+.date-range{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.date-range input{border:none;outline:none;font-size:12px;font-family:'DM Mono',monospace;background:transparent;color:var(--text)}
+.date-range span{color:var(--text3);font-size:12px}
+.order-table-wrap{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.order-table{width:100%;border-collapse:collapse}
+.order-table th{padding:12px 14px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--border);text-align:left;background:var(--bg)}
+.order-table td{padding:14px;font-size:13px;border-bottom:1px solid rgba(232,226,216,0.4);vertical-align:middle}
+.order-table tr:last-child td{border-bottom:none}
+.order-table tr:hover td{background:rgba(250,248,245,0.5)}
+.order-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
+.order-product{display:flex;align-items:center;gap:10px}
+.order-product-img{width:40px;height:40px;background:var(--bg2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:.4}
+.order-user{font-weight:500}
+.order-phone{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)}
+.order-action-btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:var(--accent);color:#fff;font-family:'Noto Sans SC',sans-serif;transition:all .15s}
+.order-action-btn:hover{background:var(--accent2)}
+
+/* ===== CREDIT/INTEGRITY PAGE ===== */
+.credit-overview{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.credit-card{background:var(--white);border-radius:var(--radius);padding:24px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.credit-score-display{text-align:center;padding:20px 0}
+.score-circle{width:120px;height:120px;border-radius:50%;border:8px solid var(--gold);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative}
+.score-circle::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px dashed rgba(196,146,42,0.2)}
+.score-value{font-size:36px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;line-height:1}
+.score-max{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.score-label{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.score-desc{font-size:12px;color:var(--text3)}
+.credit-level-bar{display:flex;justify-content:space-between;padding:16px 0 8px}
+.level-segment{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.level-segment .level-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--white);position:relative}
+.level-segment.active .level-dot{background:var(--gold);border-color:var(--gold)}
+.level-segment.current .level-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold);opacity:.3}
+.level-segment .level-name{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.level-segment.active .level-name{color:var(--gold);font-weight:600}
+.credit-rules{margin-top:16px}
+.credit-rule{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.credit-rule:last-child{border-bottom:none}
+.credit-rule-name{color:var(--text2)}
+.credit-rule .plus{color:#2EAB5A;font-family:'DM Mono',monospace;font-size:12px}
+.credit-rule .minus{color:var(--accent);font-family:'DM Mono',monospace;font-size:12px}
+
+/* ===== AI TOOLS PAGE ===== */
+.ai-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.ai-card{background:var(--white);border-radius:var(--radius);padding:28px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.ai-card-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.ai-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-icon svg{width:24px;height:24px}
+.ai-card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.ai-card p{font-size:12px;color:var(--text3);line-height:1.5}
+.ai-card-pricing{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px}
+.ai-price-left{color:var(--text2)}
+.ai-price-right{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)}
+.ai-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Noto Sans SC',sans-serif;margin-top:16px}
+.ai-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(217,58,46,0.2)}
+.ai-btn:active{transform:translateY(0)}
+.ai-preview{background:var(--bg);border-radius:10px;padding:20px;margin-top:16px;min-height:120px;display:flex;align-items:center;justify-content:center}
+.ai-preview-placeholder{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;text-align:center}
+.ai-preview-placeholder .ph-icon{font-size:32px;opacity:.3;margin-bottom:8px;display:block}
+
+/* ===== ADVERTISING PAGE ===== */
+.ad-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:24px}
+.ad-day{background:var(--white);border-radius:8px;padding:10px 8px;border:1px solid var(--border);text-align:center;transition:all .15s;cursor:pointer}
+.ad-day:hover{border-color:var(--accent)}
+.ad-day.header{background:var(--bg);font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;font-weight:500;cursor:default}
+.ad-day .day-num{font-size:13px;font-weight:600;color:var(--text)}
+.ad-day.booked .day-num{color:var(--accent)}
+.ad-day .day-status{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:3px}
+.ad-day.booked .day-status{color:var(--accent);font-weight:600}
+.ad-day.partial{background:rgba(196,146,42,0.05)}
+.ad-day.partial .day-status{color:var(--gold)}
+.ad-schedule{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.ad-time-slot{padding:6px 14px;border-radius:20px;font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;border:1.5px solid var(--border);color:var(--text2);transition:all .15s}
+.ad-time-slot.selected{border-color:var(--accent);background:rgba(217,58,46,0.08);color:var(--accent);font-weight:600}
+.ad-time-slot:hover:not(.selected){border-color:var(--accent)}
+
+/* ===== CUSTOMERS PAGE ===== */
+.customer-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.customer-stat{background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+.customer-stat-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text);margin-bottom:4px}
+.customer-stat-label{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px}
+
+/* ===== SETTINGS PAGE ===== */
+.settings-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+.settings-card{background:var(--white);border-radius:var(--radius);padding:24px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.settings-card h3{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(232,226,216,0.4);font-size:13px}
+.setting-row:last-child{border-bottom:none}
+.setting-label{color:var(--text2)}
+.setting-value{font-family:'DM Mono',monospace;color:var(--text);font-weight:500}
+.setting-edit-btn{padding:5px 12px;border-radius:6px;font-size:11px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .15s}
+.setting-edit-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--white);border-radius:var(--radius);width:480px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow2)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:600}
+.modal-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;color:var(--text3);display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--accent);color:#fff}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+.modal-btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'Noto Sans SC',sans-serif;transition:all .15s}
+.modal-btn-cancel{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.modal-btn-cancel:hover{background:var(--border)}
+.modal-btn-confirm{background:var(--accent);color:#fff}
+.modal-btn-confirm:hover{background:var(--accent2)}
+
+/* ===== LOGISTICS TIMELINE ===== */
+.logistics-step{display:flex;gap:12px;position:relative;padding-bottom:20px}
+.logistics-step:last-child{padding-bottom:0}
+.logistics-step:last-child .logistics-line{display:none}
+.logistics-dot{width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:4px;position:relative;z-index:1}
+.logistics-step.active .logistics-dot{background:var(--accent);box-shadow:0 0 0 4px rgba(196,76,44,0.15)}
+.logistics-line{position:absolute;left:4px;top:14px;width:2px;height:calc(100% - 10px);background:var(--border)}
+.logistics-step.active .logistics-line{background:var(--accent)}
+.logistics-content{flex:1}
+.logistics-step.active .logistics-content div:first-child{color:var(--text)}
+
+/* ===== SECURITY MODAL TABS ===== */
+.sec-tab{flex:1;padding:8px 0;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;transition:all .2s}
+.sec-tab.active{background:#fff;color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+/* ===== FORM INPUT ===== */
+.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;-webkit-appearance:none}
+.form-input::placeholder{color:var(--text3)}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,58,46,0.08)}
+.form-input:hover:not(:focus){border-color:var(--text3)}
+
+.form-label{font-size:12px;font-weight:600;color:var(--text3);margin-bottom:6px;display:block}
+
+/* ===== TOGGLE ===== */
+.toggle{width:40px;height:22px;background:var(--border);border-radius:11px;position:relative;cursor:pointer;border:none;transition:all .2s}
+.toggle.active{background:var(--accent)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.toggle.active::after{left:20px}
+
+/* ===== MESSAGE ITEM ===== */
+.msg-item{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;background:var(--card);border-radius:12px;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.msg-item:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.06);border-color:var(--border)}
+.msg-item.unread{background:var(--card);border-left:3px solid var(--accent)}
+.msg-item.unread .msg-title{font-weight:600}
+.msg-item .msg-icon{flex-shrink:0;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.msg-item .msg-content{flex:1;min-width:0}
+.msg-item .msg-title{font-size:14px;color:var(--text);margin-bottom:4px}
+.msg-item .msg-title strong{color:var(--accent)}
+.msg-item .msg-desc{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-item .msg-meta{flex-shrink:0;text-align:right}
+.msg-item .msg-time{font-size:11px;color:var(--text3);margin-bottom:6px}
+.msg-item .msg-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.msg-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;font-size:10px;font-weight:700;color:#fff;background:var(--accent)}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeUp .4s ease forwards}
+.stats-grid .stat-card:nth-child(1){animation-delay:.05s}
+.stats-grid .stat-card:nth-child(2){animation-delay:.1s}
+.stats-grid .stat-card:nth-child(3){animation-delay:.15s}
+.stats-grid .stat-card:nth-child(4){animation-delay:.2s}
+.zone-card:nth-child(1){animation-delay:.1s}
+.zone-card:nth-child(2){animation-delay:.15s}
+.zone-card:nth-child(3){animation-delay:.2s}
+.zone-card:nth-child(4){animation-delay:.25s}
+
+/* ===== CHART PLACEHOLDER ===== */
+.chart-placeholder{height:200px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;margin-bottom:20px}
+.chart-placeholder-icon{font-size:28px;opacity:.2}
+.chart-placeholder-text{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1200px){
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.products-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:900px){
+.admin-wrap{flex-direction:column}
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0}
+}
+
+/* ===== CHART SVG ===== */
+.chart-wrap{background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:20px}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.chart-title span{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);font-weight:400}
+.bar-chart{display:flex;align-items:flex-end;gap:16px;height:140px;padding-top:20px}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar-stack{display:flex;align-items:flex-end;gap:4px;height:120px}
+.bar{width:28px;border-radius:4px 4px 0 0;position:relative;transition:all .3s;cursor:pointer}
+.bar:hover{opacity:.8}
+.bar.umdt{background:linear-gradient(180deg,var(--accent),var(--accent2))}
+.bar.gold{background:linear-gradient(180deg,var(--gold),var(--gold2))}
+.bar.green{background:#2EAB5A}
+.bar-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-align:center;margin-top:6px}
+.bar-value{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-family:'DM Mono',monospace;color:var(--text2);white-space:nowrap;font-weight:600}
+.sparkle-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;height:160px;justify-content:flex-end}
+.sparkle-val{font-size:11px;font-family:'DM Mono',monospace;color:var(--text2);font-weight:600;margin-bottom:2px}
+.sparkle-bar{width:100%;border-radius:6px 6px 0 0;transition:all .3s;min-height:8px}
+.sparkle-lbl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-align:center}
+.months{display:flex;gap:16px;margin-top:8px}
+.month-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-align:center;flex:1}
+
+/* Sidebar toggle for mobile */
+.menu-toggle{display:none;position:fixed;top:16px;left:16px;z-index:150;width:36px;height:36px;background:var(--white);border:1px solid var(--border);border-radius:8px;cursor:pointer;align-items:center;justify-content:center}
+.menu-toggle svg{width:18px;height:18px;color:var(--text)}
+@media(max-width:900px){
+.menu-toggle{display:flex}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+  <div class="login-card animate-in">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="login-logo-text">
+        <div class="login-logo-name">乐签乐KUMOO</div>
+        <div class="login-logo-sub">商家后台</div>
+      </div>
+    </div>
+    <div class="login-title">欢迎回来</div>
+    <div class="login-desc">登录您的商家账户，管理您的商品与订单</div>
+
+    <div class="form-group">
+      <label>手机号</label>
+      <input type="tel" placeholder="请输入手机号" value="138 8888 8888">
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>验证码</label>
+        <input type="text" placeholder="请输入验证码" value="8888">
+      </div>
+      <div class="form-group" style="flex:1;display:flex;align-items:flex-end">
+        <button class="verify-btn" onclick="sendCode()">获取验证码</button>
+      </div>
+    </div>
+    <button class="login-btn" onclick="showAdmin()">登录商家后台</button>
+
+    <div class="login-divider">其他登录方式</div>
+    <button class="login-wechat">
+      <svg viewBox="0 0 24 24" fill="#07C160"><path d="M8.5 11c-.83 0-1.5-.67-1.5-1.5S7.67 8 8.5 8s1.5.67 1.5 1.5S9.33 11 8.5 11zm5 0c-.83 0-1.5-.67-1.5-1.5S12.67 8 13.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-5.5 4c-2.33 0-4.31 1.46-5.11 3.5h10.22c-.8-2.04-2.78-3.5-5.11-3.5zm1.5 5c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2z"/></svg>
+      微信扫码登录
+    </button>
+
+    <div class="login-footer" style="margin-top:24px">
+      <a href="#">立即注册商家</a>
+      <a href="#">忘记密码？</a>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="admin" id="adminPage">
+
+<button class="menu-toggle" onclick="toggleSidebar()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="admin-wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-name">KUMOO商家</div>
+        <div class="sidebar-brand-sub">商户后台</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">工作台</div>
+        <div class="nav-item active" onclick="showPage('dashboard')" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          数据概览
+          <span class="nav-badge">新</span>
+        </div>
+        <div class="nav-item" onclick="showPage('products')" data-page="products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          商品管理
+          <span class="nav-badge">12</span>
+        </div>
+        <div class="nav-item" onclick="showPage('specs')" data-page="specs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          商品规格管理
+        </div>
+        <div class="nav-item" onclick="showPage('orders')" data-page="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          订单管理
+        </div>
+
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">营销工具</div>
+        <div class="nav-item" onclick="showPage('credit')" data-page="credit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          诚信体系
+        </div>
+        <div class="nav-item" onclick="showPage('ads')" data-page="ads">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          广告栏位
+          <span class="nav-badge">3/30</span>
+        </div>
+        <div class="nav-item" onclick="showPage('ai-tools')" data-page="ai-tools">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 1.1-.45 2.1-1.17 2.83L12 12l-2.83-3.17A4 4 0 0112 2z"/><path d="M12 12v8m-4-4h8"/><circle cx="12" cy="20" r="1"/></svg>
+          AI智能工具
+          <span class="nav-badge">HOT</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">数据分析</div>
+        <div class="nav-item" onclick="showPage('customers')" data-page="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          客户管理
+        </div>
+        <div class="nav-item" onclick="showPage('messages')" data-page="messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          消息通知
+          <span class="nav-badge" id="msgBadge">3</span>
+        </div>
+        <div class="nav-item" onclick="showPage('settings')" data-page="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          店铺设置
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-merchant">
+        <div class="merchant-avatar">旺</div>
+        <div class="merchant-info">
+          <div class="merchant-name">旺达数码专营店</div>
+          <div class="merchant-level">诚信Lv.3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="main-header">
+      <div class="header-left">
+        <div class="header-title" id="headerTitle">数据概览</div>
+        <div class="header-date" id="headerDate"></div>
+      </div>
+      <div class="header-right">
+        <div class="header-balance">
+          <div>
+            <div class="header-balance-label">UMDT钱包</div>
+            <div class="header-balance-value" style="color:var(--gold)">≈ ¥ 6,842</div>
+          </div>
+        </div>
+        <button class="header-btn header-btn-primary" onclick="showModal('publishModal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          发布商品
+        </button>
+        <button class="header-btn header-btn-outline" onclick="logoutToLogin()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          退出
+        </button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-label">商品曝光</div>
+              <div class="stat-card-icon" style="background:rgba(217,58,46,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value">48.2<span>万</span></div>
+            <div class="stat-card-change up">+12.3% 较上月</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-label">参与订单</div>
+              <div class="stat-card-icon" style="background:rgba(196,146,42,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C4922A" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value">1,284</div>
+            <div class="stat-card-change up">+8.7% 较上月</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-label">中签订单</div>
+              <div class="stat-card-icon" style="background:rgba(46,171,90,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2EAB5A" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value">86</div>
+            <div class="stat-card-change up">+5.2% 较上月</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-label">UMDT收益</div>
+              <div class="stat-card-icon" style="background:rgba(217,58,46,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value">892<span> UMDT</span></div>
+            <div class="stat-card-change up">+15.1% 较上月</div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-wrap">
+          <div class="chart-title">
+            近10天销售趋势
+            <span>UMDT</span>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:12px;height:160px;padding:0 8px">
+            <div class="sparkle-col" style="height:52px">
+              <div class="sparkle-val">260</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.25);height:100%"></div>
+              <div class="sparkle-lbl">5/21</div>
+            </div>
+            <div class="sparkle-col" style="height:65px">
+              <div class="sparkle-val">320</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.35);height:100%"></div>
+              <div class="sparkle-lbl">5/22</div>
+            </div>
+            <div class="sparkle-col" style="height:48px">
+              <div class="sparkle-val">240</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.25);height:100%"></div>
+              <div class="sparkle-lbl">5/23</div>
+            </div>
+            <div class="sparkle-col" style="height:80px">
+              <div class="sparkle-val">400</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.45);height:100%"></div>
+              <div class="sparkle-lbl">5/24</div>
+            </div>
+            <div class="sparkle-col" style="height:58px">
+              <div class="sparkle-val">290</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.30);height:100%"></div>
+              <div class="sparkle-lbl">5/25</div>
+            </div>
+            <div class="sparkle-col" style="height:96px">
+              <div class="sparkle-val">480</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.55);height:100%"></div>
+              <div class="sparkle-lbl">5/26</div>
+            </div>
+            <div class="sparkle-col" style="height:112px">
+              <div class="sparkle-val">560</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.65);height:100%"></div>
+              <div class="sparkle-lbl">5/27</div>
+            </div>
+            <div class="sparkle-col" style="height:138px">
+              <div class="sparkle-val">690</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.80);height:100%"></div>
+              <div class="sparkle-lbl">5/28</div>
+            </div>
+            <div class="sparkle-col" style="height:148px">
+              <div class="sparkle-val">740</div>
+              <div class="sparkle-bar" style="background:rgba(217,58,46,0.90);height:100%"></div>
+              <div class="sparkle-lbl">5/29</div>
+            </div>
+            <div class="sparkle-col" style="height:160px">
+              <div class="sparkle-val" style="color:var(--accent)">800</div>
+              <div class="sparkle-bar" style="background:var(--accent);height:100%;border-radius:8px 8px 0 0"></div>
+              <div class="sparkle-lbl" style="color:var(--accent);font-weight:600">5/30</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:0 8px">
+            <div style="font-size:11px;color:var(--text3)">5/21</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text)">累计 <span style="font-family:'DM Mono',monospace;color:var(--accent)">4,780 UMDT</span></div>
+            <div style="font-size:11px;color:var(--text3)">5/30</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <div class="section-label">快捷操作</div>
+          <div class="quick-actions-grid">
+            <div class="qa-card" onclick="showPage('products'); showModal('publishModal')">
+              <div class="qa-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="qa-name">发布商品</div>
+              <div class="qa-desc">上架到爆金/鉴宝专区</div>
+            </div>
+            <div class="qa-card" onclick="showPage('ai-tools')">
+              <div class="qa-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 1.1-.45 2.1-1.17 2.83L12 12l-2.83-3.17A4 4 0 0112 2z"/><path d="M12 12v8"/></svg>
+              </div>
+              <div class="qa-name">AI生图</div>
+              <div class="qa-desc">一键生成主图&详情</div>
+            </div>
+            <div class="qa-card" onclick="showPage('ads')">
+              <div class="qa-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <div class="qa-name">预约广告</div>
+              <div class="qa-desc">左侧竖屏滚动栏位</div>
+            </div>
+            <div class="qa-card" onclick="showPage('orders')">
+              <div class="qa-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div class="qa-name">批量发货</div>
+              <div class="qa-desc">导入快递单号</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone Cards -->
+        <div class="zone-grid">
+          <div class="zone-card animate-in">
+            <div class="zone-card-tag red">商家专属</div>
+            <div class="zone-card-icon" style="background:rgba(217,58,46,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3>爆金专区</h3>
+            <p>未中签返9倍金豆，刺激用户反复参与。玩法一：自由中签（一人N签）；玩法二：SOLO夺签（1v1）。</p>
+            <div class="zone-stats">
+              <div class="zone-stat"><div class="zone-stat-val">8</div><div class="zone-stat-label">在线商品</div></div>
+              <div class="zone-stat"><div class="zone-stat-val">2,841</div><div class="zone-stat-label">参与人数</div></div>
+              <div class="zone-stat"><div class="zone-stat-val">156</div><div class="zone-stat-label">本月中签</div></div>
+            </div>
+            <button class="zone-card-btn" onclick="showModal('publishModal')">+ 上架商品</button>
+          </div>
+
+          <div class="zone-card animate-in">
+            <div class="zone-card-tag gold">高价值</div>
+            <div class="zone-card-icon" style="background:rgba(196,146,42,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C4922A" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>鉴宝专区</h3>
+            <p>珠宝配饰、3C数码、奢侈品等高价值商品。商家送检，平台出具证书保管，假一赔十。</p>
+            <div class="zone-stats">
+              <div class="zone-stat"><div class="zone-stat-val">4</div><div class="zone-stat-label">在线商品</div></div>
+              <div class="zone-stat"><div class="zone-stat-val">326</div><div class="zone-stat-label">参与人数</div></div>
+              <div class="zone-stat"><div class="zone-stat-val">12</div><div class="zone-stat-label">本月中签</div></div>
+            </div>
+            <button class="zone-card-btn" onclick="showModal('publishModal')">+ 上架商品</button>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="table-card">
+          <div class="table-card-header">
+            <div class="table-card-title">最近订单</div>
+            <span class="table-card-link" onclick="showPage('orders')">查看全部 →</span>
+          </div>
+          <table class="data-table">
+            <thead><tr>
+              <th>订单号</th>
+              <th>商品</th>
+              <th>玩法</th>
+              <th>中签用户</th>
+              <th>金额</th>
+              <th>状态</th>
+              <th>时间</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="table-id">#KMO-20260530-8821</span></td>
+                <td>Apple AirPods Pro 2</td>
+                <td><span class="tag solo">SOLO夺签</span></td>
+                <td>张**</td>
+                <td style="font-family:'DM Mono',monospace">44 UMDT</td>
+                <td><span class="status-badge green">● 已中签</span></td>
+                <td><span class="table-id">2分钟前</span></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">#KMO-20260530-8819</span></td>
+                <td>戴森吹风机 HD15</td>
+                <td><span class="tag free">自由中签</span></td>
+                <td>李**</td>
+                <td style="font-family:'DM Mono',monospace">128 UMDT</td>
+                <td><span class="status-badge yellow">● 待发货</span></td>
+                <td><span class="table-id">18分钟前</span></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">#KMO-20260530-8815</span></td>
+                <td>iPhone 15 256GB 黑色</td>
+                <td><span class="tag solo">SOLO夺签</span></td>
+                <td>王**</td>
+                <td style="font-family:'DM Mono',monospace">320 UMDT</td>
+                <td><span class="status-badge green">● 已发货</span></td>
+                <td><span class="table-id">1小时前</span></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">#KMO-20260530-8810</span></td>
+                <td>施华洛世奇项链</td>
+                <td><span class="tag auth">鉴宝专区</span></td>
+                <td>陈**</td>
+                <td style="font-family:'DM Mono',monospace">80 UMDT</td>
+                <td><span class="status-badge gray">● 已完成</span></td>
+                <td><span class="table-id">2小时前</span></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">#KMO-20260530-8805</span></td>
+                <td>小米手环8 Pro</td>
+                <td><span class="tag free">自由中签</span></td>
+                <td>刘**</td>
+                <td style="font-family:'DM Mono',monospace">28 UMDT</td>
+                <td><span class="status-badge red">● 未中签（返9倍）</span></td>
+                <td><span class="table-id">3小时前</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCTS PAGE ===== -->
+      <div class="page" id="page-products">
+        <div class="page-title">
+          <h1>商品管理</h1>
+          <p>管理您在爆金专区和鉴宝专区的商品</p>
+        </div>
+        <div class="products-header">
+          <div class="products-filters">
+            <button class="filter-tab active" onclick="filterProducts(this, 'all')">全部(12)</button>
+            <button class="filter-tab" onclick="filterProducts(this, 'online')">已上架(8)</button>
+            <button class="filter-tab" onclick="filterProducts(this, 'pending')">待审核(2)</button>
+            <button class="filter-tab" onclick="filterProducts(this, 'ended')">已结束(2)</button>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="搜索商品名称...">
+            </div>
+            <button class="header-btn header-btn-primary" onclick="showModal('publishModal')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              发布商品
+            </button>
+          </div>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-img-text">📱</div>
+              <span class="product-zone-tag 爆金">爆金</span>
+              <span class="product-status online"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Apple iPhone 15 256GB 黑色 官方正品</div>
+              <div class="product-meta">
+                <div class="product-price">320 UMDT <span>≈ ¥2,496</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                  128/160
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag solo">SOLO夺签</span>
+                <span class="tag auth">已认证</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="editProduct(this)">编辑</button>
+              <button class="btn-del" onclick="offshelfProduct(this)">下架</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img" style="background:rgba(196,146,42,0.04)">
+              <div class="product-img-text">💎</div>
+              <span class="product-zone-tag 鉴宝">鉴宝</span>
+              <span class="product-status online"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">施华洛世奇 SWAN 项链白天鹅 经典款</div>
+              <div class="product-meta">
+                <div class="product-price">80 UMDT <span>≈ ¥624</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  42/50
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag free">自由中签</span>
+                <span class="tag auth">已送检</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="editProduct(this)">编辑</button>
+              <button class="btn-del" onclick="offshelfProduct(this)">下架</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-img-text">🎧</div>
+              <span class="product-zone-tag 爆金">爆金</span>
+              <span class="product-status offline"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Apple AirPods Pro (第二代) 全新未拆封</div>
+              <div class="product-meta">
+                <div class="product-price">44 UMDT <span>≈ ¥343</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  22/44
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag solo">SOLO夺签</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="editProduct(this)">编辑</button>
+              <button class="btn-del">上架</button>
+            </div>
+          </div>
+
+          <div class="product-card" style="opacity:0.6">
+            <div class="product-img" style="background:#f5f0e8">
+              <div class="product-img-text">💨</div>
+              <span class="product-zone-tag" style="background:rgba(160,152,144,0.15);color:#999">已结束</span>
+              <span class="product-status offline"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">戴森吹风机 HD15 紫红色 限量版</div>
+              <div class="product-meta">
+                <div class="product-price">128 UMDT <span>≈ ¥998</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  64/64
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag" style="background:rgba(160,152,144,0.1);color:#999">自由中签</span>
+                <span class="tag" style="background:rgba(160,152,144,0.1);color:#999">已结束</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit">复制</button>
+              <button class="btn-del" style="background:rgba(46,171,90,0.08);color:#2EAB5A">重新上架</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img" style="background:rgba(217,58,46,0.03)">
+              <div class="product-img-text">⌚</div>
+              <span class="product-zone-tag 爆金">爆金</span>
+              <span class="product-status online"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">小米手环8 Pro NFC版 静息白</div>
+              <div class="product-meta">
+                <div class="product-price">28 UMDT <span>≈ ¥218</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  15/56
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag free">自由中签</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="editProduct(this)">编辑</button>
+              <button class="btn-del" onclick="offshelfProduct(this)">下架</button>
+            </div>
+          </div>
+
+          <div class="product-card" style="opacity:0.6">
+            <div class="product-img" style="background:#f5f0e8">
+              <div class="product-img-text">💻</div>
+              <span class="product-zone-tag" style="background:rgba(196,146,42,0.1);color:var(--gold)">待审核</span>
+              <span class="product-status offline"></span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">MacBook Air M2 8GB+256GB 星光色</div>
+              <div class="product-meta">
+                <div class="product-price">680 UMDT <span>≈ ¥5,304</span></div>
+                <div class="product-participants">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  0/340
+                </div>
+              </div>
+              <div class="product-tags">
+                <span class="tag solo">SOLO夺签</span>
+                <span class="tag" style="background:rgba(196,146,42,0.1);color:var(--gold)">待平台审核</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="editProduct(this)">编辑</button>
+              <button class="btn-del" style="background:rgba(160,152,144,0.08);color:var(--text3)" onclick="deleteProduct(this)">撤回</button>
+            </div>
+          </div>
+      </div>
+      </div>
+
+      <!-- ===== SPECS PAGE ===== -->
+      <div class="page" id="page-specs">
+        <div class="page-title">
+          <h1>商品规格管理</h1>
+          <button class="btn-primary" onclick="showModal('specModal')" style="padding:10px 20px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:13px;cursor:pointer;font-family:'Noto Sans SC',sans-serif">
+            + 新增规格
+          </button>
+        </div>
+
+        <!-- 规格分类表格 -->
+        <div style="background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--bg)">
+                <th style="padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border)">一级分类</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border)">二级分类</th>
+                <th style="padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border)">说明</th>
+                <th style="padding:12px 16px;text-align:center;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);width:120px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="specsTable">
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">品牌</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">劳力士/欧米茄/卡地亚/百达翡丽/浪琴/天梭</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">手表品牌</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">材质</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">黄金/铂金/18K金/玫瑰金/白银/不锈钢/钛金属</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">金属材质</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">颜色</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">黑色/白色/金色/银色/玫瑰金/蓝色/绿色</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">商品颜色</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">尺寸</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">28mm/36mm/40mm/42mm/44mm</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">手表表径</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">款式</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">运动款/正装款/休闲款/潜水款/航空款</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">手表款式</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text)">容量</td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text3)">128GB/256GB/512GB/1TB</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--text3)">存储容量</td>
+                <td style="padding:12px 16px;text-align:center">
+                  <button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>
+                  <button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:var(--text3)">共 6 条规格分类</div>
+      </div>
+
+      <!-- ===== ORDERS PAGE ===== -->
+      <div class="page" id="page-orders">
+        <div class="page-title">
+          <h1>订单管理</h1>
+          <p>查看中签订单、管理发货状态、导入快递单号</p>
+        </div>
+        <div class="filter-row">
+          <select class="filter-select">
+            <option>全部状态</option>
+            <option>待发货</option>
+            <option>已发货</option>
+            <option>已签收</option>
+            <option>已完成</option>
+          </select>
+          <select class="filter-select">
+            <option>全部玩法</option>
+            <option>自由中签</option>
+            <option>SOLO夺签</option>
+            <option>鉴宝专区</option>
+          </select>
+          <div class="date-range">
+            <span>日期</span>
+            <input type="text" value="2026-05-01">
+            <span>至</span>
+            <input type="text" value="2026-05-30">
+          </div>
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="订单号/用户/商品...">
+          </div>
+          <button class="header-btn header-btn-outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            导出
+          </button>
+          <button class="header-btn header-btn-outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            导入快递
+          </button>
+        </div>
+
+        <div class="order-table-wrap">
+          <table class="order-table">
+            <thead><tr>
+              <th>订单号</th>
+              <th>商品</th>
+              <th>玩法类型</th>
+              <th>中签人</th>
+              <th>金额</th>
+              <th>订单状态</th>
+              <th>快递</th>
+              <th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="order-id">#KMO-20260530-8821</span></td>
+                <td><div class="order-product"><div class="order-product-img">📱</div><div><div style="font-weight:500">iPhone 15 256GB</div><div class="order-phone">爆金·SOLO</div></div></div></td>
+                <td><span class="tag solo">SOLO夺签</span></td>
+                <td><div class="order-user">张*伟</div><div class="order-phone">138****8821</div></td>
+                <td style="font-family:'DM Mono',monospace;font-weight:600">320 UMDT</td>
+                <td><span class="status-badge green">● 已中签</span></td>
+                <td>—</td>
+                <td><button class="order-action-btn" onclick="showModal('shipModal')">发货</button></td>
+              </tr>
+              <tr>
+                <td><span class="order-id">#KMO-20260530-8819</span></td>
+                <td><div class="order-product"><div class="order-product-img">💨</div><div><div style="font-weight:500">戴森吹风机 HD15</div><div class="order-phone">爆金·自由中签</div></div></div></td>
+                <td><span class="tag free">自由中签</span></td>
+                <td><div class="order-user">李*琴</div><div class="order-phone">159****3362</div></td>
+                <td style="font-family:'DM Mono',monospace;font-weight:600">128 UMDT</td>
+                <td><span class="status-badge yellow">● 待发货</span></td>
+                <td>—</td>
+                <td><button class="order-action-btn" onclick="showModal('shipModal')">发货</button></td>
+              </tr>
+              <tr>
+                <td><span class="order-id">#KMO-20260530-8815</span></td>
+                <td><div class="order-product"><div class="order-product-img">📱</div><div><div style="font-weight:500">iPhone 15 256GB</div><div class="order-phone">爆金·SOLO</div></div></div></td>
+                <td><span class="tag solo">SOLO夺签</span></td>
+                <td><div class="order-user">王*明</div><div class="order-phone">186****7791</div></td>
+                <td style="font-family:'DM Mono',monospace;font-weight:600">320 UMDT</td>
+                <td><span class="status-badge green">● 已发货</span></td>
+                <td><span class="table-id" style="color:var(--accent)">SF1089234567</span></td>
+                <td><button class="order-action-btn" style="background:var(--bg);color:var(--text2);border:1px solid var(--border)" onclick="showLogisticsModal('SF1089234567')">查看物流</button></td>
+              </tr>
+              <tr>
+                <td><span class="order-id">#KMO-20260529-8790</span></td>
+                <td><div class="order-product"><div class="order-product-img">💎</div><div><div style="font-weight:500">施华洛世奇项链</div><div class="order-phone">鉴宝·自由中签</div></div></div></td>
+                <td><span class="tag auth">鉴宝专区</span></td>
+                <td><div class="order-user">陈*玲</div><div class="order-phone">158****2289</div></td>
+                <td style="font-family:'DM Mono',monospace;font-weight:600">80 UMDT</td>
+                <td><span class="status-badge green">● 已签收</span></td>
+                <td><span class="table-id">YT9876543210</span></td>
+                <td><button class="order-action-btn" style="background:var(--bg);color:var(--text2);border:1px solid var(--border)" onclick="showLogisticsModal('YT9876543210')">查看物流</button></td>
+              </tr>
+              <tr>
+                <td><span class="order-id">#KMO-20260528-8750</span></td>
+                <td><div class="order-product"><div class="order-product-img">🎧</div><div><div style="font-weight:500">AirPods Pro 2</div><div class="order-phone">爆金·SOLO</div></div></div></td>
+                <td><span class="tag solo">SOLO夺签</span></td>
+                <td><div class="order-user">赵*涛</div><div class="order-phone">133****6642</div></td>
+                <td style="font-family:'DM Mono',monospace;font-weight:600">44 UMDT</td>
+                <td><span class="status-badge gray">● 已完成</span></td>
+                <td><span class="table-id">ZT2468013579</span></td>
+                <td><button class="order-action-btn" style="background:var(--bg);color:var(--text2);border:1px solid var(--border)" onclick="showLogisticsModal('ZT2468013579')">查看物流</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== LOGISTICS PAGE ===== -->
+      <div class="page" id="page-logistics">
+        <div class="page-title">
+          <h1>物流管理</h1>
+          <p>批量导入快递单号、跟踪物流轨迹、管理发货区域</p>
+        </div>
+        <div class="filter-row">
+          <select class="filter-select">
+            <option>全部快递</option>
+            <option>顺丰速运</option>
+            <option>中通快递</option>
+            <option>圆通速递</option>
+            <option>韵达快递</option>
+          </select>
+          <select class="filter-select">
+            <option>全部状态</option>
+            <option>运输中</option>
+            <option>到达目的城市</option>
+            <option>派送中</option>
+            <option>已签收</option>
+          </select>
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="快递单号/订单号...">
+          </div>
+          <button class="header-btn header-btn-outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            批量导入
+          </button>
+        </div>
+        <div class="order-table-wrap">
+          <table class="order-table">
+            <thead><tr>
+              <th>订单号</th>
+              <th>商品</th>
+              <th>收件人</th>
+              <th>地址</th>
+              <th>快递公司</th>
+              <th>快递单号</th>
+              <th>物流状态</th>
+              <th>轨迹</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="order-id">#KMO-20260530-8815</span></td>
+                <td><div class="order-product"><div class="order-product-img">📱</div><div>iPhone 15</div></div></td>
+                <td><div class="order-user">王*明</div><div class="order-phone">186****7791</div></td>
+                <td style="font-size:12px;color:var(--text2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="广东省深圳市南山区科技园南区B栋1203">广东省深圳市南山区...</div>
+                <td>顺丰速运</td>
+                <td><span class="table-id" style="color:var(--accent)">SF1089234567</span></td>
+                <td><span class="status-badge green">● 派送中</span></td>
+                <td>
+                  <div style="display:flex;flex-direction:column;gap:2px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)">
+                    <span>05-30 14:32 深圳发出</span>
+                    <span>05-30 22:15 到达深圳分拨</span>
+                    <span style="color:var(--accent)">05-31 08:42 派送中</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="order-id">#KMO-20260529-8790</span></td>
+                <td><div class="order-product"><div class="order-product-img">💎</div><div>施华洛世奇项链</div></div></td>
+                <td><div class="order-user">陈*玲</div><div class="order-phone">158****2289</div></td>
+                <td style="font-size:12px;color:var(--text2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="北京市朝阳区望京街道望京SOHO T1-1802">北京市朝阳区望京...</div>
+                <td>圆通速递</td>
+                <td><span class="table-id">YT9876543210</span></td>
+                <td><span class="status-badge gray">● 已签收</span></td>
+                <td>
+                  <div style="display:flex;flex-direction:column;gap:2px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)">
+                    <span>05-29 10:22 揽收成功</span>
+                    <span>05-30 08:15 到达北京</span>
+                    <span>05-30 14:30 已签收</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:24px;background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:14px">不支持发货区域</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <span class="status-badge gray">西藏</span>
+            <span class="status-badge gray">新疆</span>
+            <span class="status-badge gray">内蒙古</span>
+            <span class="status-badge gray">宁夏</span>
+            <span class="status-badge gray">青海</span>
+            <span class="status-badge gray">甘肃</span>
+            <button class="setting-edit-btn" style="margin-left:8px">+ 添加区域</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CREDIT PAGE ===== -->
+      <div class="page" id="page-credit">
+        <div class="page-title">
+          <h1>诚信体系</h1>
+          <p>您的诚信分决定了商品定价倍数、广告栏位资源和新商品发布配额</p>
+        </div>
+        <div class="credit-overview">
+          <div class="credit-card">
+            <div class="credit-score-display">
+              <div class="score-circle">
+                <div class="score-value">82</div>
+                <div class="score-max">/100</div>
+              </div>
+              <div class="score-label">Lv.3 · 荣耀黄金</div>
+              <div class="score-desc">再获18分即可升级至Lv.4 · 钻石大师</div>
+            </div>
+            <div class="credit-level-bar">
+              <div class="level-segment"><div class="level-dot"></div><div class="level-name">Lv.0</div></div>
+              <div class="level-segment"><div class="level-dot"></div><div class="level-name">Lv.1</div></div>
+              <div class="level-segment"><div class="level-dot"></div><div class="level-name">Lv.2</div></div>
+              <div class="level-segment current active"><div class="level-dot"></div><div class="level-name">Lv.3</div></div>
+              <div class="level-segment"><div class="level-dot"></div><div class="level-name">Lv.4</div></div>
+              <div class="level-segment"><div class="level-dot"></div><div class="level-name">Lv.5</div></div>
+            </div>
+          </div>
+          <div class="credit-card">
+            <div style="font-size:14px;font-weight:600;margin-bottom:16px">Lv.3 商家权益</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div style="background:var(--bg);border-radius:8px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">1.5x</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">定价倍数上限</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">600</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">生图免费次数</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">30</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">广告栏位/月</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace">30+</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">月发布配额</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="credit-card" style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:600;margin-bottom:16px">本月诚信分明细</div>
+          <div class="credit-rules">
+            <div class="credit-rule">
+              <div class="credit-rule-name">✅ 48小时内准时发货（12笔）</div>
+              <div class="plus">+24分</div>
+            </div>
+            <div class="credit-rule">
+              <div class="credit-rule-name">✅ 本月无玩家投诉</div>
+              <div class="plus">+2分</div>
+            </div>
+            <div class="credit-rule">
+              <div class="credit-rule-name">✅ 快递编号真实有效</div>
+              <div class="plus">+2分</div>
+            </div>
+            <div class="credit-rule">
+              <div class="credit-rule-name">✅ 商品描述与实物一致</div>
+              <div class="plus">+2分</div>
+            </div>
+            <div class="credit-rule">
+              <div class="credit-rule-name">⚠️ 本月有1次迟到发货（超48小时）</div>
+              <div class="minus">-4分</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:var(--bg);border-radius:8px;display:flex;justify-content:space-between;font-size:13px">
+            <span style="color:var(--text2)">本月最终变化</span>
+            <span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gold)">+26分</span>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <div class="table-card-title">历史诚信分记录</div>
+          </div>
+          <table class="data-table">
+            <thead><tr>
+              <th>日期</th>
+              <th>行为说明</th>
+              <th>分值变化</th>
+              <th>当时余额</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="table-id">2026-05-28</span></td>
+                <td>本月均无虚假发货/快递编号无效行为</td>
+                <td><span class="plus">+2</span></td>
+                <td style="font-family:'DM Mono',monospace">82</td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-05-25</span></td>
+                <td>本月均无收到玩家投诉</td>
+                <td><span class="plus">+2</span></td>
+                <td style="font-family:'DM Mono',monospace">80</td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-05-20</span></td>
+                <td>1笔订单迟到发货超过48小时</td>
+                <td><span class="minus">-4</span></td>
+                <td style="font-family:'DM Mono',monospace">78</td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-05-15</span></td>
+                <td>48小时内准时发货（8笔）</td>
+                <td><span class="plus">+16</span></td>
+                <td style="font-family:'DM Mono',monospace">82</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ADS PAGE ===== -->
+      <div class="page" id="page-ads">
+        <div class="page-title">
+          <h1>广告栏位管理</h1>
+          <p>预约左侧竖屏滚动广告栏，按诚信等级分配每月展示次数</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+          <div class="credit-card">
+            <div style="font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text2)">本月剩余广告次数</div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="font-size:48px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace">27</div>
+              <div style="font-size:13px;color:var(--text3)">
+                <div>本月配额：30次</div>
+                <div>已用：3次</div>
+                <div>每次：12小时展示</div>
+              </div>
+            </div>
+          </div>
+          <div class="credit-card">
+            <div style="font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text2)">广告栏位示例</div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="width:60px;height:90px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;opacity:.8">AD</div>
+              <div style="font-size:12px;color:var(--text3)">
+                <div>位置：APP左侧竖屏</div>
+                <div>规格：240×384px</div>
+                <div>支持：图片/视频</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <div class="table-card-title">预约广告时段</div>
+            <button class="header-btn header-btn-primary" onclick="showModal('adModal')">+ 预约新时段</button>
+          </div>
+          <table class="data-table">
+            <thead><tr>
+              <th>日期</th>
+              <th>时段</th>
+              <th>关联商品</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="table-id">2026-06-01</span></td>
+                <td>00:00 - 12:00</td>
+                <td>iPhone 15 256GB（SOLO）</td>
+                <td><span class="status-badge green">● 已确认</span></td>
+                <td><button class="setting-edit-btn">取消</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-06-01</span></td>
+                <td>12:00 - 24:00</td>
+                <td>戴森吹风机 HD15</td>
+                <td><span class="status-badge green">● 已确认</span></td>
+                <td><button class="setting-edit-btn">取消</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-06-03</span></td>
+                <td>00:00 - 12:00</td>
+                <td>AirPods Pro 2</td>
+                <td><span class="status-badge yellow">● 待确认</span></td>
+                <td><button class="setting-edit-btn">取消</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-id">2026-06-05</span></td>
+                <td>00:00 - 12:00</td>
+                <td>MacBook Air M2</td>
+                <td><span class="status-badge yellow">● 待确认</span></td>
+                <td><button class="setting-edit-btn">取消</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== AI TOOLS PAGE ===== -->
+      <div class="page" id="page-ai-tools">
+        <div class="page-title">
+          <h1>AI智能工具</h1>
+          <p>一键生成商品主图和详情图，自动对比天猫、京东、抖音同款价格</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+          <div style="background:var(--gold);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-family:'DM Mono',monospace">
+            本月免费剩余：<strong>547</strong> 张
+          </div>
+          <div style="font-size:12px;color:var(--text3)">Lv.3商家每月600次免费额度 · 超出¥1元/张</div>
+        </div>
+        <div class="ai-grid">
+          <div class="ai-card">
+            <div class="ai-card-header">
+              <div class="ai-icon" style="background:rgba(217,58,46,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#D93A2E" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div>
+                <h3>AI一键生成主图</h3>
+                <p>上传商品照片或描述文字，AI自动生成多套高质量主图，支持下载及一键应用到商品详情页。</p>
+              </div>
+            </div>
+            <div class="ai-preview">
+              <div class="ai-preview-placeholder">
+                <span class="ph-icon">✨</span>
+                选择商品后，点击生成主图
+              </div>
+            </div>
+            <div class="ai-card-pricing">
+              <div class="ai-price-left">本月剩余：547次</div>
+              <div class="ai-price-right">免费</div>
+            </div>
+            <button class="ai-btn" onclick="showModal('aiModal')">立即生成</button>
+          </div>
+
+          <div class="ai-card">
+            <div class="ai-card-header">
+              <div class="ai-icon" style="background:rgba(196,146,42,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C4922A" stroke-width="2"><path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              </div>
+              <div>
+                <h3>AI生成商品详情图</h3>
+                <p>智能生成包含商品卖点、规格参数、使用场景的完整详情页图片，提升商品转化率。</p>
+              </div>
+            </div>
+            <div class="ai-preview">
+              <div class="ai-preview-placeholder">
+                <span class="ph-icon">📋</span>
+                选择商品后，点击生成详情
+              </div>
+            </div>
+            <div class="ai-card-pricing">
+              <div class="ai-price-left">本月剩余：547次</div>
+              <div class="ai-price-right">免费</div>
+            </div>
+            <button class="ai-btn" onclick="showModal('aiModal')">立即生成</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CUSTOMERS PAGE ===== -->
+      <div class="page" id="page-customers">
+        <div class="page-title">
+          <h1>客户管理</h1>
+          <p>查看参与您商品的客户名单、中签记录和星池奖励情况</p>
+        </div>
+        <div class="customer-stats">
+          <div class="customer-stat">
+            <div class="customer-stat-val">2,841</div>
+            <div class="customer-stat-label">总参与用户</div>
+          </div>
+          <div class="customer-stat">
+            <div class="customer-stat-val">86</div>
+            <div class="customer-stat-label">中签用户</div>
+          </div>
+          <div class="customer-stat">
+            <div class="customer-stat-val">3.0%</div>
+            <div class="customer-stat-label">中签率</div>
+          </div>
+          <div class="customer-stat">
+            <div class="customer-stat-val">42</div>
+            <div class="customer-stat-label">复购用户</div>
+          </div>
+        </div>
+        <div class="filter-row" style="margin-bottom:20px">
+          <select class="filter-select">
+            <option>全部玩法</option>
+            <option>爆金·自由中签</option>
+            <option>爆金·SOLO夺签</option>
+            <option>鉴宝专区</option>
+          </select>
+          <select class="filter-select">
+            <option>全部等级</option>
+            <option>Lv.5 财富猎手</option>
+            <option>Lv.6 荣耀大师</option>
+            <option>Lv.7 欧皇王者</option>
+            <option>Lv.8 传奇欧皇</option>
+            <option>Lv.9 幸运之神</option>
+          </select>
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="搜索用户名称/手机号...">
+          </div>
+        </div>
+        <div class="order-table-wrap">
+          <table class="order-table">
+            <thead><tr>
+              <th>用户</th>
+              <th>等级</th>
+              <th>参与次数</th>
+              <th>中签次数</th>
+              <th>累计消费</th>
+              <th>星池</th>
+              <th>本月拉新</th>
+              <th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;background:linear-gradient(135deg,#C4922A,#D4A843);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace">8⭐</div><div><div class="order-user">张*伟</div><div class="order-phone">138****8821</div></div></div></td>
+                <td><span class="status-badge" style="background:rgba(196,146,42,0.1);color:var(--gold)">Lv.8 传奇欧皇</span></td>
+                <td style="font-family:'DM Mono',monospace">42</td>
+                <td style="font-family:'DM Mono',monospace">8</td>
+                <td style="font-family:'DM Mono',monospace">¥12,840</td>
+                <td><span class="table-id">8星池 · 21%</span></td>
+                <td style="font-family:'DM Mono',monospace">28人</td>
+                <td><button class="setting-edit-btn">详情</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;background:linear-gradient(135deg,#9B59B6,#8E44AD);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace">9⭐</div><div><div class="order-user">李*琴</div><div class="order-phone">159****3362</div></div></div></td>
+                <td><span class="status-badge" style="background:rgba(155,89,182,0.1);color:#9B59B6">Lv.9 幸运之神</span></td>
+                <td style="font-family:'DM Mono',monospace">128</td>
+                <td style="font-family:'DM Mono',monospace">24</td>
+                <td style="font-family:'DM Mono',monospace">¥58,200</td>
+                <td><span class="table-id">9星池 · 25%</span></td>
+                <td style="font-family:'DM Mono',monospace">61人</td>
+                <td><button class="setting-edit-btn">详情</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;background:linear-gradient(135deg,#E67E22,#F39C12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace">6⭐</div><div><div class="order-user">王*明</div><div class="order-phone">186****7791</div></div></div></td>
+                <td><span class="status-badge" style="background:rgba(230,126,34,0.1);color:#E67E22">Lv.6 荣耀大师</span></td>
+                <td style="font-family:'DM Mono',monospace">18</td>
+                <td style="font-family:'DM Mono',monospace">3</td>
+                <td style="font-family:'DM Mono',monospace">¥3,240</td>
+                <td><span class="table-id">6星池 · 12%</span></td>
+                <td style="font-family:'DM Mono',monospace">9人</td>
+                <td><button class="setting-edit-btn">详情</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;background:linear-gradient(135deg,#C0C0C0,#A0A0A0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'DM Mono',monospace">3⭐</div><div><div class="order-user">陈*玲</div><div class="order-phone">158****2289</div></div></div></td>
+                <td><span class="status-badge" style="background:rgba(192,192,192,0.15);color:#888">Lv.3 抽奖达人</span></td>
+                <td style="font-family:'DM Mono',monospace">7</td>
+                <td style="font-family:'DM Mono',monospace">1</td>
+                <td style="font-family:'DM Mono',monospace">¥480</td>
+                <td><span class="table-id">3星池 · 4%</span></td>
+                <td style="font-family:'DM Mono',monospace">2人</td>
+                <td><button class="setting-edit-btn">详情</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== MESSAGES PAGE ===== -->
+      <div class="page" id="page-messages">
+        <div class="page-title">
+          <h1>消息通知</h1>
+          <p>查看系统通知、订单提醒和营销活动信息</p>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--card);border-radius:14px;margin-bottom:20px">
+          <div style="display:flex;gap:8px">
+            <button class="filter-tab active" onclick="filterMsgs(this,'all')">全部通知</button>
+            <button class="filter-tab" onclick="filterMsgs(this,'order')">订单消息</button>
+            <button class="filter-tab" onclick="filterMsgs(this,'system')">系统通知</button>
+            <button class="filter-tab" onclick="filterMsgs(this,'marketing')">营销活动</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <select style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);font-size:13px;color:var(--text);outline:none">
+              <option>全部已读/未读</option>
+              <option>只看未读</option>
+              <option>只看已读</option>
+            </select>
+            <button style="padding:8px 16px;background:transparent;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text3);cursor:pointer" onclick="markAllRead()">全部标为已读</button>
+          </div>
+        </div>
+
+        <!-- 消息列表 -->
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <!-- 订单消息：待发货 -->
+          <div class="msg-item unread" onclick="showMsgDetail('order1')">
+            <div class="msg-icon" style="background:rgba(217,58,46,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">您有 <strong>3笔订单</strong> 待发货，请及时处理</div>
+              <div class="msg-desc">Apple iPhone 15 256GB 等商品已中签，请尽快发货</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">刚刚</div>
+              <div class="msg-tag" style="background:rgba(217,58,46,0.1);color:var(--accent)">待发货</div>
+            </div>
+          </div>
+
+          <!-- 订单消息：中签通知 -->
+          <div class="msg-item unread" onclick="showMsgDetail('order2')">
+            <div class="msg-icon" style="background:rgba(46,171,90,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">恭喜！商品 <strong>Apple iPhone 15 256GB</strong> 中签完成</div>
+              <div class="msg-desc">买家：张**（138****8888）· 订单号：SF1089234567 · 支付金额：¥5,999</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">10分钟前</div>
+              <div class="msg-tag" style="background:rgba(46,171,90,0.1);color:var(--green)">已中签</div>
+            </div>
+          </div>
+
+          <!-- 系统通知：广告到期 -->
+          <div class="msg-item unread" onclick="showMsgDetail('sys1')">
+            <div class="msg-icon" style="background:rgba(196,146,42,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">广告栏位即将到期提醒</div>
+              <div class="msg-desc">您预约的「首页轮播图」广告位将于 2026-05-30 到期，届时将自动释放，请提前续约</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">1小时前</div>
+              <div class="msg-tag" style="background:rgba(196,146,42,0.1);color:var(--gold)">即将到期</div>
+            </div>
+          </div>
+
+          <!-- 系统通知：诚信分变动 -->
+          <div class="msg-item" onclick="showMsgDetail('sys2')">
+            <div class="msg-icon" style="background:rgba(56,139,253,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#388bfd" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">诚信分变动通知</div>
+              <div class="msg-desc">您的诚信分由 847 调整为 852（+5），继续保持优秀水平，连续12个月无违规</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">昨天 14:22</div>
+              <div class="msg-tag" style="background:rgba(56,139,253,0.1);color:#388bfd">诚信分</div>
+            </div>
+          </div>
+
+          <!-- 营销活动 -->
+          <div class="msg-item" onclick="showMsgDetail('mkt1')">
+            <div class="msg-icon" style="background:rgba(196,76,44,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">「618品质好物节」活动报名开始！</div>
+              <div class="msg-desc">平台大促活动开启，报名时间：2026-05-25 至 2026-06-10，参与商家可获得更多曝光资源</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">5天前</div>
+              <div class="msg-tag" style="background:rgba(196,76,44,0.06);color:var(--text3)">营销</div>
+            </div>
+          </div>
+
+          <!-- 订单消息：已发货 -->
+          <div class="msg-item" onclick="showMsgDetail('order3')">
+            <div class="msg-icon" style="background:rgba(46,171,90,0.1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="msg-content">
+              <div class="msg-title">您的商品已发货，买家已收到通知</div>
+              <div class="msg-desc">订单号：YT9876543210 · 快递：圆通速递 · 单号：YT9876543210</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">6天前</div>
+              <div class="msg-tag" style="background:rgba(46,171,90,0.1);color:var(--green)">已发货</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <div class="page" id="page-settings">
+        <div class="page-title">
+          <h1>店铺设置</h1>
+          <p>管理店铺信息、通知偏好和账户安全</p>
+        </div>
+        <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start">
+          <!-- 店铺基本信息 -->
+          <div class="settings-card">
+            <h3 style="margin-bottom:20px">店铺基本信息</h3>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">店铺名称</div>
+                <div style="font-size:13px;font-weight:500">旺达数码专营店</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">商家ID</div>
+                <div style="font-size:12px;font-family:'DM Mono',monospace">KMO-MCH-2847</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">注册时间</div>
+                <div style="font-size:12px;font-family:'DM Mono',monospace">2026-04-22</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">到期时间</div>
+                <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--accent)">2027-04-22</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">联系电话</div>
+                <div style="font-size:12px;font-family:'DM Mono',monospace">138 8888 8888</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--text3)">绑定邮箱</div>
+                <div style="font-size:12px">wangda@business.com</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:12px 0">
+                <div style="font-size:12px;color:var(--text3)">公司地址</div>
+                <div style="font-size:12px;text-align:right;max-width:160px;color:var(--text2)">广东省深圳市南山区科技园</div>
+              </div>
+            </div>
+            <button class="ai-btn" style="width:100%;margin-top:20px">编辑店铺信息</button>
+          </div>
+
+          <!-- 通知偏好 -->
+          <div class="settings-card">
+            <h3 style="margin-bottom:20px">通知偏好</h3>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:2px">新订单提醒</div>
+                  <div style="font-size:11px;color:var(--text3)">客户下单时立即通知</div>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:2px">中签通知</div>
+                  <div style="font-size:11px;color:var(--text3)">商品中签结果通知</div>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:2px">广告栏位到期提醒</div>
+                  <div style="font-size:11px;color:var(--text3)">广告位到期前7天提醒</div>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:2px">诚信分变动提醒</div>
+                  <div style="font-size:11px;color:var(--text3)">诚信分变化时通知</div>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0">
+                <div>
+                  <div style="font-size:13px;font-weight:500;margin-bottom:2px">营销活动通知</div>
+                  <div style="font-size:11px;color:var(--text3)">平台营销活动推送</div>
+                </div>
+                <button class="toggle" onclick="this.classList.toggle('active')"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 账户安全 -->
+          <div class="settings-card" style="padding-bottom:0">
+            <h3 style="margin-bottom:16px">账户安全</h3>
+
+            <!-- 安全等级 -->
+            <div style="padding:12px 14px;background:rgba(196,76,44,0.06);border-radius:10px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div style="font-size:12px;font-weight:600">安全等级</div>
+                <div style="font-size:11px;font-weight:700;color:var(--gold)">中等</div>
+              </div>
+              <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                <div style="width:60%;height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));border-radius:2px"></div>
+              </div>
+              <div style="margin-top:6px;font-size:11px;color:var(--text3)">建议开启两步验证提升账户安全</div>
+            </div>
+
+            <!-- 安全项列表 -->
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:32px;height:32px;background:rgba(196,76,44,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px">🔑</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:500">登录密码</div>
+                    <div style="font-size:11px;color:var(--text3)">上次修改：2026-03-15</div>
+                  </div>
+                </div>
+                <button class="setting-edit-btn" onclick="showModal('passwordModal')">修改</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:32px;height:32px;background:rgba(46,171,90,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px">📱</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:500">手机绑定</div>
+                    <div style="font-size:11px;color:var(--accent)">138 **** 8888</div>
+                  </div>
+                </div>
+                <button class="setting-edit-btn" onclick="showModal('phoneModal')">更换</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:32px;height:32px;background:rgba(46,171,90,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px">💬</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:500">微信绑定</div>
+                    <div style="font-size:11px;color:var(--accent)">已绑定 · 旺达数码</div>
+                  </div>
+                </div>
+                <button class="setting-edit-btn" onclick="showModal('wechatModal')">更换</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:32px;height:32px;background:rgba(196,146,42,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px">🛡️</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:500">两步验证</div>
+                    <div style="font-size:11px;color:var(--text3)">登录时输入验证码</div>
+                  </div>
+                </div>
+                <button class="toggle" onclick="toggleSecurity(this)"></button>
+              </div>
+            </div>
+
+            <!-- 登录设备 & 最近记录 -->
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="font-size:12px;font-weight:600;color:var(--text3)">登录设备 · 2台</div>
+                <button class="setting-edit-btn" onclick="showModal('deviceModal')">管理</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="width:24px;height:24px;background:rgba(46,171,90,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px">💻</div>
+                    <div style="font-size:12px">MacBook Pro · Chrome</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--green);font-weight:600">当前</div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div style="width:24px;height:24px;background:var(--bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px">📱</div>
+                    <div style="font-size:12px">iPhone 15 Pro · Safari</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text3)">昨天</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main-content -->
+  </div><!-- end main -->
+</div><!-- end admin-wrap -->
+</div><!-- end admin -->
+
+<!-- ===== MODAL: PUBLISH PRODUCT ===== -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal" style="width:560px">
+    <div class="modal-header">
+      <div class="modal-title">发布商品</div>
+      <button class="modal-close" onclick="closeModal('publishModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- 基本信息 -->
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">基本信息</div>
+      <div class="form-group">
+        <label>商品名称 <span style="color:var(--accent)">*</span></label>
+        <input type="text" placeholder="请输入商品名称，限30字内">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>选择专区 <span style="color:var(--accent)">*</span></label>
+          <select class="filter-select" style="width:100%;padding:12px 14px">
+            <option>爆金专区</option>
+            <option>鉴宝专区</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>商品分类 <span style="color:var(--accent)">*</span></label>
+          <select class="filter-select" id="productCategory" onchange="toggleAppraisal(this.value)" style="width:100%;padding:12px 14px">
+            <option>3C数码</option>
+            <option>珠宝配饰</option>
+            <option>奢侈品</option>
+            <option>美妆护肤</option>
+            <option>钟表眼镜</option>
+            <option>家居生活</option>
+            <option>潮流玩偶</option>
+            <option>食品饮料</option>
+            <option>其他</option>
+          </select>
+        </div>
+      </div>
+      <label>商品规格</label>
+      <div style="display:grid;grid-template-columns:160px 160px 1fr;gap:10px">
+        <select class="filter-select" id="specLevel1" onchange="updateSpecLevel2()" style="padding:12px 14px">
+          <option value="">选择一级分类</option>
+          <option>品牌</option>
+          <option>型号</option>
+          <option>材质</option>
+          <option>颜色</option>
+          <option>尺寸</option>
+          <option>容量</option>
+          <option>款式</option>
+          <option>其他</option>
+        </select>
+        <select class="filter-select" id="specLevel2" style="padding:12px 14px">
+          <option value="">选择二级分类</option>
+        </select>
+        <input type="text" id="specText" placeholder="填写规格，如：iPhone 15 256GB 黑色 官方正品" oninput="updateSpecPreview()">
+      </div>
+      <div id="specPreview" style="margin-top:8px;font-size:11px;color:var(--text3)"></div>
+
+      <!-- 物流与发货 -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>商品重量（kg）</label>
+          <input type="text" placeholder="如：0.5">
+        </div>
+        <div class="form-group">
+          <label>运费设置</label>
+          <select class="filter-select" style="width:100%;padding:12px 14px">
+            <option>全国包邮</option>
+            <option>按件计费</option>
+            <option>自定义运费</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>发货承诺</label>
+        <select class="filter-select" style="width:100%;padding:12px 14px">
+          <option>48小时内发货</option>
+          <option>72小时内发货</option>
+          <option>5天内发货</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>不支持发货区域</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <span class="status-badge gray" style="cursor:pointer">西藏</span>
+          <span class="status-badge gray" style="cursor:pointer">新疆</span>
+          <span class="status-badge gray" style="cursor:pointer">内蒙古</span>
+          <span class="status-badge gray" style="cursor:pointer">宁夏</span>
+          <span class="status-badge gray" style="cursor:pointer">青海</span>
+          <span class="status-badge gray" style="cursor:pointer">甘肃</span>
+          <button class="setting-edit-btn" style="margin-left:4px">+ 添加</button>
+        </div>
+      </div>
+
+<!-- 鉴宝流程（仅珠宝配饰/奢侈品显示） -->
+      <div id="appraisalSection" style="display:none">
+        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:16px">鉴宝流程</div>
+        <div class="form-group">
+          <label>选择鉴定机构</label>
+          <select class="filter-select" id="appraisalOrg" style="width:100%;padding:12px 14px">
+            <option>请选择鉴定机构</option>
+            <option>国检（NGTC）</option>
+            <option>省检</option>
+            <option>中检（CCIC）</option>
+            <option>其他权威机构</option>
+          </select>
+        </div>
+        <!-- 鉴定证书编号已移除 -->
+        <!-- 鉴宝流程图 -->
+        <div style="margin-top:12px;padding:16px;background:var(--bg);border-radius:10px">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px">🔍 鉴宝流程</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;position:relative">
+            <!-- 流程步骤 -->
+            <div style="display:flex;align-items:center;gap:0;flex:1;justify-content:space-between;position:relative">
+              <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1">
+                <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:18px;position:relative;z-index:1">📦</div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);text-align:center">商家寄送</div>
+                <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:2px">商品发货至平台</div>
+              </div>
+              <!-- 连接线 -->
+              <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));margin:0 4px;margin-bottom:28px"></div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1">
+                <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:18px;position:relative;z-index:1">🔬</div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);text-align:center">专业鉴定</div>
+                <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:2px">机构出具鉴定报告</div>
+              </div>
+              <!-- 连接线 -->
+              <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));margin:0 4px;margin-bottom:28px"></div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1">
+                <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:18px;position:relative;z-index:1">🏛️</div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);text-align:center">平台保管</div>
+                <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:2px">证书+商品平台保管</div>
+              </div>
+              <!-- 连接线 -->
+              <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));margin:0 4px;margin-bottom:28px"></div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:1">
+                <div style="width:44px;height:44px;background:linear-gradient(135deg,#2EAB5A,#3BC467);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:18px;position:relative;z-index:1">✅</div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);text-align:center">中签发货</div>
+                <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:2px">中签后安排发货</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:rgba(196,146,42,0.08);border-radius:8px;font-size:11px;color:var(--gold)">
+            ⚠️ 鉴定完成后商品和证书由平台保管，中签后直接发货，确保商品真实性
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品图片 -->
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:16px">商品图片</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <!-- 上传原图 -->
+        <div class="form-group" style="margin:0">
+          <label>上传商品原图（1张） <span style="color:var(--accent)">*</span></label>
+          <div style="border:2px dashed var(--border);border-radius:10px;padding:24px 16px;text-align:center;color:var(--text3);font-size:12px;cursor:pointer;transition:all .2s;margin-top:6px" onclick="this.style.borderColor='var(--accent)'">
+            <div style="font-size:28px;margin-bottom:6px;opacity:.4">📷</div>
+            <div style="font-weight:500;color:var(--text2);margin-bottom:4px">点击上传商品原图</div>
+            <div style="color:var(--text3);font-size:11px">支持 JPG/PNG，建议尺寸 800×800</div>
+          </div>
+        </div>
+        <!-- AI生成 -->
+        <div class="form-group" style="margin:0">
+          <label>AI智能生成</label>
+          <div style="margin-top:6px;display:flex;flex-direction:column;gap:8px">
+            <div style="background:rgba(217,58,46,0.06);border:1.5px solid rgba(217,58,46,0.2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s" onclick="this.style.borderColor='var(--accent)'">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">🎨 AI生成封面图</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">上传原图后自动生成，4套可选</div>
+              </div>
+              <button class="ai-btn" style="width:auto;padding:8px 16px;font-size:12px;margin:0;background:var(--accent)">生成</button>
+            </div>
+            <div style="background:rgba(196,146,42,0.06);border:1.5px solid rgba(196,146,42,0.2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s" onclick="this.style.borderColor='var(--gold)'">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">🖼️ AI生成详情图</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">包含卖点+规格+场景，9图组合</div>
+              </div>
+              <button class="ai-btn" style="width:auto;padding:8px 16px;font-size:12px;margin:0;background:var(--gold)">生成</button>
+            </div>
+          </div>
+          <div style="margin-top:8px;padding:10px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text3)">
+            💡 本月免费剩余：547次 · 已用：53次
+          </div>
+        </div>
+      </div>
+      <!-- 生成结果预览 -->
+      <div style="margin-top:12px;display:none" id="aiPreviewSection">
+        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">生成结果预览</div>
+        <div style="display:flex;gap:10px">
+          <div style="width:70px;height:70px;background:var(--bg2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);border:2px solid var(--border)">封面1</div>
+          <div style="width:70px;height:70px;background:var(--bg2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);border:2px solid var(--border)">封面2</div>
+          <div style="width:70px;height:70px;background:var(--bg2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);border:2px solid var(--border)">详情1</div>
+          <div style="width:70px;height:70px;background:var(--bg2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);border:2px solid var(--border)">详情2</div>
+        </div>
+      </div>
+
+      <!-- 玩法与定价 -->
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:16px">玩法与定价</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>市场参考价（元）</label>
+          <input type="text" id="marketPrice" placeholder="如：288" oninput="updatePricing倍数()">
+        </div>
+        <div class="form-group">
+          <label>定价倍数 <span style="color:var(--accent)">*</span></label>
+          <select class="filter-select" id="priceMultiple" onchange="updatePricing倍数()" style="width:100%;padding:12px 14px">
+            <option value="1.2">1.2x（Lv.1 新商家）</option>
+            <option value="1.4">1.4x（Lv.2）</option>
+            <option value="1.5" selected>1.5x（Lv.3）</option>
+            <option value="1.6">1.6x（Lv.4）</option>
+          </select>
+        </div>
+      </div>
+      <div id="priceCalcResult" style="margin-top:8px;padding:10px 12px;background:var(--bg);border-radius:8px;font-size:12px">
+        <span style="color:var(--text3)">商品售价（UMDT）</span>
+        <span style="font-family:'DM Mono',monospace;font-weight:700;margin-left:8px;font-size:15px">≈ 432 UMDT</span>
+      </div>
+
+      <!-- 抽签设置 -->
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:16px">抽签设置</div>
+      <div class="form-group">
+        <label>选择玩法 <span style="color:var(--accent)">*</span></label>
+        <select class="filter-select" id="lotteryMode" onchange="toggleLotteryMode(this.value)" style="width:100%;padding:12px 14px">
+          <option value="1vN">1对N（自由中签）</option>
+          <option value="1v1">1对1 SOLO</option>
+        </select>
+      </div>
+      <!-- 1对N模式 -->
+      <div id="lottery1vN">
+        <div class="form-row">
+          <div class="form-group">
+            <label>每人支付抽签（UMDT）</label>
+            <input type="number" id="perPersonUMDT" placeholder="如：10" value="10" oninput="updateTotalTickets()">
+          </div>
+          <div class="form-group">
+            <label>总签数 <span style="color:var(--text3);font-weight:400">(系统自动计算)</span></label>
+            <div id="totalTicketsDisplay" style="padding:12px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--accent)">—</div>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:8px">
+          <div class="form-group">
+            <label>单人最多签数（≤50%）</label>
+            <input type="number" id="maxPerPerson" placeholder="默认总签数÷2" value="25" oninput="updateTicketsInfo()">
+          </div>
+        </div>
+        <div id="ticketsInfo" style="margin-top:6px;font-size:11px;color:var(--text3)">每人限购 ≤25 签，— 人满签</div>
+      </div>
+      <!-- 1对1 SOLO模式 -->
+      <div id="lottery1v1" style="display:none;margin-top:10px;padding:12px;background:rgba(217,58,46,0.06);border:1.5px solid rgba(217,58,46,0.2);border-radius:8px;font-size:12px;color:var(--accent)">
+        💡 SOLO 模式：商品总价必须为偶数，每人各付一半，中签概率 50%
+      </div>
+
+      <!-- 智能参考定价 -->
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:16px">智能参考定价</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">天猫</div>
+          <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600">¥208</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">京东</div>
+          <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600">¥218</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">抖音</div>
+          <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600">¥225</div>
+        </div>
+        <div style="background:rgba(217,58,46,0.06);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">系统建议</div>
+          <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--accent)">¥291~360</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--gold);font-family:'DM Mono',monospace">💡 合理定价区间：1.4~1.6倍 · 您的定价倍数：1.5x（Lv.3上限）</div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('publishModal')">取消</button>
+      <button class="modal-btn" style="background:var(--bg);color:var(--text);border:1px solid var(--border)" onclick="saveDraft()">暂存</button>
+      <button class="modal-btn modal-btn-confirm" onclick="submitForReview()">提交审核</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: SPEC ===== -->
+<div class="modal-overlay" id="specModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="specModalTitle">新增规格</div>
+      <button class="modal-close" onclick="closeModal('specModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>一级分类</label>
+        <input type="text" id="specL1" placeholder="如：品牌、材质、颜色">
+      </div>
+      <div class="form-group">
+        <label>二级分类（用/分隔）</label>
+        <input type="text" id="specL2" placeholder="如：劳力士/欧米茄/卡地亚">
+      </div>
+      <div class="form-group">
+        <label>说明</label>
+        <input type="text" id="specDesc" placeholder="如：手表品牌">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('specModal')">取消</button>
+      <button class="modal-btn modal-btn-confirm" onclick="saveSpec()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: SHIP ===== -->
+<div class="modal-overlay" id="shipModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">填写发货信息</div>
+      <button class="modal-close" onclick="closeModal('shipModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:16px;font-size:13px">
+        <div style="font-weight:600;margin-bottom:6px">#KMO-20260530-8819</div>
+        <div>商品：戴森吹风机 HD15 · 中签人：李*琴 · 金额：128 UMDT</div>
+        <div style="margin-top:4px;color:var(--text3)">收件地址：广东省广州市天河区珠江新城花城大道88号</div>
+      </div>
+      <div class="form-group">
+        <label>快递公司</label>
+        <select class="filter-select" style="width:100%;padding:12px 14px">
+          <option>顺丰速运</option>
+          <option>中通快递</option>
+          <option>圆通速递</option>
+          <option>韵达快递</option>
+          <option>邮政EMS</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>快递单号</label>
+        <input type="text" placeholder="请输入快递单号">
+      </div>
+      <div class="form-group">
+        <label>发货备注（选填）</label>
+        <input type="text" placeholder="备注信息">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('shipModal')">取消</button>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('shipModal')">确认发货</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: LOGISTICS DETAIL ===== -->
+<div class="modal-overlay" id="logisticsModal">
+  <div class="modal" style="width:560px">
+    <div class="modal-header">
+      <div class="modal-title">物流详情</div>
+      <button class="modal-close" onclick="closeModal('logisticsModal')">×</button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <!-- 快递信息头部 -->
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg)">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:48px;height:48px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">📦</div>
+          <div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:4px" id="logisticsCode">SF1089234567</div>
+            <div style="font-size:12px;color:var(--text3)">顺丰速运 · 官方对接</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:2px">派送中</div>
+            <div style="font-size:11px;color:var(--text3)">预计明日 14:00 前送达</div>
+          </div>
+        </div>
+      </div>
+      <!-- 收货信息 -->
+      <div style="padding:16px 24px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">收件信息</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:2px">收件人</div>
+            <div style="font-size:13px;font-weight:500">王*明</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:2px">联系电话</div>
+            <div style="font-size:13px;font-weight:500;font-family:'DM Mono',monospace">186****7791</div>
+          </div>
+          <div style="grid-column:1/-1">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:2px">收货地址</div>
+            <div style="font-size:13px;font-weight:500">广东省深圳市南山区科技中道888号智慧大厦A栋1203室</div>
+          </div>
+        </div>
+      </div>
+      <!-- 物流时间轴 -->
+      <div style="padding:20px 24px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px">物流轨迹</div>
+        <div id="logisticsTimeline">
+          <div class="logistics-step active">
+            <div class="logistics-dot"></div>
+            <div class="logistics-line"></div>
+            <div class="logistics-content">
+              <div style="font-weight:600;font-size:13px;color:var(--text)">商品已从【深圳南山分部】发出，正在配送途中</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">2026-05-27 09:41 · 顺丰小哥 李** 正在为您派送</div>
+            </div>
+          </div>
+          <div class="logistics-step active">
+            <div class="logistics-dot"></div>
+            <div class="logistics-line"></div>
+            <div class="logistics-content">
+              <div style="font-weight:600;font-size:13px;color:var(--text)">快件已到达【深圳南山分部】，即将安排派送</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">2026-05-27 07:15 · 深圳南山分部</div>
+            </div>
+          </div>
+          <div class="logistics-step active">
+            <div class="logistics-dot"></div>
+            <div class="logistics-line"></div>
+            <div class="logistics-content">
+              <div style="font-weight:600;font-size:13px;color:var(--text)">快件已到达【深圳中转场】</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">2026-05-26 22:30 · 深圳中转场</div>
+            </div>
+          </div>
+          <div class="logistics-step active">
+            <div class="logistics-dot"></div>
+            <div class="logistics-line"></div>
+            <div class="logistics-content">
+              <div style="font-weight:600;font-size:13px;color:var(--text)">快件已发出，揽收成功</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">2026-05-26 18:08 · 旺达数码专营店（深圳市发货）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('logisticsModal')">关闭</button>
+      <button class="modal-btn modal-btn-confirm" onclick="window.open('https://www.sf-express.com','_blank')" style="display:flex;align-items:center;gap:6px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        官网查询
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: CHANGE PASSWORD ===== -->
+<div class="modal-overlay" id="passwordModal">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-title">修改密码</div>
+      <button class="modal-close" onclick="closeModal('passwordModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px">
+        <div class="form-label">当前密码</div>
+        <input class="form-input" type="password" placeholder="请输入当前密码">
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="form-label">新密码</div>
+        <input class="form-input" type="password" placeholder="8-20位，字母+数字组合">
+      </div>
+      <div style="margin-bottom:20px">
+        <div class="form-label">确认新密码</div>
+        <input class="form-input" type="password" placeholder="再次输入新密码">
+      </div>
+      <div style="padding:12px;background:rgba(196,76,44,0.06);border-radius:8px;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px">密码要求</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          · 长度8-20位<br>· 必须包含字母和数字<br>· 不能与当前密码相同
+        </div>
+      </div>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('passwordModal')" style="width:100%">确认修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: CHANGE PHONE ===== -->
+<div class="modal-overlay" id="phoneModal">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-title">更换手机</div>
+      <button class="modal-close" onclick="closeModal('phoneModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px">
+        <div class="form-label">已绑定手机</div>
+        <div style="padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text2)">138 **** 8888</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="form-label">新手机号</div>
+        <div style="display:flex;gap:10px">
+          <select style="width:90px;padding:12px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-size:14px;color:var(--text);outline:none">
+            <option>+86</option>
+            <option>+853</option>
+            <option>+852</option>
+            <option>+886</option>
+          </select>
+          <input class="form-input" type="tel" placeholder="输入新手机号" style="flex:1">
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div class="form-label">验证码</div>
+        <div style="display:flex;gap:10px">
+          <input class="form-input" type="text" placeholder="请输入验证码" style="flex:1">
+          <button style="width:110px;padding:0 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap">获取验证码</button>
+        </div>
+      </div>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('phoneModal')" style="width:100%">确认更换</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: BIND WECHAT ===== -->
+<div class="modal-overlay" id="wechatModal">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-title">微信绑定</div>
+      <button class="modal-close" onclick="closeModal('wechatModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 20px">
+        <div style="width:64px;height:64px;background:rgba(46,171,90,0.1);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+          <span style="font-size:32px">💬</span>
+        </div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:6px">已绑定微信号</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:20px">当前绑定：旺达数码（wxid_wangda2026）</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="form-label">新的微信号</div>
+        <input class="form-input" type="text" placeholder="请输入新的微信号">
+      </div>
+      <div style="margin-bottom:20px">
+        <div class="form-label">验证码</div>
+        <div style="display:flex;gap:10px">
+          <input class="form-input" type="text" placeholder="请输入验证码" style="flex:1">
+          <button style="width:110px;padding:0 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap">获取验证码</button>
+        </div>
+      </div>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('wechatModal')" style="width:100%">确认绑定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: DEVICE MANAGEMENT ===== -->
+<div class="modal-overlay" id="deviceModal">
+  <div class="modal" style="width:460px">
+    <div class="modal-header">
+      <div class="modal-title">登录设备管理</div>
+      <button class="modal-close" onclick="closeModal('deviceModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:16px">以下设备将收到登录异常通知提醒，移除后将退出该设备</div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;background:rgba(46,171,90,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">💻</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">MacBook Pro</div>
+              <div style="font-size:11px;color:var(--text3)">Chrome · 广东深圳 · 当前设备</div>
+            </div>
+          </div>
+          <button style="background:transparent;border:none;font-size:12px;color:var(--green);cursor:pointer;font-weight:600">移除</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📱</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">iPhone 15 Pro</div>
+              <div style="font-size:11px;color:var(--text3)">Safari · 广东深圳</div>
+            </div>
+          </div>
+          <button style="background:transparent;border:none;font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">移除此设备</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">💻</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">Windows PC</div>
+              <div style="font-size:11px;color:var(--text3)">Edge · 广东广州</div>
+            </div>
+          </div>
+          <button style="background:transparent;border:none;font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">移除此设备</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding:0 24px 24px">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('deviceModal')" style="width:100%">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: AI GENERATE ===== -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">AI生成商品图</div>
+      <button class="modal-close" onclick="closeModal('aiModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>选择商品</label>
+        <select class="filter-select" style="width:100%;padding:12px 14px">
+          <option>Apple iPhone 15 256GB</option>
+          <option>戴森吹风机 HD15</option>
+          <option>AirPods Pro 2</option>
+          <option>小米手环8 Pro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>图片类型</label>
+        <div style="display:flex;gap:10px">
+          <button class="filter-tab active" onclick="this.classList.add('active')" style="flex:1;text-align:center">商品主图</button>
+          <button class="filter-tab" onclick="this.classList.add('active')" style="flex:1;text-align:center">详情图</button>
+          <button class="filter-tab" onclick="this.classList.add('active')" style="flex:1;text-align:center">视频封面</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>上传商品原图（选填）</label>
+        <div style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;color:var(--text3);font-size:12px;cursor:pointer;transition:all .2s" onclick="this.style.borderColor='var(--accent)'">点击上传或拖拽图片，AI将基于原图生成优化版本</div>
+      </div>
+      <div style="padding:12px;background:rgba(196,146,42,0.06);border-radius:8px;font-size:12px;color:var(--gold);font-family:'DM Mono',monospace">
+        💡 Lv.3商家本月免费剩余：547次 · 超出部分¥1元/张
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('aiModal')">取消</button>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('aiModal')" style="background:var(--gold)">开始生成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: AD BOOKING ===== -->
+<div class="modal-overlay" id="adModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">预约广告栏位</div>
+      <button class="modal-close" onclick="closeModal('adModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>选择日期</label>
+        <input type="date" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Noto Sans SC',sans-serif;background:var(--bg);outline:none;color:var(--text)">
+      </div>
+      <div class="form-group">
+        <label>选择时段（每次12小时）</label>
+        <div class="ad-schedule">
+          <div class="ad-time-slot selected">00:00 - 12:00</div>
+          <div class="ad-time-slot">12:00 - 24:00</div>
+          <div class="ad-time-slot">全天（24小时）</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>关联商品（展示在广告中）</label>
+        <select class="filter-select" style="width:100%;padding:12px 14px">
+          <option>iPhone 15 256GB（在线）</option>
+          <option>戴森吹风机 HD15（在线）</option>
+          <option>AirPods Pro 2（在线）</option>
+          <option>小米手环8 Pro（在线）</option>
+        </select>
+      </div>
+      <div style="padding:12px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text3)">
+        <div style="margin-bottom:4px">📌 预约规则：</div>
+        <div>· Lv.3商家每月可预约30次，每次12小时</div>
+        <div>· 当前剩余：27次</div>
+        <div>· 已预约时段可随时取消</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('adModal')">取消</button>
+      <button class="modal-btn modal-btn-confirm" onclick="closeModal('adModal')">确认预约</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Logout - return to login page
+function logoutToLogin() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('adminPage').classList.remove('active');
+}
+
+// 商品规格联动
+var specLevel2Options = {
+  '品牌': ['苹果', '三星', '华为', '小米', 'OPPO', 'vivo', '索尼', 'LV', 'Gucci', '其他'],
+  '型号': ['旗舰款', '标准款', '青春版', 'Pro版', 'Ultra版', '折叠款', '常规款', '其他'],
+  '材质': ['钛金属', '不锈钢', '铝合金', '塑料', '真皮', 'PU皮', '绸缎', '18K金', '925银', '其他'],
+  '颜色': ['黑色', '白色', '金色', '银色', '蓝色', '绿色', '紫色', '粉色', '红色', '灰色'],
+  '尺寸': ['Mini', 'Small', 'Medium', 'Large', 'XL', 'XXL', '均码', '定制'],
+  '容量': ['64GB', '128GB', '256GB', '512GB', '1TB', '2TB', '32GB', '其他'],
+  '款式': ['复古', '现代', '商务', '休闲', '运动', '潮流', '简约', '奢华'],
+  '其他': ['标配', '高配', '顶配', '限量版', '典藏版', '纪念版', '定制款']
+};
+
+function updateSpecLevel2() {
+  var l1 = document.getElementById('specLevel1').value;
+  var l2 = document.getElementById('specLevel2');
+  l2.innerHTML = '<option value="">选择二级分类</option>';
+  if (l1 && specLevel2Options[l1]) {
+    specLevel2Options[l1].forEach(function(opt) {
+      var o = document.createElement('option');
+      o.text = opt;
+      l2.appendChild(o);
+    });
+  }
+  updateSpecPreview();
+}
+
+function updateSpecPreview() {
+  var l1 = document.getElementById('specLevel1').value;
+  var l2 = document.getElementById('specLevel2').value;
+  var txt = document.getElementById('specText').value;
+  var parts = [l1, l2, txt].filter(function(v) { return v; });
+  var preview = document.getElementById('specPreview');
+  if (parts.length > 0) {
+    preview.textContent = '📋 当前规格：' + parts.join(' · ');
+  } else {
+    preview.textContent = '';
+  }
+}
+
+// 抽签设置 - 切换玩法模式
+function toggleLotteryMode(mode) {
+  var div1vN = document.getElementById('lottery1vN');
+  var div1v1 = document.getElementById('lottery1v1');
+  if (mode === '1vN') {
+    div1vN.style.display = 'block';
+    div1v1.style.display = 'none';
+  } else {
+    div1vN.style.display = 'none';
+    div1v1.style.display = 'block';
+  }
+}
+
+// 获取商品售价（UMDT）
+function getProductPriceUMDT() {
+  var market = parseFloat(document.getElementById('marketPrice').value) || 0;
+  var multiple = parseFloat(document.getElementById('priceMultiple').value) || 1;
+  return Math.round(market * multiple);
+}
+
+// 更新定价倍数计算结果
+function updatePricing倍数() {
+  var result = getProductPriceUMDT();
+  var el = document.getElementById('priceCalcResult');
+  if (result > 0) {
+    el.innerHTML = '<span style="color:var(--text3)">商品售价（UMDT）</span><span style="font-family:\'DM Mono\',monospace;font-weight:700;margin-left:8px;font-size:15px">≈ ' + result + ' UMDT</span>';
+  }
+  updateTotalTickets(); // 价格变化时同步更新总签数
+}
+
+// 更新总签数 = 商品售价 / 每人支付UMDT
+function updateTotalTickets() {
+  var productPrice = getProductPriceUMDT();
+  var perPerson = parseFloat(document.getElementById('perPersonUMDT').value) || 0;
+  var display = document.getElementById('totalTicketsDisplay');
+  if (productPrice > 0 && perPerson > 0) {
+    var total = Math.floor(productPrice / perPerson);
+    display.textContent = total;
+    updateTicketsInfo(total);
+  } else {
+    display.textContent = '—';
+  }
+}
+
+// 更新签数信息
+function updateTicketsInfo(total) {
+  var max = parseInt(document.getElementById('maxPerPerson').value) || Math.floor(total / 2);
+  var el = document.getElementById('ticketsInfo');
+  if (total > 0) {
+    var maxAllowed = Math.floor(total * 0.5);
+    var fullCount = Math.ceil(total / maxAllowed);
+    el.textContent = '每人限购 ≤' + maxAllowed + ' 签，满签 ' + total + ' 人';
+  }
+}
+
+// 鉴宝流程 - 商品分类为珠宝配饰/奢侈品时显示
+function toggleAppraisal(category) {
+  var section = document.getElementById('appraisalSection');
+  if (category === '珠宝配饰' || category === '奢侈品') {
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+}
+
+// Show today's date in header
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('zh-CN', {
+  year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short'
+}).replace(/\//g, '-');
+
+// Show admin
+function showAdmin() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminPage').classList.add('active');
+}
+
+// 暂存商品
+function saveDraft() {
+  closeModal('publishModal');
+  alert('✅ 商品已暂存，可在"商品管理"中找到编辑');
+}
+
+// 提交审核
+function submitForReview() {
+  closeModal('publishModal');
+  alert('✅ 商品已提交审核，审核通过后自动上架');
+}
+
+// 商品管理：编辑按钮逻辑
+function editProduct(btn) {
+  var card = btn.closest('.product-card');
+  var zoneTag = card.querySelector('.product-zone-tag');
+  var statusEl = card.querySelector('.product-status');
+
+  // 已上架商品不允许编辑
+  if (statusEl && statusEl.classList.contains('online')) {
+    alert('⚠️ 该商品已上架，暂不支持编辑');
+    return;
+  }
+  // 待审核商品不允许编辑
+  if (zoneTag && (zoneTag.textContent.trim() === '待审核' || zoneTag.textContent.trim() === '已结束')) {
+    alert('⚠️ 该商品' + (zoneTag.textContent.trim() === '待审核' ? '正在审核中' : '已结束') + '，暂不支持编辑');
+    return;
+  }
+  showModal('publishModal');
+}
+
+// 商品管理：下架按钮逻辑
+function offshelfProduct(btn) {
+  var card = btn.closest('.product-card');
+  var statusEl = card.querySelector('.product-status');
+  if (statusEl && statusEl.classList.contains('online')) {
+    if (confirm('确定要下架该商品吗？')) {
+      statusEl.classList.remove('online');
+      statusEl.classList.add('offline');
+      card.querySelector('.product-actions').innerHTML = '<button class="btn-edit" onclick="editProduct(this)">编辑</button><button class="btn-del" onclick="deleteProduct(this)">删除</button>';
+      alert('商品已下架');
+    }
+  } else {
+    deleteProduct(btn);
+  }
+}
+
+// 商品管理：删除按钮逻辑
+function deleteProduct(btn) {
+  if (confirm('确定要删除该商品吗？')) {
+    var card = btn.closest('.product-card');
+    card.style.transform = 'scale(0.8)';
+    card.style.opacity = '0';
+    setTimeout(function() { card.remove(); }, 200);
+  }
+}
+
+// 商品规格管理：编辑行
+function editSpecRow(btn) {
+  var tr = btn.closest('tr');
+  var tds = tr.querySelectorAll('td');
+  var l1 = tds[0].textContent.trim();
+  var l2 = tds[1].textContent.trim();
+  var desc = tds[2].textContent.trim();
+  var newL1 = prompt('一级分类', l1);
+  if (newL1 === null) return;
+  var newL2 = prompt('二级分类（用/分隔）', l2);
+  if (newL2 === null) return;
+  var newDesc = prompt('说明', desc);
+  if (newDesc === null) return;
+  tds[0].textContent = newL1;
+  tds[1].textContent = newL2;
+  tds[2].textContent = newDesc;
+}
+
+// 商品规格管理：删除行
+function deleteSpecRow(btn) {
+  if (confirm('确定要删除该规格吗？')) {
+    var tr = btn.closest('tr');
+    tr.style.opacity = '0';
+    setTimeout(function() { tr.remove(); }, 200);
+    updateSpecsCount();
+  }
+}
+
+// 更新规格数量统计
+function updateSpecsCount() {
+  var rows = document.querySelectorAll('#specsTable tr');
+  var countEl = document.querySelector('#page-specs .page-title + div + div');
+  if (countEl) {
+    countEl.textContent = '共 ' + rows.length + ' 条规格分类';
+  }
+}
+
+// 保存规格（新增/编辑）
+function saveSpec() {
+  var l1 = document.getElementById('specL1').value.trim();
+  var l2 = document.getElementById('specL2').value.trim();
+  var desc = document.getElementById('specDesc').value.trim();
+  if (!l1 || !l2) {
+    alert('请填写一级分类和二级分类');
+    return;
+  }
+  var tbody = document.getElementById('specsTable');
+  var tr = document.createElement('tr');
+  tr.style.borderBottom = '1px solid var(--border)';
+  tr.innerHTML = '<td style="padding:12px 16px;font-size:13px;color:var(--text)">' + l1 + '</td>' +
+    '<td style="padding:12px 16px;font-size:13px;color:var(--text3)">' + l2 + '</td>' +
+    '<td style="padding:12px 16px;font-size:12px;color:var(--text3)">' + desc + '</td>' +
+    '<td style="padding:12px 16px;text-align:center">' +
+    '<button onclick="editSpecRow(this)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-right:8px">编辑</button>' +
+    '<button onclick="deleteSpecRow(this)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px">删除</button></td>';
+  tbody.appendChild(tr);
+  updateSpecsCount();
+  closeModal('specModal');
+  document.getElementById('specL1').value = '';
+  document.getElementById('specL2').value = '';
+  document.getElementById('specDesc').value = '';
+}
+
+// Page navigation
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const activeNav = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (activeNav) activeNav.classList.add('active');
+
+  const titles = {
+    dashboard: '数据概览',
+    products: '商品管理',
+    specs: '商品规格管理',
+    orders: '订单管理',
+    logistics: '物流管理',
+    credit: '诚信体系',
+    ads: '广告栏位管理',
+    'ai-tools': 'AI智能工具',
+    customers: '客户管理',
+    settings: '店铺设置'
+  };
+  document.getElementById('headerTitle').textContent = titles[page] || page;
+
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// Modal
+function showModal(id) {
+  document.getElementById(id).classList.add('active');
+  if (id === 'publishModal') {
+    updateTotalTickets(); // 打开发布弹窗时初始化总签数
+  }
+}
+function showLogisticsModal(code) {
+  document.getElementById('logisticsCode').textContent = code;
+  document.getElementById('logisticsModal').classList.add('active');
+}
+function switchSecTab(tab, btn) {
+  document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[id^="secContent-"]').forEach(c => c.style.display = 'none');
+  document.getElementById('secContent-' + tab).style.display = 'block';
+}
+function toggleSecurity(btn) {
+  btn.classList.toggle('active');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+});
+
+// Toggle sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Filter tabs
+function filterProducts(el, type) {
+  el.parentElement.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Toggle switches
+document.querySelectorAll('.toggle').forEach(t => {
+  t.addEventListener('click', function() { this.classList.toggle('active'); });
+});
+
+// Ad time slots
+document.querySelectorAll('.ad-time-slot').forEach(slot => {
+  slot.addEventListener('click', function() {
+    document.querySelectorAll('.ad-time-slot').forEach(s => s.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+// Send code button
+function sendCode() {
+  const btn = document.querySelector('.verify-btn');
+  btn.textContent = '59s';
+  btn.disabled = true;
+  btn.style.background = 'var(--bg)';
+  btn.style.color = 'var(--text3)';
+  let t = 59;
+  const interval = setInterval(() => {
+    t--;
+    btn.textContent = t + 's';
+    if (t <= 0) {
+      clearInterval(interval);
+      btn.textContent = '获取验证码';
+      btn.disabled = false;
+      btn.style.background = '';
+      btn.style.color = '';
+    }
+  }, 1000);
+}
+
+// Simulate login
+document.querySelector('.login-btn').addEventListener('click', showAdmin);
+
+// Messages
+function filterMsgs(btn, type) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // In a real app, filter the message list here
+}
+function markAllRead() {
+  document.querySelectorAll('.msg-item.unread').forEach(item => item.classList.remove('unread'));
+  document.getElementById('msgBadge').style.display = 'none';
+}
+function showMsgDetail(id) {
+  // In a real app, show the message detail
+}
+</script>
+</body>
+</html>
