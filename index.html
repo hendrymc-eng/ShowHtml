@@ -285,6 +285,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .card-visual.game{background:linear-gradient(145deg,#fff7f3,#f2fff8)}
 .card-visual.commerce{background:linear-gradient(145deg,#f8f3ff,#fff7df)}
 .card-visual.admin{background:linear-gradient(145deg,#f0f4ff,#e8f0fe)}
+.card-visual.charity{background:linear-gradient(145deg,#fff5f5,#fde8e8)}
 .card-visual.merchant{background:linear-gradient(145deg,#fff9e6,#fff3cc)}
 .card-visual.opulrich{background:linear-gradient(145deg,#e8f0fe,#d0e0ff)}
 .card-visual::before{
@@ -363,6 +364,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .tag-frontend{background:#ddf8eb;color:#05724b}
 .tag-admin{background:#e0e8ff;color:#2240a5}
 .tag-merchant{background:#fff3c4;color:#7a5500}
+.tag-charity{background:#fde2de;color:#9b1c1c}
 .tag-opulrich{background:linear-gradient(90deg,#1e3a5f,#0f2744);color:#fbbf24}
 .name-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}
 .name-row h3{font-size:22px;font-weight:900}
@@ -446,17 +448,18 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
       <nav class="nav-block" aria-label="原型分类">
         <div class="nav-title">Filter</div>
         <div class="filter-row">
-          <button class="chip active" type="button" onclick="filter('all',this)">全部 <i id="countAll">05</i></button>
+          <button class="chip active" type="button" onclick="filter('all',this)">全部 <i id="countAll">06</i></button>
           <button class="chip" type="button" onclick="filter('game',this)">游戏娱乐 <i>01</i></button>
           <button class="chip" type="button" onclick="filter('ecommerce',this)">电商平台 <i>01</i></button>
           <button class="chip" type="button" onclick="filter('admin',this)">管理后台 <i>02</i></button>
+          <button class="chip" type="button" onclick="filter('charity',this)">公益平台 <i>01</i></button>
         </div>
       </nav>
     </div>
 
     <div class="side-bottom">
       <div class="metric-strip">
-        <div class="mini-stat"><b id="protoCount">5</b><span>可查看</span></div>
+        <div class="mini-stat"><b id="protoCount">6</b><span>可查看</span></div>
         <div class="mini-stat"><b>11</b><span>流程点</span></div>
         <div class="mini-stat"><b>4</b><span>方向</span></div>
       </div>
@@ -534,13 +537,54 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     <div class="toolbar" id="gallery">
       <div>
         <h2>原型展台</h2>
-        <p>当前显示 <span id="visibleCount">5</span> 个作品，点击项目进入体验。</p>
+        <p>当前显示 <span id="visibleCount">6</span> 个作品，点击项目进入体验。</p>
       </div>
       <div class="sort-pill">UPDATED · 2026.05</div>
     </div>
 
     <section class="content" id="content">
-      <article class="card" id="card1" data-cat="admin">
+      <article class="card" id="card1" data-cat="charity">
+        <div class="card-visual charity">
+          <span class="card-code">CHARITY · OFFICIAL SITE</span>
+          <div class="status-light"><span></span><span></span><span></span></div>
+          <div class="phone-wrap idle" id="phoneWrap1">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-inner" style="background:#fdf6f0;flex-direction:column;">
+                  <div style="height:30px;background:#c0392b;display:flex;align-items:center;padding:0 10px;justify-content:space-between;">
+                    <span style="font:700 9px 'DM Mono',monospace;color:#fff">慈商联营</span>
+                    <div style="display:flex;gap:4px;">
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5)"></div>
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5)"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:6px;">
+                    <div style="background:#c0392b;border-radius:7px;padding:8px;text-align:center">
+                      <div style="font-size:8px;color:rgba(255,255,255,.8)">帮扶总人数</div>
+                      <div style="font-size:16px;font-weight:900;color:#fff;font-family:'DM Mono',monospace;">12,480</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px">
+                      <div style="background:#fff;border-radius:5px;padding:5px;text-align:center"><div style="font-size:12px">🤝</div><div style="font-size:7px;color:#666">帮扶广场</div></div>
+                      <div style="background:#fff;border-radius:5px;padding:5px;text-align:center"><div style="font-size:12px">💰</div><div style="font-size:7px;color:#666">善款公示</div></div>
+                      <div style="background:#fff;border-radius:5px;padding:5px;text-align:center"><div style="font-size:12px">🏛️</div><div style="font-size:7px;color:#666">项目展示</div></div>
+                      <div style="background:#fff;border-radius:5px;padding:5px;text-align:center"><div style="font-size:12px">📋</div><div style="font-size:7px;color:#666">关于我们</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-caption"><span>CHARITY PLATFORM</span><span>HELP · DONATE · TRANSPARENT</span></div>
+        </div>
+        <div class="card-info">
+          <div class="tags"><span class="tag tag-charity">公益平台</span></div>
+          <div class="name-row"><h3>慈商联营 · 官网</h3><span class="ver">v1.0</span></div>
+          <p class="desc">慈商联营慈善平台官网，展示帮扶项目、善款公示、企业合作等信息，连接爱心企业与受助者，打造透明公益生态。</p>
+          <div class="bottom"><span class="meta">2026.05 · HTML · 8 大模块</span><button class="action" type="button" onclick="openProto('charity/index.html')">查看原型 <span>↗</span></button></div>
+        </div>
+      </article>
+
+      <article class="card" id="card2" data-cat="admin">
         <div class="card-visual admin">
           <span class="card-code">KUMOO / ADMIN DASHBOARD</span>
           <div class="status-light"><span></span><span></span><span></span></div>
@@ -592,7 +636,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
         </div>
       </article>
 
-<article class="card" id="card2" data-cat="admin">
+<article class="card" id="card3" data-cat="admin">
         <div class="card-visual merchant">
           <span class="card-code">KUMOO / MERCHANT PANEL</span>
           <div class="status-light"><span></span><span></span><span></span></div>
@@ -645,7 +689,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
         </div>
       </article>
 
-<article class="card" id="card3" data-cat="game">
+<article class="card" id="card4" data-cat="game">
         <div class="card-visual game">
           <span class="card-code">SQK / MOBILE GAME</span>
           <div class="status-light"><span></span><span></span><span></span></div>
@@ -678,7 +722,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
         </div>
       </article>
 
-<article class="card" id="card4" data-cat="frontend ecommerce">
+<article class="card" id="card5" data-cat="frontend ecommerce">
         <div class="card-visual commerce">
           <span class="card-code">KUMOO / FIGMA SITE</span>
           <div class="status-light"><span></span><span></span><span></span></div>
@@ -707,7 +751,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
         </div>
       </article>
 
-      <article class="card" data-cat="opulrich" id="card5">
+      <article class="card" data-cat="opulrich" id="card6">
         <div class="card-visual opulrich">
           <span class="card-code">OPULRICH · WEB PLATFORM</span>
           <div class="status-light"><span></span><span></span><span></span></div>
