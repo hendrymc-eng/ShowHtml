@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>领取记录 — 李华 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📋 领取记录</h1>
+        <div class="sub">所有已领取的物资记录</div>
+      </div>
+      <a href="dashboard.html" class="btn btn-ghost">← 返回</a>
+    </div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📦</div>
+        <div class="label">累计领取</div>
+        <div class="value">12</div>
+        <div class="trend">次</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">💝</div>
+        <div class="label">物资总数</div>
+        <div class="value">86</div>
+        <div class="trend">件</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">💰</div>
+        <div class="label">受惠价值</div>
+        <div class="value">¥ 1,860</div>
+        <div class="trend">累计</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">⭐</div>
+        <div class="label">平均评分</div>
+        <div class="value">5.0</div>
+        <div class="trend">满分好评</div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6" style="padding:0;overflow:hidden;">
+      <table class="table" style="border:none;border-radius:0;">
+        <thead>
+          <tr><th>领取时间</th><th>物资</th><th>数量</th><th>捐赠企业</th><th>责任社工</th><th>评分</th><th>状态</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-06-01 14:00</td>
+            <td>🍞 美心临期面包</td>
+            <td>8 件</td>
+            <td>美心食品集团</td>
+            <td>张伟</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+          <tr>
+            <td>2025-05-15 10:30</td>
+            <td>🥛 伊利儿童牛奶</td>
+            <td>6 盒</td>
+            <td>伊利集团</td>
+            <td>张伟</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+          <tr>
+            <td>2025-04-20 16:00</td>
+            <td>🍙 端午粽子礼盒</td>
+            <td>2 盒</td>
+            <td>五芳斋</td>
+            <td>李梅</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+          <tr>
+            <td>2025-03-10 09:30</td>
+            <td>🍬 儿童节零食</td>
+            <td>3 份</td>
+            <td>美心食品集团</td>
+            <td>张伟</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+          <tr>
+            <td>2025-02-15 11:00</td>
+            <td>🥛 春节牛奶礼盒</td>
+            <td>2 份</td>
+            <td>伊利集团</td>
+            <td>张伟</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+          <tr>
+            <td>2025-01-15 14:00</td>
+            <td>🧥 春节暖心包</td>
+            <td>1 份</td>
+            <td>波司登</td>
+            <td>李梅</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td><span class="tag tag-success">已签收</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('受捐者', '李华');
+  CS.renderSidebar('recipient', 'history');
+</script>
+</body>
+</html>

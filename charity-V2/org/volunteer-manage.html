@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>志愿者管理 — 深圳市壹基金 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>👥 志愿者管理</h1>
+        <div class="sub">管理本组织的志愿者</div>
+      </div>
+      <button class="btn btn-primary">+ 添加志愿者</button>
+    </div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">👤</div>
+        <div class="label">志愿者总数</div>
+        <div class="value">86</div>
+        <div class="trend">本月新增 12</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">✅</div>
+        <div class="label">已认证</div>
+        <div class="value">80</div>
+        <div class="trend">认证率 93%</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">🌟</div>
+        <div class="label">本月活跃</div>
+        <div class="value">62</div>
+        <div class="trend">月活跃</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">⏰</div>
+        <div class="label">总服务时长</div>
+        <div class="value">1,860<span class="unit">h</span></div>
+        <div class="trend">本年</div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6" style="padding:0;overflow:hidden;">
+      <table class="table" style="border:none;border-radius:0;">
+        <thead>
+          <tr><th>姓名</th><th>角色</th><th>区域</th><th>可服务领域</th><th>本月服务</th><th>状态</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>张同学</strong></td><td>志愿者</td><td>深圳南山</td><td>助学</td><td>32h</td><td><span class="tag tag-success">活跃</span></td><td><a href="#" class="btn-link">详情</a></td></tr>
+          <tr><td><strong>李大姐</strong></td><td>社工</td><td>深圳福田</td><td>济困</td><td>28h</td><td><span class="tag tag-success">活跃</span></td><td><a href="#" class="btn-link">详情</a></td></tr>
+          <tr><td><strong>王医生</strong></td><td>医务志愿者</td><td>深圳罗湖</td><td>医疗</td><td>20h</td><td><span class="tag tag-success">活跃</span></td><td><a href="#" class="btn-link">详情</a></td></tr>
+          <tr><td><strong>陈老师</strong></td><td>志愿者</td><td>深圳宝安</td><td>支教</td><td>16h</td><td><span class="tag tag-success">活跃</span></td><td><a href="#" class="btn-link">详情</a></td></tr>
+          <tr><td><strong>赵先生</strong></td><td>志愿者</td><td>深圳龙岗</td><td>应急</td><td>0h</td><td><span class="tag tag-warning">待审核</span></td><td><a href="#" class="btn-link text-success">通过</a> · <a href="#" class="btn-link text-danger">拒绝</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('社会组织', '李秘书长');
+  CS.renderSidebar('org', 'volunteer-manage');
+</script>
+</body>
+</html>

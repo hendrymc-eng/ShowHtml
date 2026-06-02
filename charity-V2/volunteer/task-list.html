@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>派发任务 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .task-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 16px; transition: all var(--t); }
+  .task-card:hover { box-shadow: var(--shadow-md); }
+  .task-card.urgent { border-left: 4px solid #DC2626; }
+  .task-card .head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .task-card .head h3 { font-size: 16px; }
+  .task-card .body { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 12px; padding: 12px 0; }
+  .task-card .body .item .lbl { font-size: 11px; color: var(--color-text-3); }
+  .task-card .body .item .val { font-size: 14px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📋 派发任务</h1>
+        <div class="sub">领取的物资派发任务</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">全部 <span class="count">3</span></div>
+      <div class="tab">待执行</div>
+      <div class="tab">派发中</div>
+      <div class="tab">已完成</div>
+    </div>
+
+    <div class="task-card urgent">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-danger">🚨 紧急</span>
+            <span class="tag tag-primary">派发中</span>
+          </div>
+          <h3>云南昭通地震救援 · 帐篷棉被派发</h3>
+        </div>
+        <a href="task-detail.html" class="btn btn-primary btn-sm">扫码派发 →</a>
+      </div>
+      <div class="body">
+        <div class="item">
+          <div class="lbl">物资</div>
+          <div class="val">320 顶帐篷 / 1,260 床棉被</div>
+        </div>
+        <div class="item">
+          <div class="lbl">责任慈善会</div>
+          <div class="val">云南省慈善总会</div>
+        </div>
+        <div class="item">
+          <div class="lbl">受捐地区</div>
+          <div class="val">云南昭通鲁甸县</div>
+        </div>
+        <div class="item">
+          <div class="lbl">派发进度</div>
+          <div class="val">320 / 500 户</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-primary">派发中</span>
+            <span class="tag tag-trust">流程一</span>
+          </div>
+          <h3>美心临期面包 · 五华县派发</h3>
+        </div>
+        <a href="task-detail.html" class="btn btn-ghost btn-sm">查看详情 →</a>
+      </div>
+      <div class="body">
+        <div class="item">
+          <div class="lbl">物资</div>
+          <div class="val">1,200 件临期面包</div>
+        </div>
+        <div class="item">
+          <div class="lbl">责任慈善会</div>
+          <div class="val">广东省慈善总会</div>
+        </div>
+        <div class="item">
+          <div class="lbl">受捐地区</div>
+          <div class="val">广东梅州五华县</div>
+        </div>
+        <div class="item">
+          <div class="lbl">派发进度</div>
+          <div class="val">56 / 86 户</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-primary">派发中</span>
+            <span class="tag tag-trust">流程一</span>
+          </div>
+          <h3>伊利儿童牛奶 · 河源派发</h3>
+        </div>
+        <a href="task-detail.html" class="btn btn-ghost btn-sm">查看详情 →</a>
+      </div>
+      <div class="body">
+        <div class="item">
+          <div class="lbl">物资</div>
+          <div class="val">600 盒牛奶</div>
+        </div>
+        <div class="item">
+          <div class="lbl">责任慈善会</div>
+          <div class="val">广东省慈善总会</div>
+        </div>
+        <div class="item">
+          <div class="lbl">受捐地区</div>
+          <div class="val">广东河源</div>
+        </div>
+        <div class="item">
+          <div class="lbl">派发进度</div>
+          <div class="val">18 / 60 户</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('志愿者', '张伟');
+  CS.renderSidebar('volunteer', 'task-list');
+</script>
+</body>
+</html>

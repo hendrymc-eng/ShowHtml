@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业品宣主页 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .page-cover {
+    background: linear-gradient(135deg, #E85D04 0%, #C4842A 100%);
+    border-radius: var(--radius-md); padding: 40px; margin-bottom: 24px;
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .page-cover::after {
+    content: '🏢'; position: absolute; right: 30px; top: 30px; font-size: 240px; opacity: 0.1;
+  }
+  .page-cover .name { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+  .page-cover .slogan { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+  .page-cover .stats { display: flex; gap: 32px; }
+  .page-cover .stats .item .n { font-size: 28px; font-weight: 800; }
+  .page-cover .stats .item .l { font-size: 12px; color: rgba(255,255,255,0.8); }
+
+  .achievement-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .achievement { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .achievement .ic { font-size: 36px; margin-bottom: 8px; }
+  .achievement .t { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .achievement .d { font-size: 12px; color: var(--color-text-3); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>🏢 企业品宣主页</h1>
+        <div class="sub">对外展示企业的公益形象、捐赠历史、ESG 表现</div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost">👁️ 预览主页</button>
+        <button class="btn btn-primary">📤 发布更新</button>
+      </div>
+    </div>
+
+    <!-- 主页预览 -->
+    <div class="page-cover">
+      <div class="text-sm mb-2">📍 企业品宣主页预览</div>
+      <div class="name">美心食品集团</div>
+      <div class="slogan">用食品传递温暖 · 让每一份美味都不被浪费</div>
+      <div class="flex gap-2 mb-4">
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">🏆 年度标杆企业</span>
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">★ 五星企业</span>
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">✓ 资质已认证</span>
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">入驻 2 年</span>
+      </div>
+      <div class="stats">
+        <div class="item"><div class="n">¥ 1,860万</div><div class="l">累计捐赠价值</div></div>
+        <div class="item"><div class="n">126,800</div><div class="l">受惠人次</div></div>
+        <div class="item"><div class="n">128</div><div class="l">捐赠次数</div></div>
+        <div class="item"><div class="n">32</div><div class="l">覆盖省市</div></div>
+        <div class="item"><div class="n">98.6</div><div class="l">慈善评分</div></div>
+      </div>
+    </div>
+
+    <!-- 主页信息编辑 -->
+    <div class="dash-card">
+      <div class="card-head">
+        <h3>📝 主页信息编辑</h3>
+        <span class="text-sm text-muted">最后更新 2025-05-20 14:30</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">企业名称</label>
+          <input type="text" class="form-control" value="美心食品集团">
+        </div>
+        <div class="form-group">
+          <label class="form-label">企业简称</label>
+          <input type="text" class="form-control" value="美心食品">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">所属行业</label>
+          <input type="text" class="form-control" value="食品饮料 · 烘焙连锁">
+        </div>
+        <div class="form-group">
+          <label class="form-label">企业规模</label>
+          <select class="form-select"><option>500-1000 人</option><option>1000-5000 人</option><option>5000+ 人</option></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">品牌 Slogan</label>
+        <input type="text" class="form-control" value="用食品传递温暖 · 让每一份美味都不被浪费">
+        <div class="form-hint">建议 20 字以内，凸显企业公益理念</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">企业介绍（对外展示）</label>
+        <textarea class="form-textarea" rows="4">美心食品集团创立于 1956 年，是香港及华南地区领先的食品企业。集团秉持"以善心做食品"的理念，连续 5 年开展"临期 0 浪费"项目，将临期食品定向捐赠至 32 个城市的困难家庭，已累计捐赠 86 万件，减少碳排放 1,260 吨。</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">📷 企业 LOGO</label>
+          <div class="flex gap-2 items-center">
+            <div style="width:80px;height:80px;border-radius:12px;background:linear-gradient(135deg,#E85D04,#C4842A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;">美</div>
+            <button class="btn btn-ghost btn-sm">📤 更换</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🖼️ 主页背景图</label>
+          <div class="flex gap-2 items-center">
+            <div style="width:120px;height:60px;border-radius:8px;background:linear-gradient(135deg,#E85D04,#C4842A);"></div>
+            <button class="btn btn-ghost btn-sm">📤 更换</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 公益成就 -->
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>🏅 公益成就</h3>
+        <button class="btn btn-ghost btn-sm">+ 添加成就</button>
+      </div>
+      <div class="achievement-grid">
+        <div class="achievement">
+          <div class="ic">🏆</div>
+          <div class="t">年度标杆企业</div>
+          <div class="d">2024 年度慈商联营 TOP 1</div>
+        </div>
+        <div class="achievement">
+          <div class="ic">🌟</div>
+          <div class="t">五星企业认证</div>
+          <div class="d">综合评分 98.6</div>
+        </div>
+        <div class="achievement">
+          <div class="ic">🌱</div>
+          <div class="t">减碳先锋</div>
+          <div class="d">2024 减碳 1,260 吨</div>
+        </div>
+        <div class="achievement">
+          <div class="ic">💝</div>
+          <div class="t">百万捐赠企业</div>
+          <div class="d">累计捐赠突破 100 万</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 捐赠历史展示 -->
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📜 捐赠历史精选</h3>
+        <a href="donation-list.html" class="more">查看全部 →</a>
+      </div>
+      <div class="grid grid-2">
+        <div class="dash-list-item" style="border:1px solid var(--color-border);">
+          <div class="icon" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);font-size:24px;">🍞</div>
+          <div class="body">
+            <div class="title">临期面包糕点 · 春节专项捐赠</div>
+            <div class="meta">2,000 份 · ¥ 128,000 · 2025-01-15</div>
+            <div class="text-sm text-muted mt-1">覆盖全国 8 省 · 受惠 6,800 人</div>
+          </div>
+        </div>
+        <div class="dash-list-item" style="border:1px solid var(--color-border);">
+          <div class="icon" style="background:linear-gradient(135deg,#FAEFD9,#FFE4D2);font-size:24px;">🍬</div>
+          <div class="body">
+            <div class="title">儿童节零食大礼包</div>
+            <div class="meta">1,500 份 · ¥ 78,000 · 2025-03-10</div>
+            <div class="text-sm text-muted mt-1">海南山区学校 · 受惠 3,200 儿童</div>
+          </div>
+        </div>
+        <div class="dash-list-item" style="border:1px solid var(--color-border);">
+          <div class="icon" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);font-size:24px;">🥛</div>
+          <div class="body">
+            <div class="title">儿童牛奶 · 营养助学</div>
+            <div class="meta">600 盒 · ¥ 32,400 · 2025-05-15</div>
+            <div class="text-sm text-muted mt-1">广东梅州五华县</div>
+          </div>
+        </div>
+        <div class="dash-list-item" style="border:1px solid var(--color-border);">
+          <div class="icon" style="background:linear-gradient(135deg,#F3E8FF,#FFE4D2);font-size:24px;">🍙</div>
+          <div class="body">
+            <div class="title">端午粽子礼盒</div>
+            <div class="meta">800 盒 · ¥ 56,000 · 2025-04-20</div>
+            <div class="text-sm text-muted mt-1">深圳市 · 受惠 2,600 人</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESG 报告 -->
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📊 ESG 报告</h3>
+        <a href="#" class="more">查看完整 →</a>
+      </div>
+      <div class="grid grid-4">
+        <div style="text-align:center;">
+          <div class="text-2xl fw-800 text-primary">1,260</div>
+          <div class="text-sm text-muted mt-1">碳减排 (吨)</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="text-2xl fw-800 text-trust">32</div>
+          <div class="text-sm text-muted mt-1">覆盖城市</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="text-2xl fw-800" style="color:var(--color-gold);">186</div>
+          <div class="text-sm text-muted mt-1">合作慈善会</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="text-2xl fw-800" style="color:#7C3AED;">98.6</div>
+          <div class="text-sm text-muted mt-1">ESG 评分</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'profile');
+</script>
+</body>
+</html>

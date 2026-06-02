@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>意见反馈 — 李华 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>💌 意见反馈</h1>
+        <div class="sub">您的反馈帮助我们做得更好</div>
+      </div>
+      <a href="dashboard.html" class="btn btn-ghost">← 返回</a>
+    </div>
+
+    <div class="dash-card" style="max-width:720px;margin:0 auto;">
+      <h3 class="mb-4" style="font-size:18px;">📋 反馈基本信息</h3>
+      <div class="form-group">
+        <label class="form-label">关联领取</label>
+        <select class="form-select">
+          <option>🍞 美心临期面包 · 2025-06-01</option>
+          <option>🥛 伊利儿童牛奶 · 2025-05-15</option>
+          <option>🍙 端午粽子礼盒 · 2025-04-20</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">反馈类型 <span class="req">*</span></label>
+        <select class="form-select">
+          <option>💚 表扬</option>
+          <option>💡 建议</option>
+          <option>⚠️ 问题反馈</option>
+          <option>🙏 感谢</option>
+        </select>
+      </div>
+
+      <hr>
+      <h3 class="mb-4" style="font-size:18px;">⭐ 服务评价</h3>
+
+      <div class="form-group">
+        <label class="form-label">志愿者服务态度</label>
+        <div class="flex gap-2">
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+        </div>
+        <div class="form-hint">非常满意</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">物资完整性</label>
+        <div class="flex gap-2">
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">整体满意度</label>
+        <div class="flex gap-2">
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+          <span style="font-size:32px;cursor:pointer;">⭐</span>
+        </div>
+      </div>
+
+      <hr>
+      <h3 class="mb-4" style="font-size:18px;">💬 详细反馈</h3>
+
+      <div class="form-group">
+        <label class="form-label">反馈内容 <span class="req">*</span></label>
+        <textarea class="form-textarea" rows="5" placeholder="请详细描述您的感受、建议或遇到的问题">志愿者小张特别有耐心，亲自把面包送到家里，还问我们有什么其他需要。这些物资对我们这种困难家庭来说真的是雪中送炭，希望平台越办越好！</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📷 上传照片 / 视频</label>
+        <div class="upload-area" style="border:2px dashed var(--color-border);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;background:var(--color-bg-alt);">
+          <div style="font-size:32px;">📷</div>
+          <div class="fw-600 mt-2">点击上传</div>
+          <div class="text-sm text-muted">支持照片 / 视频 / 录音</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📞 是否愿意公开分享</label>
+        <div class="flex gap-2">
+          <label class="flex gap-2 items-center" style="cursor:pointer;padding:8px 16px;border:1px solid var(--color-border);border-radius:var(--radius);">
+            <input type="radio" name="share" checked> 愿意公开（推荐）
+          </label>
+          <label class="flex gap-2 items-center" style="cursor:pointer;padding:8px 16px;border:1px solid var(--color-border);border-radius:var(--radius);">
+            <input type="radio" name="share"> 仅平台可见
+          </label>
+          <label class="flex gap-2 items-center" style="cursor:pointer;padding:8px 16px;border:1px solid var(--color-border);border-radius:var(--radius);">
+            <input type="radio" name="share"> 匿名
+          </label>
+        </div>
+        <div class="form-hint">公开的反馈将展示在企业捐赠详情页和慈善会公示页</div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button class="btn btn-primary btn-lg" onclick="CS.toast('感谢您的反馈！', 'success')">提交反馈</button>
+        <button class="btn btn-ghost">取消</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('受捐者', '李华');
+  CS.renderSidebar('recipient', 'feedback');
+</script>
+</body>
+</html>

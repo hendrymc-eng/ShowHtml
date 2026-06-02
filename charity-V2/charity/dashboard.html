@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慈善会工作台 — 广东省慈善总会 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  .welcome-card {
+    background: linear-gradient(135deg, #E5F0F4 0%, #E0FAF5 50%, #FAEFD9 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .welcome-card::after { content: '🏛️'; position: absolute; right: 60px; top: -10px; font-size: 200px; opacity: 0.08; }
+  .welcome-card h1 { font-size: 28px; margin-bottom: 8px; }
+  .welcome-card .sub { color: var(--color-text-2); font-size: 15px; margin-bottom: 16px; }
+
+  .map-mini {
+    background: linear-gradient(135deg, #E0F2F1, #FAF8F4);
+    border-radius: var(--radius); padding: 20px; min-height: 280px; position: relative; overflow: hidden;
+  }
+  .map-mini::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(14,90,111,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(14,90,111,0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .map-mini .pin {
+    position: absolute; transform: translate(-50%, -50%);
+    background: #fff; border: 2px solid var(--color-secondary);
+    border-radius: var(--radius); padding: 4px 8px;
+    font-size: 11px; box-shadow: var(--shadow);
+    z-index: 2; white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="welcome-card">
+      <div>
+        <h1>👋 你好，王主任</h1>
+        <p class="sub">欢迎回到 <strong>广东省慈善总会</strong> 工作台。当前管理 <strong>32</strong> 个分支、<strong>186</strong> 家合作社会组织、<strong>1,260</strong> 名志愿者。</p>
+        <div class="flex gap-2">
+          <span class="tag tag-trust">✓ 慈善组织认定</span>
+          <span class="tag tag-success">✓ 公募资质</span>
+          <span class="tag tag-info">入驻 2 年</span>
+        </div>
+      </div>
+      <div>
+        <a href="project-publish.html" class="btn btn-primary btn-lg">📢 发布新项目</a>
+      </div>
+    </div>
+
+    <!-- 消息中心快捷入口（由 common.js 动态生成） -->
+    <div id="msg-banner-slot" data-role="charity"></div>
+
+    <!-- 4 大数据 -->
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📢</div>
+        <div class="label">在执行项目</div>
+        <div class="value">26</div>
+        <div class="trend">含紧急 2 · 进行中 18 · 草稿 6</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">📥</div>
+        <div class="label">待领取物资</div>
+        <div class="value">8</div>
+        <div class="trend">总价值 ¥ 286,500</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">👥</div>
+        <div class="label">受惠人次</div>
+        <div class="value">126,800</div>
+        <div class="trend">↑ 较去年 +42%</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">🙋</div>
+        <div class="label">活跃志愿者</div>
+        <div class="value">1,260</div>
+        <div class="trend">本月新增 86</div>
+      </div>
+    </div>
+
+    <!-- 项目 + 地图 -->
+    <div class="dash-grid-2 mt-6">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📋 在执行项目</h3>
+          <a href="project-list.html" class="more">全部 →</a>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(220,38,38,0.1);color:#DC2626;">🚨</div>
+            <div class="body">
+              <div class="title">云南昭通 6.2 级地震救援</div>
+              <div class="meta">紧急救灾 · 12 家企业已响应 · 60%</div>
+            </div>
+            <span class="tag tag-danger">紧急</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">🌾</div>
+            <div class="body">
+              <div class="title">"暖冬" 西北留守儿童过冬</div>
+              <div class="meta">乡村振兴 · 8 家企业 · 56%</div>
+            </div>
+            <span class="tag tag-trust">进行中</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">📚</div>
+            <div class="body">
+              <div class="title">"一书一希望" 山区图书角</div>
+              <div class="meta">教育助学 · 23 家企业 · 57%</div>
+            </div>
+            <span class="tag tag-warning">进行中</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">🍞</div>
+            <div class="body">
+              <div class="title">"临期 0 浪费" 食品专项</div>
+              <div class="meta">持续项目 · 86 家企业 · ¥ 1,860 万</div>
+            </div>
+            <span class="tag tag-primary">持续</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>🗺️ 广东地区受捐分布</h3>
+          <a href="#" class="more">详情 →</a>
+        </div>
+        <div class="map-mini">
+          <div class="pin pulse" style="top:25%;left:55%;">📍 广州 · 2.6万</div>
+          <div class="pin" style="top:30%;left:65%;">📍 深圳 · 8.6万</div>
+          <div class="pin pulse" style="top:35%;left:48%;">📍 佛山 · 1.2万</div>
+          <div class="pin" style="top:50%;left:55%;">📍 东莞 · 1.8万</div>
+          <div class="pin pulse" style="top:65%;left:60%;">📍 梅州 · 8,600</div>
+          <div class="pin" style="top:55%;left:45%;">📍 肇庆 · 4,200</div>
+          <div class="pin pulse" style="top:75%;left:50%;">📍 茂名 · 3,800</div>
+          <div class="pin" style="top:85%;left:42%;">📍 湛江 · 5,600</div>
+        </div>
+        <div class="flex-between text-xs text-muted mt-2">
+          <span><span class="live-dot" style="display:inline-block;width:8px;height:8px;background:var(--color-primary);border-radius:50%;margin-right:4px;"></span> 正在派发</span>
+          <span>共 21 个地级市 · 86 个县区</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 待办 + 公告 -->
+    <div class="dash-grid-2 mt-6">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📌 待办事项 (6)</h3>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">📥</div>
+            <div class="body">
+              <div class="title">8 笔企业捐赠待领取</div>
+              <div class="meta">美心 / 伊利 / 安利等 · 总价值 ¥ 286,500</div>
+            </div>
+            <a href="donation-claim.html" class="btn btn-primary btn-sm">去领取</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(220,38,38,0.1);color:#DC2626;">🚨</div>
+            <div class="body">
+              <div class="title">云南地震救援物资需加速派发</div>
+              <div class="meta">当前进度 60% · 截止 2025-06-10</div>
+            </div>
+            <a href="distribute.html" class="btn btn-ghost btn-sm">查看</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">👥</div>
+            <div class="body">
+              <div class="title">12 名新志愿者待审核</div>
+              <div class="meta">已完成线上培训</div>
+            </div>
+            <a href="volunteer-manage.html" class="btn btn-ghost btn-sm">审核</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📊 本月关键指标</h3>
+        </div>
+        <div class="flex-col gap-3">
+          <div>
+            <div class="flex-between text-sm mb-1"><span>物资派发率</span><span class="fw-600 text-trust">96.8%</span></div>
+            <div class="progress"><div class="progress-bar success" style="width:96.8%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>反馈及时率</span><span class="fw-600 text-trust">98.2%</span></div>
+            <div class="progress"><div class="progress-bar success" style="width:98.2%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>志愿者出勤率</span><span class="fw-600 text-primary">92.5%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:92.5%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>受捐者满意度</span><span class="fw-600 text-primary">98.6 / 100</span></div>
+            <div class="progress"><div class="progress-bar gold" style="width:98.6%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('慈善会', '王主任');
+  CS.renderSidebar('charity', 'dashboard');
+  CS.renderDashMsgBanner('charity');
+</script>
+</body>
+</html>

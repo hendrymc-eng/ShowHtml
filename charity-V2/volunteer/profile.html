@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人中心 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .profile-header {
+    background: linear-gradient(135deg, #0E5A6F 0%, #14B8A6 100%);
+    color: #fff; border-radius: var(--radius-md); padding: 32px;
+    margin-bottom: 24px; display: flex; gap: 24px; align-items: center;
+  }
+  .profile-header .avatar {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-gold));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 42px; font-weight: 800; border: 4px solid rgba(255,255,255,0.3);
+  }
+  .profile-header .name { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .profile-header .role { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="profile-header">
+      <div class="avatar">张</div>
+      <div style="flex:1;">
+        <div class="name">张伟</div>
+        <div class="role">注册志愿者 · 应急救援 / 助学</div>
+        <div class="flex gap-2">
+          <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">🏅 优秀志愿者</span>
+          <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">✓ 已认证</span>
+          <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff;border:none;">加入 186 天</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);">编辑资料</button>
+    </div>
+
+    <div class="dash-card">
+      <h3 class="mb-4" style="font-size:18px;">📋 基础信息</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">真实姓名</label>
+          <input type="text" class="form-control" value="张伟">
+        </div>
+        <div class="form-group">
+          <label class="form-label">身份证号</label>
+          <input type="text" class="form-control" value="4405********1234">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">手机号</label>
+          <input type="text" class="form-control" value="138****8888">
+        </div>
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input type="email" class="form-control" value="zhangwei@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">常驻地址</label>
+        <input type="text" class="form-control" value="广东省深圳市南山区">
+      </div>
+      <div class="form-group">
+        <label class="form-label">可服务领域</label>
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+          <span class="tag tag-primary">应急救援</span>
+          <span class="tag tag-primary">助学支教</span>
+          <span class="tag tag-primary">社区养老</span>
+          <span class="tag tag-outline">+ 添加</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">📜 资质证件</h3>
+      <div class="grid grid-2">
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">身份证（正反面）</div>
+            <div class="meta">已上传 · 已实名</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">社工证 / 应急救援证</div>
+            <div class="meta">已上传 · 已认证</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">🏅 荣誉</h3>
+      <div class="grid grid-3">
+        <div style="text-align:center;padding:20px;background:linear-gradient(135deg,var(--color-primary-soft),#FAEFD9);border-radius:var(--radius);">
+          <div style="font-size:48px;">🏅</div>
+          <div class="fw-600 mt-2">年度优秀志愿者</div>
+          <div class="text-xs text-muted">2024 年度</div>
+        </div>
+        <div style="text-align:center;padding:20px;background:linear-gradient(135deg,var(--color-trust-soft),#E0FAF5);border-radius:var(--radius);">
+          <div style="font-size:48px;">🌟</div>
+          <div class="fw-600 mt-2">百小时贡献奖</div>
+          <div class="text-xs text-muted">累计 100 小时</div>
+        </div>
+        <div style="text-align:center;padding:20px;background:linear-gradient(135deg,#F3E8FF,#FFE4D2);border-radius:var(--radius);">
+          <div style="font-size:48px;">🚨</div>
+          <div class="fw-600 mt-2">应急救援先锋</div>
+          <div class="text-xs text-muted">救灾贡献</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button class="btn btn-primary">💾 保存修改</button>
+      <button class="btn btn-ghost">退出登录</button>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('志愿者', '张伟');
+  CS.renderSidebar('volunteer', 'profile');
+</script>
+</body>
+</html>

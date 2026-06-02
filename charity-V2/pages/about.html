@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于慈商联营 — 海南亚洲公益研究院</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  .about-hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0E2A3A 0%, #0F4C5C 50%, #0E5A6F 100%);
+    color: #fff; padding: 80px 0 100px;
+  }
+  .about-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 80% 30%, rgba(232,93,4,0.3), transparent 50%),
+      radial-gradient(circle at 20% 80%, rgba(196,132,42,0.25), transparent 50%);
+  }
+  .about-hero .container { position: relative; }
+  .about-hero h1 { font-size: 48px; margin-bottom: 16px; }
+  .about-hero .lead { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 700px; line-height: 1.7; }
+
+  .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .mission-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 32px;
+    transition: all var(--t) var(--ease);
+    position: relative; overflow: hidden;
+  }
+  .mission-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .mission-card .ic {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; margin-bottom: 20px;
+  }
+  .mission-card.mission .ic { background: linear-gradient(135deg, #FFF1E5, #FAEFD9); color: var(--color-primary); }
+  .mission-card.vision .ic { background: linear-gradient(135deg, #E5F0F4, #E0FAF5); color: var(--color-secondary); }
+  .mission-card.value .ic { background: linear-gradient(135deg, #FAEFD9, #FFF1E5); color: var(--color-gold); }
+  .mission-card h3 { font-size: 20px; margin-bottom: 12px; }
+  .mission-card p { color: var(--color-text-2); line-height: 1.7; font-size: 14px; }
+
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--color-border);
+  }
+  .timeline-item { position: relative; margin-bottom: 32px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -28px; top: 6px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid #fff; box-shadow: 0 0 0 2px var(--color-primary);
+  }
+  .timeline-item .date { font-size: 13px; color: var(--color-primary); font-weight: 600; margin-bottom: 4px; }
+  .timeline-item .title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .timeline-item .desc { font-size: 14px; color: var(--color-text-2); line-height: 1.6; }
+
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .team-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; text-align: center; }
+  .team-card .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-gold)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin: 0 auto 14px; }
+  .team-card .name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .team-card .role { font-size: 13px; color: var(--color-text-3); margin-bottom: 12px; }
+  .team-card .bio { font-size: 12px; color: var(--color-text-2); line-height: 1.6; }
+
+  .partner-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .partner-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius); padding: 24px; text-align: center;
+    transition: all var(--t);
+  }
+  .partner-card:hover { border-color: var(--color-primary); }
+  .partner-card .logo { font-size: 28px; margin-bottom: 6px; }
+  .partner-card .name { font-size: 12px; color: var(--color-text-2); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="about-hero">
+  <div class="container">
+    <div class="breadcrumbs text-sm" style="color:rgba(255,255,255,0.7);margin-bottom:16px;">
+      <a href="../index.html" style="color:rgba(255,255,255,0.7);">首页</a> / 关于我们
+    </div>
+    <h1>关于慈商联营</h1>
+    <p class="lead">由海南亚洲公益研究院发起并运营的<strong>全流程透明化公益平台</strong>。我们坚信，慈善不仅需要善心，更需要机制。每一笔捐赠、每一件物资、每一次帮扶，都应清清楚楚、有据可查。</p>
+  </div>
+</section>
+
+<!-- 平台介绍 -->
+<section class="section">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">我们的初心</div>
+      <h2>为什么做慈商联营？</h2>
+    </div>
+    <div class="card" style="padding:48px;background:linear-gradient(135deg,#FAF8F4 0%, #fff 100%);">
+      <div class="grid grid-2" style="gap:48px;align-items:center;">
+        <div>
+          <h3 style="font-size:24px;margin-bottom:16px;color:var(--color-secondary);">完成"慈善最后一公里"</h3>
+          <p class="text-lg text-muted" style="line-height:1.8;">过去 20 年，中国慈善事业飞速发展，但企业捐赠物资"最后一公里"始终是行业痛点：物资从企业仓库发出后，谁领取了？在哪里领取？是否有反馈？这些问题长期处于"信息黑箱"。</p>
+        </div>
+        <div>
+          <h3 style="font-size:24px;margin-bottom:16px;color:var(--color-primary);">让公益 = 透明 + 高效</h3>
+          <p class="text-lg text-muted" style="line-height:1.8;">慈商联营的诞生，正是为了解决这一痛点。我们以物资为核心建立全流程追溯机制，用技术让每一份善意都可看见、可信任。同时打通"企业 — 慈善会 — 志愿者 — 受捐者"四方协同链路，让公益更高效。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 使命愿景价值观 -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">核心理念</div>
+      <h2>使命 · 愿景 · 价值观</h2>
+    </div>
+    <div class="mission-grid">
+      <div class="mission-card mission">
+        <div class="ic">🎯</div>
+        <h3>我们的使命</h3>
+        <p>用透明化和数字化技术，重新定义中国慈善事业的标准。完成慈善的最后一公里，让每一份善意都被尊重、被记录、被传递。</p>
+      </div>
+      <div class="mission-card vision">
+        <div class="ic">🌟</div>
+        <h3>我们的愿景</h3>
+        <p>成为中国最值得信赖的公益平台。连接 10 万家爱心企业、1 万家慈善组织、100 万志愿者，服务 1 亿受惠人群，让人人皆可参与、人人皆可相信。</p>
+      </div>
+      <div class="mission-card value">
+        <div class="ic">💎</div>
+        <h3>我们的价值观</h3>
+        <p>透明高于一切、专业创造信任、效率放大善意、协同连接价值。我们相信，机制比善心更重要，系统比热情更可靠。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 发展历程 -->
+<section class="section">
+  <div class="container">
+    <div class="grid" style="grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+      <div>
+        <div class="eyebrow" style="display:inline-block;font-size:13px;font-weight:600;color:var(--color-primary);background:var(--color-primary-soft);padding:4px 14px;border-radius:999px;margin-bottom:14px;">发展历程</div>
+        <h2 style="font-size:32px;margin-bottom:20px;">从 0 到 1 的每一步</h2>
+        <p class="text-muted text-lg" style="line-height:1.7;">慈商联营走过的每一步，都凝聚着合作伙伴、爱心企业、志愿者们的支持与信任。</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="date">2022.03</div>
+          <div class="title">项目立项</div>
+          <div class="desc">海南亚洲公益研究院正式立项"慈商联营"项目，组建核心团队，开启公益透明化研究。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2022.12</div>
+          <div class="title">获得公募资质</div>
+          <div class="desc">平台运营主体获得民政部门颁发的"慈善组织公开募捐资格证书"。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2023.06</div>
+          <div class="title">内测上线</div>
+          <div class="desc">邀请 30 家试点企业、5 家慈善会完成首批物资捐赠流程验证。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2023.12</div>
+          <div class="title">正式发布</div>
+          <div class="desc">平台 V1.0 正式上线，首年累计捐赠物资价值突破 5000 万。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2024.06</div>
+          <div class="title">商城上线</div>
+          <div class="desc">慈善商城正式上线，开启"消费即公益"新模式。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2025.06</div>
+          <div class="title">全流程透明化 2.0</div>
+          <div class="desc">平台 V2.0 上线，引入物资全流程扫码追溯 + 独立第三方审计机制。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 团队 -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">核心团队</div>
+      <h2>专业的人做专业的事</h2>
+      <p>团队由公益行业资深专家、互联网产品技术专家、企业 CSR 负责人共同组成</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar">赵</div>
+        <div class="name">赵明远</div>
+        <div class="role">研究院院长</div>
+        <div class="bio">公益行业 18 年经验，曾任中国慈善联合会理事，主导多项国家级公益标准制定。</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:linear-gradient(135deg,#14B8A6,#0E5A6F);">陈</div>
+        <div class="name">陈思颖</div>
+        <div class="role">平台 CEO</div>
+        <div class="bio">前互联网大厂产品总监，公益数字化领域连续创业者，专注用技术提升公益效率。</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:linear-gradient(135deg,#C4842A,#E85D04);">林</div>
+        <div class="name">林志强</div>
+        <div class="role">首席合规官</div>
+        <div class="bio">律师 / 注册会计师双资质，10 年慈善组织合规审计经验，主导平台合规体系搭建。</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:linear-gradient(135deg,#7C3AED,#C4842A);">王</div>
+        <div class="name">王晓彤</div>
+        <div class="role">企业合作总监</div>
+        <div class="bio">前 500 强企业 CSR 负责人，深谙企业公益需求与痛点，已对接超过 3000 家爱心企业。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 合作伙伴 -->
+<section class="section">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">合作伙伴</div>
+      <h2>感谢一路同行的伙伴</h2>
+    </div>
+    <div class="partner-grid">
+      <div class="partner-card"><div class="logo">🏛️</div><div class="name">中国慈善联合会</div></div>
+      <div class="partner-card"><div class="logo">🎓</div><div class="name">亚洲公益研究院</div></div>
+      <div class="partner-card"><div class="logo">🌐</div><div class="name">联合国 UNDP</div></div>
+      <div class="partner-card"><div class="logo">🏦</div><div class="name">招商银行公益</div></div>
+      <div class="partner-card"><div class="logo">📱</div><div class="name">腾讯公益</div></div>
+      <div class="partner-card"><div class="logo">🛒</div><div class="name">阿里公益</div></div>
+      <div class="partner-card"><div class="logo">📺</div><div class="name">人民网公益</div></div>
+      <div class="partner-card"><div class="logo">📰</div><div class="name">新华网公益</div></div>
+      <div class="partner-card"><div class="logo">⚖️</div><div class="name">普华永道</div></div>
+      <div class="partner-card"><div class="logo">📊</div><div class="name">毕马威</div></div>
+      <div class="partner-card"><div class="logo">🔍</div><div class="name">中律联</div></div>
+      <div class="partner-card"><div class="logo">📚</div><div class="name">中国光华基金会</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>CS.renderHeader('about'); CS.renderFooter();</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>财务账单 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .bill-hero {
+    background: linear-gradient(135deg, #FFF1E5 0%, #FAEFD9 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;
+  }
+  .bill-hero .item .lbl { font-size: 13px; color: var(--color-text-3); margin-bottom: 8px; }
+  .bill-hero .item .val { font-size: 28px; font-weight: 800; color: var(--color-primary); }
+  .bill-hero .item .sub { font-size: 13px; color: var(--color-text-2); margin-top: 4px; }
+
+  .fee-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px; margin-bottom: 16px;
+  }
+  .fee-card .head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--color-border-light); margin-bottom: 16px; }
+  .fee-card .head h3 { font-size: 17px; }
+  .fee-card .head .ic { font-size: 24px; }
+  .fee-card .row { display: flex; justify-content: space-between; padding: 8px 0; }
+  .fee-card .row .k { color: var(--color-text-3); }
+  .fee-card .row .v { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>💰 财务账单</h1>
+        <div class="sub">入驻费 / 年费 / 押金 · 一站式管理</div>
+      </div>
+      <button class="btn btn-ghost">📥 导出账单</button>
+    </div>
+
+    <div class="bill-hero">
+      <div class="item">
+        <div class="lbl">当前账户余额</div>
+        <div class="val">¥ 38,260.00</div>
+        <div class="sub">📈 账户正常</div>
+      </div>
+      <div class="item">
+        <div class="lbl">下次年费到期</div>
+        <div class="val">2025-08-15</div>
+        <div class="sub">⏰ 剩余 75 天 · 续费 9 折</div>
+      </div>
+      <div class="item">
+        <div class="lbl">押金状态</div>
+        <div class="val" style="color:var(--color-trust);">✓ 已缴</div>
+        <div class="sub">¥ 100,000 · 可申请退还</div>
+      </div>
+    </div>
+
+    <!-- 入驻费 -->
+    <div class="fee-card">
+      <div class="head">
+        <div class="flex gap-3 items-center">
+          <div class="ic">🎫</div>
+          <div>
+            <h3>入驻费</h3>
+            <div class="text-sm text-muted">企业入驻平台的一次性收费</div>
+          </div>
+        </div>
+        <span class="tag tag-success">✓ 已支付</span>
+      </div>
+      <div class="row"><span class="k">费用类型</span><span class="v">企业入驻费（基础版）</span></div>
+      <div class="row"><span class="k">应付金额</span><span class="v">¥ 50,000.00</span></div>
+      <div class="row"><span class="k">实付金额</span><span class="v text-success">¥ 50,000.00</span></div>
+      <div class="row"><span class="k">支付时间</span><span class="v">2023-05-15 14:30:22</span></div>
+      <div class="row"><span class="k">支付方式</span><span class="v">企业对公转账</span></div>
+      <div class="row"><span class="k">发票</span><span class="v"><a href="#" class="text-primary">下载电子发票</a></span></div>
+    </div>
+
+    <!-- 年费 -->
+    <div class="fee-card">
+      <div class="head">
+        <div class="flex gap-3 items-center">
+          <div class="ic" style="background:var(--color-gold-soft);color:var(--color-gold);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;">📅</div>
+          <div>
+            <h3>年费</h3>
+            <div class="text-sm text-muted">按年支付，含平台功能使用、技术支持等</div>
+          </div>
+        </div>
+        <span class="tag tag-warning">⏰ 即将到期</span>
+      </div>
+      <div class="row"><span class="k">当前周期</span><span class="v">2024-08-15 ~ 2025-08-15</span></div>
+      <div class="row"><span class="k">已支付</span><span class="v text-success">¥ 30,000.00</span></div>
+      <div class="row"><span class="k">下次应付</span><span class="v text-primary">¥ 30,000.00 <span class="text-sm text-warning">(提前续费 9 折 = ¥ 27,000)</span></span></div>
+      <div class="row"><span class="k">到期日</span><span class="v">2025-08-15</span></div>
+      <div class="row"><span class="k">剩余天数</span><span class="v text-warning">75 天</span></div>
+      <div class="flex gap-2 mt-4">
+        <button class="btn btn-primary">续费 (¥ 27,000)</button>
+        <button class="btn btn-ghost">查看历史年费</button>
+      </div>
+    </div>
+
+    <!-- 押金 -->
+    <div class="fee-card">
+      <div class="head">
+        <div class="flex gap-3 items-center">
+          <div class="ic" style="background:var(--color-trust-soft);color:var(--color-trust);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🔒</div>
+          <div>
+            <h3>押金</h3>
+            <div class="text-sm text-muted">履约保证金 · 退出平台时无息退还</div>
+          </div>
+        </div>
+        <span class="tag tag-trust">✓ 已缴</span>
+      </div>
+      <div class="row"><span class="k">押金金额</span><span class="v">¥ 100,000.00</span></div>
+      <div class="row"><span class="k">缴纳时间</span><span class="v">2023-05-15</span></div>
+      <div class="row"><span class="k">托管机构</span><span class="v">招商银行公益专户</span></div>
+      <div class="row"><span class="k">账户编号</span><span class="v" style="font-family:var(--font-mono);">DEPOSIT-2023-CCMEIXIN-0515</span></div>
+      <div class="row"><span class="k">退款规则</span><span class="v">退出平台后 30 个工作日内无息退还</span></div>
+      <div class="alert alert-info mt-3">
+        <span class="ic">💡</span>
+        <div>押金由招商银行公益专户独立托管，平台无权动用，确保资金安全。</div>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <button class="btn btn-ghost">查看托管协议</button>
+        <button class="btn btn-ghost">申请退还押金</button>
+      </div>
+    </div>
+
+    <!-- 商城技术服务费 -->
+    <div class="fee-card">
+      <div class="head">
+        <div class="flex gap-3 items-center">
+          <div class="ic" style="background:var(--color-secondary-soft);color:var(--color-secondary);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🛒</div>
+          <div>
+            <h3>商城技术服务费</h3>
+            <div class="text-sm text-muted">按月结算 · 销售额的 5%</div>
+          </div>
+        </div>
+        <span class="tag tag-info">按月扣</span>
+      </div>
+      <div class="row"><span class="k">本月销售额</span><span class="v">¥ 286,500.00</span></div>
+      <div class="row"><span class="k">技术服务费</span><span class="v">¥ 14,325.00</span></div>
+      <div class="row"><span class="k">扣费时间</span><span class="v">2025-07-01（月初自动扣）</span></div>
+      <div class="row"><span class="k">账户余额</span><span class="v text-primary">¥ 38,260.00 ✓ 充足</span></div>
+      <div class="flex gap-2 mt-4">
+        <button class="btn btn-ghost">查看历史扣费</button>
+      </div>
+    </div>
+
+    <!-- 捐赠开具票据 -->
+    <div class="fee-card">
+      <div class="head">
+        <div class="flex gap-3 items-center">
+          <div class="ic" style="background:#F3E8FF;color:#7C3AED;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🏅</div>
+          <div>
+            <h3>慈善捐赠票据</h3>
+            <div class="text-sm text-muted">凭此票据可享受国家税收优惠</div>
+          </div>
+        </div>
+        <span class="tag tag-gold">待申请</span>
+      </div>
+      <div class="row"><span class="k">本年已开票据</span><span class="v">¥ 1,260,000.00 (12 张)</span></div>
+      <div class="row"><span class="k">待开票据</span><span class="v text-warning">¥ 482,300.00 (4 张)</span></div>
+      <div class="row"><span class="k">税收优惠</span><span class="v text-success">企业利润总额 12% 限额扣除</span></div>
+      <button class="btn btn-primary mt-3">申请开具票据 (4 张)</button>
+    </div>
+
+    <!-- 账单流水 -->
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📋 账单流水</h3>
+        <div class="flex gap-2">
+          <select class="form-select" style="width:140px;"><option>全部类型</option><option>入驻费</option><option>年费</option><option>押金</option><option>技术服务费</option></select>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>流水号</th>
+            <th>类型</th>
+            <th>说明</th>
+            <th>金额</th>
+            <th>时间</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CC-FIN-2025-0682-0001</td>
+            <td>技术服务费</td>
+            <td>2025-06 商城服务费</td>
+            <td class="text-primary fw-600">- ¥ 14,325.00</td>
+            <td>2025-07-01 09:00</td>
+            <td><span class="tag tag-info">待扣款</span></td>
+            <td><a href="#" class="btn-link">详情</a></td>
+          </tr>
+          <tr>
+            <td>CC-FIN-2025-0520-0089</td>
+            <td>技术服务费</td>
+            <td>2025-05 商城服务费</td>
+            <td class="text-primary fw-600">- ¥ 12,860.00</td>
+            <td>2025-06-01 09:00</td>
+            <td><span class="tag tag-success">已扣款</span></td>
+            <td><a href="#" class="btn-link">发票</a></td>
+          </tr>
+          <tr>
+            <td>CC-FIN-2024-0815-0012</td>
+            <td>年费</td>
+            <td>2024-2025 年度平台年费</td>
+            <td class="text-primary fw-600">- ¥ 30,000.00</td>
+            <td>2024-08-15 14:30</td>
+            <td><span class="tag tag-success">已支付</span></td>
+            <td><a href="#" class="btn-link">发票</a></td>
+          </tr>
+          <tr>
+            <td>CC-FIN-2023-0515-0001</td>
+            <td>入驻费</td>
+            <td>企业入驻费（基础版）</td>
+            <td class="text-primary fw-600">- ¥ 50,000.00</td>
+            <td>2023-05-15 14:30</td>
+            <td><span class="tag tag-success">已支付</span></td>
+            <td><a href="#" class="btn-link">发票</a></td>
+          </tr>
+          <tr>
+            <td>CC-FIN-2023-0515-0002</td>
+            <td>押金</td>
+            <td>履约保证金（招商银行专户）</td>
+            <td class="text-primary fw-600">- ¥ 100,000.00</td>
+            <td>2023-05-15 14:30</td>
+            <td><span class="tag tag-success">已托管</span></td>
+            <td><a href="#" class="btn-link">凭证</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'bills');
+</script>
+</body>
+</html>

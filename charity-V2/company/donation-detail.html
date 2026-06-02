@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>捐赠详情 · CC-DON-2025-0682-0001 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .detail-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+  .summary-card {
+    background: linear-gradient(135deg, #E5F0F4 0%, #E0FAF5 100%);
+    border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;
+  }
+  .summary-card .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .summary-card .item .lbl { font-size: 12px; color: var(--color-text-3); }
+  .summary-card .item .val { font-size: 16px; font-weight: 700; }
+  .summary-card .item .val.highlight { color: var(--color-primary); }
+
+  .timeline-trace { position: relative; padding: 20px 0 20px 32px; }
+  .timeline-trace::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--color-border);
+  }
+  .trace-node { position: relative; padding-bottom: 28px; }
+  .trace-node::before {
+    content: ''; position: absolute; left: -28px; top: 6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--color-border);
+  }
+  .trace-node.done::before { background: var(--color-success); border-color: var(--color-success); }
+  .trace-node.active::before { background: var(--color-primary); border-color: var(--color-primary); box-shadow: 0 0 0 5px rgba(232,93,4,0.2); animation: pulse-dot 1.5s ease-in-out infinite; }
+  .trace-node .time { font-size: 12px; color: var(--color-text-3); font-family: var(--font-mono); }
+  .trace-node .title { font-size: 15px; font-weight: 700; margin: 4px 0 6px; }
+  .trace-node .desc { font-size: 14px; color: var(--color-text-2); line-height: 1.6; }
+  .trace-node .evidence {
+    margin-top: 8px; padding: 10px 12px; background: var(--color-bg);
+    border-radius: 8px; font-size: 12px; color: var(--color-text-3);
+  }
+
+  .feedback-item {
+    background: var(--color-bg); padding: 16px; border-radius: var(--radius);
+  }
+  .feedback-item .head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .feedback-item .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-gold)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .feedback-item .name { font-size: 13px; font-weight: 600; }
+  .feedback-item .text { font-size: 13px; color: var(--color-text-2); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <div class="text-sm text-muted mb-1">
+          <a href="donation-list.html">捐赠记录</a> / 详情
+        </div>
+        <h1>CC-DON-2025-0682-0001</h1>
+        <div class="sub">临期面包糕点 · 1,200 件 / ¥ 18,600 · 发起于 2025-05-28</div>
+      </div>
+      <div class="flex gap-2">
+        <a href="donation-list.html" class="btn btn-ghost">← 返回列表</a>
+        <button class="btn btn-ghost">📤 分享</button>
+        <button class="btn btn-primary">📥 下载完整报告</button>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <!-- 概要 -->
+        <div class="summary-card">
+          <div class="flex-between mb-4">
+            <div>
+              <div class="text-sm text-muted">捐赠编号</div>
+              <div class="text-xl fw-700">CC-DON-2025-0682-0001</div>
+            </div>
+            <div class="flex gap-2">
+              <span class="tag tag-primary">🔍 派发中</span>
+              <span class="tag tag-trust">流程一</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="item"><div class="lbl">捐赠企业</div><div class="val">美心食品集团</div></div>
+            <div class="item"><div class="lbl">匹配慈善会</div><div class="val">广东省慈善总会</div></div>
+            <div class="item"><div class="lbl">派发志愿者</div><div class="val">李梅（社工）</div></div>
+            <div class="item"><div class="lbl">受捐地区</div><div class="val">广东梅州 · 五华县</div></div>
+            <div class="item"><div class="lbl">物资类型</div><div class="val">临期面包糕点</div></div>
+            <div class="item"><div class="lbl">数量 / 价值</div><div class="val highlight">1,200 件 / ¥ 18,600</div></div>
+            <div class="item"><div class="lbl">已派发</div><div class="val highlight">720 / 1,200 件</div></div>
+            <div class="item"><div class="lbl">受惠人次</div><div class="val">286 / 520</div></div>
+          </div>
+        </div>
+
+        <!-- 完整轨迹 -->
+        <div class="dash-card">
+          <div class="card-head">
+            <h3>🔍 物资全流程轨迹</h3>
+            <span class="text-sm text-muted">共 6 个节点 · 历时 5 天</span>
+          </div>
+          <div class="timeline-trace">
+            <div class="trace-node done">
+              <div class="time">2025-05-28 14:30:22</div>
+              <div class="title">📦 企业发起捐赠</div>
+              <div class="desc">美心食品集团通过平台发起"临期面包糕点"捐赠。物资所在地：广东东莞。系统自动匹配属地慈善会：广东省慈善总会。</div>
+              <div class="evidence">
+                <strong>操作人：</strong>李经理（美心 CSR 负责人）<br>
+                <strong>凭证：</strong>捐赠协议 CC-PRO-20250528-0682、商检报告
+              </div>
+            </div>
+
+            <div class="trace-node done">
+              <div class="time">2025-05-29 09:15:48</div>
+              <div class="title">🏛️ 慈善会确认领取</div>
+              <div class="desc">广东省慈善总会管理员确认领取。已审核物资清单、检验报告、企业资质。系统自动分配下属社会组织协同。</div>
+              <div class="evidence">
+                <strong>操作人：</strong>王主任（广东省慈善总会）<br>
+                <strong>凭证：</strong>领取回执单 PDF、物资交接照片 × 6
+              </div>
+            </div>
+
+            <div class="trace-node done">
+              <div class="time">2025-05-30 16:20:33</div>
+              <div class="title">🚚 物资到达区域仓</div>
+              <div class="desc">物资已到达梅州五华县区域仓。随物资附上 <strong>1,200 个独立二维码</strong>，每个二维码对应一份物资，可扫码登记领取。</div>
+              <div class="evidence">
+                <strong>承运方：</strong>顺丰公益物流<br>
+                <strong>运输时长：</strong>28 小时 · 温控正常
+              </div>
+            </div>
+
+            <div class="trace-node done">
+              <div class="time">2025-06-01 10:30:00</div>
+              <div class="title">🙋 志愿者/社工接收</div>
+              <div class="desc">李梅（注册社工）和团队 3 名志愿者接收物资。在平台登记领取，准备派发到户。</div>
+              <div class="evidence">
+                <strong>操作人：</strong>李梅（深圳鹏星社工服务社）<br>
+                <strong>凭证：</strong>接收签字单、社工证扫描件
+              </div>
+            </div>
+
+            <div class="trace-node active">
+              <div class="time">2025-06-01 14:00 - 进行中</div>
+              <div class="title">🚪 入户派发</div>
+              <div class="desc">志愿者团队 3 人在五华县 5 个村入户派发。每户扫码登记 → 物资交付 → 受捐者确认 → 上传反馈。</div>
+              <div class="evidence">
+                <strong>进度：</strong>已完成 56 / 86 户（65%）<br>
+                <strong>已发放：</strong>720 / 1,200 件<br>
+                <strong>反馈照片：</strong>186 张 · 反馈视频：12 段
+              </div>
+            </div>
+
+            <div class="trace-node">
+              <div class="time">预计 2025-06-03 18:00 完成</div>
+              <div class="title">✅ 受捐者签收完毕</div>
+              <div class="desc">剩余 30 户派发完成后，志愿者将提交项目完结报告。系统自动生成物资轨迹完结证书。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 受捐者反馈 -->
+        <div class="dash-card mt-6">
+          <div class="card-head">
+            <h3>💌 受捐者反馈 (186 条)</h3>
+            <a href="#" class="more">查看全部 →</a>
+          </div>
+          <div class="grid grid-3">
+            <div class="feedback-item">
+              <div class="head">
+                <div class="avatar">张</div>
+                <div><div class="name">张阿姨 · 67岁</div><div class="text-xs text-muted">五华县水寨镇</div></div>
+              </div>
+              <p class="text">"志愿者小李特别有耐心，亲自把面包送到家里。我和老伴两人，子女在外打工，这些物资真的很及时。"</p>
+            </div>
+            <div class="feedback-item">
+              <div class="head">
+                <div class="avatar" style="background:linear-gradient(135deg,#14B8A6,#0E5A6F);">李</div>
+                <div><div class="name">李大爷 · 72岁</div><div class="text-xs text-muted">五华县河东镇</div></div>
+              </div>
+              <p class="text">"感谢美心食品和慈善会！扫码就能领到东西，还有照片作证，真是好时代。"</p>
+            </div>
+            <div class="feedback-item">
+              <div class="head">
+                <div class="avatar" style="background:linear-gradient(135deg,#7C3AED,#E85D04);">王</div>
+                <div><div class="name">王大姐 · 45岁</div><div class="text-xs text-muted">五华县华城镇</div></div>
+              </div>
+              <p class="text">"家里三个孩子都在上学，志愿者送来的面包和牛奶正好给孩子们当早餐。非常感谢！"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧 -->
+      <div>
+        <div class="dash-card mb-4">
+          <h3 class="mb-3" style="font-size:16px;">📊 实时数据</h3>
+          <div class="flex-col gap-3">
+            <div>
+              <div class="flex-between text-sm mb-1"><span>物资派发进度</span><span class="fw-600 text-primary">60%</span></div>
+              <div class="progress"><div class="progress-bar" style="width:60%"></div></div>
+            </div>
+            <div class="flex-between"><span class="text-sm text-muted">总件数</span><span class="fw-600">1,200</span></div>
+            <div class="flex-between"><span class="text-sm text-muted">已派发</span><span class="fw-600 text-trust">720</span></div>
+            <div class="flex-between"><span class="text-sm text-muted">已签收</span><span class="fw-600 text-trust">680</span></div>
+            <div class="flex-between"><span class="text-sm text-muted">受捐户数</span><span class="fw-600">56 / 86</span></div>
+            <div class="flex-between"><span class="text-sm text-muted">受惠人次</span><span class="fw-600">286</span></div>
+            <div class="flex-between"><span class="text-sm text-muted">反馈数</span><span class="fw-600">186</span></div>
+          </div>
+        </div>
+
+        <div class="dash-card mb-4">
+          <h3 class="mb-3" style="font-size:16px;">📜 相关凭证</h3>
+          <div class="dash-list">
+            <div class="dash-list-item">
+              <div class="icon" style="background:var(--color-bg-alt);color:var(--color-text-2);">📄</div>
+              <div class="body">
+                <div class="title text-sm">捐赠协议 PDF</div>
+                <div class="text-xs text-muted">2025-05-28 签订</div>
+              </div>
+              <a href="#" class="btn-link text-xs">下载</a>
+            </div>
+            <div class="dash-list-item">
+              <div class="icon" style="background:var(--color-bg-alt);color:var(--color-text-2);">📋</div>
+              <div class="body">
+                <div class="title text-sm">商检报告</div>
+                <div class="text-xs text-muted">2025-05-27 出具</div>
+              </div>
+              <a href="#" class="btn-link text-xs">下载</a>
+            </div>
+            <div class="dash-list-item">
+              <div class="icon" style="background:var(--color-bg-alt);color:var(--color-text-2);">📦</div>
+              <div class="body">
+                <div class="title text-sm">物流凭证</div>
+                <div class="text-xs text-muted">2025-05-30 签收</div>
+              </div>
+              <a href="#" class="btn-link text-xs">下载</a>
+            </div>
+            <div class="dash-list-item">
+              <div class="icon" style="background:var(--color-bg-alt);color:var(--color-text-2);">🏅</div>
+              <div class="body">
+                <div class="title text-sm">慈善捐赠票据</div>
+                <div class="text-xs text-muted">待生成</div>
+              </div>
+              <a href="#" class="btn-link text-xs">申请</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3 class="mb-3" style="font-size:16px;">📣 分享</h3>
+          <p class="text-sm text-muted mb-3">把物资轨迹分享给更多人看，让公益被看见</p>
+          <div class="grid grid-3 gap-2">
+            <button class="btn btn-ghost btn-sm">💬 微信</button>
+            <button class="btn btn-ghost btn-sm">📱 微博</button>
+            <button class="btn btn-ghost btn-sm">🔗 复制链接</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'donation-detail');
+</script>
+</body>
+</html>

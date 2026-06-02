@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据报告 — 广东省慈善总会 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .year-stat-card {
+    background: linear-gradient(135deg, #0E5A6F 0%, #164E63 100%);
+    color: #fff; border-radius: var(--radius-lg); padding: 32px;
+    margin-bottom: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .year-stat-card .item .num {
+    font-size: 40px; font-weight: 800;
+    background: linear-gradient(135deg, #FFA35E 0%, #FFD480 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+  .year-stat-card .item .lbl { font-size: 14px; color: rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📈 数据报告</h1>
+        <div class="sub">本慈善会的运营数据、捐赠流转、受惠统计</div>
+      </div>
+      <div class="flex gap-2">
+        <select class="form-select" style="width:160px;"><option>2025 年</option><option>2024 年</option><option>2023 年</option></select>
+        <button class="btn btn-ghost">📥 下载报告</button>
+      </div>
+    </div>
+
+    <div class="year-stat-card">
+      <div class="item">
+        <div class="num">¥ 8,260<span style="font-size:20px;">万</span></div>
+        <div class="lbl">本年累计物资价值</div>
+      </div>
+      <div class="item">
+        <div class="num">426,830</div>
+        <div class="lbl">受惠人次</div>
+      </div>
+      <div class="item">
+        <div class="num">186</div>
+        <div class="lbl">合作企业</div>
+      </div>
+      <div class="item">
+        <div class="num">1,260</div>
+        <div class="lbl">活跃志愿者</div>
+      </div>
+    </div>
+
+    <div class="dash-grid-2">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📦 物资品类分布</h3>
+        </div>
+        <div class="flex-col gap-3 mt-4">
+          <div>
+            <div class="flex-between text-sm mb-1"><span>🍞 食品保健</span><span class="fw-600">42.6%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:42.6%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>🧴 日化用品</span><span class="fw-600">23.8%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:23.8%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>🧥 服饰家纺</span><span class="fw-600">18.2%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:18.2%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>🩺 医疗物资</span><span class="fw-600">8.6%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:8.6%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>📚 教育用品</span><span class="fw-600">4.2%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:4.2%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between text-sm mb-1"><span>其他</span><span class="fw-600">2.6%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:2.6%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>🌍 地区分布</h3>
+        </div>
+        <div class="flex-col gap-2 mt-4 text-sm">
+          <div class="flex-between"><span>📍 广东省内</span><span class="fw-600">68.6%</span></div>
+          <div class="flex-between"><span>📍 云南</span><span class="fw-600">12.8%</span></div>
+          <div class="flex-between"><span>📍 贵州</span><span class="fw-600">6.4%</span></div>
+          <div class="flex-between"><span>📍 甘肃</span><span class="fw-600">4.2%</span></div>
+          <div class="flex-between"><span>📍 广西</span><span class="fw-600">3.2%</span></div>
+          <div class="flex-between"><span>📍 其他</span><span class="fw-600">4.8%</span></div>
+        </div>
+        <div class="alert alert-info mt-4" style="font-size:12px;">
+          <span class="ic">📍</span>
+          <div>本年覆盖 21 个地级市、86 个县区</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📊 月度趋势</h3>
+      </div>
+      <div class="chart-bar" style="display:flex;gap:6px;align-items:flex-end;height:200px;margin:32px 0;padding-top:24px;">
+        <div class="bar" style="height:35%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 320万</span></div>
+        <div class="bar" style="height:42%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 380万</span></div>
+        <div class="bar" style="height:28%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 260万</span></div>
+        <div class="bar" style="height:65%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 580万</span></div>
+        <div class="bar" style="height:78%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 720万</span></div>
+        <div class="bar" style="height:55%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 510万</span></div>
+        <div class="bar" style="height:90%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 860万</span></div>
+        <div class="bar" style="height:62%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 580万</span></div>
+        <div class="bar" style="height:48%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 450万</span></div>
+        <div class="bar" style="height:70%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 660万</span></div>
+        <div class="bar" style="height:82%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 760万</span></div>
+        <div class="bar" style="height:100%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 920万</span></div>
+      </div>
+      <div class="chart-labels" style="display:flex;gap:6px;">
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">1月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">2月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">3月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">4月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">5月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">6月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">7月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">8月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">9月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">10月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">11月</span>
+        <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">12月</span>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>🏆 关键绩效</h3>
+      </div>
+      <div class="grid grid-4">
+        <div style="text-align:center;padding:20px;background:var(--color-bg);border-radius:var(--radius);">
+          <div class="text-3xl fw-800 text-trust">98.6%</div>
+          <div class="text-sm text-muted mt-1">物资到户率</div>
+        </div>
+        <div style="text-align:center;padding:20px;background:var(--color-bg);border-radius:var(--radius);">
+          <div class="text-3xl fw-800 text-primary">3.2 天</div>
+          <div class="text-sm text-muted mt-1">平均派发时效</div>
+        </div>
+        <div style="text-align:center;padding:20px;background:var(--color-bg);border-radius:var(--radius);">
+          <div class="text-3xl fw-800" style="color:var(--color-gold);">98.6</div>
+          <div class="text-sm text-muted mt-1">受捐者满意度</div>
+        </div>
+        <div style="text-align:center;padding:20px;background:var(--color-bg);border-radius:var(--radius);">
+          <div class="text-3xl fw-800" style="color:#7C3AED;">96.8%</div>
+          <div class="text-sm text-muted mt-1">志愿者出勤率</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('慈善会', '王主任');
+  CS.renderSidebar('charity', 'reports');
+</script>
+</body>
+</html>

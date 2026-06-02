@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社会组织工作台 — 深圳市壹基金 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  .welcome-card {
+    background: linear-gradient(135deg, #FAEFD9 0%, #FFF1E5 50%, #FFE4D2 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .welcome-card::after { content: '🤝'; position: absolute; right: 80px; top: -10px; font-size: 200px; opacity: 0.08; }
+  .welcome-card h1 { font-size: 28px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="welcome-card">
+      <div>
+        <h1>👋 你好，李秘书长</h1>
+        <p class="sub">欢迎回到 <strong>深圳市壹基金公益基金会</strong> 工作台。组织合作慈善会 <strong>3</strong> 家、管理志愿者 <strong>86</strong> 名。</p>
+        <div class="flex gap-2">
+          <span class="tag tag-warning">公募基金会</span>
+          <span class="tag tag-success">✓ 资质已认证</span>
+          <span class="tag tag-info">合作慈善会 3 家</span>
+        </div>
+      </div>
+      <div>
+        <a href="distribute.html" class="btn btn-primary btn-lg">🚚 派发任务</a>
+      </div>
+    </div>
+
+    <!-- 消息中心快捷入口（由 common.js 动态生成） -->
+    <div id="msg-banner-slot" data-role="org"></div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📦</div>
+        <div class="label">参与项目</div>
+        <div class="value">28</div>
+        <div class="trend">本年新增 12</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">🚚</div>
+        <div class="label">派发物资</div>
+        <div class="value">82,600<span class="unit">件</span></div>
+        <div class="trend">累计</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">👥</div>
+        <div class="label">受惠人次</div>
+        <div class="value">42,860</div>
+        <div class="trend">↑ 较去年 +38%</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">🙋</div>
+        <div class="label">志愿者</div>
+        <div class="value">86<span class="unit">人</span></div>
+        <div class="trend">活跃 62 人</div>
+      </div>
+    </div>
+
+    <div class="dash-grid-2 mt-6">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📋 参与的项目</h3>
+          <a href="distribute.html" class="more">全部 →</a>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">📚</div>
+            <div class="body">
+              <div class="title">"一书一希望" 山区图书角</div>
+              <div class="meta">协办 12 场 · 受惠 5,600 学生</div>
+            </div>
+            <span class="tag tag-warning">进行中</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">🍞</div>
+            <div class="body">
+              <div class="title">"临期 0 浪费" 食品专项</div>
+              <div class="meta">累计派发 86 万件</div>
+            </div>
+            <span class="tag tag-primary">持续</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">🌾</div>
+            <div class="body">
+              <div class="title">"暖冬" 西北留守儿童过冬</div>
+              <div class="meta">协办 6 场 · 受惠 2,860 儿童</div>
+            </div>
+            <span class="tag tag-trust">进行中</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📊 本月数据</h3>
+        </div>
+        <div class="flex-col gap-3 mt-3">
+          <div class="flex-between"><span class="text-sm">物资派发率</span><span class="fw-600 text-trust">97.2%</span></div>
+          <div class="progress"><div class="progress-bar success" style="width:97.2%"></div></div>
+          <div class="flex-between"><span class="text-sm">受捐者满意度</span><span class="fw-600 text-primary">98.2 / 100</span></div>
+          <div class="progress"><div class="progress-bar" style="width:98.2%"></div></div>
+          <div class="flex-between"><span class="text-sm">志愿者出勤率</span><span class="fw-600 text-trust">95.6%</span></div>
+          <div class="progress"><div class="progress-bar success" style="width:95.6%"></div></div>
+          <div class="flex-between"><span class="text-sm">物资损耗率</span><span class="fw-600 text-success">≤ 0.5%</span></div>
+          <div class="progress"><div class="progress-bar gold" style="width:0.5%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📰 待办事项</h3>
+      </div>
+      <div class="dash-list">
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">🚚</div>
+          <div class="body">
+            <div class="title">5 个派发任务待执行</div>
+            <div class="meta">来自 3 家合作慈善会</div>
+          </div>
+          <a href="distribute.html" class="btn btn-primary btn-sm">查看</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">👥</div>
+          <div class="body">
+            <div class="title">8 名新志愿者待审核</div>
+            <div class="meta">已完成线上培训</div>
+          </div>
+          <a href="volunteer-manage.html" class="btn btn-ghost btn-sm">审核</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('社会组织', '李秘书长');
+  CS.renderSidebar('org', 'dashboard');
+  CS.renderDashMsgBanner('org');
+</script>
+</body>
+</html>

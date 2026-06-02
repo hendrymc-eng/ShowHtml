@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>志愿者管理 — 广东省慈善总会 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>👥 志愿者管理</h1>
+        <div class="sub">管理下属志愿者/社工的注册、审核、调度</div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost">📥 导出名单</button>
+        <button class="btn btn-primary">+ 添加志愿者</button>
+      </div>
+    </div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">👤</div>
+        <div class="label">志愿者总数</div>
+        <div class="value">1,260</div>
+        <div class="trend">本月新增 86</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">✅</div>
+        <div class="label">已认证</div>
+        <div class="value">1,186</div>
+        <div class="trend">认证率 94.1%</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">🌟</div>
+        <div class="label">活跃志愿者</div>
+        <div class="value">486</div>
+        <div class="trend">月活跃</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">⏰</div>
+        <div class="label">总服务时长</div>
+        <div class="value">28,620<span class="unit">h</span></div>
+        <div class="trend">本年</div>
+      </div>
+    </div>
+
+    <div class="tabs mt-6">
+      <div class="tab active">全部 <span class="count">1,260</span></div>
+      <div class="tab">待审核 <span class="count">12</span></div>
+      <div class="tab">已认证 <span class="count">1,186</span></div>
+      <div class="tab">本月活跃 <span class="count">486</span></div>
+    </div>
+
+    <div class="dash-card" style="padding:0;overflow:hidden;">
+      <table class="table" style="border:none;border-radius:0;">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>角色</th>
+            <th>所在区域</th>
+            <th>可服务领域</th>
+            <th>本月服务</th>
+            <th>累计时长</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#E85D04,#C4842A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">李</div>
+                <strong>李梅</strong>
+              </div>
+            </td>
+            <td>注册社工</td>
+            <td>深圳南山</td>
+            <td>助学 / 养老</td>
+            <td>32 小时</td>
+            <td>286 小时</td>
+            <td><span class="tag tag-success">活跃</span></td>
+            <td><a href="#" class="btn-link">详情</a> · <a href="#" class="btn-link">调度</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#14B8A6,#0E5A6F);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">张</div>
+                <strong>张伟</strong>
+              </div>
+            </td>
+            <td>志愿者</td>
+            <td>广州天河</td>
+            <td>应急 / 救援</td>
+            <td>28 小时</td>
+            <td>156 小时</td>
+            <td><span class="tag tag-success">活跃</span></td>
+            <td><a href="#" class="btn-link">详情</a> · <a href="#" class="btn-link">调度</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#E85D04);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">王</div>
+                <strong>王老师</strong>
+              </div>
+            </td>
+            <td>高级社工师</td>
+            <td>云南昭通</td>
+            <td>救灾 / 心理</td>
+            <td>42 小时</td>
+            <td>520 小时</td>
+            <td><span class="tag tag-success">活跃</span></td>
+            <td><a href="#" class="btn-link">详情</a> · <a href="#" class="btn-link">调度</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#C4842A,#0E5A6F);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">陈</div>
+                <strong>陈社工</strong>
+              </div>
+            </td>
+            <td>社工师</td>
+            <td>广东肇庆</td>
+            <td>助残 / 社区</td>
+            <td>26 小时</td>
+            <td>186 小时</td>
+            <td><span class="tag tag-success">活跃</span></td>
+            <td><a href="#" class="btn-link">详情</a> · <a href="#" class="btn-link">调度</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#0E5A6F);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">林</div>
+                <strong>林姐</strong>
+              </div>
+            </td>
+            <td>志愿者</td>
+            <td>广东梅州</td>
+            <td>助学 / 关爱</td>
+            <td>18 小时</td>
+            <td>96 小时</td>
+            <td><span class="tag tag-warning">一般</span></td>
+            <td><a href="#" class="btn-link">详情</a> · <a href="#" class="btn-link">调度</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex gap-2 items-center">
+                <div class="avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#E85D04);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">黄</div>
+                <strong>黄同学</strong>
+              </div>
+            </td>
+            <td>学生志愿者</td>
+            <td>广东汕头</td>
+            <td>助学 / 支教</td>
+            <td>0 小时</td>
+            <td>—</td>
+            <td><span class="tag tag-warning">待审核</span></td>
+            <td><a href="#" class="btn-link text-success">通过</a> · <a href="#" class="btn-link text-danger">拒绝</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('慈善会', '王主任');
+  CS.renderSidebar('charity', 'volunteer-manage');
+</script>
+</body>
+</html>

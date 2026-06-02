@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>响应捐赠项目 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .project-pick {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px; margin-bottom: 16px;
+    transition: all var(--t);
+  }
+  .project-pick:hover { box-shadow: var(--shadow-md); border-color: rgba(232,93,4,0.2); }
+  .project-pick.urgent { border-left: 4px solid #DC2626; }
+  .project-pick .head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .project-pick .head h3 { font-size: 17px; margin-bottom: 4px; }
+  .project-pick .head .urgency { display: flex; gap: 6px; align-items: center; }
+  .project-pick .body { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .project-pick .body .item { background: var(--color-bg); padding: 12px; border-radius: var(--radius); }
+  .project-pick .body .item .lbl { font-size: 12px; color: var(--color-text-3); margin-bottom: 4px; }
+  .project-pick .body .item .val { font-size: 14px; font-weight: 700; }
+  .project-pick .foot { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--color-border-light); }
+  .project-pick .need-list {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .project-pick .need-list .need {
+    background: var(--color-trust-soft); color: var(--color-trust);
+    padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>🤝 响应受灾项目</h1>
+        <div class="sub">为慈善会发布的受灾项目提供定向物资支持</div>
+      </div>
+      <a href="dashboard.html" class="btn btn-ghost">← 返回</a>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="ic">💡</span>
+      <div>
+        <strong>两种响应方式：</strong><br>
+        · <strong>流程二（派发后发货）：</strong>先由慈善会/合作组织完成派发，企业再发货给受捐者<br>
+        · <strong>流程三（寄送+登记）：</strong>企业按要求寄送物资至项目指定地址，志愿者/社工派发+扫码登记
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">所有项目 <span class="count">5</span></div>
+      <div class="tab">🚨 紧急救灾 <span class="count">1</span></div>
+      <div class="tab">教育助学 <span class="count">1</span></div>
+      <div class="tab">乡村振兴 <span class="count">1</span></div>
+      <div class="tab">医疗救助 <span class="count">1</span></div>
+      <div class="tab">持续项目 <span class="count">1</span></div>
+    </div>
+
+    <!-- 紧急项目 -->
+    <div class="project-pick urgent">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-danger">🚨 紧急救灾</span>
+            <span class="tag tag-warning">已筹集 60%</span>
+          </div>
+          <h3>云南昭通 6.2 级地震 · 应急救援物资</h3>
+          <div class="text-sm text-muted">📍 云南昭通 · 云南省慈善总会 · 2025-05-30 启动 · 剩余 23 天</div>
+        </div>
+        <div class="urgency">
+          <span class="live-dot"></span>
+          <span class="text-sm text-danger fw-600">紧急</span>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="item">
+          <div class="lbl">目标 / 已筹集</div>
+          <div class="val text-primary">¥ 482,300 / ¥ 800,000</div>
+          <div class="progress mt-2"><div class="progress-bar" style="width:60%"></div></div>
+        </div>
+        <div class="item">
+          <div class="lbl">参与企业</div>
+          <div class="val">12 家</div>
+          <div class="text-xs text-muted">含美心、伊利、安利</div>
+        </div>
+        <div class="item">
+          <div class="lbl">预计受惠</div>
+          <div class="val">8,620 人</div>
+          <div class="text-xs text-muted">昭通 5 县受灾群众</div>
+        </div>
+        <div class="item">
+          <div class="lbl">响应方式</div>
+          <div class="val">流程二 / 流程三</div>
+          <div class="text-xs text-muted">灵活选择</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-sm text-muted mb-2">📦 急需物资</div>
+        <div class="need-list">
+          <span class="need">🟥 帐篷 200 顶</span>
+          <span class="need">🟦 棉被 1,000 套</span>
+          <span class="need">🟨 矿泉水 5,000 件</span>
+          <span class="need">🟩 方便面 3,000 箱</span>
+          <span class="need">🟪 消毒用品 500 套</span>
+          <span class="need">🟧 应急药品 200 份</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="text-sm text-muted">⚠️ 紧急项目优先审核 1 小时内反馈</div>
+        <div class="flex gap-2">
+          <a href="#" class="btn btn-ghost btn-sm">查看项目详情</a>
+          <a href="#" class="btn btn-primary btn-sm">立即响应 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 教育项目 -->
+    <div class="project-pick">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-warning">📚 教育助学</span>
+            <span class="tag tag-trust">已筹集 57%</span>
+          </div>
+          <h3>"一书一希望" · 山区学校图书角</h3>
+          <div class="text-sm text-muted">📍 贵州黔东南 · 贵州省慈善总会 · 2025-04-15 启动 · 剩余 45 天</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="item">
+          <div class="lbl">目标 / 已筹集</div>
+          <div class="val text-primary">¥ 286,500 / ¥ 500,000</div>
+          <div class="progress mt-2"><div class="progress-bar success" style="width:57%"></div></div>
+        </div>
+        <div class="item">
+          <div class="lbl">参与企业</div>
+          <div class="val">23 家</div>
+          <div class="text-xs text-muted">含安利、完美</div>
+        </div>
+        <div class="item">
+          <div class="lbl">预计受惠</div>
+          <div class="val">5,600 学生</div>
+          <div class="text-xs text-muted">56 所山区学校</div>
+        </div>
+        <div class="item">
+          <div class="lbl">响应方式</div>
+          <div class="val">流程三 · 寄送</div>
+          <div class="text-xs text-muted">寄送至项目仓</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-sm text-muted mb-2">📦 急需物资</div>
+        <div class="need-list">
+          <span class="need">📚 课外读物 5,000 册</span>
+          <span class="need">✏️ 文具礼盒 600 套</span>
+          <span class="need">📖 书架 100 个</span>
+          <span class="need">🎨 美术用品 200 套</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="text-sm text-muted">💡 教材类物资建议使用流程三寄送</div>
+        <div class="flex gap-2">
+          <a href="#" class="btn btn-ghost btn-sm">查看项目详情</a>
+          <a href="#" class="btn btn-primary btn-sm">立即响应 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 乡村振兴 -->
+    <div class="project-pick">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-trust">🌾 乡村振兴</span>
+            <span class="tag tag-gold">已筹集 56%</span>
+          </div>
+          <h3>"暖冬"计划 · 西北留守儿童过冬衣物</h3>
+          <div class="text-sm text-muted">📍 甘肃临夏 / 宁夏 · 甘肃省慈善总会 · 2025-03-20 启动 · 剩余 60 天</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="item">
+          <div class="lbl">目标 / 已筹集</div>
+          <div class="val text-primary">¥ 168,200 / ¥ 300,000</div>
+          <div class="progress mt-2"><div class="progress-bar gold" style="width:56%"></div></div>
+        </div>
+        <div class="item">
+          <div class="lbl">参与企业</div>
+          <div class="val">8 家</div>
+          <div class="text-xs text-muted">含波司登、森马</div>
+        </div>
+        <div class="item">
+          <div class="lbl">预计受惠</div>
+          <div class="val">2,860 儿童</div>
+          <div class="text-xs text-muted">8 县留守儿童</div>
+        </div>
+        <div class="item">
+          <div class="lbl">响应方式</div>
+          <div class="val">流程三 · 寄送</div>
+          <div class="text-xs text-muted">寄送至项目仓</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-sm text-muted mb-2">📦 急需物资</div>
+        <div class="need-list">
+          <span class="need">🧥 儿童冬装 3,000 套</span>
+          <span class="need">👢 棉鞋 1,500 双</span>
+          <span class="need">🛌 棉被 800 床</span>
+          <span class="need">🧣 围巾手套 2,000 套</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="text-sm text-muted">📅 11 月开始派发，需提前 30 天寄达项目仓</div>
+        <div class="flex gap-2">
+          <a href="#" class="btn btn-ghost btn-sm">查看项目详情</a>
+          <a href="#" class="btn btn-primary btn-sm">立即响应 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 医疗项目 -->
+    <div class="project-pick">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-info">🏥 医疗救助</span>
+            <span class="tag tag-success">即将完成</span>
+          </div>
+          <h3>"健康乡村" · 基层医疗设备捐赠</h3>
+          <div class="text-sm text-muted">📍 青海玉树 · 青海省慈善总会 · 2025-02-08 启动 · 剩余 12 天</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="item">
+          <div class="lbl">目标 / 已筹集</div>
+          <div class="val text-primary">¥ 425,000 / ¥ 500,000</div>
+          <div class="progress mt-2"><div class="progress-bar success" style="width:85%"></div></div>
+        </div>
+        <div class="item">
+          <div class="lbl">参与企业</div>
+          <div class="val">6 家</div>
+          <div class="text-xs text-muted">含迈瑞、鱼跃</div>
+        </div>
+        <div class="item">
+          <div class="lbl">预计受惠</div>
+          <div class="val">12,860 人</div>
+          <div class="text-xs text-muted">86 个乡镇卫生院</div>
+        </div>
+        <div class="item">
+          <div class="lbl">响应方式</div>
+          <div class="val">流程三 · 寄送</div>
+          <div class="text-xs text-muted">大型设备寄送</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-sm text-muted mb-2">📦 急需物资</div>
+        <div class="need-list">
+          <span class="need">🩺 血压计 86 台</span>
+          <span class="need">🩻 B 超设备 12 台</span>
+          <span class="need">💉 一次性医疗耗材 200 套</span>
+          <span class="need">🛏️ 病床 50 张</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="text-sm text-muted">⚠️ 医疗器械类需提供完整资质</div>
+        <div class="flex gap-2">
+          <a href="#" class="btn btn-ghost btn-sm">查看项目详情</a>
+          <a href="#" class="btn btn-primary btn-sm">立即响应 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 持续项目 -->
+    <div class="project-pick">
+      <div class="head">
+        <div>
+          <div class="flex gap-2 items-center mb-2">
+            <span class="tag tag-primary">持续项目</span>
+            <span class="tag tag-success">已捐赠 86 万件</span>
+          </div>
+          <h3>"临期 0 浪费" · 食品企业临期物资捐赠</h3>
+          <div class="text-sm text-muted">📍 全国 · 32 家慈善会协同 · 2024-06-01 启动 · 持续中</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="item">
+          <div class="lbl">年度完成</div>
+          <div class="val text-primary">¥ 1,860万</div>
+          <div class="text-xs text-muted">月均 ¥ 155 万</div>
+        </div>
+        <div class="item">
+          <div class="lbl">参与企业</div>
+          <div class="val">126 家</div>
+          <div class="text-xs text-muted">美心、伊利、安利等</div>
+        </div>
+        <div class="item">
+          <div class="lbl">受惠人次</div>
+          <div class="val">186,800</div>
+          <div class="text-xs text-muted">全国 32 城</div>
+        </div>
+        <div class="item">
+          <div class="lbl">响应方式</div>
+          <div class="val">流程一 · 主动发起</div>
+          <div class="text-xs text-muted">常态参与</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-sm text-muted mb-2">📦 接收品类</div>
+        <div class="need-list">
+          <span class="need">🍞 临期面包糕点</span>
+          <span class="need">🥛 临期乳制品</span>
+          <span class="need">🍪 临期零食</span>
+          <span class="need">🍚 临期米面粮油</span>
+          <span class="need">🥤 临期饮料</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="text-sm text-muted">🏆 参与该项目的企业可获得"减碳先锋"荣誉</div>
+        <div class="flex gap-2">
+          <a href="#" class="btn btn-ghost btn-sm">查看项目详情</a>
+          <a href="donate-publish.html" class="btn btn-primary btn-sm">立即发起捐赠 →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'donate-respond');
+</script>
+</body>
+</html>

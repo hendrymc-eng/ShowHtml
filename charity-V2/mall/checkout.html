@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>订单结算 — 慈商联营慈善商城</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  .checkout-grid { display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+  .checkout-section { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 16px; }
+  .checkout-section h3 { font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  .address-card {
+    display: flex; gap: 16px; padding: 16px; border: 2px solid var(--color-primary);
+    border-radius: var(--radius); background: var(--color-primary-soft);
+  }
+  .address-card .info { flex: 1; }
+  .address-card .name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .address-card .name .phone { color: var(--color-text-3); font-weight: 400; margin-left: 8px; }
+  .address-card .addr { font-size: 14px; color: var(--color-text-2); }
+  .address-card .default { display: inline-block; background: var(--color-primary); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+
+  .shipping-options { display: flex; flex-direction: column; gap: 8px; }
+  .shipping-option {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border: 1px solid var(--color-border); border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .shipping-option.active { border-color: var(--color-primary); background: var(--color-primary-soft); }
+  .shipping-option .name { flex: 1; }
+  .shipping-option .price { font-weight: 700; color: var(--color-primary); }
+
+  .order-summary { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; position: sticky; top: 96px; }
+  .summary-items { max-height: 240px; overflow-y: auto; margin-bottom: 16px; }
+  .summary-item { display: flex; gap: 12px; padding: 8px 0; }
+  .summary-item .cover { width: 48px; height: 48px; border-radius: 8px; background: var(--color-bg-alt); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .summary-item .info { flex: 1; }
+  .summary-item .name { font-size: 13px; line-height: 1.3; }
+  .summary-item .meta { font-size: 12px; color: var(--color-text-3); }
+  .summary-item .price { font-size: 14px; font-weight: 700; }
+
+  .donate-highlight {
+    background: linear-gradient(135deg, var(--color-trust-soft), #E0FAF5);
+    border: 1px solid var(--color-trust); border-radius: var(--radius);
+    padding: 16px; margin: 16px 0;
+  }
+  .donate-highlight .row { display: flex; align-items: center; gap: 12px; }
+  .donate-highlight .ic { font-size: 32px; }
+  .donate-highlight .t { font-size: 13px; color: var(--color-text-2); }
+  .donate-highlight .v { font-size: 24px; font-weight: 800; color: var(--color-trust); }
+
+  .coupon-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: var(--color-bg); border-radius: var(--radius); margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .coupon-row .ico { width: 40px; height: 40px; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 8px; font-size: 12px; }
+  .coupon-row .info { flex: 1; }
+  .coupon-row .name { font-size: 14px; font-weight: 600; }
+  .coupon-row .meta { font-size: 12px; color: var(--color-text-3); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding-top:32px; padding-bottom:60px;">
+  <div class="text-sm text-muted mb-4">
+    <a href="../index.html">首页</a> /
+    <a href="index.html">慈善商城</a> /
+    <a href="cart.html">购物车</a> /
+    <span style="color:var(--color-text);">订单结算</span>
+  </div>
+
+  <h1 class="mb-6" style="font-size:28px;">📝 订单结算</h1>
+
+  <div class="checkout-grid">
+    <div>
+      <!-- 收货地址 -->
+      <div class="checkout-section">
+        <h3>📍 收货地址</h3>
+        <div class="address-card">
+          <input type="radio" checked>
+          <div class="info">
+            <div class="name">张三 <span class="phone">138****8888</span></div>
+            <div class="addr">
+              <span class="default">默认</span>
+              广东省 深圳市 南山区 科技园南区 慈商联营大厦 8 楼 808 室
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm">修改</button>
+        </div>
+        <button class="btn btn-ghost mt-3" style="width:100%;">+ 使用新地址</button>
+      </div>
+
+      <!-- 商品清单 -->
+      <div class="checkout-section">
+        <h3>📦 商品清单 (3 件)</h3>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);font-size:24px;">🍞</div>
+            <div class="body">
+              <div class="title">美心临期面包礼盒 1.2kg · 8 种口味</div>
+              <div class="meta">1.2kg 礼盒装 · 混合 8 种 · × 2</div>
+            </div>
+            <div class="fw-700">¥ 79.8</div>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#FAEFD9,#FFE4D2);font-size:24px;">🥐</div>
+            <div class="body">
+              <div class="title">美心丹麦酥 礼盒装 480g</div>
+              <div class="meta">480g · 经典原味 · × 1</div>
+            </div>
+            <div class="fw-700">¥ 24.9</div>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);font-size:24px;">🥛</div>
+            <div class="body">
+              <div class="title">伊利高钙牛奶 250ml × 24 盒</div>
+              <div class="meta">250ml × 24 盒 · × 1</div>
+            </div>
+            <div class="fw-700">¥ 59</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配送方式 -->
+      <div class="checkout-section">
+        <h3>🚚 配送方式</h3>
+        <div class="shipping-options">
+          <div class="shipping-option active">
+            <input type="radio" name="ship" checked>
+            <div class="name">普通快递 · 顺丰速运</div>
+            <div class="text-sm text-muted">预计 2025-06-04 送达</div>
+            <div class="price">免邮</div>
+          </div>
+          <div class="shipping-option">
+            <input type="radio" name="ship">
+            <div class="name">同城急送 · 美团跑腿</div>
+            <div class="text-sm text-muted">预计 4 小时内送达</div>
+            <div class="price">¥ 12</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 支付方式 -->
+      <div class="checkout-section">
+        <h3>💳 支付方式</h3>
+        <div class="shipping-options">
+          <div class="shipping-option active">
+            <input type="radio" name="pay" checked>
+            <div class="name">💚 微信支付</div>
+            <div class="text-sm text-muted">推荐</div>
+            <div class="price"></div>
+          </div>
+          <div class="shipping-option">
+            <input type="radio" name="pay">
+            <div class="name">💙 支付宝</div>
+            <div class="text-sm text-muted">支持花呗</div>
+            <div class="price"></div>
+          </div>
+          <div class="shipping-option">
+            <input type="radio" name="pay">
+            <div class="name">🏢 企业月结</div>
+            <div class="text-sm text-muted">企业用户专享</div>
+            <div class="price"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 优惠券 -->
+      <div class="checkout-section">
+        <h3>🎟️ 优惠券</h3>
+        <div class="coupon-row">
+          <div class="ico">¥ 10</div>
+          <div class="info">
+            <div class="name">满 200 减 10 优惠券</div>
+            <div class="meta">有效期至 2025-12-31</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">使用</button>
+        </div>
+        <div class="coupon-row">
+          <div class="ico" style="background:var(--color-trust);">🎁</div>
+          <div class="info">
+            <div class="name">新用户专享 · 满 100 减 20</div>
+            <div class="meta">已使用</div>
+          </div>
+          <span class="text-muted text-sm">已使用</span>
+        </div>
+      </div>
+
+      <!-- 备注 -->
+      <div class="checkout-section">
+        <h3>📝 订单备注</h3>
+        <textarea class="form-textarea" placeholder="选填，对商家的备注说明（不超过 200 字）"></textarea>
+      </div>
+    </div>
+
+    <!-- 右侧汇总 -->
+    <div>
+      <div class="order-summary">
+        <h3 style="font-size:16px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--color-border-light);">💰 订单汇总</h3>
+
+        <div class="summary-items">
+          <div class="summary-item">
+            <div class="cover">🍞</div>
+            <div class="info">
+              <div class="name">美心临期面包礼盒 1.2kg</div>
+              <div class="meta">× 2</div>
+            </div>
+            <div class="price">¥ 79.8</div>
+          </div>
+          <div class="summary-item">
+            <div class="cover" style="background:linear-gradient(135deg,#FAEFD9,#FFE4D2);">🥐</div>
+            <div class="info">
+              <div class="name">美心丹麦酥 480g</div>
+              <div class="meta">× 1</div>
+            </div>
+            <div class="price">¥ 24.9</div>
+          </div>
+          <div class="summary-item">
+            <div class="cover" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);">🥛</div>
+            <div class="info">
+              <div class="name">伊利高钙牛奶 250ml × 24</div>
+              <div class="meta">× 1</div>
+            </div>
+            <div class="price">¥ 59</div>
+          </div>
+        </div>
+
+        <div class="flex-between mb-2 text-sm">
+          <span class="text-muted">商品总额</span>
+          <span>¥ 163.7</span>
+        </div>
+        <div class="flex-between mb-2 text-sm">
+          <span class="text-muted">运费</span>
+          <span class="text-success">免邮</span>
+        </div>
+        <div class="flex-between mb-2 text-sm">
+          <span class="text-muted">会员折扣</span>
+          <span class="text-success">- ¥ 5.0</span>
+        </div>
+        <div class="flex-between mb-2 text-sm">
+          <span class="text-muted">优惠券</span>
+          <span class="text-success">- ¥ 10</span>
+        </div>
+
+        <div class="donate-highlight">
+          <div class="row">
+            <span class="ic">💝</span>
+            <div style="flex:1;">
+              <div class="t">本订单慈商联营将捐赠</div>
+              <div class="v">¥ 0.74</div>
+            </div>
+          </div>
+          <div class="text-xs text-muted mt-2">捐赠金额 = 订单实付 × 0.5%，用于山区儿童营养餐项目</div>
+        </div>
+
+        <div class="flex-between" style="padding-top:12px;border-top:1px dashed var(--color-border);">
+          <span class="fw-600">实付款</span>
+          <span style="font-size:26px;font-weight:800;color:var(--color-primary);">¥ 148.7</span>
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg mt-4" onclick="CS.toast('订单提交成功！'); setTimeout(() => location.href='orders.html', 1500);">立即支付 ¥ 148.7</button>
+
+        <div class="text-center text-xs text-muted mt-3">
+          支付即视为同意 <a href="#" class="text-primary">《用户协议》</a> 和 <a href="#" class="text-primary">《捐赠说明》</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>CS.renderHeader('mall'); CS.renderFooter();</script>
+</body>
+</html>

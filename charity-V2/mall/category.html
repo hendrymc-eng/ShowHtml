@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品分类 — 慈商联营慈善商城</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  .mall-topbar { background: #fff; border-bottom: 1px solid var(--color-border); padding: 14px 0; margin-bottom: 24px; }
+  .mall-topbar .container { display: flex; gap: 24px; align-items: center; }
+  .mall-topbar .cat-nav { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .mall-topbar .cat-nav a { padding: 6px 14px; border-radius: var(--radius-full); font-size: 14px; color: var(--color-text-2); }
+  .mall-topbar .cat-nav a:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .mall-topbar .cat-nav a.active { background: var(--color-primary); color: #fff; }
+
+  .cat-layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+  .cat-side {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 16px; height: fit-content;
+    position: sticky; top: 96px;
+  }
+  .cat-side h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--color-border-light); }
+  .cat-side .item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    font-size: 14px; cursor: pointer;
+  }
+  .cat-side .item:hover { background: var(--color-bg); }
+  .cat-side .item.active { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 600; }
+  .cat-side .item .count { color: var(--color-text-3); font-size: 12px; }
+
+  .filter-bar { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-chip { padding: 6px 14px; border-radius: var(--radius-full); font-size: 13px; background: var(--color-bg-alt); cursor: pointer; }
+  .filter-chip.active { background: var(--color-primary); color: #fff; }
+
+  .product-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; transition: all var(--t); display: flex; flex-direction: column; }
+  .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .product-card .cover { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative; background: var(--color-bg-alt); }
+  .product-card .cover .donate-tag { position: absolute; top: 8px; right: 8px; background: var(--color-trust); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+  .product-card .body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+  .product-card .name { font-size: 14px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; min-height: 38px; }
+  .product-card .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .product-card .price { font-size: 20px; font-weight: 800; color: var(--color-primary); }
+  .product-card .sales { font-size: 12px; color: var(--color-text-3); }
+  .product-card .donate-info { font-size: 11px; color: var(--color-trust); margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--color-border-light); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="mall-topbar">
+  <div class="container">
+    <div class="cat-nav">
+      <a href="index.html">全部</a>
+      <a href="category.html" class="active">食品保健</a>
+      <a href="category.html">日用家清</a>
+      <a href="category.html">母婴儿童</a>
+      <a href="category.html">服饰美妆</a>
+      <a href="category.html">数码家电</a>
+    </div>
+    <a href="cart.html" class="btn btn-ghost btn-sm">🛒 购物车 (3)</a>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:60px;">
+  <div class="text-sm text-muted mb-4">
+    <a href="../index.html">首页</a> /
+    <a href="index.html">慈善商城</a> /
+    <span style="color:var(--color-text);">食品保健</span>
+  </div>
+
+  <div class="cat-layout">
+    <aside class="cat-side">
+      <h3>📂 全部分类</h3>
+      <div class="item">全部食品<span class="count">1,286</span></div>
+      <div class="item active">临期食品<span class="count">286</span></div>
+      <div class="item">新鲜水果<span class="count">186</span></div>
+      <div class="item">乳制品<span class="count">126</span></div>
+      <div class="item">休闲零食<span class="count">326</span></div>
+      <div class="item">营养保健<span class="count">186</span></div>
+      <div class="item">茶酒饮品<span class="count">176</span></div>
+
+      <h3 class="mt-6">💰 价格区间</h3>
+      <div class="item">0 - 50 元<span class="count">486</span></div>
+      <div class="item">50 - 100 元<span class="count">326</span></div>
+      <div class="item">100 - 200 元<span class="count">186</span></div>
+      <div class="item">200 元以上<span class="count">88</span></div>
+
+      <h3 class="mt-6">⭐ 商家评分</h3>
+      <div class="item">★ 5 星商家<span class="count">186</span></div>
+      <div class="item">★ 4.5 星以上<span class="count">286</span></div>
+    </aside>
+
+    <div>
+      <!-- 筛选 -->
+      <div class="filter-bar">
+        <span class="filter-chip active">综合排序</span>
+        <span class="filter-chip">销量优先</span>
+        <span class="filter-chip">价格 ↓</span>
+        <span class="filter-chip">价格 ↑</span>
+        <span class="filter-chip">新品</span>
+        <span class="filter-chip" style="margin-left:auto;background:#FFF1E5;color:#E85D04;">💝 0.5% 捐赠</span>
+      </div>
+
+      <div class="grid grid-3">
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);">🍞<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">美心临期面包礼盒 1.2kg</div>
+            <div class="price-row"><span class="price">¥ 39.9</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 89</span></div>
+            <div class="sales">月销 1.2 万</div>
+            <div class="donate-info">每单捐赠 ¥ 0.20</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);">🥛<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">伊利高钙牛奶 250ml × 24 盒</div>
+            <div class="price-row"><span class="price">¥ 59</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 79</span></div>
+            <div class="sales">月销 8,620</div>
+            <div class="donate-info">每单捐赠 ¥ 0.30</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#FAEFD9,#FFE4D2);">🥐<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">美心丹麦酥 礼盒装 480g</div>
+            <div class="price-row"><span class="price">¥ 24.9</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 48</span></div>
+            <div class="sales">月销 6,820</div>
+            <div class="donate-info">每单捐赠 ¥ 0.12</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#E0FAF5,#FAEFD9);">🍎<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">云南昭通丑苹果 5kg 装</div>
+            <div class="price-row"><span class="price">¥ 49.9</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 89</span></div>
+            <div class="sales">月销 3,860</div>
+            <div class="donate-info">每单捐赠 ¥ 0.25</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#FFF1E5,#FAEFD9);">☕<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">云南普洱熟茶 357g 礼盒装</div>
+            <div class="price-row"><span class="price">¥ 88</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 168</span></div>
+            <div class="sales">月销 3,260</div>
+            <div class="donate-info">每单捐赠 ¥ 0.44</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#F3E8FF,#FFE4D2);">🥜<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">新疆和田大枣 1kg 礼盒</div>
+            <div class="price-row"><span class="price">¥ 68</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 128</span></div>
+            <div class="sales">月销 2,860</div>
+            <div class="donate-info">每单捐赠 ¥ 0.34</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#FAEFD9,#E5F0F4);">🌰<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">河北迁西板栗 500g 袋装</div>
+            <div class="price-row"><span class="price">¥ 28.8</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 58</span></div>
+            <div class="sales">月销 1,860</div>
+            <div class="donate-info">每单捐赠 ¥ 0.14</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#FFE4D2,#E0FAF5);">🍯<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">云南野蜂蜜 500g 农家自产</div>
+            <div class="price-row"><span class="price">¥ 128</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 198</span></div>
+            <div class="sales">月销 1,260</div>
+            <div class="donate-info">每单捐赠 ¥ 0.64</div>
+          </div>
+        </a>
+        <a href="detail.html" class="product-card">
+          <div class="cover" style="background:linear-gradient(135deg,#E0FAF5,#FAEFD9);">🥦<div class="donate-tag">💝</div></div>
+          <div class="body">
+            <div class="name">有机蔬菜大礼包 8kg</div>
+            <div class="price-row"><span class="price">¥ 89</span><span style="text-decoration:line-through;color:#8A8A8A;font-size:13px;">¥ 168</span></div>
+            <div class="sales">月销 1,620</div>
+            <div class="donate-info">每单捐赠 ¥ 0.45</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="text-center mt-6">
+        <button class="btn btn-ghost">加载更多 ↓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>CS.renderHeader('mall'); CS.renderFooter();</script>
+</body>
+</html>

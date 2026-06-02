@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消息中心 — 广东省慈善总会 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div id="msg-content"></div>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<div id="msg-modal-slot"></div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  const PROFILE = {
+    company:   { roleName: '企业',     userName: '李经理', title: '广东省慈善总会 | 慈商联营' },
+    charity:   { roleName: '慈善会',   userName: '王主任', title: '广东省慈善总会 | 慈商联营' },
+    org:       { roleName: '社会组织', userName: '张老师', title: '深圳市壹基金公益基金会 | 慈商联营' },
+    volunteer: { roleName: '志愿者',   userName: '张伟',   title: '深圳鹏星社工服务社 | 慈商联营' },
+    recipient: { roleName: '受捐者',   userName: '李华',   title: '受捐者中心 | 慈商联营' }
+  };
+  const role = 'charity';
+  const p = PROFILE[role];
+  document.title = '消息中心 — ' + p.title;
+
+  CS.renderDashHeader(p.roleName, p.userName, null, { label: '← 返回工作台', href: 'dashboard.html' });
+  CS.renderSidebar(role, 'messages');
+  document.getElementById('msg-content').innerHTML = CS.getMessagesBody(role, p.roleName, p.userName);
+  document.getElementById('msg-modal-slot').innerHTML = CS.getMessagesModal();
+  const s = document.createElement('script');
+  s.textContent = CS.MESSAGES_SCRIPT;
+  document.body.appendChild(s);
+</script>
+</body>
+</html>

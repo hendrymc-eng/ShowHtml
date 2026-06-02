@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发起捐赠 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .flow-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .flow-pick {
+    border: 2px solid var(--color-border); border-radius: var(--radius-md);
+    padding: 20px; cursor: pointer; transition: all var(--t);
+    background: #fff;
+  }
+  .flow-pick:hover { border-color: var(--color-primary); }
+  .flow-pick.active { border-color: var(--color-primary); background: var(--color-primary-soft); }
+  .flow-pick .ic {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--color-primary-soft); color: var(--color-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 12px;
+  }
+  .flow-pick .t { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .flow-pick .d { font-size: 12px; color: var(--color-text-3); line-height: 1.5; }
+  .flow-pick .num { display: inline-block; background: var(--color-primary); color: #fff; font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+
+  .upload-area {
+    border: 2px dashed var(--color-border); border-radius: var(--radius);
+    padding: 32px; text-align: center; cursor: pointer;
+    background: var(--color-bg-alt);
+    transition: all var(--t);
+  }
+  .upload-area:hover { border-color: var(--color-primary); background: var(--color-primary-soft); }
+  .upload-area .ic { font-size: 36px; color: var(--color-primary); margin-bottom: 8px; }
+
+  .matched-charity {
+    background: linear-gradient(135deg, var(--color-trust-soft), #E0FAF5);
+    border: 1px solid var(--color-trust); border-radius: var(--radius);
+    padding: 20px; margin-top: 16px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .matched-charity .logo {
+    width: 56px; height: 56px; border-radius: 12px;
+    background: var(--color-secondary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .matched-charity .body { flex: 1; }
+  .matched-charity .name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .matched-charity .meta { font-size: 13px; color: var(--color-text-2); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📦 发起捐赠</h1>
+        <div class="sub">把企业物资转化为公益力量</div>
+      </div>
+      <a href="donation-list.html" class="btn btn-ghost">← 返回列表</a>
+    </div>
+
+    <!-- 步骤条 -->
+    <div class="steps">
+      <div class="step active">
+        <div class="num">1</div>
+        <div class="info"><div class="t">选择流程</div><div class="d">3 种捐赠方式</div></div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="info"><div class="t">填写物资</div><div class="d">品类 / 数量 / 价值</div></div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="info"><div class="t">匹配慈善会</div><div class="d">智能匹配属地</div></div>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <div class="info"><div class="t">提交审核</div><div class="d">2 小时内反馈</div></div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <h3 class="mb-4" style="font-size:18px;">🎯 第一步：选择捐赠流程</h3>
+      <p class="text-muted mb-6">根据您的物资情况和捐赠意向，选择最合适的捐赠方式。不同方式会影响后续的派发流程。</p>
+
+      <div class="flow-picker">
+        <div class="flow-pick active" onclick="selectFlow(this, 1)">
+          <div class="ic">📦</div>
+          <div class="t"><span class="num">流程一</span>企业主动发起</div>
+          <div class="d">企业有临期/新品物资，按所在地匹配属地慈善会，志愿者/社工完成最后一公里派发</div>
+        </div>
+        <div class="flow-pick" onclick="selectFlow(this, 2)">
+          <div class="ic">🚚</div>
+          <div class="t"><span class="num">流程二</span>响应受灾项目（派发后发货）</div>
+          <div class="d">慈善会发布受灾项目，企业按需匹配，先派发验证后企业再发货给受捐者</div>
+        </div>
+        <div class="flow-pick" onclick="selectFlow(this, 3)">
+          <div class="ic">🚛</div>
+          <div class="t"><span class="num">流程三</span>响应受灾项目（寄送+登记）</div>
+          <div class="d">大批量集中捐赠场景。企业按要求寄送至项目地址，志愿者完成派发+扫码登记</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 物资信息 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">📋 第二步：填写物资信息</h3>
+
+      <h4 class="text-md mb-3" style="font-size:14px;color:var(--color-text-2);">物资类型</h4>
+      <div class="form-row mb-6">
+        <label class="flow-pick active" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="radio" name="type" checked> 🍞 临期食品（保质期 ≥ 7 天）
+        </label>
+        <label class="flow-pick" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="radio" name="type"> 📦 新品食品
+        </label>
+        <label class="flow-pick" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="radio" name="type"> 🧴 日化用品
+        </label>
+        <label class="flow-pick" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="radio" name="type"> 🧥 服饰家纺
+        </label>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">物资名称 <span class="req">*</span></label>
+          <input type="text" class="form-control" value="美心临期面包礼盒 1.2kg · 8 种口味" placeholder="例：临期面包礼盒 1.2kg">
+        </div>
+        <div class="form-group">
+          <label class="form-label">保质期至 <span class="req">*</span></label>
+          <input type="date" class="form-control" value="2025-07-15">
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">数量 <span class="req">*</span></label>
+          <input type="number" class="form-control" value="1200" placeholder="件 / 盒">
+          <div class="form-hint">单位：件</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">评估总价值 <span class="req">*</span></label>
+          <div class="input-with-icon">
+            <span class="ic">¥</span>
+            <input type="number" class="form-control" value="18600" placeholder="0.00">
+          </div>
+          <div class="form-hint">平台将根据市场价 + 临期系数评估</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">重量 / 体积</label>
+          <input type="text" class="form-control" value="1,440 kg / 8 m³" placeholder="预估">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">物资所在地 <span class="req">*</span></label>
+        <div class="flex gap-2">
+          <select class="form-select" style="flex:1;"><option>广东省</option><option>海南省</option></select>
+          <select class="form-select" style="flex:1;"><option>东莞市</option></select>
+          <select class="form-select" style="flex:1;"><option>东城区</option></select>
+        </div>
+        <div class="form-hint">📍 系统将根据所在地智能匹配属地慈善会</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">物资描述 / 受捐人群偏好</label>
+        <textarea class="form-textarea" placeholder="例：建议优先派发至山区小学、敬老院、低保家庭等">该批物资为临期面包糕点，建议优先派发至：1）山区小学（可作为学生课间餐）；2）敬老院；3）低保家庭。派发前请检查包装完整性。</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📤 物资图片 / 检验报告 <span class="req">*</span></label>
+        <div class="upload-area">
+          <div class="ic">📤</div>
+          <div class="fw-600">点击或拖拽上传</div>
+          <div class="text-sm text-muted mt-2">支持 JPG/PNG/PDF，最多 9 张，单张 ≤ 10MB</div>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <div style="width:80px;height:80px;background:linear-gradient(135deg,#FFE4D2,#FAEFD9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">🍞</div>
+          <div style="width:80px;height:80px;background:linear-gradient(135deg,#FAEFD9,#FFE4D2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>
+          <div style="width:80px;height:80px;background:var(--color-bg-alt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--color-text-3);">📋</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 慈善会匹配 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">🏛️ 第三步：系统智能匹配慈善会</h3>
+      <p class="text-muted mb-3">基于您填写的"物资所在地（广东东莞）"，系统已为您匹配以下属地慈善会：</p>
+
+      <div class="matched-charity">
+        <div class="logo">粤</div>
+        <div class="body">
+          <div class="name">✓ 广东省慈善总会</div>
+          <div class="meta">属地匹配 · 拥有下属 32 个慈善会分支、186 家合作社会组织、1,260 名注册志愿者</div>
+        </div>
+        <button class="btn btn-ghost btn-sm">切换</button>
+      </div>
+
+      <div class="dash-list mt-4">
+        <div class="dash-list-item">
+          <div class="icon" style="background:var(--color-secondary-soft);color:var(--color-secondary);">🏛️</div>
+          <div class="body">
+            <div class="title">东莞市慈善会</div>
+            <div class="meta">属地匹配 · 备选方案</div>
+          </div>
+          <span class="text-sm text-muted">备选</span>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:var(--color-gold-soft);color:var(--color-gold);">🏛️</div>
+          <div class="body">
+            <div class="title">深圳市慈善会</div>
+            <div class="meta">异地匹配 · 备选方案</div>
+          </div>
+          <span class="text-sm text-muted">备选</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 提交 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">✅ 第四步：确认提交</h3>
+
+      <div class="alert alert-info">
+        <span class="ic">💡</span>
+        <div>
+          <strong>提交后您将收到：</strong><br>
+          · 一份带时间戳的捐赠协议 PDF（可下载）<br>
+          · 微信服务通知：物资状态实时更新<br>
+          · 专属客户经理对接派发事宜
+        </div>
+      </div>
+
+      <label class="flex gap-2 items-center mb-4 text-sm">
+        <input type="checkbox" checked>
+        <span>我已阅读并同意 <a href="#" class="text-primary">《物资捐赠协议》</a>、<a href="#" class="text-primary">《慈商联营服务条款》</a></span>
+      </label>
+
+      <div class="flex gap-3">
+        <button class="btn btn-ghost">保存为草稿</button>
+        <button class="btn btn-primary" onclick="CS.modal({title:'发起捐赠成功', body:'您的捐赠申请已提交，预计 2 小时内完成审核。系统将通过微信通知您审核结果。', onOk: () => location.href='donation-list.html'})">提交申请 ✓</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'donate-publish');
+
+  function selectFlow(el, n) {
+    document.querySelectorAll('.flow-pick').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

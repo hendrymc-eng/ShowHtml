@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品详情 — 美心临期面包礼盒 1.2kg | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  .mall-topbar { background: #fff; border-bottom: 1px solid var(--color-border); padding: 14px 0; margin-bottom: 24px; }
+  .mall-topbar .container { display: flex; gap: 24px; align-items: center; }
+  .mall-topbar .cat-nav { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .mall-topbar .cat-nav a { padding: 6px 14px; border-radius: var(--radius-full); font-size: 14px; color: var(--color-text-2); }
+  .mall-topbar .cat-nav a:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .mall-topbar .cat-nav a.active { background: var(--color-primary); color: #fff; }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .detail-gallery {
+    background: linear-gradient(135deg, #FFE4D2 0%, #FAEFD9 100%);
+    border-radius: var(--radius-md); aspect-ratio: 1/1;
+    display: flex; align-items: center; justify-content: center; font-size: 200px;
+    position: relative;
+  }
+  .detail-gallery .thumbs {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px;
+  }
+  .detail-gallery .thumbs .t {
+    width: 50px; height: 50px; border-radius: 8px;
+    background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .detail-gallery .thumbs .t.active { border-color: var(--color-primary); background: #fff; }
+
+  .detail-info .shop-link {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: var(--color-bg); border-radius: var(--radius); margin-bottom: 16px;
+  }
+  .detail-info .shop-link .logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-gold));
+    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800;
+  }
+  .detail-info h1 { font-size: 24px; margin-bottom: 12px; line-height: 1.4; }
+  .detail-info .price-box {
+    background: linear-gradient(135deg, var(--color-primary-soft), #FFE4D2);
+    padding: 20px; border-radius: var(--radius); margin-bottom: 16px;
+  }
+  .detail-info .price-box .now { font-size: 32px; font-weight: 800; color: var(--color-primary); }
+  .detail-info .price-box .old { text-decoration: line-through; color: var(--color-text-3); font-size: 16px; margin-left: 12px; }
+  .detail-info .price-box .save { color: var(--color-primary); font-weight: 600; font-size: 14px; margin-left: 8px; }
+  .detail-info .donate-badge {
+    background: linear-gradient(135deg, var(--color-trust), #0E8F80);
+    color: #fff; padding: 16px; border-radius: var(--radius);
+    display: flex; align-items: center; gap: 16px; margin-bottom: 16px;
+  }
+  .detail-info .donate-badge .ic { font-size: 32px; }
+  .detail-info .donate-badge .t { font-size: 13px; }
+  .detail-info .donate-badge .v { font-size: 18px; font-weight: 800; }
+
+  .spec-row { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .spec-row .lbl { font-size: 13px; color: var(--color-text-3); width: 60px; }
+  .spec-row .opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .spec-row .opts .opt {
+    padding: 6px 14px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+  }
+  .spec-row .opts .opt.active { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-soft); }
+
+  .qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .qty-row .lbl { font-size: 13px; color: var(--color-text-3); width: 60px; }
+  .qty-input { display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .qty-input button { width: 36px; height: 36px; background: var(--color-bg-alt); font-size: 18px; }
+  .qty-input button:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .qty-input input { width: 60px; height: 36px; text-align: center; border: none; outline: none; }
+  .stock { font-size: 12px; color: var(--color-text-3); margin-left: 12px; }
+
+  .detail-actions { display: flex; gap: 12px; }
+  .detail-actions .btn { flex: 1; }
+
+  .detail-tabs { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .detail-tabs .tabs { padding: 0 24px; }
+  .detail-tabs .panel { padding: 24px; min-height: 200px; }
+
+  .spec-table { width: 100%; }
+  .spec-table td { padding: 10px 0; font-size: 14px; border-bottom: 1px dashed var(--color-border-light); }
+  .spec-table td:first-child { color: var(--color-text-3); width: 120px; }
+
+  .review-item { padding: 20px 0; border-bottom: 1px solid var(--color-border-light); }
+  .review-item .head { display: flex; gap: 12px; margin-bottom: 8px; }
+  .review-item .head .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-gold)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .review-item .head .name { font-size: 14px; font-weight: 600; }
+  .review-item .head .time { font-size: 12px; color: var(--color-text-3); }
+  .review-item .stars { color: #F59E0B; font-size: 14px; margin-bottom: 6px; }
+  .review-item .text { font-size: 14px; color: var(--color-text-2); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="mall-topbar">
+  <div class="container">
+    <div class="cat-nav">
+      <a href="index.html">全部</a>
+      <a href="category.html" class="active">食品保健</a>
+      <a href="category.html">日用家清</a>
+      <a href="category.html">母婴儿童</a>
+      <a href="category.html">服饰美妆</a>
+      <a href="category.html">数码家电</a>
+    </div>
+    <a href="cart.html" class="btn btn-ghost btn-sm">🛒 购物车 (3)</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- 面包屑 -->
+  <div class="text-sm text-muted mb-4">
+    <a href="../index.html">首页</a> /
+    <a href="index.html">慈善商城</a> /
+    <a href="category.html">食品保健</a> /
+    <span style="color:var(--color-text);">美心临期面包礼盒 1.2kg</span>
+  </div>
+
+  <!-- 商品详情 -->
+  <div class="detail-grid">
+    <div class="detail-gallery">
+      🍞
+      <div class="thumbs">
+        <div class="t active">🍞</div>
+        <div class="t">📦</div>
+        <div class="t">🏷️</div>
+        <div class="t">📋</div>
+      </div>
+    </div>
+    <div class="detail-info">
+      <div class="shop-link">
+        <div class="logo">美</div>
+        <div class="flex-1">
+          <div class="fw-600">美心食品旗舰店</div>
+          <div class="text-xs text-muted">★ 4.9 · 已入驻 2 年 · 五星商家</div>
+        </div>
+        <button class="btn btn-ghost btn-sm">+ 关注</button>
+      </div>
+
+      <h1>🍞 美心临期面包礼盒 1.2kg · 8 种口味</h1>
+      <div class="flex gap-2 mb-3">
+        <span class="tag tag-danger">爆款</span>
+        <span class="tag tag-primary">临期特惠</span>
+        <span class="tag tag-trust">已捐赠 ¥ 1,860</span>
+      </div>
+
+      <div class="price-box">
+        <span class="now">¥ 39.9</span>
+        <span class="old">¥ 89</span>
+        <span class="save">立省 ¥ 49.1</span>
+        <div class="text-sm text-muted mt-2">月销 1.2 万 · 累计评价 8,260 · 好评率 99.6%</div>
+      </div>
+
+      <div class="donate-badge">
+        <span class="ic">💝</span>
+        <div>
+          <div class="t">每购买一单，平台自动捐赠订单额的 <strong>0.5%</strong></div>
+          <div class="v mt-1">本商品每单捐赠 ¥ 0.20 · 用于山区儿童营养餐</div>
+        </div>
+      </div>
+
+      <div class="spec-row">
+        <span class="lbl">规格</span>
+        <div class="opts">
+          <span class="opt active">1.2kg 礼盒装</span>
+          <span class="opt">2.4kg 双盒装</span>
+          <span class="opt">5kg 家庭装</span>
+        </div>
+      </div>
+
+      <div class="spec-row">
+        <span class="lbl">口味</span>
+        <div class="opts">
+          <span class="opt active">混合 8 种</span>
+          <span class="opt">原味为主</span>
+          <span class="opt">全麦为主</span>
+        </div>
+      </div>
+
+      <div class="spec-row">
+        <span class="lbl">配送</span>
+        <div class="opts">
+          <span class="opt active">包邮 · 48 小时发货</span>
+        </div>
+      </div>
+
+      <div class="qty-row">
+        <span class="lbl">数量</span>
+        <div class="qty-input">
+          <button onclick="changeQty(-1)">−</button>
+          <input type="text" id="qty" value="1">
+          <button onclick="changeQty(1)">+</button>
+        </div>
+        <span class="stock">库存 1,260 件</span>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn btn-ghost btn-lg" onclick="alert('已加入购物车')">🛒 加入购物车</button>
+        <button class="btn btn-primary btn-lg" onclick="location.href='checkout.html'">立即购买 →</button>
+      </div>
+
+      <div class="alert alert-info mt-4" style="font-size:13px;">
+        <span class="ic">💡</span>
+        <div>
+          <strong>临期说明：</strong>本商品保质期至 2025-07-15，建议收到后 7 天内食用。临期商品不影响食用安全，每售出一单美心额外捐赠 ¥ 0.50 用于扶贫。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情 Tab -->
+  <div class="detail-tabs">
+    <div class="tabs" style="margin:0;">
+      <div class="tab active" data-target="spec">商品详情</div>
+      <div class="tab" data-target="reviews">用户评价 (8,260)</div>
+      <div class="tab" data-target="donate">捐赠记录</div>
+      <div class="tab" data-target="service">售后服务</div>
+    </div>
+    <div class="panel">
+      <h3 class="mb-3" style="font-size:16px;">📋 商品规格参数</h3>
+      <table class="spec-table">
+        <tr><td>商品名称</td><td>美心临期面包礼盒</td></tr>
+        <tr><td>净含量</td><td>1.2kg（8 种口味，约 12-15 个）</td></tr>
+        <tr><td>保质期</td><td>至 2025-07-15</td></tr>
+        <tr><td>储存方式</td><td>常温避光保存</td></tr>
+        <tr><td>产地</td><td>广东广州</td></tr>
+        <tr><td>生产厂家</td><td>美心食品（广州）有限公司</td></tr>
+        <tr><td>食品生产许可证</td><td>SC1244401********</td></tr>
+        <tr><td>客服电话</td><td>400-888-6666</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<a href="cart.html" class="cart-floating" style="position:fixed;right:24px;bottom:24px;background:linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));color:#fff;padding:14px 20px;border-radius:var(--radius-full);box-shadow:0 12px 32px rgba(232,93,4,0.4);display:flex;align-items:center;gap:10px;z-index:50;font-size:14px;font-weight:600;text-decoration:none;">
+  <span style="background:#fff;color:var(--color-primary);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">3</span>
+  <span>购物车</span>
+  <span style="opacity:0.7;">|</span>
+  <span>¥ 256.4</span>
+</a>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderHeader('mall'); CS.renderFooter();
+
+  function changeQty(d) {
+    const input = document.getElementById('qty');
+    let v = parseInt(input.value) + d;
+    if (v < 1) v = 1;
+    if (v > 99) v = 99;
+    input.value = v;
+  }
+</script>
+</body>
+</html>

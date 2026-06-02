@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>购物车 — 慈商联营慈善商城</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  .cart-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+  .cart-list { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; }
+  .cart-shop { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--color-border-light); }
+  .cart-shop input[type="checkbox"] { width: 18px; height: 18px; }
+  .cart-shop .logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--color-primary), var(--color-gold)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; }
+  .cart-shop .name { font-weight: 600; }
+  .cart-shop .badge { background: var(--color-trust-soft); color: var(--color-trust); font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+
+  .cart-item { display: flex; align-items: center; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--color-border-light); }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item .cover {
+    width: 80px; height: 80px; border-radius: var(--radius);
+    background: linear-gradient(135deg, #FFE4D2, #FAEFD9);
+    display: flex; align-items: center; justify-content: center; font-size: 36px;
+    flex-shrink: 0;
+  }
+  .cart-item .info { flex: 1; }
+  .cart-item .info .name { font-size: 14px; font-weight: 600; margin-bottom: 4px; line-height: 1.4; }
+  .cart-item .info .spec { font-size: 12px; color: var(--color-text-3); }
+  .cart-item .info .donate { font-size: 11px; color: var(--color-trust); margin-top: 4px; }
+  .cart-item .price { font-size: 16px; font-weight: 700; color: var(--color-primary); width: 120px; text-align: right; }
+  .cart-item .qty { width: 140px; }
+  .cart-item .qty-input { display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .cart-item .qty-input button { width: 32px; height: 32px; background: var(--color-bg-alt); }
+  .cart-item .qty-input input { width: 50px; height: 32px; text-align: center; border: none; outline: none; }
+  .cart-item .total { font-size: 16px; font-weight: 700; width: 100px; text-align: right; }
+  .cart-item .op { width: 60px; text-align: right; }
+  .cart-item .op a { font-size: 12px; color: var(--color-text-3); display: block; }
+
+  .cart-summary { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; position: sticky; top: 96px; }
+  .cart-summary h3 { font-size: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-light); }
+  .cart-summary .row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+  .cart-summary .row .v { color: var(--color-text-2); }
+  .cart-summary .donate-info {
+    background: linear-gradient(135deg, var(--color-trust-soft), #E0FAF5);
+    padding: 12px; border-radius: var(--radius); margin: 12px 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cart-summary .donate-info .ic { font-size: 24px; }
+  .cart-summary .donate-info .t { font-size: 12px; color: var(--color-text-3); }
+  .cart-summary .donate-info .v { font-size: 16px; font-weight: 800; color: var(--color-trust); }
+  .cart-summary .total { padding: 12px 0; border-top: 1px dashed var(--color-border); margin-top: 12px; }
+  .cart-summary .total .l { font-size: 14px; color: var(--color-text-2); }
+  .cart-summary .total .v { font-size: 24px; font-weight: 800; color: var(--color-primary); }
+  .cart-summary .btn-block { margin-top: 12px; }
+
+  .cart-bar {
+    position: sticky; bottom: 0; background: #fff; padding: 16px 24px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    margin-top: 24px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .cart-bar .left { display: flex; gap: 16px; align-items: center; }
+  .cart-bar .left input[type="checkbox"] { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding-top:32px; padding-bottom:60px;">
+  <div class="text-sm text-muted mb-4">
+    <a href="../index.html">首页</a> /
+    <a href="index.html">慈善商城</a> /
+    <span style="color:var(--color-text);">购物车</span>
+  </div>
+
+  <h1 class="mb-6" style="font-size:28px;">🛒 我的购物车 <span class="text-muted text-sm" style="font-weight:normal;">(3 件商品)</span></h1>
+
+  <div class="cart-grid">
+    <div>
+      <div class="cart-list">
+        <!-- Shop 1 -->
+        <div class="cart-shop">
+          <input type="checkbox" checked>
+          <div class="logo">美</div>
+          <div class="name">美心食品旗舰店</div>
+          <span class="badge">五星商家</span>
+        </div>
+        <div class="cart-item">
+          <input type="checkbox" checked>
+          <div class="cover">🍞</div>
+          <div class="info">
+            <div class="name">美心临期面包礼盒 1.2kg · 8 种口味</div>
+            <div class="spec">规格：1.2kg 礼盒装 · 混合 8 种</div>
+            <div class="donate">💝 每单捐赠 ¥ 0.20</div>
+          </div>
+          <div class="price">¥ 39.9</div>
+          <div class="qty">
+            <div class="qty-input">
+              <button>−</button>
+              <input type="text" value="2">
+              <button>+</button>
+            </div>
+          </div>
+          <div class="total">¥ 79.8</div>
+          <div class="op">
+            <a href="#">移入收藏</a>
+            <a href="#">删除</a>
+          </div>
+        </div>
+        <div class="cart-item">
+          <input type="checkbox" checked>
+          <div class="cover" style="background:linear-gradient(135deg,#FAEFD9,#FFE4D2);">🥐</div>
+          <div class="info">
+            <div class="name">美心丹麦酥 礼盒装 480g</div>
+            <div class="spec">规格：480g · 经典原味</div>
+            <div class="donate">💝 每单捐赠 ¥ 0.12</div>
+          </div>
+          <div class="price">¥ 24.9</div>
+          <div class="qty">
+            <div class="qty-input">
+              <button>−</button>
+              <input type="text" value="1">
+              <button>+</button>
+            </div>
+          </div>
+          <div class="total">¥ 24.9</div>
+          <div class="op">
+            <a href="#">移入收藏</a>
+            <a href="#">删除</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-list mt-4">
+        <div class="cart-shop">
+          <input type="checkbox" checked>
+          <div class="logo" style="background:linear-gradient(135deg,#14B8A6,#0E5A6F);">伊</div>
+          <div class="name">伊利官方旗舰店</div>
+          <span class="badge">五星商家</span>
+        </div>
+        <div class="cart-item">
+          <input type="checkbox" checked>
+          <div class="cover" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);">🥛</div>
+          <div class="info">
+            <div class="name">伊利高钙牛奶 250ml × 24 盒</div>
+            <div class="spec">规格：250ml × 24 盒</div>
+            <div class="donate">💝 每单捐赠 ¥ 0.30</div>
+          </div>
+          <div class="price">¥ 59</div>
+          <div class="qty">
+            <div class="qty-input">
+              <button>−</button>
+              <input type="text" value="1">
+              <button>+</button>
+            </div>
+          </div>
+          <div class="total">¥ 59</div>
+          <div class="op">
+            <a href="#">移入收藏</a>
+            <a href="#">删除</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-bar">
+        <div class="left">
+          <label class="flex gap-2 items-center"><input type="checkbox" checked> 全选</label>
+          <a href="#" class="text-muted text-sm">删除选中</a>
+          <a href="#" class="text-muted text-sm">清空失效商品</a>
+        </div>
+        <div class="flex gap-3 items-center">
+          <span class="text-muted text-sm">已选 3 件</span>
+          <span style="font-size:14px;">合计：</span>
+          <span style="font-size:24px;font-weight:800;color:var(--color-primary);">¥ 256.4</span>
+          <a href="checkout.html" class="btn btn-primary btn-lg">去结算 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧汇总 -->
+    <div class="cart-summary">
+      <h3>📋 订单汇总</h3>
+      <div class="row"><span>商品总额</span><span class="v">¥ 249.4</span></div>
+      <div class="row"><span>运费</span><span class="v text-success">免邮</span></div>
+      <div class="row"><span>会员折扣</span><span class="v text-success">- ¥ 7.0</span></div>
+      <div class="row"><span>优惠券</span><span class="v text-muted">未使用</span></div>
+
+      <div class="donate-info">
+        <span class="ic">💝</span>
+        <div>
+          <div class="t">本订单慈商联营将捐赠</div>
+          <div class="v">¥ 1.28</div>
+        </div>
+      </div>
+
+      <div class="total">
+        <div class="flex-between">
+          <span class="l">实付款</span>
+          <span class="v">¥ 256.4</span>
+        </div>
+      </div>
+
+      <a href="checkout.html" class="btn btn-primary btn-block btn-lg">去结算 (3)</a>
+
+      <div class="alert alert-info mt-4" style="font-size:12px;">
+        <span class="ic">🔒</span>
+        <div>慈商联营承诺：所有爱心商家均通过资质审核，商品 7 天无理由退换</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>CS.renderHeader('mall'); CS.renderFooter();</script>
+</body>
+</html>

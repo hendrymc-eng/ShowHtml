@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业工作台 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  .welcome-card {
+    background: linear-gradient(135deg, #FFF1E5 0%, #FAEFD9 50%, #FFE4D2 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .welcome-card::after {
+    content: '🏢'; position: absolute; right: 80px; top: -20px; font-size: 200px;
+    opacity: 0.08; pointer-events: none;
+  }
+  .welcome-card h1 { font-size: 28px; margin-bottom: 8px; }
+  .welcome-card .sub { color: var(--color-text-2); font-size: 15px; margin-bottom: 16px; }
+  .welcome-card .tags { display: flex; gap: 8px; }
+
+  .quick-actions {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;
+  }
+  .quick-action {
+    display: flex; gap: 12px; align-items: center;
+    padding: 12px; border-radius: var(--radius);
+    transition: all var(--t); cursor: pointer;
+  }
+  .quick-action:hover { background: var(--color-primary-soft); }
+  .quick-action .ic {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--color-primary-soft); color: var(--color-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .quick-action .info { font-size: 14px; font-weight: 600; }
+  .quick-action .desc { font-size: 12px; color: var(--color-text-3); margin-top: 2px; }
+
+  .donut {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: conic-gradient(
+      var(--color-primary) 0 42%,
+      var(--color-trust) 42% 70%,
+      var(--color-gold) 70% 88%,
+      var(--color-info) 88% 100%
+    );
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    position: relative;
+  }
+  .donut::before {
+    content: ''; position: absolute; width: 80px; height: 80px;
+    background: #fff; border-radius: 50%;
+  }
+  .donut-info {
+    position: relative; z-index: 1; text-align: center;
+  }
+  .donut-info .num { font-size: 24px; font-weight: 800; color: var(--color-text); }
+  .donut-info .lbl { font-size: 12px; color: var(--color-text-3); }
+
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+
+  <main class="dash-main">
+    <!-- 欢迎卡 -->
+    <div class="welcome-card">
+      <div>
+        <h1>👋 你好，李经理</h1>
+        <p class="sub">欢迎回到 <strong>美心食品集团</strong> 企业工作台。当前已入驻 <strong>2 年</strong>，累计捐赠物资 <strong>¥ 1,860万</strong>，帮助 <strong>126,800</strong> 人。</p>
+        <div class="tags">
+          <span class="tag tag-gold">🏆 年度标杆企业</span>
+          <span class="tag tag-trust">✓ 资质已认证</span>
+          <span class="tag tag-success">✓ 押金已缴</span>
+        </div>
+      </div>
+      <div>
+        <a href="donate-publish.html" class="btn btn-primary btn-lg">📦 发起新捐赠</a>
+      </div>
+    </div>
+
+    <!-- 快捷入口 -->
+    <div class="quick-actions">
+      <a href="donate-publish.html" class="quick-action">
+        <div class="ic">📦</div>
+        <div>
+          <div class="info">发起捐赠</div>
+          <div class="desc">主动献爱心</div>
+        </div>
+      </a>
+      <a href="donate-respond.html" class="quick-action">
+        <div class="ic">🤝</div>
+        <div>
+          <div class="info">响应项目</div>
+          <div class="desc">5 个待响应</div>
+        </div>
+      </a>
+      <a href="donation-list.html" class="quick-action">
+        <div class="ic">📋</div>
+        <div>
+          <div class="info">捐赠记录</div>
+          <div class="desc">查询历史</div>
+        </div>
+      </a>
+      <a href="bills.html" class="quick-action">
+        <div class="ic">💰</div>
+        <div>
+          <div class="info">账单管理</div>
+          <div class="desc">入驻费/年费</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- 消息中心快捷入口（由 common.js 动态生成） -->
+    <div id="msg-banner-slot" data-role="company"></div>
+
+    <!-- 数据统计 -->
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📦</div>
+        <div class="label">累计捐赠次数</div>
+        <div class="value">128<span class="unit">次</span></div>
+        <div class="trend"><span style="color:var(--color-success)">↑ 12%</span> 同比</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">💰</div>
+        <div class="label">累计捐赠价值</div>
+        <div class="value">¥ 1,860<span class="unit">万</span></div>
+        <div class="trend"><span style="color:var(--color-success)">↑ 38%</span> 同比</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">👥</div>
+        <div class="label">受惠人次</div>
+        <div class="value">126,800</div>
+        <div class="trend"><span style="color:var(--color-success)">↑ 42%</span> 同比</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">⏱️</div>
+        <div class="label">平均派发时效</div>
+        <div class="value">3.2<span class="unit">天</span></div>
+        <div class="trend"><span style="color:var(--color-success)">↓ 0.5 天</span> 提速</div>
+      </div>
+    </div>
+
+    <!-- 图表区 -->
+    <div class="dash-grid-2">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📈 近 12 个月捐赠趋势</h3>
+          <a href="#" class="more">查看详情 →</a>
+        </div>
+        <div class="chart-bar" style="display:flex;gap:6px;align-items:flex-end;height:120px;margin:16px 0;padding-top:24px;">
+          <div class="bar" style="height:35%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 86万</span></div>
+          <div class="bar" style="height:42%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 105万</span></div>
+          <div class="bar" style="height:28%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 70万</span></div>
+          <div class="bar" style="height:65%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 162万</span></div>
+          <div class="bar" style="height:78%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 195万</span></div>
+          <div class="bar" style="height:55%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 138万</span></div>
+          <div class="bar" style="height:90%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 225万</span></div>
+          <div class="bar" style="height:62%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 155万</span></div>
+          <div class="bar" style="height:48%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 120万</span></div>
+          <div class="bar" style="height:70%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 175万</span></div>
+          <div class="bar" style="height:82%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 205万</span></div>
+          <div class="bar" style="height:100%;flex:1;background:linear-gradient(180deg,var(--color-primary) 0%,var(--color-gold) 100%);border-radius:4px 4px 0 0;position:relative;min-width:8px;"><span class="v" style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--color-text-3);white-space:nowrap;">¥ 250万</span></div>
+        </div>
+        <div class="chart-labels" style="display:flex;gap:6px;">
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">1月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">2月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">3月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">4月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">5月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">6月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">7月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">8月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">9月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">10月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">11月</span>
+          <span style="flex:1;text-align:center;font-size:12px;color:var(--color-text-3);">12月</span>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>🎯 捐赠品类分布</h3>
+          <a href="#" class="more">查看详情 →</a>
+        </div>
+        <div class="donut">
+          <div class="donut-info">
+            <div class="num">128</div>
+            <div class="lbl">总次数</div>
+          </div>
+        </div>
+        <div class="flex-col gap-2 mt-4 text-sm">
+          <div class="flex-between"><span><span class="legend-dot" style="background:var(--color-primary)"></span>临期食品</span><span class="fw-600">42%</span></div>
+          <div class="flex-between"><span><span class="legend-dot" style="background:var(--color-trust)"></span>新品食品</span><span class="fw-600">28%</span></div>
+          <div class="flex-between"><span><span class="legend-dot" style="background:var(--color-gold)"></span>日化用品</span><span class="fw-600">18%</span></div>
+          <div class="flex-between"><span><span class="legend-dot" style="background:var(--color-info)"></span>其他</span><span class="fw-600">12%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 待办 + 公告 -->
+    <div class="dash-grid-2 mt-6">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📌 待办事项 (4)</h3>
+          <a href="#" class="more">全部待办 →</a>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">📦</div>
+            <div class="body">
+              <div class="title">3 笔捐赠待发货</div>
+              <div class="meta">受捐者已确认 · 截止 2025-06-05</div>
+            </div>
+            <a href="donation-list.html" class="btn btn-ghost btn-sm">处理</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">🤝</div>
+            <div class="body">
+              <div class="title">5 个受灾项目待响应</div>
+              <div class="meta">云南 / 甘肃 / 青海</div>
+            </div>
+            <a href="donate-respond.html" class="btn btn-ghost btn-sm">查看</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📊</div>
+            <div class="body">
+              <div class="title">Q2 慈善评分已更新</div>
+              <div class="meta">98.6 分 · 行业 TOP 5</div>
+            </div>
+            <a href="profile.html" class="btn btn-ghost btn-sm">查看</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(124,58,237,0.1);color:#7C3AED;">💰</div>
+            <div class="body">
+              <div class="title">2025 年年费即将到期</div>
+              <div class="meta">2025-08-15 到期 · 续费 9 折</div>
+            </div>
+            <a href="bills.html" class="btn btn-ghost btn-sm">续费</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📰 平台公告</h3>
+          <a href="#" class="more">全部公告 →</a>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(220,38,38,0.1);color:#DC2626;">🚨</div>
+            <div class="body">
+              <div class="title">云南昭通 6.2 级地震 · 紧急救援</div>
+              <div class="meta">2025-05-30 · 紧急救灾</div>
+            </div>
+            <a href="donate-respond.html" class="btn btn-primary btn-sm">立即响应</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(14,90,111,0.1);color:#0E5A6F;">📊</div>
+            <div class="body">
+              <div class="title">2024 年度报告已发布</div>
+              <div class="meta">2025-05-20</div>
+            </div>
+            <a href="../pages/annual-report.html" class="btn btn-ghost btn-sm">查看</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">🎁</div>
+            <div class="body">
+              <div class="title">"临期 0 浪费"年度项目启动</div>
+              <div class="meta">2025-05-15</div>
+            </div>
+            <a href="donate-publish.html" class="btn btn-ghost btn-sm">参与</a>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:rgba(196,132,42,0.1);color:#C4842A;">📋</div>
+            <div class="body">
+              <div class="title">企业品宣主页 v2.0 上线</div>
+              <div class="meta">2025-05-10</div>
+            </div>
+            <a href="profile.html" class="btn btn-ghost btn-sm">配置</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最新捐赠 -->
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>🆕 最新捐赠动态</h3>
+        <a href="donation-list.html" class="more">查看全部 →</a>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>捐赠编号</th>
+            <th>物资类型</th>
+            <th>数量 / 价值</th>
+            <th>匹配慈善会</th>
+            <th>进度</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CC-DON-2025-0682-0001</td>
+            <td>临期面包糕点</td>
+            <td>1,200 件 / ¥ 18,600</td>
+            <td>广东省慈善总会</td>
+            <td><div class="progress" style="width:120px;"><div class="progress-bar" style="width:65%"></div></div></td>
+            <td><span class="tag tag-primary">派发中</span></td>
+            <td><a href="donation-detail.html" class="btn-link">查看轨迹</a></td>
+          </tr>
+          <tr>
+            <td>CC-DON-2025-0615-0028</td>
+            <td>儿童牛奶礼盒</td>
+            <td>600 盒 / ¥ 32,400</td>
+            <td>广东省慈善总会</td>
+            <td><div class="progress" style="width:120px;"><div class="progress-bar success" style="width:100%"></div></div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a></td>
+          </tr>
+          <tr>
+            <td>CC-DON-2025-0420-0156</td>
+            <td>端午粽子礼盒</td>
+            <td>800 盒 / ¥ 56,000</td>
+            <td>深圳市壹基金</td>
+            <td><div class="progress" style="width:120px;"><div class="progress-bar" style="width:25%"></div></div></td>
+            <td><span class="tag tag-warning">运输中</span></td>
+            <td><a href="donation-detail.html" class="btn-link">查看轨迹</a></td>
+          </tr>
+          <tr>
+            <td>CC-DON-2025-0310-0089</td>
+            <td>儿童节零食大礼包</td>
+            <td>1,500 份 / ¥ 78,000</td>
+            <td>海南省慈善总会</td>
+            <td><div class="progress" style="width:120px;"><div class="progress-bar success" style="width:100%"></div></div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'dashboard');
+  CS.renderDashMsgBanner('company');
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物资派发 — 深圳市壹基金 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>🚚 物资派发</h1>
+        <div class="sub">执行合作慈善会分派的物资派发任务</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">待执行 <span class="count">5</span></div>
+      <div class="tab">派发中 <span class="count">3</span></div>
+      <div class="tab">已完成</div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-list-item" style="border:1px solid var(--color-border-light);">
+        <div class="icon" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);font-size:24px;">🍞</div>
+        <div class="body">
+          <div class="title">美心临期面包 · 五华县</div>
+          <div class="meta">1,200 件 · 已派发 720 · 责任社工：李梅</div>
+          <div class="flex gap-2 mt-2">
+            <span class="tag tag-primary">派发中</span>
+            <span class="tag tag-trust">流程一</span>
+            <span class="tag">广东省慈善总会</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="progress" style="width:120px;"><div class="progress-bar" style="width:60%"></div></div>
+          <div class="text-xs text-muted mt-1">60% · 56/86 户</div>
+        </div>
+      </div>
+
+      <div class="dash-list-item" style="border:1px solid var(--color-border-light);margin-top:12px;">
+        <div class="icon" style="background:linear-gradient(135deg,#FAEFD9,#FFF1E5);font-size:24px;">📚</div>
+        <div class="body">
+          <div class="title">"一书一希望" 图书角 · 黔东南</div>
+          <div class="meta">800 套 · 准备派发</div>
+          <div class="flex gap-2 mt-2">
+            <span class="tag tag-warning">待执行</span>
+            <span class="tag tag-info">流程三</span>
+            <span class="tag">贵州省慈善总会</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-primary btn-sm">开始派发 →</button>
+        </div>
+      </div>
+
+      <div class="dash-list-item" style="border:1px solid var(--color-border-light);margin-top:12px;">
+        <div class="icon" style="background:linear-gradient(135deg,#E0FAF5,#E5F0F4);font-size:24px;">🥛</div>
+        <div class="body">
+          <div class="title">伊利儿童牛奶 · 河源</div>
+          <div class="meta">600 盒 · 准备派发</div>
+          <div class="flex gap-2 mt-2">
+            <span class="tag tag-warning">待执行</span>
+            <span class="tag tag-trust">流程一</span>
+            <span class="tag">广东省慈善总会</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-primary btn-sm">开始派发 →</button>
+        </div>
+      </div>
+
+      <div class="dash-list-item" style="border:1px solid var(--color-border-light);margin-top:12px;">
+        <div class="icon" style="background:linear-gradient(135deg,#F3E8FF,#FFE4D2);font-size:24px;">🧴</div>
+        <div class="body">
+          <div class="title">安利洗护用品 · 肇庆</div>
+          <div class="meta">500 套 · 准备派发</div>
+          <div class="flex gap-2 mt-2">
+            <span class="tag tag-warning">待执行</span>
+            <span class="tag tag-trust">流程一</span>
+            <span class="tag">广东省慈善总会</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-primary btn-sm">开始派发 →</button>
+        </div>
+      </div>
+
+      <div class="dash-list-item" style="border:1px solid var(--color-border-light);margin-top:12px;">
+        <div class="icon" style="background:linear-gradient(135deg,#DC2626,#F59E0B);font-size:24px;">🚨</div>
+        <div class="body">
+          <div class="title">云南昭通地震救援 · 帐篷</div>
+          <div class="meta">320 顶 · 紧急</div>
+          <div class="flex gap-2 mt-2">
+            <span class="tag tag-danger">🚨 紧急</span>
+            <span class="tag tag-info">流程二</span>
+            <span class="tag">云南省慈善总会</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-primary btn-sm">立即开始 →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('社会组织', '李秘书长');
+  CS.renderSidebar('org', 'distribute');
+</script>
+</body>
+</html>

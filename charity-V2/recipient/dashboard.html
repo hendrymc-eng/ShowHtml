@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>受捐者中心 — 李华 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  .welcome-card {
+    background: linear-gradient(135deg, #F3E8FF 0%, #FFE4D2 50%, #FFF1E5 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .welcome-card::after { content: '❤️'; position: absolute; right: 80px; top: -10px; font-size: 200px; opacity: 0.08; }
+  .welcome-card h1 { font-size: 28px; margin-bottom: 8px; }
+
+  .scan-entry {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-gold) 100%);
+    color: #fff; border-radius: var(--radius-lg); padding: 40px;
+    text-align: center; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .scan-entry::after {
+    content: ''; position: absolute; right: -50px; top: -50px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+  .scan-entry .ic { font-size: 80px; margin-bottom: 16px; }
+  .scan-entry h2 { font-size: 28px; margin-bottom: 8px; }
+  .scan-entry p { color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="welcome-card">
+      <div>
+        <h1>👋 你好，李华</h1>
+        <p class="sub">欢迎回到受捐者中心。已通过 <strong>广东省慈善总会</strong> 认证，您的物资领取由志愿者 <strong>张伟</strong> 负责。</p>
+        <div class="flex gap-2">
+          <span class="tag tag-trust">✓ 已认证</span>
+          <span class="tag tag-info">责任社工：张伟</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 扫码入口 -->
+    <div class="scan-entry">
+      <div class="ic">📱</div>
+      <h2>扫码领取爱心物资</h2>
+      <p>志愿者送达物资时，您可扫码登记领取。每件物资都有专属二维码。</p>
+      <a href="receive.html" class="btn btn-lg" style="background:#fff;color:var(--color-primary);font-weight:700;">立即扫码领取 →</a>
+    </div>
+
+    <!-- 消息中心快捷入口（由 common.js 动态生成） -->
+    <div id="msg-banner-slot" data-role="recipient"></div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📦</div>
+        <div class="label">累计领取</div>
+        <div class="value">12<span class="unit">次</span></div>
+        <div class="trend">物资 86 件</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">💝</div>
+        <div class="label">受惠价值</div>
+        <div class="value">¥ 1,860</div>
+        <div class="trend">累计</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">⭐</div>
+        <div class="label">反馈次数</div>
+        <div class="value">8</div>
+        <div class="trend">好评率 100%</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">🎁</div>
+        <div class="label">下次领取</div>
+        <div class="value">2025-06-15</div>
+        <div class="trend">端午节礼盒</div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📋 近期领取记录</h3>
+        <a href="history.html" class="more">全部 →</a>
+      </div>
+      <div class="dash-list">
+        <div class="dash-list-item">
+          <div class="icon" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);font-size:24px;">🍞</div>
+          <div class="body">
+            <div class="title">美心临期面包</div>
+            <div class="meta">8 件 · 2025-06-01 · 五华县水寨镇</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:linear-gradient(135deg,#E5F0F4,#E0FAF5);font-size:24px;">🥛</div>
+          <div class="body">
+            <div class="title">伊利儿童牛奶</div>
+            <div class="meta">6 盒 · 2025-05-15 · 五华县水寨镇</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:linear-gradient(135deg,#F3E8FF,#FFE4D2);font-size:24px;">🍙</div>
+          <div class="body">
+            <div class="title">端午粽子礼盒</div>
+            <div class="meta">2 盒 · 2025-04-20 · 五华县水寨镇</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('受捐者', '李华');
+  CS.renderSidebar('recipient', 'dashboard');
+  CS.renderDashMsgBanner('recipient');
+</script>
+</body>
+</html>

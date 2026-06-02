@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慈商联营 — 让每一份善意都可追溯 | 海南亚洲公益研究院</title>
+<meta name="description" content="慈商联营是海南亚洲公益研究院发起的全流程透明化公益平台，连接企业、慈善会、社会组织、志愿者与受捐者，让慈善最后一公里完全可见。">
+<link rel="stylesheet" href="public/css/style.css">
+<style>
+  /* ============================================
+     首页专属样式
+     ============================================ */
+  body { background: var(--color-bg); }
+
+  /* HERO */
+  .hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0E2A3A 0%, #0F4C5C 50%, #0E5A6F 100%);
+    color: #fff; padding: 80px 0 100px;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(232,93,4,0.4) 0%, transparent 45%),
+      radial-gradient(circle at 15% 90%, rgba(20,184,166,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(196,132,42,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(180deg, transparent 0%, var(--color-bg) 100%);
+    pointer-events: none;
+  }
+  .hero .container { position: relative; z-index: 2; }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; color: #fff;
+    backdrop-filter: blur(10px);
+    margin-bottom: 24px;
+  }
+  .hero-badge .live-dot { background: #5EEAD4; }
+  .hero h1 {
+    font-size: 56px; line-height: 1.15; margin-bottom: 24px;
+    font-weight: 800;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, #FFA35E 0%, #FFD480 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .lead {
+    font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.85);
+    margin-bottom: 32px; max-width: 560px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+  .hero-trust { display: flex; gap: 32px; flex-wrap: wrap; }
+  .hero-trust .item { display: flex; gap: 10px; align-items: center; font-size: 13px; color: rgba(255,255,255,0.8); }
+  .hero-trust .item .ic { color: #5EEAD4; font-size: 16px; }
+
+  /* 实时数据大屏 */
+  .live-board {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  }
+  .live-board .head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .live-board .head .title { font-size: 14px; font-weight: 600; display: flex; gap: 8px; align-items: center; }
+  .live-board .head .title .live-dot { background: #5EEAD4; }
+  .live-board .head .stamp { font-size: 11px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); }
+  .live-board .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .live-board .stat {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .live-board .stat .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+  .live-board .stat .value {
+    font-size: 26px; font-weight: 800;
+    background: linear-gradient(135deg, #FFA35E 0%, #FFD480 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+  .live-board .stat .value .unit { font-size: 13px; color: rgba(255,255,255,0.5); margin-left: 4px; -webkit-text-fill-color: rgba(255,255,255,0.5); }
+  .live-board .stat.trust .value {
+    background: linear-gradient(135deg, #5EEAD4 0%, #14B8A6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* 数据大屏（主站） */
+  .data-screen {
+    background: linear-gradient(180deg, var(--color-bg) 0%, #fff 100%);
+    padding: 80px 0;
+    position: relative;
+  }
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    background: linear-gradient(135deg, #0E5A6F 0%, #164E63 100%);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .data-grid::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(232,93,4,0.3), transparent 50%),
+      radial-gradient(circle at 10% 90%, rgba(20,184,166,0.25), transparent 50%);
+    pointer-events: none;
+  }
+  .data-grid .item { position: relative; text-align: center; }
+  .data-grid .item .num {
+    font-size: 48px; font-weight: 800;
+    background: linear-gradient(135deg, #FFA35E 0%, #FFD480 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .data-grid .item .num .unit { font-size: 16px; color: rgba(255,255,255,0.5); -webkit-text-fill-color: rgba(255,255,255,0.5); margin-left: 4px; }
+  .data-grid .item .label { font-size: 14px; color: rgba(255,255,255,0.8); }
+  .data-grid .item .trend { font-size: 12px; color: #5EEAD4; margin-top: 6px; }
+  .data-grid .divider { width: 1px; background: rgba(255,255,255,0.1); }
+
+  /* 角色入口 */
+  .roles-section {
+    background: linear-gradient(180deg, #fff 0%, var(--color-bg) 100%);
+    padding: 80px 0;
+  }
+  .roles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .role-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 28px 20px; text-align: center;
+    transition: all var(--t) var(--ease);
+    cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .role-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--role-color, var(--color-primary));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform var(--t) var(--ease);
+  }
+  .role-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--role-color, var(--color-primary)); }
+  .role-card:hover::before { transform: scaleX(1); }
+  .role-card .icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    background: var(--role-soft, var(--color-primary-soft));
+    color: var(--role-color, var(--color-primary));
+  }
+  .role-card .name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .role-card .desc { font-size: 12px; color: var(--color-text-3); line-height: 1.5; margin-bottom: 14px; min-height: 36px; }
+  .role-card .enter {
+    font-size: 13px; font-weight: 600;
+    color: var(--role-color, var(--color-primary));
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .role-card .enter::after { content: '→'; transition: transform var(--t) var(--ease); }
+  .role-card:hover .enter::after { transform: translateX(4px); }
+
+  /* 三种捐赠流程 */
+  .flow-section { background: #fff; padding: 80px 0; }
+  .flow-tabs {
+    display: flex; gap: 8px; margin-bottom: 32px;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .flow-tab {
+    padding: 14px 24px;
+    font-size: 15px; font-weight: 600; color: var(--color-text-3);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: all var(--t) var(--ease);
+  }
+  .flow-tab:hover { color: var(--color-text); }
+  .flow-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+  .flow-tab .num-badge {
+    display: inline-block; width: 24px; height: 24px; line-height: 24px;
+    background: var(--color-bg-alt); color: var(--color-text-3);
+    border-radius: 50%; text-align: center; font-size: 12px;
+    margin-right: 8px; vertical-align: middle;
+  }
+  .flow-tab.active .num-badge { background: var(--color-primary); color: #fff; }
+  .flow-panel { display: none; }
+  .flow-panel.active { display: block; animation: fadeUp 0.4s var(--ease); }
+  .flow-canvas {
+    display: grid; grid-template-columns: 1fr 80px 1fr 80px 1fr 80px 1fr;
+    gap: 0; align-items: center;
+    padding: 32px 0;
+  }
+  .flow-node {
+    background: #fff; border: 2px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 20px;
+    text-align: center; position: relative;
+  }
+  .flow-node.theme-primary { border-color: rgba(232,93,4,0.3); }
+  .flow-node.theme-trust { border-color: rgba(20,184,166,0.3); }
+  .flow-node.theme-gold { border-color: rgba(196,132,42,0.3); }
+  .flow-node .ico {
+    width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+  .flow-node.theme-primary .ico { background: var(--color-primary-soft); color: var(--color-primary); }
+  .flow-node.theme-trust .ico { background: var(--color-trust-soft); color: var(--color-trust); }
+  .flow-node.theme-gold .ico { background: var(--color-gold-soft); color: var(--color-gold); }
+  .flow-node .t { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .flow-node .d { font-size: 12px; color: var(--color-text-3); line-height: 1.5; }
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-primary); font-size: 24px;
+  }
+
+  /* 物资透明化 - 地图 */
+  .map-section { background: var(--color-bg); padding: 80px 0; }
+  .map-wrap {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 24px;
+    position: relative; overflow: hidden;
+  }
+  .map-canvas {
+    background: linear-gradient(135deg, #E0F2F1 0%, #FAF8F4 100%);
+    border-radius: var(--radius); position: relative; min-height: 480px;
+    overflow: hidden;
+  }
+  .map-canvas::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(14,90,111,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,90,111,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .map-pin {
+    position: absolute; transform: translate(-50%, -50%);
+    background: #fff; border: 2px solid var(--color-primary);
+    border-radius: var(--radius); padding: 8px 12px;
+    font-size: 12px; box-shadow: var(--shadow-md);
+    cursor: pointer; transition: all var(--t) var(--ease);
+    z-index: 2; white-space: nowrap;
+  }
+  .map-pin::before {
+    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%) rotate(45deg);
+    width: 8px; height: 8px; background: #fff; border-right: 2px solid var(--color-primary); border-bottom: 2px solid var(--color-primary);
+  }
+  .map-pin .count { color: var(--color-primary); font-weight: 700; }
+  .map-pin.pulse::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--color-primary);
+    transform: translate(-50%, -50%);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  .map-pin:hover { transform: translate(-50%, -50%) scale(1.08); z-index: 3; }
+  .map-pin.pulse { padding-left: 28px; }
+  .map-pin.pulse::after { left: 12px; }
+
+  .map-legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid var(--color-border-light);
+  }
+  .map-legend .item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-text-2); }
+  .map-legend .item .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* 受捐人群分布 */
+  .people-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .people-stat {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 20px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .people-stat .ico {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    flex-shrink: 0;
+  }
+  .people-stat .num { font-size: 22px; font-weight: 800; line-height: 1.1; }
+  .people-stat .lbl { font-size: 12px; color: var(--color-text-3); margin-top: 2px; }
+
+  /* 标杆企业 */
+  .companies-section { background: #fff; padding: 80px 0; }
+  .company-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px;
+    transition: all var(--t) var(--ease);
+    position: relative; overflow: hidden;
+  }
+  .company-card:hover { box-shadow: var(--shadow-md); border-color: rgba(232,93,4,0.2); }
+  .company-card .head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .company-card .logo {
+    width: 56px; height: 56px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-gold));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .company-card .name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .company-card .cat { font-size: 12px; color: var(--color-text-3); }
+  .company-card .rank {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--color-gold); color: #fff;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .company-card .rank.top1 { background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%); }
+  .company-card .rank.top2 { background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%); }
+  .company-card .rank.top3 { background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%); }
+  .company-card .body { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .company-card .body .item { background: var(--color-bg); border-radius: 8px; padding: 10px 12px; }
+  .company-card .body .item .lbl { font-size: 11px; color: var(--color-text-3); }
+  .company-card .body .item .val { font-size: 16px; font-weight: 700; color: var(--color-text); }
+
+  /* 在执行项目 */
+  .projects-section { background: var(--color-bg); padding: 80px 0; }
+  .project-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); overflow: hidden;
+    transition: all var(--t) var(--ease);
+    display: flex; flex-direction: column;
+  }
+  .project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .project-card .cover {
+    height: 180px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-trust) 100%);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+  }
+  .project-card .cover.urgent { background: linear-gradient(135deg, #DC2626 0%, #F59E0B 100%); }
+  .project-card .cover img { width: 100%; height: 100%; object-fit: cover; }
+  .project-card .cover .urgency {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(220,38,38,0.95); color: #fff;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .project-card .cover .region {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(0,0,0,0.5); color: #fff;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 11px; backdrop-filter: blur(10px);
+  }
+  .project-card .body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+  .project-card .body h4 { font-size: 16px; margin-bottom: 8px; line-height: 1.4; }
+  .project-card .body .desc { font-size: 13px; color: var(--color-text-3); margin-bottom: 14px; flex: 1; }
+  .project-card .body .progress { margin-bottom: 8px; }
+  .project-card .body .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-3); margin-bottom: 6px; }
+  .project-card .body .progress-meta .num { color: var(--color-primary); font-weight: 600; }
+
+  /* 慈善商城 - 入口 */
+  .mall-section {
+    background: linear-gradient(135deg, #FFF1E5 0%, #FAEFD9 100%);
+    padding: 80px 0;
+  }
+  .mall-section .feature {
+    background: #fff; border-radius: var(--radius-lg);
+    padding: 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
+  }
+  .mall-section .feature h3 { font-size: 28px; margin-bottom: 16px; }
+  .mall-section .feature p { color: var(--color-text-2); margin-bottom: 24px; line-height: 1.7; }
+  .mall-section .feature .donation-tip {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-gold) 100%);
+    color: #fff; padding: 20px; border-radius: var(--radius-md);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 16px;
+  }
+  .mall-section .feature .donation-tip .num {
+    font-size: 36px; font-weight: 800; line-height: 1;
+  }
+  .mall-section .feature .donation-tip .txt { font-size: 14px; line-height: 1.4; }
+  .mall-section .feature .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mall-section .feature .stats-grid .item {
+    background: var(--color-bg); border-radius: var(--radius); padding: 14px;
+  }
+  .mall-section .feature .stats-grid .item .lbl { font-size: 12px; color: var(--color-text-3); }
+  .mall-section .feature .stats-grid .item .val { font-size: 20px; font-weight: 700; color: var(--color-primary); }
+
+  /* 影响力 / 公信力 */
+  .trust-section { background: #fff; padding: 80px 0; }
+  .trust-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+  .trust-list { display: flex; flex-direction: column; gap: 16px; }
+  .trust-item {
+    display: flex; gap: 16px; padding: 18px;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius);
+  }
+  .trust-item .ico {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-trust-soft); color: var(--color-trust);
+    font-size: 20px; flex-shrink: 0;
+  }
+  .trust-item .t { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .trust-item .d { font-size: 13px; color: var(--color-text-3); }
+
+  @media (max-width: 1024px) {
+    .hero-grid, .trust-grid, .mall-section .feature { grid-template-columns: 1fr; }
+    .roles-grid { grid-template-columns: repeat(2, 1fr); }
+    .data-grid { grid-template-columns: repeat(2, 1fr); }
+    .flow-canvas { grid-template-columns: 1fr; }
+    .flow-arrow { transform: rotate(90deg); padding: 8px 0; }
+    .people-stats { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="fade-up">
+        <div class="hero-badge">
+          <span class="live-dot"></span>
+          <span>实时公益数据 · 2025年1-6月运行报告已发布</span>
+        </div>
+        <h1>让每一份善意<br>都<font class="accent">可追溯 · 可看见</font><br>可信任</h1>
+        <p class="lead">
+          慈商联营是海南亚洲公益研究院发起的全流程透明化公益平台。<br>
+          连接<strong>企业</strong>、<strong>慈善会</strong>、<strong>社会组织</strong>、<strong>志愿者/社工</strong>与<strong>受捐者</strong>五端，
+          以物资为核心，让每一笔捐赠都清清楚楚。
+        </p>
+        <div class="hero-actions">
+          <a href="pages/register.html" class="btn btn-primary btn-lg">企业免费入驻 →</a>
+          <a href="#flows" class="btn btn-outline-light btn-lg">了解三种捐赠流程</a>
+        </div>
+        <div class="hero-trust">
+          <div class="item"><span class="ic">✓</span>慈善组织公开募捐资质</div>
+          <div class="item"><span class="ic">✓</span>物资全流程扫码追溯</div>
+          <div class="item"><span class="ic">✓</span>独立第三方审计</div>
+        </div>
+      </div>
+
+      <div class="fade-up fade-up-2">
+        <div class="live-board">
+          <div class="head">
+            <div class="title"><span class="live-dot"></span>实时公益数据</div>
+            <div class="stamp">UPDATED 2025-06-02 10:30:42</div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <div class="label">累计捐赠物资价值</div>
+              <div class="value"><span data-num="2.86">0</span><span class="unit">亿元</span></div>
+            </div>
+            <div class="stat trust">
+              <div class="label">受惠人次</div>
+              <div class="value"><span data-num="1268000">0</span></div>
+            </div>
+            <div class="stat">
+              <div class="label">入驻企业</div>
+              <div class="value"><span data-num="3680">0</span><span class="unit">家</span></div>
+            </div>
+            <div class="stat trust">
+              <div class="label">在执行项目</div>
+              <div class="value"><span data-num="142">0</span></div>
+            </div>
+          </div>
+          <div style="margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:rgba(255,255,255,0.6);">
+            <div class="flex-between" style="margin-bottom:8px;">
+              <span>今日新增捐赠</span>
+              <span style="color:#5EEAD4;font-weight:600">+ ¥482,300</span>
+            </div>
+            <div class="flex-between">
+              <span>今日完成派发</span>
+              <span style="color:#5EEAD4;font-weight:600">3,682 件</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 数据大屏 ========== -->
+<section class="data-screen">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:32px;margin-bottom:6px;">平台累计数据</h2>
+        <p class="text-muted text-sm">所有数据实时同步，独立第三方审计机构按季度出具审计报告</p>
+      </div>
+      <a href="pages/transparency.html" class="btn btn-ghost">查看透明公示 →</a>
+    </div>
+    <div class="data-grid">
+      <div class="item">
+        <div class="num"><span data-num="2.86">0</span><span class="unit">亿</span></div>
+        <div class="label">累计捐赠物资价值</div>
+        <div class="trend">↑ 较去年同期 +38.2%</div>
+      </div>
+      <div class="divider"></div>
+      <div class="item">
+        <div class="num"><span data-num="126.8">0</span><span class="unit">万</span></div>
+        <div class="label">受惠人次</div>
+        <div class="trend">↑ 覆盖 31 个省市自治区</div>
+      </div>
+      <div class="divider"></div>
+      <div class="item">
+        <div class="num"><span data-num="3680">0</span><span class="unit">家</span></div>
+        <div class="label">入驻爱心企业</div>
+        <div class="trend">↑ 本月新增 86 家</div>
+      </div>
+      <div class="divider"></div>
+      <div class="item">
+        <div class="num"><span data-num="142">0</span></div>
+        <div class="label">正在执行项目</div>
+        <div class="trend">实时更新</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 角色入口 ========== -->
+<section class="roles-section">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">5 大角色 · 协同参与</div>
+      <h2>每一方都有自己的舞台</h2>
+      <p>无论你是爱心企业、慈善组织、志愿者还是受捐者，都能在慈商联营找到专属入口，看见自己的贡献轨迹</p>
+    </div>
+    <div class="roles-grid">
+      <a href="company/dashboard.html" class="role-card" style="--role-color:#E85D04;--role-soft:#FFF1E5">
+        <div class="icon">🏢</div>
+        <div class="name">爱心企业</div>
+        <div class="desc">发起捐赠 · 品宣曝光 · 票据管理</div>
+        <span class="enter">企业工作台</span>
+      </a>
+      <a href="charity/dashboard.html" class="role-card" style="--role-color:#0E5A6F;--role-soft:#E5F0F4">
+        <div class="icon">🏛️</div>
+        <div class="name">慈善会 / 总会</div>
+        <div class="desc">发布项目 · 领取物资 · 派发管理</div>
+        <span class="enter">慈善会工作台</span>
+      </a>
+      <a href="org/dashboard.html" class="role-card" style="--role-color:#C4842A;--role-soft:#FAEFD9">
+        <div class="icon">🤝</div>
+        <div class="name">社会组织</div>
+        <div class="desc">基金会/团体/服务机构参与</div>
+        <span class="enter">组织工作台</span>
+      </a>
+      <a href="volunteer/dashboard.html" class="role-card" style="--role-color:#14B8A6;--role-soft:#E0FAF5">
+        <div class="icon">🙋</div>
+        <div class="name">志愿者 / 社工</div>
+        <div class="desc">领取任务 · 派发物资 · 服务反馈</div>
+        <span class="enter">志愿者中心</span>
+      </a>
+      <a href="recipient/dashboard.html" class="role-card" style="--role-color:#7C3AED;--role-soft:#F3E8FF">
+        <div class="icon">❤️</div>
+        <div class="name">受捐者</div>
+        <div class="desc">扫码领取 · 反馈 · 受助记录</div>
+        <span class="enter">受捐者中心</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 三种捐赠流程 ========== -->
+<section class="flow-section" id="flows">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">三种捐赠方式 · 全流程可视化</div>
+      <h2>企业捐赠物资，有这三种方式</h2>
+      <p>无论你是想主动献爱心，还是响应受灾项目，平台都会把每一步记录得清清楚楚</p>
+    </div>
+    <div class="flow-tabs">
+      <div class="flow-tab active" data-target="flow-1">
+        <span class="num-badge">1</span>企业主动发起捐赠
+      </div>
+      <div class="flow-tab" data-target="flow-2">
+        <span class="num-badge">2</span>响应慈善会受灾项目（派发后发货）
+      </div>
+      <div class="flow-tab" data-target="flow-3">
+        <span class="num-badge">3</span>响应慈善会受灾项目（寄送+登记）
+      </div>
+    </div>
+
+    <div class="flow-panel active" id="flow-1">
+      <div class="card" style="padding:32px;">
+        <div class="flow-canvas">
+          <div class="flow-node theme-primary">
+            <div class="ico">📦</div>
+            <div class="t">企业发起捐赠</div>
+            <div class="d">选择临期 / 新品物资<br>指定物资所在地</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-gold">
+            <div class="ico">🏛️</div>
+            <div class="t">匹配慈善会</div>
+            <div class="d">根据物资所在地<br>智能匹配属地慈善会</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-trust">
+            <div class="ico">🙋</div>
+            <div class="t">志愿者/社工派发</div>
+            <div class="d">慈善会或社会组织<br>下属志愿者执行派发</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-primary">
+            <div class="ico">✅</div>
+            <div class="t">受捐者领取</div>
+            <div class="d">扫码领取或现场登记<br>企业发货至受捐者</div>
+          </div>
+        </div>
+        <div class="alert alert-info mt-4">
+          <span class="ic">💡</span>
+          <div><strong>适用场景：</strong>企业有临期/新品物资需要快速处理，希望直接对接属地慈善会完成派发。由慈善会安排志愿者/社工完成最后一公里派发，企业只需在受捐者确认后发货。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-panel" id="flow-2">
+      <div class="card" style="padding:32px;">
+        <div class="flow-canvas">
+          <div class="flow-node theme-primary">
+            <div class="ico">📢</div>
+            <div class="t">项目发布</div>
+            <div class="d">慈善会发布<br>受灾项目需求</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-gold">
+            <div class="ico">🤝</div>
+            <div class="t">捐赠匹配</div>
+            <div class="d">企业按项目需求<br>选择匹配物资</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-trust">
+            <div class="ico">🚚</div>
+            <div class="t">物资派发</div>
+            <div class="d">慈善会或合作组织<br>志愿者/社工派发</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-primary">
+            <div class="ico">📮</div>
+            <div class="t">企业发货</div>
+            <div class="d">受捐者扫码领取<br>登记后企业发货</div>
+          </div>
+        </div>
+        <div class="alert alert-info mt-4">
+          <span class="ic">💡</span>
+          <div><strong>适用场景：</strong>企业希望定向捐赠，先有需求再有响应。慈善会发布项目后，企业按需匹配物资，先派发验证后企业再发货给受捐者。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-panel" id="flow-3">
+      <div class="card" style="padding:32px;">
+        <div class="flow-canvas">
+          <div class="flow-node theme-primary">
+            <div class="ico">📢</div>
+            <div class="t">项目发布</div>
+            <div class="d">慈善会发布<br>受灾项目</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-gold">
+            <div class="ico">🤝</div>
+            <div class="t">捐赠匹配</div>
+            <div class="d">企业按需求<br>匹配物资</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-trust">
+            <div class="ico">🚛</div>
+            <div class="t">物资寄送</div>
+            <div class="d">企业寄送至<br>项目指定地址</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node theme-primary">
+            <div class="ico">📝</div>
+            <div class="t">派发+登记</div>
+            <div class="d">志愿者派发<br>受捐者扫码登记</div>
+          </div>
+        </div>
+        <div class="alert alert-info mt-4">
+          <span class="ic">💡</span>
+          <div><strong>适用场景：</strong>大批量集中捐赠场景。企业按项目要求将物资集中寄送至指定地址，再由志愿者/社工完成派发，受捐者扫码登记完成闭环。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 物资透明化地图 ========== -->
+<section class="map-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:32px;margin-bottom:6px;">物资流转 · 实时可视化</h2>
+        <p class="text-muted text-sm">平台所有捐赠物资流转轨迹实时可查。点开地图上的任意标记，查看该地区/项目/受捐者的详细情况</p>
+      </div>
+      <a href="pages/track.html" class="btn btn-primary">查看完整轨迹 →</a>
+    </div>
+
+    <div class="map-wrap">
+      <div class="map-canvas">
+        <div class="map-pin pulse" style="top:18%;left:62%;">
+          <strong>新疆喀什</strong> · <span class="count">486</span> 件
+        </div>
+        <div class="map-pin" style="top:24%;left:38%;">
+          <strong>甘肃临夏</strong> · <span class="count">1,236</span> 件
+        </div>
+        <div class="map-pin pulse" style="top:30%;left:55%;">
+          <strong>青海玉树</strong> · <span class="count">892</span> 件
+        </div>
+        <div class="map-pin" style="top:42%;left:48%;">
+          <strong>陕西汉中</strong> · <span class="count">2,108</span> 件
+        </div>
+        <div class="map-pin pulse" style="top:46%;left:62%;">
+          <strong>河南郑州</strong> · <span class="count">3,486</span> 件
+        </div>
+        <div class="map-pin" style="top:55%;left:55%;">
+          <strong>湖北恩施</strong> · <span class="count">1,560</span> 件
+        </div>
+        <div class="map-pin pulse" style="top:62%;left:48%;">
+          <strong>贵州黔东南</strong> · <span class="count">2,840</span> 件
+        </div>
+        <div class="map-pin" style="top:65%;left:60%;">
+          <strong>湖南湘西</strong> · <span class="count">1,920</span> 件
+        </div>
+        <div class="map-pin pulse" style="top:72%;left:55%;">
+          <strong>云南怒江</strong> · <span class="count">1,468</span> 件
+        </div>
+        <div class="map-pin" style="top:78%;left:50%;">
+          <strong>广西河池</strong> · <span class="count">986</span> 件
+        </div>
+        <div class="map-pin" style="top:80%;left:65%;">
+          <strong>广东梅州</strong> · <span class="count">720</span> 件
+        </div>
+        <div class="map-pin pulse" style="top:88%;left:62%;">
+          <strong>海南五指山</strong> · <span class="count">546</span> 件
+        </div>
+      </div>
+      <div class="map-legend">
+        <div class="item"><span class="dot" style="background:#E85D04"></span>正在派发（实时）</div>
+        <div class="item"><span class="dot" style="background:#14B8A6"></span>已完成</div>
+        <div class="item"><span class="dot" style="background:#C4842A"></span>本月新增</div>
+        <div class="item" style="margin-left:auto;color:var(--color-text-3);">数据更新于 2025-06-02 10:30</div>
+      </div>
+    </div>
+
+    <div class="people-stats mt-6">
+      <div class="people-stat">
+        <div class="ico" style="background:#FFF1E5;color:#E85D04">👨‍👩‍👧</div>
+        <div>
+          <div class="num">426,830</div>
+          <div class="lbl">受惠家庭</div>
+        </div>
+      </div>
+      <div class="people-stat">
+        <div class="ico" style="background:#E0FAF5;color:#14B8A6">👴</div>
+        <div>
+          <div class="num">186,520</div>
+          <div class="lbl">受惠老人</div>
+        </div>
+      </div>
+      <div class="people-stat">
+        <div class="ico" style="background:#FAEFD9;color:#C4842A">🧒</div>
+        <div>
+          <div class="num">328,460</div>
+          <div class="lbl">受惠儿童</div>
+        </div>
+      </div>
+      <div class="people-stat">
+        <div class="ico" style="background:#E5F0F4;color:#0E5A6F">🤝</div>
+        <div>
+          <div class="num">12,860</div>
+          <div class="lbl">一线社工/志愿者</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 标杆企业 ========== -->
+<section class="companies-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:32px;margin-bottom:6px;">标杆爱心企业</h2>
+        <p class="text-muted text-sm">基于捐赠额、覆盖人数、反馈及时度等维度的综合排名</p>
+      </div>
+      <a href="#" class="btn btn-ghost">查看完整榜单 →</a>
+    </div>
+    <div class="grid grid-3">
+      <div class="company-card">
+        <div class="rank top1">🏆 NO.1</div>
+        <div class="head">
+          <div class="logo">美</div>
+          <div>
+            <div class="name">美心食品集团</div>
+            <div class="cat">食品饮料 · 入驻 2 年</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="item"><div class="lbl">累计捐赠额</div><div class="val">¥ 1,860万</div></div>
+          <div class="item"><div class="lbl">受惠人次</div><div class="val">126,800</div></div>
+        </div>
+        <div class="flex gap-2">
+          <span class="tag tag-trust">临期 0 浪费</span>
+          <span class="tag tag-gold">五星企业</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="rank top2">🥈 NO.2</div>
+        <div class="head">
+          <div class="logo" style="background:linear-gradient(135deg,#14B8A6,#0E5A6F)">伊</div>
+          <div>
+            <div class="name">伊利集团</div>
+            <div class="cat">乳制品 · 入驻 1.5 年</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="item"><div class="lbl">累计捐赠额</div><div class="val">¥ 1,420万</div></div>
+          <div class="item"><div class="lbl">受惠人次</div><div class="val">98,200</div></div>
+        </div>
+        <div class="flex gap-2">
+          <span class="tag tag-primary">救灾先锋</span>
+          <span class="tag tag-gold">五星企业</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="rank top3">🥉 NO.3</div>
+        <div class="head">
+          <div class="logo" style="background:linear-gradient(135deg,#7C3AED,#E85D04)">安</div>
+          <div>
+            <div class="name">安利（中国）</div>
+            <div class="cat">日化营养 · 入驻 2 年</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="item"><div class="lbl">累计捐赠额</div><div class="val">¥ 980万</div></div>
+          <div class="item"><div class="lbl">受惠人次</div><div class="val">76,500</div></div>
+        </div>
+        <div class="flex gap-2">
+          <span class="tag tag-trust">营养助学</span>
+          <span class="tag tag-gold">五星企业</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 在执行项目 ========== -->
+<section class="projects-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:32px;margin-bottom:6px;">当前在执行的项目</h2>
+        <p class="text-muted text-sm">所有项目实时更新进度，可点击查看项目详情与物资轨迹</p>
+      </div>
+      <a href="pages/transparency.html" class="btn btn-ghost">查看全部项目 →</a>
+    </div>
+    <div class="grid grid-3">
+      <div class="project-card">
+        <div class="cover urgent">
+          <div class="urgency">🚨 紧急救灾</div>
+          <div class="region">📍 云南昭通</div>
+          🚁
+        </div>
+        <div class="body">
+          <h4>云南昭通 6.2 级地震 · 应急救援物资</h4>
+          <div class="desc">地震灾区紧急需要：帐篷、棉被、矿泉水、方便面、消毒用品等</div>
+          <div class="progress-meta">
+            <span>已筹集 <span class="num">¥ 482,300</span></span>
+            <span>目标 ¥ 800,000</span>
+          </div>
+          <div class="progress"><div class="progress-bar" style="width:60%"></div></div>
+          <div class="flex-between text-xs text-muted">
+            <span>12 家企业已响应</span>
+            <span>剩余 23 天</span>
+          </div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="cover">
+          <div class="urgency" style="background:rgba(245,158,11,0.95)">📚 教育助学</div>
+          <div class="region">📍 贵州黔东南</div>
+          📖
+        </div>
+        <div class="body">
+          <h4>"一书一希望" · 山区学校图书角</h4>
+          <div class="desc">为 56 所山区学校建设标准化图书角，配套课外读物、文具、书架</div>
+          <div class="progress-meta">
+            <span>已筹集 <span class="num">¥ 286,500</span></span>
+            <span>目标 ¥ 500,000</span>
+          </div>
+          <div class="progress"><div class="progress-bar success" style="width:57%"></div></div>
+          <div class="flex-between text-xs text-muted">
+            <span>23 家企业已响应</span>
+            <span>剩余 45 天</span>
+          </div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="cover" style="background:linear-gradient(135deg,#14B8A6,#0E5A6F)">
+          <div class="urgency" style="background:rgba(20,184,166,0.95)">🌾 乡村振兴</div>
+          <div class="region">📍 甘肃临夏</div>
+          🌱
+        </div>
+        <div class="body">
+          <h4>"暖冬"计划 · 西北留守儿童过冬衣物</h4>
+          <div class="desc">为甘肃、宁夏 8 县留守儿童募集冬装、棉鞋、毛毯等过冬物资</div>
+          <div class="progress-meta">
+            <span>已筹集 <span class="num">¥ 168,200</span></span>
+            <span>目标 ¥ 300,000</span>
+          </div>
+          <div class="progress"><div class="progress-bar gold" style="width:56%"></div></div>
+          <div class="flex-between text-xs text-muted">
+            <span>8 家企业已响应</span>
+            <span>剩余 60 天</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 慈善商城入口 ========== -->
+<section class="mall-section">
+  <div class="container">
+    <div class="feature">
+      <div>
+        <div class="eyebrow" style="color:var(--color-primary);background:#fff;display:inline-block;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:14px;">🛒 慈善商城</div>
+        <h3>每下一单，<br>平台捐赠订单额的 <font style="color:var(--color-primary)">0.5%</font></h3>
+        <p>慈商联营商城是常规电商功能 + 慈善属性的融合。所有入驻商家经过严格审核，每一笔订单平台自动按 0.5% 捐赠，捐赠记录全流程可追溯。</p>
+        <div class="donation-tip">
+          <div class="num">¥ 0.5%</div>
+          <div class="txt">每笔订单<br>自动捐赠</div>
+        </div>
+        <div class="flex gap-3">
+          <a href="mall/index.html" class="btn btn-primary">进入商城 →</a>
+          <a href="#" class="btn btn-ghost">查看捐赠明细</a>
+        </div>
+      </div>
+      <div>
+        <div class="stats-grid">
+          <div class="item">
+            <div class="lbl">累计订单数</div>
+            <div class="val">186,200</div>
+          </div>
+          <div class="item">
+            <div class="lbl">累计交易额</div>
+            <div class="val">¥ 8,260万</div>
+          </div>
+          <div class="item">
+            <div class="lbl">已捐赠金额</div>
+            <div class="val">¥ 41.3万</div>
+          </div>
+          <div class="item">
+            <div class="lbl">入驻商家</div>
+            <div class="val">486 家</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;background:#fff;padding:16px;border-radius:var(--radius);border:1px solid var(--color-border-light);">
+          <div class="text-sm fw-600 mb-3">热门分类</div>
+          <div class="flex gap-2" style="flex-wrap:wrap;">
+            <span class="tag tag-primary">食品保健</span>
+            <span class="tag tag-trust">日用家清</span>
+            <span class="tag tag-gold">母婴儿童</span>
+            <span class="tag">服饰美妆</span>
+            <span class="tag">数码家电</span>
+            <span class="tag">图书文具</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 公信力 / 影响力 ========== -->
+<section class="trust-section">
+  <div class="container">
+    <div class="trust-grid">
+      <div>
+        <div class="eyebrow" style="display:inline-block;font-size:13px;font-weight:600;color:var(--color-primary);background:var(--color-primary-soft);padding:4px 14px;border-radius:999px;margin-bottom:14px;letter-spacing:1px;">公益公信力</div>
+        <h2 style="font-size:34px;margin-bottom:20px;">让慈善成为<br>人人可信的公益</h2>
+        <p class="text-lg text-muted mb-6">慈商联营由海南亚洲公益研究院发起并运营，背靠民政部门认可的慈善组织资质，所有流程均按《慈善法》执行，让每一笔善款、每一件物资都有据可查。</p>
+        <div class="flex gap-3" style="flex-wrap:wrap;">
+          <a href="pages/transparency.html" class="btn btn-primary">查看完整公示</a>
+          <a href="pages/annual-report.html" class="btn btn-ghost">下载年度报告</a>
+        </div>
+      </div>
+      <div class="trust-list">
+        <div class="trust-item">
+          <div class="ico">📜</div>
+          <div>
+            <div class="t">慈善组织公开募捐资质</div>
+            <div class="d">平台运营主体持有民政部门颁发的"慈善组织公开募捐资格证书"</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="ico">🔍</div>
+          <div>
+            <div class="t">物资全流程扫码追溯</div>
+            <div class="d">每件物资唯一二维码，从企业出库到受捐者签收全程可查</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="ico">📊</div>
+          <div>
+            <div class="t">独立第三方季度审计</div>
+            <div class="d">普华永道 / 德勤 / 毕马威等机构按季度出具独立审计报告</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="ico">🏛️</div>
+          <div>
+            <div class="t">政府监管 + 媒体监督</div>
+            <div class="d">接受民政、审计、网信等部门监管，与人民网/新华网共建透明公示平台</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="ico">💎</div>
+          <div>
+            <div class="t">慈善组织自律公约成员</div>
+            <div class="d">签署《中国慈善行业自律公约》，高于行业标准执行</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="public/js/common.js"></script>
+<script>
+  CS.renderHeader('home');
+  CS.renderFooter();
+
+  // 流程 tab 切换
+  document.querySelectorAll('.flow-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.flow-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+
+  // 数字滚动
+  setTimeout(() => {
+    document.querySelectorAll('[data-num]:not([data-animated])').forEach(el => {
+      CS.animateNumber(el, parseFloat(el.dataset.num), 1500);
+      el.dataset.animated = '1';
+    });
+  }, 200);
+</script>
+</body>
+</html>

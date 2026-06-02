@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>组织信息 — 深圳市壹基金 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>🏛️ 组织信息</h1>
+        <div class="sub">维护组织基本信息、资质证书、人员配置</div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <h3 class="mb-4">📋 基础信息</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">组织全称 <span class="req">*</span></label>
+          <input type="text" class="form-control" value="深圳市壹基金公益基金会">
+        </div>
+        <div class="form-group">
+          <label class="form-label">统一社会信用代码</label>
+          <input type="text" class="form-control" value="53440300502692001A">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">组织类型</label>
+          <select class="form-select"><option>基金会（公募）</option><option>基金会（非公募）</option><option>社会团体</option><option>社会服务机构</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">注册时间</label>
+          <input type="date" class="form-control" value="2008-12-08">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">注册地址</label>
+          <input type="text" class="form-control" value="广东省深圳市南山区高新南一道科兴科学园">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">法定代表人</label>
+          <input type="text" class="form-control" value="马蔚华">
+        </div>
+        <div class="form-group">
+          <label class="form-label">注册资本（万元）</label>
+          <input type="number" class="form-control" value="500">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">业务范围</label>
+        <textarea class="form-textarea" rows="3">资助贫困学生、赈灾救援、儿童关怀、公益行业支持等</textarea>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <h3 class="mb-4">📜 资质证书</h3>
+      <div class="grid grid-2">
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">基金会法人登记证书</div>
+            <div class="meta">已上传 · 2024-12-15 更新</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">公开募捐资格证书</div>
+            <div class="meta">已上传 · 2024-12-15</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">税务登记证</div>
+            <div class="meta">已上传</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📄</div>
+          <div class="body">
+            <div class="title">银行开户许可证</div>
+            <div class="meta">已上传</div>
+          </div>
+          <a href="#" class="btn-link">查看</a>
+        </div>
+      </div>
+      <button class="btn btn-ghost mt-4">📤 上传新证书</button>
+    </div>
+
+    <div class="dash-card mt-6">
+      <h3 class="mb-4">👥 管理员账号配置</h3>
+      <div class="alert alert-info">
+        <span class="ic">💡</span>
+        <div>支持多角色配置：资金捐赠管理员、物资捐赠管理员、项目管理员、财务管理员</div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr><th>姓名</th><th>角色</th><th>身份证</th><th>联系方式</th><th>状态</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>李秘书长</strong></td>
+            <td><span class="tag tag-primary">秘书长（主账号）</span></td>
+            <td>4405********1234</td>
+            <td>138****8888</td>
+            <td><span class="tag tag-success">已认证</span></td>
+          </tr>
+          <tr>
+            <td>王主任</td>
+            <td><span class="tag tag-info">物资捐赠管理员</span></td>
+            <td>4405********5678</td>
+            <td>139****6666</td>
+            <td><span class="tag tag-success">已认证</span></td>
+          </tr>
+          <tr>
+            <td>张老师</td>
+            <td><span class="tag tag-warning">项目管理员</span></td>
+            <td>4405********9012</td>
+            <td>137****3333</td>
+            <td><span class="tag tag-success">已认证</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-ghost mt-3">+ 添加管理员</button>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button class="btn btn-primary">💾 保存修改</button>
+      <button class="btn btn-ghost">取消</button>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('社会组织', '李秘书长');
+  CS.renderSidebar('org', 'profile');
+</script>
+</body>
+</html>

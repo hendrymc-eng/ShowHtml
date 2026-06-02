@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布受灾项目 — 广东省慈善总会 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📢 发布受灾项目</h1>
+        <div class="sub">向爱心企业发布定向物资需求，号召快速响应</div>
+      </div>
+      <a href="project-list.html" class="btn btn-ghost">← 返回项目管理</a>
+    </div>
+
+    <div class="steps">
+      <div class="step active">
+        <div class="num">1</div>
+        <div class="info"><div class="t">项目基本信息</div><div class="d">标题 / 类型 / 地区</div></div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="info"><div class="t">物资需求清单</div><div class="d">品类 / 数量 / 优先级</div></div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="info"><div class="t">派发方案</div><div class="d">物流 / 志愿者</div></div>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <div class="info"><div class="t">提交审核</div><div class="d">发布到平台</div></div>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="dash-card">
+      <h3 class="mb-4" style="font-size:18px;">📋 第一步：项目基本信息</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">项目类型 <span class="req">*</span></label>
+          <select class="form-select">
+            <option>🚨 应急救援</option>
+            <option>📚 教育助学</option>
+            <option>🏥 医疗救助</option>
+            <option>🌾 乡村振兴</option>
+            <option>👴 扶老助残</option>
+            <option>🌳 环境保护</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">紧急程度 <span class="req">*</span></label>
+          <select class="form-select">
+            <option>🚨 紧急（24 小时内响应）</option>
+            <option>⚠️ 较急（一周内响应）</option>
+            <option>普通（按月度规划）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">项目标题 <span class="req">*</span></label>
+        <input type="text" class="form-control" value="云南昭通 6.2 级地震 · 应急救援物资">
+        <div class="form-hint">建议 30 字以内，凸显地区 + 事件 + 需求</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">受捐地区 <span class="req">*</span></label>
+        <div class="flex gap-2">
+          <select class="form-select" style="flex:1;"><option>云南省</option></select>
+          <select class="form-select" style="flex:1;"><option>昭通市</option></select>
+          <select class="form-select" style="flex:1;"><option>鲁甸县</option></select>
+          <select class="form-select" style="flex:1;"><option>请选择乡镇</option></select>
+        </div>
+        <div class="form-hint">📍 平台将优先匹配属地企业捐赠</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">预计受惠人数 <span class="req">*</span></label>
+          <input type="number" class="form-control" value="8600">
+        </div>
+        <div class="form-group">
+          <label class="form-label">受惠人群</label>
+          <input type="text" class="form-control" value="受灾群众（老人、儿童、妇女为主）">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">项目启动时间 <span class="req">*</span></label>
+          <input type="date" class="form-control" value="2025-05-30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目截止时间 <span class="req">*</span></label>
+          <input type="date" class="form-control" value="2025-06-25">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">项目详情描述 <span class="req">*</span></label>
+        <textarea class="form-textarea" rows="5">2025 年 5 月 30 日 14 时，云南昭通市鲁甸县发生 6.2 级地震，震源深度 12 公里。截至 5 月 31 日 12 时，地震已造成 12 万人受灾，2,860 户房屋倒塌，亟需帐篷、棉被、矿泉水、方便面、消毒用品等应急物资。灾区位置：东经 103.4°，北纬 27.1°，平均海拔 1,800 米。物流时间约 28 小时。</textarea>
+        <div class="form-hint">建议包含：灾情概况 / 受灾人数 / 急需物资 / 物流信息 / 联系人</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📷 项目封面图 <span class="req">*</span></label>
+        <div class="flex gap-2">
+          <div style="width:120px;height:80px;background:linear-gradient(135deg,#DC2626,#F59E0B);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;">🚁</div>
+          <div style="width:120px;height:80px;background:linear-gradient(135deg,#7C3AED,#E85D04);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;">📦</div>
+          <button type="button" class="btn btn-ghost" style="width:120px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">📤<span class="text-xs">上传图片</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: 物资清单 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">📦 第二步：物资需求清单</h3>
+      <p class="text-muted mb-4">明确列出所需物资，企业可按需响应</p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>优先级</th>
+            <th>物资名称</th>
+            <th>品类</th>
+            <th>需求数量</th>
+            <th>已筹集</th>
+            <th>缺口</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-danger">🚨 紧急</span></td>
+            <td>救灾帐篷（4 人）</td>
+            <td>生活用品</td>
+            <td>500 顶</td>
+            <td class="text-success">320 顶</td>
+            <td class="text-danger fw-600">180 顶</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-danger">🚨 紧急</span></td>
+            <td>棉被（冬季加厚）</td>
+            <td>生活用品</td>
+            <td>2,000 床</td>
+            <td class="text-success">1,260 床</td>
+            <td class="text-danger fw-600">740 床</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-danger">🚨 紧急</span></td>
+            <td>矿泉水 550ml × 24</td>
+            <td>食品饮料</td>
+            <td>5,000 箱</td>
+            <td class="text-success">3,800 箱</td>
+            <td class="text-danger fw-600">1,200 箱</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warning">⚠️ 较急</span></td>
+            <td>方便面 12 桶/箱</td>
+            <td>食品饮料</td>
+            <td>3,000 箱</td>
+            <td class="text-success">2,400 箱</td>
+            <td class="text-danger fw-600">600 箱</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warning">⚠️ 较急</span></td>
+            <td>消毒湿巾 / 84 消毒液</td>
+            <td>卫生用品</td>
+            <td>1,000 套</td>
+            <td class="text-success">620 套</td>
+            <td class="text-danger fw-600">380 套</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warning">⚠️ 较急</span></td>
+            <td>应急药品包</td>
+            <td>医疗用品</td>
+            <td>500 份</td>
+            <td class="text-success">280 份</td>
+            <td class="text-danger fw-600">220 份</td>
+            <td><a href="#" class="btn-link text-xs">编辑</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-ghost mt-3">+ 添加物资品类</button>
+    </div>
+
+    <!-- Step 3: 派发方案 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">🚚 第三步：派发方案</h3>
+
+      <div class="form-group">
+        <label class="form-label">响应方式 <span class="req">*</span></label>
+        <div class="flex gap-3" style="flex-wrap:wrap;">
+          <label class="flow-pick active" style="display:flex;gap:8px;align-items:center;cursor:pointer;padding:12px 16px;border:2px solid var(--color-primary);border-radius:var(--radius);">
+            <input type="checkbox" checked> 流程二（派发后发货）
+          </label>
+          <label class="flow-pick" style="display:flex;gap:8px;align-items:center;cursor:pointer;padding:12px 16px;border:1px solid var(--color-border);border-radius:var(--radius);">
+            <input type="checkbox" checked> 流程三（寄送+登记）
+          </label>
+        </div>
+        <div class="form-hint">勾选允许企业响应的方式（可多选）</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">物资接收地址 <span class="req">*</span></label>
+        <textarea class="form-textarea" rows="3">云南省昭通市鲁甸县龙头山镇 · 鲁甸县慈善会区域仓
+联系人：李主任 · 138 ****  8888
+（接收流程三寄送的物资）</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">协同社会组织</label>
+          <select class="form-select" multiple style="min-height:100px;">
+            <option selected>深圳鹏星社工服务社</option>
+            <option selected>广州同心社工</option>
+            <option selected>佛山志愿者联合会</option>
+            <option>东莞阳光公益</option>
+          </select>
+          <div class="form-hint">按住 Ctrl/Cmd 多选</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">志愿者团队规模 <span class="req">*</span></label>
+          <input type="number" class="form-control" value="60">
+          <div class="form-hint">计划调动 60 名志愿者</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: 提交 -->
+    <div class="dash-card mt-6">
+      <h3 class="mb-4" style="font-size:18px;">✅ 第四步：确认发布</h3>
+
+      <div class="alert alert-info">
+        <span class="ic">💡</span>
+        <div>
+          <strong>项目发布后您将获得：</strong><br>
+          · 项目专属页面，公开透明展示<br>
+          · 实时响应企业列表 + 物资筹集进度<br>
+          · 平台全渠道推广（首页、APP、邮件）<br>
+          · 专属客户经理 + 1 对 1 服务
+        </div>
+      </div>
+
+      <label class="flex gap-2 items-center mb-4 text-sm">
+        <input type="checkbox" checked>
+        <span>我已阅读并同意 <a href="#" class="text-primary">《项目发布规范》</a>，承诺项目信息真实有效</span>
+      </label>
+
+      <div class="flex gap-3">
+        <button class="btn btn-ghost">保存为草稿</button>
+        <button class="btn btn-primary" onclick="CS.toast('项目已发布！', 'success')">🚀 立即发布</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('慈善会', '王主任');
+  CS.renderSidebar('charity', 'project-publish');
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>捐赠记录 — 美心食品集团 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-mini {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius); padding: 16px;
+  }
+  .stat-mini .lbl { font-size: 12px; color: var(--color-text-3); }
+  .stat-mini .val { font-size: 22px; font-weight: 800; color: var(--color-text); margin-top: 4px; }
+  .stat-mini .val.text-primary { color: var(--color-primary); }
+  .stat-mini .val.text-trust { color: var(--color-trust); }
+
+  .filter-bar {
+    background: #fff; padding: 16px; border-radius: var(--radius-md);
+    border: 1px solid var(--color-border); margin-bottom: 16px;
+    display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;
+  }
+  .filter-bar .form-group { margin-bottom: 0; min-width: 140px; flex: 1; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>📋 捐赠记录</h1>
+        <div class="sub">所有捐赠的物资记录、状态、轨迹一站式查询</div>
+      </div>
+      <a href="donate-publish.html" class="btn btn-primary">📦 发起新捐赠</a>
+    </div>
+
+    <!-- 数据统计 -->
+    <div class="stat-row">
+      <div class="stat-mini">
+        <div class="lbl">捐赠总次数</div>
+        <div class="val">128</div>
+      </div>
+      <div class="stat-mini">
+        <div class="lbl">进行中</div>
+        <div class="val text-primary">8</div>
+      </div>
+      <div class="stat-mini">
+        <div class="lbl">已完成</div>
+        <div class="val text-trust">118</div>
+      </div>
+      <div class="stat-mini">
+        <div class="lbl">累计价值</div>
+        <div class="val text-primary">¥ 1,860万</div>
+      </div>
+      <div class="stat-mini">
+        <div class="lbl">受惠人次</div>
+        <div class="val">126,800</div>
+      </div>
+    </div>
+
+    <!-- 筛选 -->
+    <div class="filter-bar">
+      <div class="form-group">
+        <label class="form-label">状态</label>
+        <select class="form-select"><option>全部</option><option>进行中</option><option>已完成</option><option>已取消</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">物资类型</label>
+        <select class="form-select"><option>全部</option><option>临期食品</option><option>新品</option><option>日化</option><option>服饰</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">流程</label>
+        <select class="form-select"><option>全部</option><option>流程一</option><option>流程二</option><option>流程三</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">时间</label>
+        <select class="form-select"><option>近 30 天</option><option>近 90 天</option><option>2025 年</option><option>2024 年</option></select>
+      </div>
+      <button class="btn btn-primary">查询</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">全部 <span class="count">128</span></div>
+      <div class="tab">待审核 <span class="count">2</span></div>
+      <div class="tab">派发中 <span class="count">6</span></div>
+      <div class="tab">已完成 <span class="count">118</span></div>
+      <div class="tab">草稿箱 <span class="count">2</span></div>
+    </div>
+
+    <div class="dash-card" style="padding:0;overflow:hidden;">
+      <table class="table" style="border:none;border-radius:0;">
+        <thead>
+          <tr>
+            <th>捐赠编号</th>
+            <th>物资 / 流程</th>
+            <th>数量 / 价值</th>
+            <th>匹配慈善会</th>
+            <th>进度</th>
+            <th>状态</th>
+            <th>时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CC-DON-2025-0682-0001</strong></td>
+            <td>🍞 临期面包<br><span class="tag tag-outline">流程一</span></td>
+            <td>1,200 件<br>¥ 18,600</td>
+            <td>广东省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar" style="width:65%"></div></div><div class="text-xs text-muted mt-1">65% · 720/1,200</div></td>
+            <td><span class="tag tag-primary">派发中</span></td>
+            <td>2025-05-28</td>
+            <td><a href="donation-detail.html" class="btn-link">查看轨迹</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0681-0028</strong></td>
+            <td>🧒 儿童牛奶<br><span class="tag tag-outline">流程二</span></td>
+            <td>600 盒<br>¥ 32,400</td>
+            <td>广东省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar" style="width:30%"></div></div><div class="text-xs text-muted mt-1">30% · 180/600</div></td>
+            <td><span class="tag tag-primary">派发中</span></td>
+            <td>2025-05-26</td>
+            <td><a href="donation-detail.html" class="btn-link">查看轨迹</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0680-0045</strong></td>
+            <td>📚 课外读物<br><span class="tag tag-outline">流程三</span></td>
+            <td>800 套<br>¥ 28,000</td>
+            <td>贵州省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar" style="width:15%"></div></div><div class="text-xs text-muted mt-1">15% · 待发车</div></td>
+            <td><span class="tag tag-warning">运输中</span></td>
+            <td>2025-05-25</td>
+            <td><a href="donation-detail.html" class="btn-link">查看轨迹</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0615-0028</strong></td>
+            <td>🥛 儿童牛奶<br><span class="tag tag-outline">流程一</span></td>
+            <td>600 盒<br>¥ 32,400</td>
+            <td>广东省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar success" style="width:100%"></div></div><div class="text-xs text-muted mt-1">100%</div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td>2025-05-15</td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a> · <a href="#" class="btn-link">下载证书</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0420-0156</strong></td>
+            <td>🍙 端午粽子<br><span class="tag tag-outline">流程二</span></td>
+            <td>800 盒<br>¥ 56,000</td>
+            <td>深圳市壹基金</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar success" style="width:100%"></div></div><div class="text-xs text-muted mt-1">100%</div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td>2025-04-20</td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a> · <a href="#" class="btn-link">下载证书</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0310-0089</strong></td>
+            <td>🍬 儿童节零食<br><span class="tag tag-outline">流程一</span></td>
+            <td>1,500 份<br>¥ 78,000</td>
+            <td>海南省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar success" style="width:100%"></div></div><div class="text-xs text-muted mt-1">100%</div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td>2025-03-10</td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a> · <a href="#" class="btn-link">下载证书</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0228-0123</strong></td>
+            <td>🧴 洗护用品<br><span class="tag tag-outline">流程一</span></td>
+            <td>500 套<br>¥ 28,000</td>
+            <td>贵州省慈善总会</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar success" style="width:100%"></div></div><div class="text-xs text-muted mt-1">100%</div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td>2025-02-28</td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a> · <a href="#" class="btn-link">下载证书</a></td>
+          </tr>
+          <tr>
+            <td><strong>CC-DON-2025-0115-0067</strong></td>
+            <td>🥛 春节牛奶礼盒<br><span class="tag tag-outline">流程一</span></td>
+            <td>2,000 份<br>¥ 128,000</td>
+            <td>全国 8 省联动</td>
+            <td><div class="progress" style="width:100px;"><div class="progress-bar success" style="width:100%"></div></div><div class="text-xs text-muted mt-1">100%</div></td>
+            <td><span class="tag tag-success">已完成</span></td>
+            <td>2025-01-15</td>
+            <td><a href="donation-detail.html" class="btn-link">查看报告</a> · <a href="#" class="btn-link">下载证书</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex-between mt-4">
+      <div class="text-sm text-muted">显示 1-8 条 / 共 128 条</div>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm">← 上一页</button>
+        <button class="btn btn-primary btn-sm">1</button>
+        <button class="btn btn-ghost btn-sm">2</button>
+        <button class="btn btn-ghost btn-sm">3</button>
+        <button class="btn btn-ghost btn-sm">...</button>
+        <button class="btn btn-ghost btn-sm">16</button>
+        <button class="btn btn-ghost btn-sm">下一页 →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('企业', '李经理');
+  CS.renderSidebar('company', 'donation-list');
+</script>
+</body>
+</html>

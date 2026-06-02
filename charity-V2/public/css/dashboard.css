@@ -1,0 +1,233 @@
+/* ============================================
+   慈商联营 — 工作台样式
+   ============================================ */
+
+/* 工作台整体布局 */
+.dash-wrap {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - var(--header-h));
+  background: var(--color-bg);
+}
+.dash-side {
+  background: var(--color-bg-dark);
+  color: #B0CDD9;
+  padding: 24px 0;
+  position: sticky; top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+}
+.dash-side .side-section { margin-bottom: 24px; }
+.dash-side .side-section .side-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: #5A7E8A; padding: 0 24px 12px;
+}
+.dash-side .side-menu a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 24px;
+  font-size: 14px; color: #B0CDD9;
+  border-left: 3px solid transparent;
+  transition: all var(--t) var(--ease);
+}
+.dash-side .side-menu a:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.dash-side .side-menu a.active {
+  background: rgba(232,93,4,0.12);
+  color: var(--color-primary-light);
+  border-left-color: var(--color-primary);
+}
+.dash-side .side-menu a .ic { font-size: 16px; width: 20px; text-align: center; }
+.dash-side .side-menu a .badge-mini {
+  margin-left: auto;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+}
+.dash-side .user-card {
+  padding: 16px 20px; margin: 0 12px 24px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius);
+  display: flex; align-items: center; gap: 12px;
+}
+.dash-side .user-card .avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-gold));
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.dash-side .user-card .info { flex: 1; min-width: 0; }
+.dash-side .user-card .name { font-size: 14px; color: #fff; font-weight: 600; }
+.dash-side .user-card .role { font-size: 11px; color: #7A9CAA; }
+
+.dash-main {
+  padding: 32px 32px 60px;
+  min-width: 0;
+}
+.dash-body { min-width: 0; } /* 防止子内容溢出撑破 .dash-wrap grid 1fr 列 */
+.dash-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+}
+.dash-head h1 { font-size: 24px; margin-bottom: 4px; }
+.dash-head .sub { color: var(--color-text-3); font-size: 14px; }
+.dash-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* 工作台卡片 */
+.dash-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+.dash-card .card-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.dash-card .card-head h3 { font-size: 16px; }
+.dash-card .card-head .more { font-size: 13px; color: var(--color-text-3); }
+
+.dash-grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+.dash-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.dash-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+
+@media (max-width: 1024px) {
+  .dash-grid-2, .dash-grid-3, .dash-grid-4 { grid-template-columns: 1fr; }
+  .dash-wrap { grid-template-columns: 1fr; }
+  .dash-side { position: static; height: auto; }
+}
+
+/* 工作台专用stat */
+.dash-stat {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: relative;
+}
+.dash-stat .label { font-size: 13px; color: var(--color-text-3); margin-bottom: 6px; }
+.dash-stat .value { font-size: 28px; font-weight: 800; color: var(--color-text); line-height: 1.2; }
+.dash-stat .value .unit { font-size: 13px; color: var(--color-text-3); margin-left: 4px; font-weight: 500; }
+.dash-stat .trend { font-size: 12px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.dash-stat .ic-deco {
+  position: absolute; right: 16px; top: 16px;
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 16px;
+}
+.dash-stat.theme-trust .ic-deco { background: var(--color-trust-soft); color: var(--color-trust); }
+.dash-stat.theme-gold .ic-deco { background: var(--color-gold-soft); color: var(--color-gold); }
+.dash-stat.theme-info .ic-deco { background: #DBEAFE; color: var(--color-info); }
+
+/* 通知 / Alert */
+.alert {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.alert .ic { font-size: 18px; flex-shrink: 0; }
+.alert-info    { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
+.alert-success { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+.alert-warning { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+.alert-danger  { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+
+/* 步骤条 - 工作台 */
+.steps {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 32px;
+  background: var(--color-surface);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+.steps .step {
+  flex: 1; display: flex; align-items: center; gap: 12px;
+  position: relative;
+}
+.steps .step:not(:last-child)::after {
+  content: ''; flex: 1; height: 2px;
+  background: var(--color-border);
+  margin: 0 8px;
+}
+.steps .step.done:not(:last-child)::after { background: var(--color-primary); }
+.steps .step .num {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px;
+  background: var(--color-bg-alt);
+  color: var(--color-text-3);
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+}
+.steps .step.active .num {
+  background: var(--color-primary); color: #fff; border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(232,93,4,0.15);
+}
+.steps .step.done .num { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.steps .step .info { flex: 1; min-width: 0; }
+.steps .step .info .t { font-size: 13px; font-weight: 600; color: var(--color-text-2); }
+.steps .step .info .d { font-size: 12px; color: var(--color-text-3); margin-top: 2px; }
+.steps .step.active .info .t { color: var(--color-primary); }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 4px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+.tabs .tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--color-text-3);
+  border-bottom: 2px solid transparent;
+  transition: all var(--t) var(--ease);
+  white-space: nowrap;
+  position: relative;
+}
+.tabs .tab:hover { color: var(--color-text-2); }
+.tabs .tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+.tabs .tab .count {
+  display: inline-block;
+  background: var(--color-bg-alt);
+  color: var(--color-text-3);
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  margin-left: 6px;
+}
+.tabs .tab.active .count { background: var(--color-primary-soft); color: var(--color-primary); }
+
+/* 工作台列表项 */
+.dash-list { display: flex; flex-direction: column; gap: 12px; }
+.dash-list-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius);
+  transition: all var(--t) var(--ease);
+}
+.dash-list-item:hover { border-color: rgba(232,93,4,0.2); box-shadow: var(--shadow-sm); }
+.dash-list-item .icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+.dash-list-item .body { flex: 1; min-width: 0; }
+.dash-list-item .title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 4px; }
+.dash-list-item .meta { font-size: 12px; color: var(--color-text-3); display: flex; gap: 12px; flex-wrap: wrap; }
+.dash-list-item .actions { display: flex; gap: 8px; flex-shrink: 0; }

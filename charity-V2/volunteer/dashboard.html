@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>志愿者工作台 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  .welcome-card {
+    background: linear-gradient(135deg, #E0FAF5 0%, #E5F0F4 50%, #FAEFD9 100%);
+    border-radius: var(--radius-md); padding: 32px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .welcome-card::after { content: '🙋'; position: absolute; right: 80px; top: -10px; font-size: 200px; opacity: 0.08; }
+  .welcome-card h1 { font-size: 28px; margin-bottom: 8px; }
+  .cert-badge {
+    background: linear-gradient(135deg, var(--color-trust), #0E8F80);
+    color: #fff; padding: 12px 20px; border-radius: var(--radius);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    width: fit-content;
+  }
+  .cert-badge .ic { font-size: 24px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="welcome-card">
+      <div>
+        <h1>👋 你好，张伟</h1>
+        <p class="sub">欢迎回到志愿者工作台。今天是您加入慈商联营的 <strong>第 186 天</strong>，累计服务 <strong>156 小时</strong>。</p>
+        <div class="cert-badge">
+          <span class="ic">🏅</span>
+          <div>
+            <div class="fw-600">注册志愿者 · 已认证</div>
+            <div class="text-sm" style="opacity:0.9;">深圳鹏星社工服务社 · 应急救援</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <a href="task-list.html" class="btn btn-primary btn-lg">📋 查看派发任务</a>
+      </div>
+    </div>
+
+    <!-- 消息中心快捷入口（由 common.js 动态生成） -->
+    <div id="msg-banner-slot" data-role="volunteer"></div>
+
+    <div class="dash-grid-4">
+      <div class="dash-stat">
+        <div class="ic-deco">📦</div>
+        <div class="label">待执行任务</div>
+        <div class="value">3</div>
+        <div class="trend">含 1 个紧急</div>
+      </div>
+      <div class="dash-stat theme-trust">
+        <div class="ic-deco">✅</div>
+        <div class="label">已完成任务</div>
+        <div class="value">28</div>
+        <div class="trend">本年</div>
+      </div>
+      <div class="dash-stat theme-gold">
+        <div class="ic-deco">⏰</div>
+        <div class="label">累计服务时长</div>
+        <div class="value">156<span class="unit">h</span></div>
+        <div class="trend">本年</div>
+      </div>
+      <div class="dash-stat theme-info">
+        <div class="ic-deco">👥</div>
+        <div class="label">受惠人次</div>
+        <div class="value">286</div>
+        <div class="trend">经您之手</div>
+      </div>
+    </div>
+
+    <div class="dash-grid-2 mt-6">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📋 当前任务</h3>
+          <a href="task-list.html" class="more">全部 →</a>
+        </div>
+        <div class="dash-list">
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);font-size:24px;">🍞</div>
+            <div class="body">
+              <div class="title">美心临期面包 · 五华县派发</div>
+              <div class="meta">1,200 件 · 已派发 720 · 受惠 56/86 户</div>
+            </div>
+            <span class="tag tag-primary">派发中</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#DC2626,#F59E0B);font-size:24px;">🚨</div>
+            <div class="body">
+              <div class="title">云南昭通地震救援</div>
+              <div class="meta">协助派发帐篷棉被</div>
+            </div>
+            <span class="tag tag-danger">🚨 紧急</span>
+          </div>
+          <div class="dash-list-item">
+            <div class="icon" style="background:linear-gradient(135deg,#E0FAF5,#E5F0F4);font-size:24px;">🥛</div>
+            <div class="body">
+              <div class="title">伊利儿童牛奶 · 河源派发</div>
+              <div class="meta">600 盒 · 18/60 户</div>
+            </div>
+            <span class="tag tag-primary">派发中</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📊 我的数据</h3>
+        </div>
+        <div class="grid grid-2 gap-3 mt-3">
+          <div style="text-align:center;padding:16px;background:var(--color-bg);border-radius:var(--radius);">
+            <div class="text-2xl fw-800 text-primary">156h</div>
+            <div class="text-xs text-muted mt-1">服务时长</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--color-bg);border-radius:var(--radius);">
+            <div class="text-2xl fw-800 text-trust">28</div>
+            <div class="text-xs text-muted mt-1">完成任务</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--color-bg);border-radius:var(--radius);">
+            <div class="text-2xl fw-800" style="color:var(--color-gold);">286</div>
+            <div class="text-xs text-muted mt-1">受惠人次</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--color-bg);border-radius:var(--radius);">
+            <div class="text-2xl fw-800" style="color:#7C3AED;">A+</div>
+            <div class="text-xs text-muted mt-1">服务评级</div>
+          </div>
+        </div>
+        <div class="alert alert-success mt-4">
+          <span class="ic">🏅</span>
+          <div>恭喜您！已获得 <strong>"年度优秀志愿者"</strong> 称号</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card mt-6">
+      <div class="card-head">
+        <h3>📰 最新通知</h3>
+      </div>
+      <div class="dash-list">
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(232,93,4,0.1);color:#E85D04;">📢</div>
+          <div class="body">
+            <div class="title">云南昭通地震救援紧急志愿者招募</div>
+            <div class="meta">紧急救灾 · 2025-05-30</div>
+          </div>
+          <a href="task-list.html" class="btn btn-primary btn-sm">立即参与</a>
+        </div>
+        <div class="dash-list-item">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">📚</div>
+          <div class="body">
+            <div class="title">6 月志愿者培训 · 应急救援专题</div>
+            <div class="meta">2025-06-10 14:00 · 线上</div>
+          </div>
+          <a href="#" class="btn btn-ghost btn-sm">报名</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('志愿者', '张伟');
+  CS.renderSidebar('volunteer', 'dashboard');
+  CS.renderDashMsgBanner('volunteer');
+</script>
+</body>
+</html>

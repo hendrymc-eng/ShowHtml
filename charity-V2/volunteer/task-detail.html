@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扫码派发详情 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .scan-card {
+    background: linear-gradient(135deg, #0E5A6F 0%, #14B8A6 100%);
+    color: #fff; border-radius: var(--radius-lg); padding: 32px;
+    text-align: center; margin-bottom: 24px;
+  }
+  .scan-area {
+    background: #fff; width: 200px; height: 200px; border-radius: var(--radius);
+    margin: 16px auto; display: flex; align-items: center; justify-content: center;
+    color: #0E5A6F; font-size: 80px; position: relative;
+  }
+  .scan-area::after {
+    content: ''; position: absolute; top: 20px; left: 20px; right: 20px;
+    height: 2px; background: #DC2626; box-shadow: 0 0 8px #DC2626;
+    animation: scanLine 2s linear infinite;
+  }
+  @keyframes scanLine {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(160px); }
+    100% { transform: translateY(0); }
+  }
+  .manual-input { display: flex; gap: 8px; max-width: 360px; margin: 0 auto; }
+  .manual-input .form-control { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+  .manual-input .form-control::placeholder { color: rgba(255,255,255,0.6); }
+
+  .house-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 16px; margin-bottom: 8px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .house-card.done { background: var(--color-trust-soft); border-color: var(--color-trust); }
+  .house-card.pending { background: var(--color-bg); }
+  .house-card .num { width: 40px; height: 40px; border-radius: 50%; background: var(--color-bg-alt); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .house-card.done .num { background: var(--color-trust); color: #fff; }
+  .house-card .body { flex: 1; }
+  .house-card .body .name { font-size: 14px; font-weight: 600; }
+  .house-card .body .meta { font-size: 12px; color: var(--color-text-3); }
+  .house-card .act { font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="dash-wrap">
+  <div id="dash-side"></div>
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <div class="text-sm text-muted mb-1">
+          <a href="task-list.html">派发任务</a> / 详情
+        </div>
+        <h1>美心临期面包 · 五华县派发</h1>
+        <div class="sub">1,200 件 / ¥ 18,600 · 派发 720/1,200 · 责任社工：张伟</div>
+      </div>
+      <a href="task-list.html" class="btn btn-ghost">← 返回</a>
+    </div>
+
+    <!-- 扫码区 -->
+    <div class="scan-card">
+      <div class="text-sm mb-2" style="opacity:0.9;">📱 扫码登记物资领取</div>
+      <h2 style="font-size:24px;margin-bottom:8px;">扫描受捐者二维码</h2>
+      <div class="scan-area">📷</div>
+      <div class="manual-input mt-4">
+        <input type="text" class="form-control" placeholder="或输入受捐者手机号 / 二维码编号">
+        <button class="btn btn-primary">确认</button>
+      </div>
+      <div class="text-sm mt-4" style="opacity:0.9;">⏰ 今日已扫码 <strong>56</strong> 次</div>
+    </div>
+
+    <!-- 派发明细 -->
+    <div class="dash-grid-2">
+      <div class="dash-card">
+        <div class="card-head">
+          <h3>📋 派发明细</h3>
+          <div class="text-sm text-muted">已派发 56 / 86 户</div>
+        </div>
+        <div class="progress mb-4"><div class="progress-bar" style="width:65%"></div></div>
+
+        <div class="house-card done">
+          <div class="num">1</div>
+          <div class="body">
+            <div class="name">张阿姨 · 67岁</div>
+            <div class="meta">📍 水寨镇 · 14:00 领取 · 8 件面包</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+        <div class="house-card done">
+          <div class="num">2</div>
+          <div class="body">
+            <div class="name">李大爷 · 72岁</div>
+            <div class="meta">📍 河东镇 · 14:18 领取 · 8 件面包</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+        <div class="house-card done">
+          <div class="num">3</div>
+          <div class="body">
+            <div class="name">王大姐 · 45岁</div>
+            <div class="meta">📍 华城镇 · 14:35 领取 · 12 件面包</div>
+          </div>
+          <span class="tag tag-success">已签收</span>
+        </div>
+        <div class="house-card pending">
+          <div class="num">4</div>
+          <div class="body">
+            <div class="name">陈奶奶 · 78岁</div>
+            <div class="meta">📍 水寨镇 · 预计 16:00</div>
+          </div>
+          <button class="btn btn-primary btn-sm">前往派发</button>
+        </div>
+        <div class="house-card pending">
+          <div class="num">5</div>
+          <div class="body">
+            <div class="name">林大哥 · 52岁</div>
+            <div class="meta">📍 河东镇 · 预计 16:30</div>
+          </div>
+          <button class="btn btn-primary btn-sm">前往派发</button>
+        </div>
+
+        <div class="text-center mt-4">
+          <button class="btn btn-ghost btn-sm">查看全部 86 户清单 ↓</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="dash-card mb-4">
+          <h3 style="font-size:16px;" class="mb-3">📊 今日派发统计</h3>
+          <div class="grid grid-2 gap-3">
+            <div style="text-align:center;padding:14px;background:var(--color-bg);border-radius:var(--radius);">
+              <div class="text-2xl fw-800 text-primary">56</div>
+              <div class="text-xs text-muted mt-1">已派发户数</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--color-bg);border-radius:var(--radius);">
+              <div class="text-2xl fw-800 text-trust">30</div>
+              <div class="text-xs text-muted mt-1">剩余户数</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--color-bg);border-radius:var(--radius);">
+              <div class="text-2xl fw-800" style="color:var(--color-gold);">720</div>
+              <div class="text-xs text-muted mt-1">已发件数</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--color-bg);border-radius:var(--radius);">
+              <div class="text-2xl fw-800" style="color:#7C3AED;">186</div>
+              <div class="text-xs text-muted mt-1">反馈数</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3 style="font-size:16px;" class="mb-3">💌 受捐者反馈</h3>
+          <div class="text-sm" style="line-height:1.7;color:var(--color-text-2);">
+            <div class="mb-3 pb-3" style="border-bottom:1px dashed var(--color-border);">
+              <div class="fw-600">张阿姨</div>
+              <div class="text-xs text-muted mb-1">14:00</div>
+              "志愿者小张特别有耐心，亲自把面包送到家里。"
+            </div>
+            <div class="mb-3 pb-3" style="border-bottom:1px dashed var(--color-border);">
+              <div class="fw-600">李大爷</div>
+              <div class="text-xs text-muted mb-1">14:18</div>
+              "感谢美心和慈善会，扫码就能领到东西，还有照片作证。"
+            </div>
+            <div>
+              <div class="fw-600">王大姐</div>
+              <div class="text-xs text-muted mb-1">14:35</div>
+              "家里三个孩子都在上学，志愿者送来的面包正好当早餐。"
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderDashHeader('志愿者', '张伟');
+  CS.renderSidebar('volunteer', 'task-detail');
+</script>
+</body>
+</html>

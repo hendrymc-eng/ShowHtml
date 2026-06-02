@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>注册 — 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+
+  .reg-hero {
+    background: linear-gradient(135deg, #0E2A3A 0%, #0F4C5C 50%, #0E5A6F 100%);
+    color: #fff; padding: 48px 0 40px; position: relative;
+  }
+  .reg-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(232,93,4,0.3), transparent 50%);
+  }
+  .reg-hero .container { position: relative; text-align: center; }
+  .reg-hero h1 { font-size: 32px; margin-bottom: 8px; }
+  .reg-hero .sub { color: rgba(255,255,255,0.8); font-size: 15px; }
+
+  .reg-progress {
+    background: #fff; border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    padding: 20px 24px; margin: 24px auto 32px;
+    max-width: 960px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .reg-step { display: flex; align-items: center; gap: 12px; padding: 0 16px; position: relative; }
+  .reg-step:not(:last-child)::after {
+    content: ''; position: absolute; right: -16px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 2px; background: #D4CFC4;
+  }
+  .reg-step.done:not(:last-child)::after { background: var(--color-primary); }
+  .reg-step .num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--color-bg-alt); color: var(--color-text-3);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; flex-shrink: 0;
+    font-size: 15px;
+  }
+  .reg-step.active .num, .reg-step.done .num {
+    background: var(--color-primary); color: #fff;
+  }
+  .reg-step .t { font-size: 14px; font-weight: 600; color: var(--color-text); line-height: 1.4; }
+  .reg-step .d { font-size: 12px; color: var(--color-text-3); margin-top: 2px; line-height: 1.4; }
+  .reg-step.active .t { color: var(--color-primary); }
+
+  .reg-content { max-width: 960px; margin: 0 auto; padding-bottom: 60px; }
+  .reg-panel { display: none; }
+  .reg-panel.active { display: block; animation: fadeUp 0.4s var(--ease); }
+
+  /* 角色卡片 */
+  .role-pick {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-bottom: 24px;
+  }
+  .role-pick-card {
+    background: #fff; border: 2px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px 16px; text-align: center;
+    cursor: pointer; transition: all var(--t);
+    position: relative;
+  }
+  .role-pick-card:hover { border-color: var(--color-primary); transform: translateY(-2px); }
+  .role-pick-card.selected {
+    border-color: var(--color-primary); background: var(--color-primary-soft);
+  }
+  .role-pick-card.selected::after {
+    content: '✓'; position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--color-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+  .role-pick-card .ic {
+    width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+  }
+  .role-pick-card[data-role="company"] .ic { background: #FFF1E5; color: #E85D04; }
+  .role-pick-card[data-role="charity"] .ic { background: #E5F0F4; color: #0E5A6F; }
+  .role-pick-card[data-role="org"] .ic { background: #FAEFD9; color: #C4842A; }
+  .role-pick-card[data-role="volunteer"] .ic { background: #E0FAF5; color: #14B8A6; }
+  .role-pick-card[data-role="recipient"] .ic { background: #F3E8FF; color: #7C3AED; }
+  .role-pick-card .name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .role-pick-card .desc { font-size: 12px; color: var(--color-text-3); line-height: 1.5; }
+
+  /* 提交成功页 */
+  .submit-success {
+    background: #fff; border-radius: var(--radius-md); padding: 60px;
+    text-align: center; border: 1px solid var(--color-border);
+  }
+  .submit-success .ic {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--color-trust-soft); color: var(--color-trust);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 40px; margin-bottom: 24px;
+  }
+  .submit-success h2 { font-size: 26px; margin-bottom: 12px; }
+  .submit-success .num {
+    font-size: 18px; font-weight: 700; color: var(--color-primary);
+    font-family: var(--font-mono); margin: 8px 0 24px;
+  }
+
+  .card-pad { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 40px; }
+
+  .reg-actions { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-border); }
+
+  /* 角色说明 - 双列布局 */
+  .role-explain { align-items: flex-start; }
+  .role-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
+  .role-row { font-size: 13px; line-height: 1.6; }
+  .role-row strong { color: #1E3A8A; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="reg-hero">
+  <div class="container">
+    <h1>加入慈商联营</h1>
+    <p class="sub">四步完成注册，开启透明化公益之旅</p>
+  </div>
+</section>
+
+<div class="container">
+  <!-- 进度条 -->
+  <div class="reg-progress">
+    <div class="reg-step active" data-step="1">
+      <div class="num">1</div>
+      <div><div class="t">选择用户角色</div><div class="d">5 种角色可选</div></div>
+    </div>
+    <div class="reg-step" data-step="2">
+      <div class="num">2</div>
+      <div><div class="t">填写注册资料</div><div class="d">基本信息 + 资质</div></div>
+    </div>
+    <div class="reg-step" data-step="3">
+      <div class="num">3</div>
+      <div><div class="t">提交申请</div><div class="d">系统校验 + 入队</div></div>
+    </div>
+    <div class="reg-step" data-step="4">
+      <div class="num">4</div>
+      <div><div class="t">平台审核</div><div class="d">2 个工作日内反馈</div></div>
+    </div>
+  </div>
+
+  <div class="reg-content">
+
+    <!-- STEP 1: 选择角色 -->
+    <div class="reg-panel active" id="reg-step-1">
+      <div class="card-pad">
+        <h2 class="mb-2">第一步：选择你的身份</h2>
+        <p class="text-muted mb-6">请选择最符合你当前身份的角色。后续可在工作台申请切换或增加其他角色。</p>
+
+        <div class="role-pick">
+          <div class="role-pick-card" data-role="company" onclick="selectRole(this)">
+            <div class="ic">🏢</div>
+            <div class="name">爱心企业</div>
+            <div class="desc">发起捐赠、品宣曝光、票据管理</div>
+          </div>
+          <div class="role-pick-card" data-role="charity" onclick="selectRole(this)">
+            <div class="ic">🏛️</div>
+            <div class="name">慈善会 / 总会</div>
+            <div class="desc">发布项目、领取物资、派发管理</div>
+          </div>
+          <div class="role-pick-card" data-role="org" onclick="selectRole(this)">
+            <div class="ic">🤝</div>
+            <div class="name">社会组织</div>
+            <div class="desc">基金会 / 团体 / 服务机构</div>
+          </div>
+          <div class="role-pick-card" data-role="volunteer" onclick="selectRole(this)">
+            <div class="ic">🙋</div>
+            <div class="name">志愿者 / 社工</div>
+            <div class="desc">领取任务、派发物资</div>
+          </div>
+          <div class="role-pick-card" data-role="recipient" onclick="selectRole(this)">
+            <div class="ic">❤️</div>
+            <div class="name">受捐者</div>
+            <div class="desc">扫码领取、反馈</div>
+          </div>
+        </div>
+
+        <div class="alert alert-info role-explain">
+          <span class="ic">💡</span>
+          <div class="role-grid">
+            <div class="role-row"><strong>企业 CSR 负责人 / 代办人</strong>：发起物资捐赠，管理企业品宣主页</div>
+            <div class="role-row"><strong>慈善会 / 总会管理员</strong>：管理属地慈善会的项目、物资、人员</div>
+            <div class="role-row"><strong>社会组织</strong>：基金会、社会团体、社会服务机构、其他组织</div>
+            <div class="role-row"><strong>志愿者 / 社工</strong>：派发一线工作者，需提供身份证 + 社工证</div>
+            <div class="role-row"><strong>受捐者</strong>：经属地慈善会 / 社工认证的受助人群</div>
+          </div>
+        </div>
+
+        <div class="reg-actions">
+          <a href="login.html" class="btn btn-ghost">已有账号？登录</a>
+          <button class="btn btn-primary" onclick="gotoStep(2)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: 填写资料 -->
+    <div class="reg-panel" id="reg-step-2">
+      <div class="card-pad">
+        <h2 class="mb-2">第二步：填写注册资料</h2>
+        <p class="text-muted mb-6">请如实填写以下信息。带 <span class="text-danger">*</span> 为必填项。</p>
+
+        <!-- 基础信息 -->
+        <h3 class="text-lg mb-3" style="font-size:17px;">📋 基础信息</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">真实姓名 / 机构全称 <span class="req">*</span></label>
+            <input type="text" class="form-control" placeholder="例：北京师范大学珠海校区青年志愿者协会">
+          </div>
+          <div class="form-group">
+            <label class="form-label">身份证号 / 统一社会信用代码 <span class="req">*</span></label>
+            <input type="text" class="form-control" placeholder="例：521100005000123456">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">营业执照 / 身份证扫描件 <span class="req">*</span></label>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-ghost" style="flex:1;">📤 上传正面</button>
+              <button type="button" class="btn btn-ghost" style="flex:1;">📤 上传反面</button>
+            </div>
+            <div class="form-hint">身份证可接入微信在线实名认证接口（推荐）</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">所在区域 <span class="req">*</span></label>
+            <div class="flex gap-2">
+              <select class="form-select"><option>请选择省</option><option>广东省</option><option>海南省</option></select>
+              <select class="form-select"><option>请选择市</option></select>
+              <select class="form-select"><option>请选择区/街道</option></select>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- 角色专属字段 -->
+        <h3 class="text-lg mb-3" style="font-size:17px;">⚙️ 角色专属字段</h3>
+        <div class="alert alert-info mb-4">
+          <span class="ic">📌</span>
+          <div>您选择的身份是 <strong id="selected-role-name">企业 CSR 负责人</strong>，请补充以下材料：</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">法人身份证扫描件 <span class="req">*</span></label>
+            <button type="button" class="btn btn-ghost btn-block">📤 上传文件</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">法人在线认证（可选）</label>
+            <button type="button" class="btn btn-outline-light" style="background:var(--color-bg-alt);color:var(--color-text-2);width:100%;">🔐 微信扫码快速认证</button>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- 安全设置 -->
+        <h3 class="text-lg mb-3" style="font-size:17px;">🔒 安全设置</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">手机号 <span class="req">*</span></label>
+            <input type="text" class="form-control" placeholder="11 位手机号">
+            <div class="form-hint">系统将验证手机号实名与姓名是否一致</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">短信验证码 <span class="req">*</span></label>
+            <div class="flex gap-2">
+              <input type="text" class="form-control" placeholder="6 位验证码" style="flex:1;">
+              <button type="button" class="btn btn-ghost">获取验证码</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">登录密码 <span class="req">*</span></label>
+            <input type="password" class="form-control" placeholder="8 位以上含大小写字母 + 数字">
+            <div class="form-hint">强度：<span class="text-warning">中等</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">确认密码 <span class="req">*</span></label>
+            <input type="password" class="form-control" placeholder="请再次输入">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">绑定邮箱（可选）</label>
+          <input type="email" class="form-control" placeholder="例：service@chinacharity.cn">
+          <div class="form-hint">绑定邮箱后可通过邮箱登录，需完成邮箱验证</div>
+        </div>
+
+        <hr>
+        <label class="flex gap-2 items-center text-sm">
+          <input type="checkbox" checked>
+          <span>我已阅读并同意 <a href="#" class="text-primary">《慈商联营用户协议》</a>、<a href="#" class="text-primary">《隐私政策》</a>、<a href="#" class="text-primary">《慈善组织自律公约》</a></span>
+        </label>
+
+        <div class="reg-actions">
+          <button class="btn btn-ghost" onclick="gotoStep(1)">← 上一步</button>
+          <button class="btn btn-primary" onclick="gotoStep(3)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: 提交申请 -->
+    <div class="reg-panel" id="reg-step-3">
+      <div class="card-pad">
+        <h2 class="mb-2">第三步：提交申请</h2>
+        <p class="text-muted mb-6">系统将自动校验必填项完整性。校验通过后，您的申请将进入审核队列。</p>
+
+        <div class="card mb-4" style="background:var(--color-bg);">
+          <h3 class="mb-3" style="font-size:16px;">📝 已填写资料</h3>
+          <div class="form-row text-sm">
+            <div><span class="text-muted">真实姓名：</span>张三</div>
+            <div><span class="text-muted">身份证号：</span>4405**********1234</div>
+            <div><span class="text-muted">手机号：</span>138****8888</div>
+            <div><span class="text-muted">所在区域：</span>广东省 / 深圳市 / 南山区</div>
+            <div><span class="text-muted">用户角色：</span><span id="selected-role-3">企业 CSR 负责人</span></div>
+            <div><span class="text-muted">法人身份证：</span><span class="text-success">✓ 已上传</span></div>
+          </div>
+        </div>
+
+        <div class="alert alert-success">
+          <span class="ic">✓</span>
+          <div>
+            <strong>系统校验通过</strong>，所有必填项已完整。可以提交申请。
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <span class="ic">📨</span>
+          <div>
+            <strong>提交后您将收到：</strong><br>
+            · 一封带时间戳的申请回执（申请单号：<strong>CCREG2024060201432000789</strong>）<br>
+            · 一条微信服务通知："已提交申请，预计 2 个工作日内反馈审核结果"<br>
+            · 审核进度可在登录后于个人中心查看
+          </div>
+        </div>
+
+        <div class="reg-actions">
+          <button class="btn btn-ghost" onclick="gotoStep(2)">← 上一步</button>
+          <button class="btn btn-primary" onclick="gotoStep(4)">✓ 确认提交申请</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: 审核中 -->
+    <div class="reg-panel" id="reg-step-4">
+      <div class="submit-success">
+        <div class="ic">✓</div>
+        <h2>申请已提交！</h2>
+        <p class="text-muted mb-3">您的申请已成功进入审核队列。系统已通过微信服务通知您。</p>
+        <div class="num">申请单号：CCREG2024060201432000789</div>
+
+        <div class="card text-left" style="background:var(--color-bg);max-width:520px;margin:0 auto;">
+          <div class="flex-between mb-3">
+            <span class="fw-600">📋 审核进度</span>
+            <span class="tag tag-primary">待审核</span>
+          </div>
+          <div class="progress mb-3"><div class="progress-bar" style="width:25%"></div></div>
+          <div class="text-sm text-muted">
+            <div class="flex gap-2 mb-2"><span class="text-success">✓</span> 已分配至初审员 · 王老师</div>
+            <div class="flex gap-2 mb-2"><span class="text-success">✓</span> 初审通过 · 2025-06-02 14:30</div>
+            <div class="flex gap-2 mb-2 text-muted"><span>●</span> 复审中 · 预计 2025-06-03 前反馈</div>
+            <div class="flex gap-2 text-muted"><span>○</span> 开通账号权限</div>
+          </div>
+        </div>
+
+        <div class="alert alert-warning mt-4" style="max-width:520px;margin:16px auto 0;">
+          <span class="ic">⏰</span>
+          <div>
+            <strong>审核时间：</strong>预计 2 个工作日内反馈。<br>
+            期间您可登录查看审核进度。如需补充材料，平台会通过微信通知您。
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 justify-center">
+          <a href="login.html" class="btn btn-primary">登录查看进度</a>
+          <a href="../index.html" class="btn btn-ghost">返回首页</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderHeader('');
+  CS.renderFooter();
+
+  function selectRole(card) {
+    document.querySelectorAll('.role-pick-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const roleName = card.querySelector('.name').textContent;
+    document.getElementById('selected-role-name').textContent = roleName;
+    document.getElementById('selected-role-3').textContent = roleName;
+  }
+
+  // 默认选中第一个
+  document.querySelector('.role-pick-card').classList.add('selected');
+
+  function gotoStep(n) {
+    // 校验
+    if (n === 2) {
+      const sel = document.querySelector('.role-pick-card.selected');
+      if (!sel) { CS.toast('请选择身份', 'error'); return; }
+    }
+
+    document.querySelectorAll('.reg-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('reg-step-' + n).classList.add('active');
+
+    document.querySelectorAll('.reg-step').forEach(s => {
+      const sn = parseInt(s.dataset.step);
+      s.classList.remove('active', 'done');
+      if (sn < n) s.classList.add('done');
+      if (sn === n) s.classList.add('active');
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
