@@ -62,6 +62,7 @@
       <a href="${p}index.html" ${active==='home'?'class="active"':''}>首页</a>
       <a href="${p}pages/transparency.html" ${active==='transparency'?'class="active"':''}>透明公示</a>
       <a href="${p}pages/track.html" ${active==='track'?'class="active"':''}>物资轨迹</a>
+      <a href="${p}pages/companies.html" ${active==='companies'?'class="active"':''}>标杆企业</a>
       <a href="${p}pages/annual-report.html" ${active==='report'?'class="active"':''}>年度报告</a>
       <a href="${p}pages/about.html" ${active==='about'?'class="active"':''}>关于我们</a>
       <a href="${p}mall/index.html" ${active==='mall'?'class="active"':''}>慈善商城</a>

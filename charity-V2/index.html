@@ -504,8 +504,47 @@
   .trust-item .t { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
   .trust-item .d { font-size: 13px; color: var(--color-text-3); }
 
+  /* ===== 关于我们 ===== */
+  .about-section {
+    background: linear-gradient(135deg, #FAF8F4 0%, #E0F2F1 100%);
+    padding: 80px 0;
+  }
+  .about-section .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 40px; gap: 16px; flex-wrap: wrap;
+  }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center;
+  }
+  .about-text p {
+    font-size: 15px; line-height: 1.8; color: var(--color-text-2);
+    margin-bottom: 16px;
+  }
+  .about-text p strong { color: var(--color-text-1); font-weight: 700; }
+  .about-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .about-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
+  }
+  .about-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .about-card .ico {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--color-primary-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .about-card h4 { font-size: 14px; font-weight: 700; margin: 0 0 4px; color: var(--color-text-1); }
+  .about-card p { font-size: 12px; color: var(--color-text-3); margin: 0; line-height: 1.5; }
+
   @media (max-width: 1024px) {
-    .hero-grid, .trust-grid, .mall-section .feature { grid-template-columns: 1fr; }
+    .hero-grid, .trust-grid, .mall-section .feature, .about-grid { grid-template-columns: 1fr; }
     .roles-grid { grid-template-columns: repeat(2, 1fr); }
     .data-grid { grid-template-columns: repeat(2, 1fr); }
     .flow-canvas { grid-template-columns: 1fr; }
@@ -574,8 +613,10 @@
     <nav class="front-nav">
       <a href="index.html" class="active">首页</a>
       <a href="pages/track.html">物资轨迹</a>
+      <a href="pages/companies.html">标杆企业</a>
       <a href="pages/transparency.html">透明公示</a>
       <a href="pages/annual-report.html">年度报告</a>
+      <a href="pages/about.html">关于我们</a>
       <a href="mall/index.html">慈善商城</a>
     </nav>
     <div class="front-actions">
@@ -1053,7 +1094,7 @@
         <h2 style="font-size:32px;margin-bottom:6px;">标杆爱心企业</h2>
         <p class="text-muted text-sm">基于捐赠额、覆盖人数、反馈及时度等维度的综合排名</p>
       </div>
-      <a href="#" class="btn btn-ghost">查看完整榜单 →</a>
+      <a href="pages/companies.html" class="btn btn-ghost">查看完整榜单 →</a>
     </div>
     <div class="grid grid-3">
       <div class="company-card">
@@ -1295,6 +1336,56 @@
   </div>
 </section>
 
+<!-- ========== 关于我们 ========== -->
+<section class="about-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:32px;margin-bottom:6px;">关于慈商联营</h2>
+        <p class="text-muted text-sm">让每一份善意都可追溯、可见、可信任</p>
+      </div>
+      <a href="pages/about.html" class="btn btn-primary">了解我们 →</a>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>慈商联营由<strong>海南亚洲公益研究院</strong>发起并运营，是国内首个连接爱心企业、慈善会、社会组织、志愿者和受捐者的<strong>全流程透明化公益平台</strong>。</p>
+        <p>平台坚持"物资不碰钱"原则——企业捐赠物资直接由物流从仓库运送到受捐者手中，全程扫码可追溯，每一笔捐赠都有据可查。</p>
+        <p>自上线以来，已联合 3,680 家爱心企业、186 家社会组织、1,260 名志愿者，触达 21 个地级市、86 个县区，累计服务受惠群众超 126 万人次。</p>
+      </div>
+      <div class="about-cards">
+        <div class="about-card" data-color="#E85D04">
+          <div class="ico">🏛️</div>
+          <div>
+            <h4>发起方</h4>
+            <p>海南亚洲公益研究院</p>
+          </div>
+        </div>
+        <div class="about-card" data-color="#0E5A6F">
+          <div class="ico">🎯</div>
+          <div>
+            <h4>使命</h4>
+            <p>让每一份善意都可追溯</p>
+          </div>
+        </div>
+        <div class="about-card" data-color="#14B8A6">
+          <div class="ico">🤝</div>
+          <div>
+            <h4>团队</h4>
+            <p>32 分支 · 186 组织 · 1,260 志愿者</p>
+          </div>
+        </div>
+        <div class="about-card" data-color="#C4842A">
+          <div class="ico">🌐</div>
+          <div>
+            <h4>愿景</h4>
+            <p>打造人人可信的公益生态</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div id="site-footer"></div>
 
   <script src="public/js/common.js"></script>
@@ -1305,6 +1396,22 @@
 <script>
   CS.renderHeader('home');
   CS.renderFooter();
+
+  // ===== "关于我们" section 入场动效（滚动到视口时）=====
+  const aboutText = document.querySelector('.about-text');
+  const aboutCards = document.querySelectorAll('.about-card');
+  if (aboutText && aboutCards.length) {
+    gsap.set(aboutText, { opacity: 0, x: -30 });
+    gsap.set(aboutCards, { opacity: 0, y: 30, scale: 0.9 });
+    gsap.to(aboutText, {
+      opacity: 1, x: 0, duration: 0.7, ease: 'power3.out',
+      scrollTrigger: { trigger: '.about-section', start: 'top 80%', once: true }
+    });
+    gsap.to(aboutCards, {
+      opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.1,
+      scrollTrigger: { trigger: '.about-section', start: 'top 80%', once: true }
+    });
+  }
 
   // 流程 tab 切换
   document.querySelectorAll('.flow-tab').forEach(tab => {

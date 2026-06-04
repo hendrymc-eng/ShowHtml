@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>标杆爱心企业 — 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
+<style>
+  .companies-page { background: var(--color-bg); padding: 60px 0 80px; }
+  .companies-hero {
+    background: linear-gradient(135deg, #FFF1E5 0%, #FFE4D2 100%);
+    border-radius: var(--radius-lg);
+    padding: 40px 48px;
+    margin-bottom: 32px;
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .companies-hero::after {
+    content: '🏆'; position: absolute; right: 40px; top: -10px;
+    font-size: 240px; opacity: 0.1;
+  }
+  .companies-hero h1 { font-size: 32px; margin-bottom: 12px; }
+  .companies-hero p { font-size: 15px; color: var(--color-text-2); line-height: 1.7; margin-bottom: 16px; }
+  .companies-hero .stats { display: flex; gap: 24px; }
+  .companies-hero .stat .num {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, #E85D04 0%, #C44569 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+  }
+  .companies-hero .stat .lbl { font-size: 12px; color: var(--color-text-3); margin-top: 2px; }
+
+  /* 筛选标签 */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .filter-bar .filter-tag {
+    padding: 6px 14px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--color-border);
+    font-size: 13px; font-weight: 600; color: var(--color-text-2);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .filter-bar .filter-tag.active,
+  .filter-bar .filter-tag:hover {
+    background: var(--color-primary); color: #fff; border-color: var(--color-primary);
+  }
+
+  /* 企业卡片 */
+  .company-detail-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px;
+    margin-bottom: 16px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center;
+    transition: all 0.25s ease;
+  }
+  .company-detail-card:hover {
+    box-shadow: var(--shadow-md); border-color: rgba(232,93,4,0.2);
+  }
+  .company-detail-card .rank-badge {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .company-detail-card .rank-badge.top1 { background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%); }
+  .company-detail-card .rank-badge.top2 { background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%); }
+  .company-detail-card .rank-badge.top3 { background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%); }
+  .company-detail-card .rank-badge.normal { background: linear-gradient(135deg, #0E5A6F 0%, #14B8A6 100%); }
+  .company-detail-card .rank-badge .lbl { font-size: 10px; opacity: 0.85; }
+  .company-detail-card .rank-badge .no { font-size: 16px; }
+
+  .company-info .name { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .company-info .cat { font-size: 12px; color: var(--color-text-3); margin-bottom: 12px; }
+  .company-info .metrics {
+    display: flex; gap: 24px; margin-bottom: 12px;
+  }
+  .company-info .metric .lbl { font-size: 11px; color: var(--color-text-3); }
+  .company-info .metric .val {
+    font-size: 16px; font-weight: 800; color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .company-info .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .company-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+
+  @media (max-width: 768px) {
+    .companies-hero { grid-template-columns: 1fr; padding: 32px; }
+    .company-detail-card { grid-template-columns: 1fr; text-align: center; }
+    .company-info .metrics { justify-content: center; }
+    .company-info .tags { justify-content: center; }
+    .company-actions { align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 标杆企业页面 ========== -->
+<div id="site-header"></div>
+
+<main class="companies-page">
+  <div class="container">
+
+        <!-- Hero -->
+        <div class="companies-hero">
+          <div>
+            <h1>🏆 标杆爱心企业</h1>
+            <p>基于捐赠额、覆盖人数、反馈及时度、项目持续性等维度的综合排名。每一家上榜企业都经过 3 个月以上观察期，确保数据真实、捐赠持续。</p>
+            <div class="stats">
+              <div class="stat">
+                <div class="num">3,680</div>
+                <div class="lbl">入驻爱心企业</div>
+              </div>
+              <div class="stat">
+                <div class="num">¥ 2.86 亿</div>
+                <div class="lbl">累计捐赠物资价值</div>
+              </div>
+              <div class="stat">
+                <div class="num">126.8 万</div>
+                <div class="lbl">覆盖受惠人次</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 筛选标签 -->
+        <div class="filter-bar" id="filterBar">
+          <span class="filter-tag active" data-filter="all">全部企业</span>
+          <span class="filter-tag" data-filter="food">食品饮料</span>
+          <span class="filter-tag" data-filter="dairy">乳制品</span>
+          <span class="filter-tag" data-filter="chem">日化营养</span>
+          <span class="filter-tag" data-filter="appliance">家电</span>
+          <span class="filter-tag" data-filter="auto">汽车</span>
+          <span class="filter-tag" data-filter="logistics">物流</span>
+          <span class="filter-tag" data-filter="5star">⭐ 五星企业</span>
+        </div>
+
+        <!-- 10 家企业详细列表 -->
+        <div class="company-list" id="companyList">
+
+          <div class="company-detail-card" data-cat="food" data-5star="1">
+            <div class="rank-badge top1"><span class="lbl">NO.</span><span class="no">1</span></div>
+            <div class="company-info">
+              <div class="name">美心食品集团</div>
+              <div class="cat">食品饮料 · 入驻 2 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 1,860万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">126,800</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">28 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-trust">临期 0 浪费</span>
+                <span class="tag tag-gold">⭐ 五星企业</span>
+                <span class="tag tag-primary">长期合作</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="dairy" data-5star="1">
+            <div class="rank-badge top2"><span class="lbl">NO.</span><span class="no">2</span></div>
+            <div class="company-info">
+              <div class="name">伊利集团</div>
+              <div class="cat">乳制品 · 入驻 1.5 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 1,420万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">98,200</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">22 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-primary">救灾先锋</span>
+                <span class="tag tag-gold">⭐ 五星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="chem" data-5star="1">
+            <div class="rank-badge top3"><span class="lbl">NO.</span><span class="no">3</span></div>
+            <div class="company-info">
+              <div class="name">安利（中国）</div>
+              <div class="cat">日化营养 · 入驻 2 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 980万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">76,500</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">18 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-trust">营养助学</span>
+                <span class="tag tag-gold">⭐ 五星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="dairy" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">4</span></div>
+            <div class="company-info">
+              <div class="name">蒙牛乳业</div>
+              <div class="cat">乳制品 · 入驻 1.5 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 860万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">68,200</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">15 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-primary">儿童营养</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="food" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">5</span></div>
+            <div class="company-info">
+              <div class="name">娃哈哈集团</div>
+              <div class="cat">饮料 · 入驻 1.5 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 720万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">56,800</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">14 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-trust">灾区供水</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="appliance" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">6</span></div>
+            <div class="company-info">
+              <div class="name">海尔集团</div>
+              <div class="cat">家电 · 入驻 1 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 580万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">42,600</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">11 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-primary">家电捐赠</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="appliance" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">7</span></div>
+            <div class="company-info">
+              <div class="name">美的集团</div>
+              <div class="cat">家电 · 入驻 1 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 520万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">38,500</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">9 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-primary">小家电</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="auto" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">8</span></div>
+            <div class="company-info">
+              <div class="name">比亚迪</div>
+              <div class="cat">汽车 · 入驻 1 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 480万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">32,800</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">8 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-trust">绿色公益</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="logistics" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">9</span></div>
+            <div class="company-info">
+              <div class="name">顺丰公益物流</div>
+              <div class="cat">物流 · 入驻 2 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 420万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">28,600</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">32 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-primary">公益物流</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+          <div class="company-detail-card" data-cat="chem" data-5star="0">
+            <div class="rank-badge normal"><span class="lbl">NO.</span><span class="no">10</span></div>
+            <div class="company-info">
+              <div class="name">立白集团</div>
+              <div class="cat">日化 · 入驻 1 年</div>
+              <div class="metrics">
+                <div class="metric"><div class="lbl">累计捐赠额</div><div class="val">¥ 360万</div></div>
+                <div class="metric"><div class="lbl">受惠人次</div><div class="val">24,200</div></div>
+                <div class="metric"><div class="lbl">参与项目</div><div class="val">6 个</div></div>
+              </div>
+              <div class="tags">
+                <span class="tag tag-trust">卫生防护</span>
+                <span class="tag tag-gold">⭐ 四星企业</span>
+              </div>
+            </div>
+            <div class="company-actions">
+              <a href="#" class="btn btn-ghost btn-sm">查看捐赠记录 →</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="../public/js/common.js"></script>
+<script>
+  CS.renderHeader('companies');
+  CS.renderFooter();
+
+  // ===== 筛选标签（前端过滤）=====
+  const filterBar = document.getElementById('filterBar');
+  if (filterBar) {
+    filterBar.addEventListener('click', (e) => {
+      const tag = e.target.closest('.filter-tag');
+      if (!tag) return;
+      filterBar.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+      const filter = tag.dataset.filter;
+      document.querySelectorAll('.company-detail-card').forEach(card => {
+        if (filter === 'all') { card.style.display = 'grid'; return; }
+        if (filter === '5star') {
+          card.style.display = card.dataset['5star'] === '1' ? 'grid' : 'none';
+        } else {
+          card.style.display = card.dataset.cat === filter ? 'grid' : 'none';
+        }
+      });
+    });
+  }
+
+  // ===== 滚动到视口时 10 张企业卡 stagger 进入（GSAP）=====
+  (function waitGsap() {
+    if (typeof gsap === 'undefined') return setTimeout(waitGsap, 30);
+    if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+    const cards = document.querySelectorAll('.company-detail-card');
+    if (cards.length) {
+      gsap.set(cards, { opacity: 0, y: 30 });
+      gsap.to(cards, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.08,
+        scrollTrigger: { trigger: '#companyList', start: 'top 85%', once: true }
+      });
+    }
+  })();
+</script>
+</body>
+</html>
