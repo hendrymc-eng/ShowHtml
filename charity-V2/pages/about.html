@@ -245,7 +245,105 @@
 
 <div id="site-footer"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="../public/js/common.js"></script>
 <script>CS.renderHeader('about'); CS.renderFooter();</script>
+<script>
+  // ===== 关于我们页 GSAP 动效 =====
+  (function waitGsap() {
+    if (typeof gsap === 'undefined') return setTimeout(waitGsap, 30);
+    if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+
+    // 1) Hero: breadcrumbs + h1 缩放 + lead 上滑
+    const heroCrumbs = document.querySelector('.about-hero .breadcrumbs');
+    const heroH1 = document.querySelector('.about-hero h1');
+    const heroLead = document.querySelector('.about-hero .lead');
+    if (heroH1) {
+      gsap.set(heroCrumbs, { opacity: 0, x: -10 });
+      gsap.set(heroH1, { opacity: 0, y: 20, scale: 0.95 });
+      gsap.set(heroLead, { opacity: 0, y: 15 });
+      gsap.to(heroCrumbs, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' });
+      gsap.to(heroH1, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.2)', delay: 0.1 });
+      gsap.to(heroLead, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', delay: 0.25 });
+    }
+
+    // 2) "为什么做慈商联营？" 2 列卡片从左右滑入
+    const introCard = document.querySelector('.section .card');
+    if (introCard) {
+      const gridChildren = introCard.querySelectorAll('.grid > div');
+      if (gridChildren.length === 2) {
+        gsap.set(gridChildren[0], { opacity: 0, x: -30 });
+        gsap.set(gridChildren[1], { opacity: 0, x: 30 });
+        gsap.to(gridChildren[0], { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out',
+          scrollTrigger: { trigger: introCard, start: 'top 80%', once: true } });
+        gsap.to(gridChildren[1], { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.15,
+          scrollTrigger: { trigger: introCard, start: 'top 80%', once: true } });
+      }
+    }
+
+    // 3) 3 张 mission-card stagger + emoji 弹性
+    const missionCards = document.querySelectorAll('.mission-card');
+    if (missionCards.length) {
+      gsap.set(missionCards, { opacity: 0, y: 30, scale: 0.95 });
+      gsap.to(missionCards, {
+        opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.12,
+        scrollTrigger: { trigger: '.mission-grid', start: 'top 80%', once: true }
+      });
+      const missionIcons = document.querySelectorAll('.mission-card .ic');
+      gsap.set(missionIcons, { scale: 0, rotation: -90 });
+      gsap.to(missionIcons, {
+        scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)', stagger: 0.12, delay: 0.3,
+        scrollTrigger: { trigger: '.mission-grid', start: 'top 80%', once: true }
+      });
+    }
+
+    // 4) 发展历程 6 个 timeline-item stagger（左侧从左滑入，右侧从右）
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    if (timelineItems.length) {
+      timelineItems.forEach((item, i) => {
+        const fromX = i % 2 === 0 ? -25 : 25;
+        gsap.set(item, { opacity: 0, x: fromX });
+        gsap.to(item, {
+          opacity: 1, x: 0, duration: 0.5, ease: 'power3.out', delay: 0.1 * i,
+          scrollTrigger: { trigger: '.timeline', start: 'top 80%', once: true }
+        });
+      });
+    }
+
+    // 5) 4 张 team-card stagger + avatar 旋转进入
+    const teamCards = document.querySelectorAll('.team-card');
+    if (teamCards.length) {
+      gsap.set(teamCards, { opacity: 0, y: 30 });
+      gsap.to(teamCards, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.1,
+        scrollTrigger: { trigger: '.team-grid', start: 'top 80%', once: true }
+      });
+      const avatars = document.querySelectorAll('.team-card .avatar');
+      gsap.set(avatars, { scale: 0, rotation: -180 });
+      gsap.to(avatars, {
+        scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)', stagger: 0.1, delay: 0.3,
+        scrollTrigger: { trigger: '.team-grid', start: 'top 80%', once: true }
+      });
+    }
+
+    // 6) 12 张 partner-card 网格 stagger（快速错开）
+    const partnerCards = document.querySelectorAll('.partner-card');
+    if (partnerCards.length) {
+      gsap.set(partnerCards, { opacity: 0, y: 20, scale: 0.9 });
+      gsap.to(partnerCards, {
+        opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.4)', stagger: 0.04,
+        scrollTrigger: { trigger: '.partner-grid', start: 'top 85%', once: true }
+      });
+      // logo 弹性
+      const partnerLogos = document.querySelectorAll('.partner-card .logo');
+      gsap.set(partnerLogos, { scale: 0 });
+      gsap.to(partnerLogos, {
+        scale: 1, duration: 0.3, ease: 'back.out(2)', stagger: 0.04, delay: 0.2,
+        scrollTrigger: { trigger: '.partner-grid', start: 'top 85%', once: true }
+      });
+    }
+  })();
+</script>
 </body>
 </html>

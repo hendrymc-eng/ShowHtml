@@ -91,27 +91,27 @@
     <div class="top-stat-row">
       <div class="ts-card">
         <div class="label">累计捐赠物资价值</div>
-        <div class="value">¥ 2.86<span class="unit">亿</span></div>
+        <div class="value"><span data-target="2.86" data-suffix="亿" data-prefix="¥ ">¥ 2.86</span><span class="unit">亿</span></div>
         <div class="trend">↑ 较去年同期 +38.2%</div>
       </div>
       <div class="ts-card theme-2">
         <div class="label">受惠人次</div>
-        <div class="value">1,268,000</div>
+        <div class="value" data-target="1268000" data-suffix="">1,268,000</div>
         <div class="trend">↑ 覆盖 31 个省市</div>
       </div>
       <div class="ts-card theme-3">
         <div class="label">爱心企业入驻</div>
-        <div class="value">3,680<span class="unit">家</span></div>
+        <div class="value"><span data-target="3680" data-suffix="">3,680</span><span class="unit">家</span></div>
         <div class="trend">↑ 本月新增 86 家</div>
       </div>
       <div class="ts-card theme-4">
         <div class="label">完成项目数</div>
-        <div class="value">1,486</div>
+        <div class="value" data-target="1486" data-suffix="">1,486</div>
         <div class="trend">完成率 91.2%</div>
       </div>
       <div class="ts-card theme-5">
         <div class="label">活跃志愿者</div>
-        <div class="value">12,860</div>
+        <div class="value" data-target="12860" data-suffix="">12,860</div>
         <div class="trend">↑ 月活跃 8,420</div>
       </div>
     </div>
@@ -397,7 +397,110 @@
 
 <div id="site-footer"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="../public/js/common.js"></script>
 <script>CS.renderHeader('transparency'); CS.renderFooter();</script>
+<script>
+  // ===== 透明公示页 GSAP 动效 =====
+  (function waitGsap() {
+    if (typeof gsap === 'undefined') return setTimeout(waitGsap, 30);
+    if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+
+    // 1) Hero: breadcrumbs + h1 缩放 + lead 上滑
+    const heroCrumbs = document.querySelector('.page-hero .breadcrumbs');
+    const heroH1 = document.querySelector('.page-hero h1');
+    const heroLead = document.querySelector('.page-hero .lead');
+    if (heroH1) {
+      gsap.set(heroCrumbs, { opacity: 0, x: -10 });
+      gsap.set(heroH1, { opacity: 0, y: 20 });
+      gsap.set(heroLead, { opacity: 0, y: 15 });
+      gsap.to(heroCrumbs, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' });
+      gsap.to(heroH1, { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.2)', delay: 0.1 });
+      gsap.to(heroLead, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', delay: 0.25 });
+    }
+
+    // 2) 5 张 ts-card 错开淡入 + 5 个数字滚动
+    const tsCards = document.querySelectorAll('.ts-card');
+    if (tsCards.length) {
+      gsap.set(tsCards, { opacity: 0, y: 30, scale: 0.95 });
+      gsap.to(tsCards, {
+        opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.1,
+        scrollTrigger: { trigger: '.top-stat-row', start: 'top 80%', once: true }
+      });
+    }
+    // 数字滚动（每个 ts-card 的 .value / .value span）
+    const valueEls = document.querySelectorAll('.ts-card .value, .ts-card .value span');
+    valueEls.forEach((el, i) => {
+      // 跳过 .unit (子 span) — 用 hasAttribute 过滤
+      if (!el.dataset || !el.dataset.target) return;
+      const target = parseFloat(el.dataset.target);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const counter = { val: 0 };
+      gsap.to(counter, {
+        val: target, duration: 1.5, ease: 'power3.out', delay: 0.5 + i * 0.1,
+        scrollTrigger: { trigger: '.top-stat-row', start: 'top 80%', once: true },
+        onUpdate: () => {
+          if (target < 100) {
+            el.textContent = prefix + counter.val.toFixed(2).replace(/\.?0+$/, '') + suffix;
+          } else {
+            el.textContent = prefix + Math.round(counter.val).toLocaleString() + suffix;
+          }
+        }
+      });
+    });
+
+    // 3) 4 个 form-group 弹性入场
+    const filterGroups = document.querySelectorAll('.filter-bar .form-group');
+    if (filterGroups.length) {
+      gsap.set(filterGroups, { opacity: 0, y: 20 });
+      gsap.to(filterGroups, {
+        opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.4)', stagger: 0.08,
+        scrollTrigger: { trigger: '.filter-bar', start: 'top 85%', once: true }
+      });
+    }
+
+    // 4) 5 张 project-card stagger + 内部 emoji 弹性
+    const projectCards = document.querySelectorAll('.project-card');
+    if (projectCards.length) {
+      gsap.set(projectCards, { opacity: 0, y: 30 });
+      gsap.to(projectCards, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.1,
+        scrollTrigger: { trigger: projectCards[0], start: 'top 85%', once: true }
+      });
+      // 标签 emoji 弹性
+      const projectTags = document.querySelectorAll('.project-card .tag');
+      gsap.set(projectTags, { scale: 0 });
+      gsap.to(projectTags, {
+        scale: 1, duration: 0.4, ease: 'back.out(2)', stagger: 0.02, delay: 0.3,
+        scrollTrigger: { trigger: projectCards[0], start: 'top 85%', once: true }
+      });
+    }
+
+    // 5) "加载更多" 按钮持续 pulse
+    const loadMore = document.querySelector('.text-center.mt-6 .btn');
+    if (loadMore) {
+      gsap.to(loadMore, { y: -4, duration: 1.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    }
+
+    // 6) 3 张 audit-card 弹性 + 📋 图标旋转
+    const auditCards = document.querySelectorAll('.audit-card');
+    if (auditCards.length) {
+      gsap.set(auditCards, { opacity: 0, y: 30, scale: 0.95 });
+      gsap.to(auditCards, {
+        opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.4)', stagger: 0.12,
+        scrollTrigger: { trigger: '.audit-section', start: 'top 80%', once: true }
+      });
+      // 📋 图标缩放弹性
+      const auditIcons = document.querySelectorAll('.audit-card .ic');
+      gsap.set(auditIcons, { scale: 0, rotation: -180 });
+      gsap.to(auditIcons, {
+        scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)', stagger: 0.12,
+        scrollTrigger: { trigger: '.audit-section', start: 'top 80%', once: true }
+      });
+    }
+  })();
+</script>
 </body>
 </html>
