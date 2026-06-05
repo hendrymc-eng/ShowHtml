@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>贡献分明细 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/h5.css">
+<style>
+  /* ===== 顶部 summary（绿渐变） ===== */
+  .h5-detail-summary {
+    background: linear-gradient(135deg, #14B8A6 0%, #0E8F80 100%);
+    color: #fff;
+    padding: 18px 16px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .h5-detail-summary::after {
+    content: '📊';
+    position: absolute;
+    right: -20px; top: -20px;
+    font-size: 120px;
+    opacity: 0.10;
+    pointer-events: none;
+  }
+  .h5-detail-summary .label {
+    font-size: 12px; opacity: 0.85;
+    margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    position: relative;
+  }
+  .h5-detail-summary .value {
+    font-size: 44px; font-weight: 900;
+    line-height: 1; font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .h5-detail-summary .value .unit {
+    font-size: 16px; font-weight: 500; margin-left: 4px; opacity: 0.85;
+  }
+  .h5-detail-summary .trend {
+    font-size: 11px; opacity: 0.9;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .h5-detail-summary .trend .sep { opacity: 0.5; }
+  .h5-detail-summary .trend b { color: #FFD700; font-weight: 700; }
+
+  /* ===== 流水列表 ===== */
+  .h5-detail-list {
+    background: #fff;
+  }
+  .h5-detail-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--h5-divider);
+    transition: background 0.15s;
+  }
+  .h5-detail-item:active { background: var(--h5-bg); }
+  .h5-detail-item:last-child { border-bottom: 0; }
+  .h5-detail-item .ic {
+    width: 36px; height: 36px;
+    background: var(--h5-primary-soft);
+    color: var(--h5-primary);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .h5-detail-item .body { flex: 1; min-width: 0; }
+  .h5-detail-item .text {
+    font-size: 13px; font-weight: 500;
+    color: var(--h5-text);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  .h5-detail-item .note {
+    font-size: 11px; color: var(--h5-text-3);
+  }
+  .h5-detail-item .date {
+    font-size: 10px; color: var(--h5-text-3);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 2px;
+  }
+  .h5-detail-item .delta {
+    font-size: 14px; font-weight: 700;
+    color: var(--h5-trust);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .h5-detail-item .delta.neg { color: var(--h5-danger); }
+</style>
+</head>
+<body data-role="volunteer">
+
+<!-- 顶部 nav（无 tabbar 子页面） -->
+<div class="h5-nav">
+  <div class="h5-nav-back" onclick="location.href='points-mall.html'">‹</div>
+  <div class="h5-nav-title">贡献分明细</div>
+  <div class="h5-nav-right">
+    <div class="h5-nav-icon" onclick="location.href='points-rules.html'">📜</div>
+  </div>
+</div>
+
+<div class="h5-page">
+
+  <!-- 顶部 summary -->
+  <div class="h5-detail-summary">
+    <div class="label">⭐ 当前余额</div>
+    <div class="value"><span id="detailBalance">850</span><span class="unit">分</span></div>
+    <div class="trend">
+      本月 <b>+48</b><span class="sep">·</span>累计获得 1,180<span class="sep">·</span>累计兑换 -330
+    </div>
+  </div>
+
+  <!-- 流水列表（JS 注入） -->
+  <div class="h5-detail-list" id="h5DetailList"></div>
+
+  <div style="height: 24px;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="../public/js/h5.js"></script>
+<script>
+  H5.setRole('volunteer');
+
+  // 流水数据
+  const DETAIL_DATA = [
+    { date: '06-04', ic: '⏰', text: '完成 4 小时志愿服务', note: '云南昭通救援', delta: '+4' },
+    { date: '06-04', ic: '✅', text: '完成 1 次任务', note: '应急物资派送', delta: '+3' },
+    { date: '06-04', ic: '⭐', text: '收到 2 次 5★ 评价', note: '受捐者好评', delta: '+2' },
+    { date: '06-03', ic: '⏰', text: '完成 5 小时志愿服务', note: '社区物资分发', delta: '+5' },
+    { date: '06-02', ic: '📖', text: '完成 1 门必修课', note: '应急救援基础', delta: '+12.5' },
+    { date: '06-01', ic: '🚨', text: '完成 1 次紧急任务', note: '48h 内响应', delta: '+8' },
+    { date: '05-30', ic: '📖', text: '完成 1 门选修课', note: '心理学入门', delta: '+6' },
+    { date: '05-28', ic: '☕', text: '兑换品牌咖啡券', note: '扣分', delta: '-150', neg: true },
+    { date: '05-26', ic: '⏰', text: '完成 6 小时志愿服务', note: '端午节活动', delta: '+6' },
+    { date: '05-24', ic: '⭐', text: '收到 3 次 5★ 评价', note: '', delta: '+3' },
+    { date: '05-22', ic: '✅', text: '完成 2 次任务', note: '', delta: '+6' },
+    { date: '05-20', ic: '🚨', text: '兑换应急救援专题课', note: '扣分', delta: '-400', neg: true },
+    { date: '05-18', ic: '⏰', text: '完成 8 小时志愿服务', note: '云南震后救助', delta: '+8' },
+    { date: '05-15', ic: '⚠️', text: '收到 1 次 3★ 评价', note: '反馈：物资送达稍晚', delta: '-3', neg: true },
+    { date: '05-12', ic: '✅', text: '完成 1 次任务', note: '社区配送', delta: '+3' },
+    { date: '05-08', ic: '📖', text: '完成 1 门必修课', note: '社区动员方法论', delta: '+12.5' },
+    { date: '05-05', ic: '⏰', text: '完成 5 小时志愿服务', note: '', delta: '+5' },
+    { date: '05-02', ic: '⭐', text: '收到 4 次 5★ 评价', note: '', delta: '+4' },
+    { date: '04-28', ic: '🎯', text: '获得"应急救援先锋"勋章', note: '平台官方', delta: '+50' },
+    { date: '04-25', ic: '✅', text: '完成 3 次任务', note: '', delta: '+9' },
+  ];
+
+  // 注入
+  const list = document.getElementById('h5DetailList');
+  list.innerHTML = DETAIL_DATA.map(d => `
+    <div class="h5-detail-item">
+      <div class="ic">${d.ic}</div>
+      <div class="body">
+        <div class="date">${d.date}</div>
+        <div class="text">${d.text}</div>
+        ${d.note ? `<div class="note">${d.note}</div>` : ''}
+      </div>
+      <div class="delta ${d.neg ? 'neg' : ''}">${d.delta}</div>
+    </div>
+  `).join('');
+
+  // 顶部余额数字滚动
+  H5.countUp(document.getElementById('detailBalance'), 850, 1.2);
+
+  // 流水 stagger 入场
+  gsap.fromTo('.h5-detail-item', { y: 12, opacity: 0 }, {
+    y: 0, opacity: 1, duration: 0.4, stagger: 0.025, ease: 'power2.out'
+  });
+</script>
+</body>
+</html>

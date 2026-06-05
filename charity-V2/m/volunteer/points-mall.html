@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>贡献分商城 · 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/h5.css">
+<style>
+  /* ===== 顶部 hero（贡献分余额 + 等级） ===== */
+  .h5-mall-hero {
+    background: linear-gradient(135deg, #14B8A6 0%, #0E8F80 50%, #0B6B5E 100%);
+    color: #fff;
+    padding: 16px 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .h5-mall-hero::after {
+    content: '🎁';
+    position: absolute;
+    right: -20px; top: -10px;
+    font-size: 140px;
+    opacity: 0.10;
+    pointer-events: none;
+  }
+  .h5-mall-hero .label {
+    font-size: 12px; opacity: 0.92;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .h5-mall-hero .value {
+    font-size: 40px; font-weight: 900;
+    line-height: 1; font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .h5-mall-hero .value .unit {
+    font-size: 14px; font-weight: 600; margin-left: 4px; opacity: 0.85;
+  }
+  .h5-mall-hero .trend {
+    font-size: 11px; opacity: 0.95;
+    display: flex; align-items: center; gap: 4px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .h5-mall-hero .bar {
+    width: 100%;
+    height: 6px; background: rgba(255,255,255,0.22);
+    border-radius: 3px; overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .h5-mall-hero .bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 3px;
+  }
+  .h5-mall-hero .tier-row {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .h5-mall-hero .tier-row .tier-icon { font-size: 16px; }
+  .h5-mall-hero .tier-row .tier-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .h5-mall-hero .tier-row .tier-meta { font-size: 10px; opacity: 0.85; }
+  .h5-mall-hero .cta-row {
+    display: flex; gap: 8px;
+    position: relative; z-index: 1;
+  }
+  .h5-mall-hero .cta-row .h5-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.20);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.32);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 12px;
+    padding: 9px 12px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .h5-mall-hero .cta-row .h5-btn:active { background: rgba(255,255,255,0.30); }
+  .h5-mall-hero .cta-row .h5-btn-primary {
+    background: #fff;
+    color: #0B6B5E;
+    border: 0;
+  }
+  .h5-mall-hero .cta-row .h5-btn-primary:active { background: #FFFAEC; }
+
+  /* ===== 分类 tab（4 个 chip） ===== */
+  .h5-mall-tabs {
+    display: flex; gap: 6px;
+    padding: 12px 16px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .h5-mall-tabs::-webkit-scrollbar { display: none; }
+  .h5-mall-tab {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    background: var(--h5-bg);
+    color: var(--h5-text-2);
+    border: 0; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .h5-mall-tab:active { background: var(--h5-primary-soft); }
+  .h5-mall-tab.active {
+    background: var(--h5-primary);
+    color: #fff;
+  }
+  .h5-mall-tab .count {
+    margin-left: 3px; opacity: 0.75; font-size: 11px;
+  }
+  .h5-mall-tab.active .count { opacity: 0.92; }
+
+  /* ===== 商品 grid（2 列） ===== */
+  .h5-mall-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px 16px 0;
+  }
+  .h5-mall-item {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--h5-border);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+  }
+  .h5-mall-item:active {
+    border-color: var(--h5-primary);
+    transform: scale(0.98);
+  }
+  .h5-mall-item .pic {
+    height: 90px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    position: relative;
+  }
+  .h5-mall-item.physical .pic { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
+  .h5-mall-item.virtual .pic { background: linear-gradient(135deg, #DBEAFE 0%, #93C5FD 100%); }
+  .h5-mall-item.training .pic { background: linear-gradient(135deg, #D1FAE5 0%, #6EE7B7 100%); }
+  .h5-mall-item.public-good .pic { background: linear-gradient(135deg, #FCE7F3 0%, #F9A8D4 100%); }
+  .h5-mall-item .pic .tag {
+    position: absolute; top: 6px; left: 6px;
+    padding: 2px 7px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 999px;
+    font-size: 10px; font-weight: 600;
+    color: var(--h5-text-2);
+  }
+  .h5-mall-item .pic .stock {
+    position: absolute; top: 6px; right: 6px;
+    padding: 2px 7px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 10px; font-weight: 600;
+  }
+  .h5-mall-item .pic .stock.low { background: rgba(220, 38, 38, 0.85); }
+  .h5-mall-item .body {
+    padding: 8px 10px 10px;
+  }
+  .h5-mall-item .name {
+    font-size: 13px; font-weight: 600;
+    color: var(--h5-text);
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .h5-mall-item .cost-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 4px;
+  }
+  .h5-mall-item .cost {
+    font-size: 15px; font-weight: 700;
+    color: var(--h5-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .h5-mall-item .cost .unit {
+    font-size: 10px; font-weight: 500; color: var(--h5-text-3);
+  }
+  .h5-mall-item .btn-mini {
+    padding: 3px 10px;
+    background: var(--h5-primary);
+    color: #fff;
+    border: 0; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    font-family: inherit;
+  }
+  .h5-mall-item .btn-mini:disabled {
+    background: var(--h5-border);
+    color: var(--h5-text-3);
+  }
+  .h5-mall-item.owned {
+    border-style: dashed;
+    border-color: var(--h5-trust);
+  }
+  .h5-mall-item.owned .btn-mini {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--h5-trust);
+  }
+  .h5-mall-item.locked { opacity: 0.55; }
+  .h5-mall-item.locked:active { transform: none; }
+  .h5-mall-item.locked .btn-mini { background: var(--h5-border); color: var(--h5-text-3); }
+  /* ===== Polish (skill 6.B + 4.5 + a11y)：reduced-motion + focus + tactile + skip-link ===== */
+  /* 1) reduced-motion 兜底 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* 2) focus-visible 全局（a11y 移动端 + 键盘用户） */
+  button:focus-visible, a:focus-visible, .h5-btn:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 3) active tactile 反馈（H5 专用类） */
+  .h5-btn:active, .h5-mall-tab:active, .btn:active, .quick-action:active {
+    transform: scale(0.98);
+  }
+  /* 4) skip-link 跳到主内容（H5 顶部 nav 之上） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
+</style>
+</head>
+<body data-role="volunteer" class="has-tabbar">
+<a href="#main-content" class="skip-link">跳到主内容</a>
+
+<!-- 顶部 nav -->
+<div class="h5-nav">
+  <div class="h5-nav-back" onclick="location.href='dashboard.html'">‹</div>
+  <div class="h5-nav-title">贡献分商城</div>
+  <div class="h5-nav-right">
+    <div class="h5-nav-icon" onclick="location.href='points-detail.html'">📊</div>
+  </div>
+</div>
+
+<div class="h5-page" id="main-content">
+
+  <!-- 屏 1：hero 余额 + 等级 + 2 按钮 -->
+  <div class="h5-mall-hero">
+    <div class="label">⭐ 我的贡献分</div>
+    <div class="value"><span data-target="850">0</span><span class="unit">分</span></div>
+    <div class="trend">
+      <span>本周 <b>+18 分</b></span>
+      <span style="opacity:0.5;">·</span>
+      <span>距"金牌志愿者"还差 <b>150 分</b></span>
+    </div>
+    <div class="bar">
+      <div class="bar-fill" data-fill="68"></div>
+    </div>
+    <div class="tier-row">
+      <span class="tier-icon">🥈</span>
+      <span class="tier-name">银牌志愿者</span>
+      <span class="tier-meta">已解锁 8 / 12</span>
+    </div>
+    <div class="cta-row">
+      <button class="h5-btn h5-btn-primary" onclick="location.href='points-detail.html'">📊 贡献分明细</button>
+      <button class="h5-btn" onclick="location.href='points-rules.html'">📜 获取规则</button>
+    </div>
+  </div>
+
+  <!-- 屏 2：分类 tab + 商品 grid -->
+  <div class="h5-mall-tabs" id="h5MallTabs">
+    <button class="h5-mall-tab active" data-cat="all">全部<span class="count">10</span></button>
+    <button class="h5-mall-tab" data-cat="physical">实物<span class="count">3</span></button>
+    <button class="h5-mall-tab" data-cat="virtual">虚拟<span class="count">3</span></button>
+    <button class="h5-mall-tab" data-cat="training">培训<span class="count">2</span></button>
+    <button class="h5-mall-tab" data-cat="public-good">公益<span class="count">2</span></button>
+  </div>
+
+  <div class="h5-mall-grid" id="h5MallGrid"></div>
+
+  <div style="height: 12px;"></div>
+
+  <!-- 屏 3：最近兑换（精简 3 条） -->
+  <div class="h5-section" style="padding-top: 0;">
+    <div class="h5-card-title">
+      <div class="title">📋 最近兑换</div>
+      <a class="more" onclick="location.href='points-detail.html'">全部 →</a>
+    </div>
+    <div class="h5-card" style="padding: 0;">
+      <div class="h5-list">
+        <div class="h5-list-item" onclick="location.href='points-detail.html'">
+          <div class="icon" style="background:rgba(20,184,166,0.1);color:#14B8A6;">🏅</div>
+          <div class="body">
+            <div class="title">公益证书</div>
+            <div class="meta">虚拟 · 2025-06-04，已发放</div>
+          </div>
+          <div class="right" style="color:var(--h5-text-3);font-size:11px;">-50 分</div>
+        </div>
+        <div class="h5-list-item" onclick="location.href='points-detail.html'">
+          <div class="icon" style="background:rgba(245,158,11,0.12);color:#F59E0B;">🎖️</div>
+          <div class="body">
+            <div class="title">志愿者徽章（首批）</div>
+            <div class="meta">实物 · 2025-06-02，配送中</div>
+          </div>
+          <div class="right" style="color:var(--h5-text-3);font-size:11px;">-100 分</div>
+        </div>
+        <div class="h5-list-item" onclick="location.href='points-detail.html'">
+          <div class="icon" style="background:rgba(22,163,74,0.1);color:#16A34A;">☕</div>
+          <div class="body">
+            <div class="title">品牌咖啡券（30 元 × 1）</div>
+            <div class="meta">实物 · 2025-05-28，已签收</div>
+          </div>
+          <div class="right" style="color:var(--h5-text-3);font-size:11px;">-150 分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 12px;"></div>
+</div>
+
+<!-- 底部 tabbar -->
+<div class="h5-tabbar">
+  <div class="h5-tab" onclick="location.href='dashboard.html'"><div class="tab-ic">🏠</div><div class="tab-label">首页</div></div>
+  <div class="h5-tab" onclick="location.href='task-list.html'"><div class="tab-ic">📋</div><div class="tab-label">任务</div></div>
+  <div class="h5-tab active"><div class="tab-ic">🎁</div><div class="tab-label">商城</div></div>
+  <div class="h5-tab" onclick="location.href='messages.html'"><div class="tab-ic" style="position:relative;">🔔<span class="tab-badge">3</span></div><div class="tab-label">消息</div></div>
+  <div class="h5-tab" onclick="location.href='profile.html'"><div class="tab-ic">👤</div><div class="tab-label">我的</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="../public/js/h5.js"></script>
+<script>
+  H5.setRole('volunteer');
+
+  // 商品数据（10 个，简版）
+  const MALL_ITEMS = [
+    { cat: 'physical',   ic: '🥤', tag: '实物', stock: '剩 28',   name: '保温杯',          cost: 200, btn: '立即兑换' },
+    { cat: 'physical',   ic: '👕', tag: '实物', stock: '剩 18',   name: '纪念 T 恤',       cost: 300, btn: '立即兑换' },
+    { cat: 'physical',   ic: '🎖️', tag: '实物', stock: '剩 130', name: '志愿者徽章套装', cost: 100, btn: '立即兑换' },
+    { cat: 'virtual',    ic: '🎟️', tag: '虚拟', stock: '充足',  name: '5 元商城券',      cost: 500, btn: '立即兑换' },
+    { cat: 'virtual',    ic: '🏅', tag: '虚拟', stock: '充足',  name: '公益证书',        cost: 50,  btn: '立即兑换' },
+    { cat: 'virtual',    ic: '📚', tag: '虚拟', stock: '充足',  name: '免费培训课',      cost: 300, btn: '立即兑换' },
+    { cat: 'training',   ic: '🚨', tag: '培训', stock: '每期 30',name: '应急救援专题课',  cost: 400, btn: '立即兑换' },
+    { cat: 'training',   ic: '🧠', tag: '培训', stock: '每期 20',name: '心理学基础课',    cost: 350, btn: '立即兑换' },
+    { cat: 'public-good',ic: '💖', tag: '公益', stock: '限 3',  name: '爱心大使称号',    cost: 1200,btn: '立即兑换' },
+    { cat: 'public-good',ic: '🚐', tag: '公益', stock: '限 2',  name: '公益探访名额',    cost: 1500,btn: '积分不足', locked: true },
+  ];
+
+  // 注入商品 grid
+  const grid = document.getElementById('h5MallGrid');
+  grid.innerHTML = MALL_ITEMS.map(item => `
+    <div class="h5-mall-item ${item.cat} ${item.locked ? 'locked' : ''}" data-cat="${item.cat}">
+      <div class="pic">${item.ic}
+        <span class="tag">${item.tag}</span>
+        <span class="stock ${item.stock.includes('限') ? 'low' : ''}">${item.stock}</span>
+      </div>
+      <div class="body">
+        <div class="name">${item.name}</div>
+        <div class="cost-row">
+          <div class="cost">${item.cost}<span class="unit">分</span></div>
+          <button class="btn-mini" ${item.locked ? 'disabled' : ''}>${item.btn}</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // 数字滚动（贡献分余额 850）
+  H5.countUp(document.querySelector('.h5-mall-hero .value > span'), 850, 1.2);
+
+  // 进度条入场
+  H5.animateProgress('.h5-mall-hero .bar-fill');
+
+  // 分类 tab 切换
+  document.querySelectorAll('.h5-mall-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.h5-mall-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      const visible = [];
+      document.querySelectorAll('.h5-mall-item').forEach(item => {
+        const isMatch = cat === 'all' || item.dataset.cat === cat;
+        if (isMatch) { item.style.display = ''; visible.push(item); }
+        else { item.style.display = 'none'; }
+      });
+      // stagger 重入场
+      gsap.fromTo(visible, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: 'power2.out' });
+    });
+  });
+
+  // 商品卡 stagger 入场（初次）
+  gsap.fromTo('.h5-mall-item', { y: 12, opacity: 0 }, {
+    y: 0, opacity: 1, duration: 0.4, stagger: 0.04, delay: 0.2, ease: 'power2.out'
+  });
+
+  // 兑换记录 stagger 入场
+  gsap.fromTo('.h5-list-item', { x: -10, opacity: 0 }, {
+    x: 0, opacity: 1, duration: 0.4, stagger: 0.06, delay: 0.3, ease: 'power2.out'
+  });
+
+  // 兑换按钮 mock
+  document.querySelectorAll('.h5-mall-item:not(.locked) .btn-mini').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = btn.closest('.h5-mall-item');
+      const name = item.querySelector('.name').textContent;
+      const cost = parseInt(item.querySelector('.cost').firstChild.textContent, 10);
+      if (cost > 850) {
+        alert(`积分不足！\n\n"${name}" 需 ${cost} 分\n当前 850 分 · 还差 ${cost - 850} 分`);
+        return;
+      }
+      // mock 成功
+      btn.textContent = '已兑换';
+      btn.disabled = true;
+      btn.style.background = 'rgba(20, 184, 166, 0.12)';
+      btn.style.color = '#14B8A6';
+      item.classList.add('owned');
+      // 顶部贡献分扣分
+      const newVal = Math.max(0, 850 - cost);
+      const heroVal = document.querySelector('.h5-mall-hero .value > span');
+      gsap.to({ v: 850 }, {
+        v: newVal, duration: 0.6, ease: 'power2.out',
+        onUpdate: function () { heroVal.textContent = Math.round(this.targets()[0].v).toLocaleString(); }
+      });
+      // 进度条更新
+      const fill = document.querySelector('.h5-mall-hero .bar-fill');
+      gsap.to(fill, { width: Math.max(0, (newVal / 1000) * 100) + '%', duration: 0.6, ease: 'power2.out' });
+      alert(`兑换成功（演示）！\n\n"${name}" 已扣 ${cost} 分\n新余额：${newVal} 分`);
+    });
+  });
+</script>
+</body>
+</html>

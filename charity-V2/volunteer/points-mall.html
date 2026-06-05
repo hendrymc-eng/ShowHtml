@@ -3,10 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>贡献分商城 — 张伟 | 慈商联营</title>
+<title>贡献分商城 · 张伟 | 慈商联营</title>
 <link rel="stylesheet" href="../public/css/style.css">
 <link rel="stylesheet" href="../public/css/dashboard.css">
 <link rel="stylesheet" href="../public/css/messages.css">
+<style>
+  /* ===== Polish (skill 6.B)：reduced-motion 兜底 ===== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
 <style>
   /* ===== 顶部 hero：贡献分余额 + 等级 ===== */
   .mall-hero {
@@ -127,7 +138,7 @@
     border: 0; border-radius: 999px;
     font-size: 13px; font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     font-family: inherit;
   }
   .mall-tab:hover { background: var(--color-primary-soft, #FFE5D0); color: var(--color-primary, #E85D04); }
@@ -157,7 +168,7 @@
     padding: 0;
     overflow: hidden;
     display: flex; flex-direction: column;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
   }
   .mall-card:hover {
@@ -236,7 +247,7 @@
     border: 0; border-radius: 999px;
     font-size: 13px; font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     font-family: inherit;
   }
   .mall-card .btn-exchange:hover { background: #C44503; }
@@ -341,7 +352,7 @@
     background: rgba(15, 23, 42, 0.55);
     z-index: 9999;
     display: none; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.25s;
+    opacity: 0; transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
@@ -376,7 +387,7 @@
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     font-size: 16px; color: var(--color-text-3, #94A3B8);
-    transition: all 0.15s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     border: 0;
     font-family: inherit;
   }
@@ -406,7 +417,7 @@
     align-items: center; gap: 12px;
     padding: 11px 0;
     border-bottom: 1px dashed var(--color-divider, #F1F5F9);
-    transition: background 0.15s;
+    transition: background 0.2s ease;
   }
   .detail-item:hover { background: rgba(20, 184, 166, 0.04); }
   .detail-item:last-child { border-bottom: 0; }
@@ -460,9 +471,44 @@
   }
   .rule-list .item .delta-pos { color: var(--color-trust, #14B8A6); font-weight: 700; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; }
   .rule-list .item .delta-neg { color: var(--color-danger, #DC2626); font-weight: 700; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; }
+
+  /* ===== Polish (skill 4.5 + 4.7 + a11y)：focus-visible + active tactile + skip-link + 2x2 grid ===== */
+  /* 1) focus-visible 全局（a11y 必备） */
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 2) active tactile 反馈（统一所有按钮按下缩放） */
+  .btn:active, .mall-tab:active, .btn-exchange:active, .pm-modal-head .close:active {
+    transform: scale(0.98);
+  }
+  /* 3) skip-link 跳到主内容（a11y 键盘用户） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
+  /* 4) detail-summary-trend 2x2 网格（去 9.F "middle-dot max 1 per line" 违规） */
+  .detail-summary-trend {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px; text-align: center; font-size: 12px; opacity: 0.95;
+  }
+  .ds-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .ds-stat-lbl { opacity: 0.75; font-size: 11px; }
+  .ds-stat-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .detail-summary-trend .sep { display: none; }
 </style>
 </head>
 <body>
+
+<a href="#mallGrid" class="skip-link">跳到商品列表</a>
 
 <div id="site-header"></div>
 <div class="dash-wrap">
@@ -688,7 +734,7 @@
       </div>
       <div class="body">
         <div class="name">心理学基础课</div>
-        <div class="desc">7 月开课 · 12 课时 · 北师大心理学系</div>
+        <div class="desc">7 月开课 · 12 课时，北师大心理学系</div>
         <div class="cost-row">
           <div class="cost">350<span class="unit">分</span></div>
           <button class="btn-exchange">立即兑换</button>
@@ -742,7 +788,7 @@
       <div class="ic">🏅</div>
       <div>
         <div class="name">公益证书</div>
-        <div class="meta">虚拟 · 平台颁发 · 可分享到朋友圈</div>
+        <div class="meta">虚拟 · 平台颁发，可分享到朋友圈</div>
       </div>
     </div>
     <div class="cost">-50 分</div>
@@ -754,7 +800,7 @@
       <div class="ic">☕</div>
       <div>
         <div class="name">品牌咖啡券（30 元 × 1）</div>
-        <div class="meta">实物 · 顺丰配送 · 已签收</div>
+        <div class="meta">实物 · 顺丰配送，已签收</div>
       </div>
     </div>
     <div class="cost">-150 分</div>
@@ -778,7 +824,7 @@
       <div class="ic">🎖️</div>
       <div>
         <div class="name">志愿者徽章（首批）</div>
-        <div class="meta">实物 · 快递中 · 预计 3-5 日送达</div>
+        <div class="meta">实物 · 快递中，预计 3-5 日送达</div>
       </div>
     </div>
     <div class="cost">-100 分</div>
@@ -790,7 +836,7 @@
       <div class="ic">🚨</div>
       <div>
         <div class="name">应急救援专题课（第 3 期）</div>
-        <div class="meta">培训 · 5 月 20 日已结业 · 颁发培训师证书</div>
+        <div class="meta">培训 · 5 月 20 日已结业，颁发培训师证书</div>
       </div>
     </div>
     <div class="cost">-400 分</div>
@@ -857,7 +903,10 @@
         <div class="detail-summary-label">当前余额</div>
         <div class="detail-summary-value"><span id="detailBalance">850</span><span class="unit">分</span></div>
         <div class="detail-summary-trend">
-          本月 <b style="color:#FFD700;">+48</b><span class="sep">·</span>累计获得 1,180<span class="sep">·</span>累计兑换 -330<span class="sep">·</span>距金牌还差 <b style="color:#FFD700;">150</b> 分
+          <div class="ds-stat"><div class="ds-stat-lbl">本月</div><div class="ds-stat-val" style="color:#FFD700;">+48</div></div>
+          <div class="ds-stat"><div class="ds-stat-lbl">累计获得</div><div class="ds-stat-val">1,180</div></div>
+          <div class="ds-stat"><div class="ds-stat-lbl">累计兑换</div><div class="ds-stat-val">-330</div></div>
+          <div class="ds-stat"><div class="ds-stat-lbl">距金牌还差</div><div class="ds-stat-val" style="color:#FFD700;">150 分</div></div>
         </div>
       </div>
       <div class="detail-list" id="detailList"></div>
@@ -1057,7 +1106,7 @@
     { title: '⚠️ 扣分项', rules: [
       { text: '任务取消 / 失约：扣分', delta: '-10/次', neg: true },
       { text: '迟到（>15 分钟）：扣分', delta: '-3/次', neg: true },
-      { text: '物资派送损坏：照价扣分', delta: '—' },
+      { text: '物资派送损坏：照价扣分', delta: '按损' },
     ]},
   ];
 

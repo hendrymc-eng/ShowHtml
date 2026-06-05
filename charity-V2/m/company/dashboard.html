@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>企业工作台 — 慈商联营</title>
+<title>企业工作台 · 慈商联营</title>
 <link rel="stylesheet" href="../public/css/h5.css">
 <style>
   /* 趋势图（柱状） */
@@ -87,9 +87,42 @@
   .h5-data-row .v { font-size: 14px; font-weight: 700; color: var(--h5-text); }
   .h5-data-row .v .u { font-size: 11px; color: var(--h5-text-3); font-weight: 400; margin-left: 2px; }
   .h5-data-row .trend { font-size: 11px; }
+  /* ===== Polish (skill 6.B + 4.5 + a11y)：reduced-motion + focus + tactile + skip-link ===== */
+  /* 1) reduced-motion 兜底 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* 2) focus-visible 全局（a11y 移动端 + 键盘用户） */
+  button:focus-visible, a:focus-visible, .h5-btn:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 3) active tactile 反馈（H5 专用类） */
+  .h5-btn:active, .h5-mall-tab:active, .btn:active, .quick-action:active {
+    transform: scale(0.98);
+  }
+  /* 4) skip-link 跳到主内容（H5 顶部 nav 之上） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
 </style>
 </head>
 <body data-role="company" class="has-tabbar">
+<a href="#main-content" class="skip-link">跳到主内容</a>
 
 <!-- 顶部透明 nav -->
 <div class="h5-nav transparent">
@@ -100,7 +133,7 @@
   </div>
 </div>
 
-<div class="h5-page">
+<div class="h5-page" id="main-content">
 
   <!-- Hero 欢迎区 -->
   <div class="h5-hero" style="padding-bottom: 56px;">
@@ -247,7 +280,7 @@
       <div class="h5-data-row">
         <div class="l">🧴 日化用品</div>
         <div class="v">18<span class="u">%</span></div>
-        <div class="trend" style="color:var(--h5-text-3);">— 持平</div>
+        <div class="trend" style="color:var(--h5-text-3);">持平</div>
       </div>
       <div class="h5-data-row">
         <div class="l">📦 其他</div>

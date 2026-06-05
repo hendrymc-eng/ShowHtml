@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>社会组织工作台 — 慈商联营</title>
+<title>社会组织工作台 · 慈商联营</title>
 <link rel="stylesheet" href="../public/css/h5.css">
 <style>
   .h5-task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--h5-divider); }
@@ -53,9 +53,42 @@
   .h5-vol-row .t { font-size: 13px; font-weight: 500; }
   .h5-vol-row .d { font-size: 11px; color: var(--h5-text-3); margin-top: 2px; }
   .h5-vol-row .v { font-size: 14px; font-weight: 700; color: var(--h5-primary); }
+  /* ===== Polish (skill 6.B + 4.5 + a11y)：reduced-motion + focus + tactile + skip-link ===== */
+  /* 1) reduced-motion 兜底 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* 2) focus-visible 全局（a11y 移动端 + 键盘用户） */
+  button:focus-visible, a:focus-visible, .h5-btn:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 3) active tactile 反馈（H5 专用类） */
+  .h5-btn:active, .h5-mall-tab:active, .btn:active, .quick-action:active {
+    transform: scale(0.98);
+  }
+  /* 4) skip-link 跳到主内容（H5 顶部 nav 之上） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
 </style>
 </head>
 <body data-role="org" class="has-tabbar">
+<a href="#main-content" class="skip-link">跳到主内容</a>
 
 <div class="h5-nav transparent">
   <div class="h5-nav-back" onclick="location.href='../index.html'">‹</div>
@@ -65,7 +98,7 @@
   </div>
 </div>
 
-<div class="h5-page">
+<div class="h5-page" id="main-content">
 
   <div class="h5-hero" style="padding-bottom: 56px; background: linear-gradient(135deg, #C4842A 0%, #8B5A1A 100%);">
     <div class="h5-hero-content">
@@ -339,7 +372,7 @@
       '<div style="font-size:48px;margin-bottom:16px;">🚚</div>' +
       '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">派发新任务</div>' +
       '<div style="font-size:13px;color:var(--h5-text-3);line-height:1.7;margin-bottom:16px;">' +
-      '选择项目 · 分配志愿者 · 追踪派发' +
+      '选择项目 · 分配志愿者，追踪派发' +
       '</div>' +
       '<button class="h5-btn h5-btn-primary h5-btn-block h5-btn-lg" onclick="H5.closeModal(\'tipModal\')">开始派发</button>';
     H5.openModal('tipModal');

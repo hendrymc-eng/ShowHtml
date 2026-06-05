@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>贡献分获取规则 — 张伟 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/h5.css">
+<style>
+  /* ===== 规则分组（trust 绿竖条 + 浅灰底） ===== */
+  .h5-rule-group {
+    background: var(--h5-bg);
+    border-radius: 10px;
+    padding: 12px 14px 10px 16px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--h5-trust);
+  }
+  .h5-rule-group .title {
+    font-size: 14px; font-weight: 700;
+    color: var(--h5-text);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .h5-rule-list { font-size: 12px; color: var(--h5-text-2); line-height: 1.7; }
+  .h5-rule-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    padding: 3px 0;
+  }
+  .h5-rule-item .text { flex: 1; min-width: 0; }
+  .h5-rule-item .delta-pos {
+    color: var(--h5-trust); font-weight: 700;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .h5-rule-item .delta-neg {
+    color: var(--h5-danger); font-weight: 700;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ===== 顶部 hero 提示 ===== */
+  .h5-rule-hero {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .h5-rule-hero .ic {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .h5-rule-hero .text {
+    font-size: 12px; color: #92400E; line-height: 1.5;
+  }
+  .h5-rule-hero .text b { color: #78350F; font-weight: 700; }
+</style>
+</head>
+<body data-role="volunteer">
+
+<!-- 顶部 nav -->
+<div class="h5-nav">
+  <div class="h5-nav-back" onclick="location.href='points-mall.html'">‹</div>
+  <div class="h5-nav-title">贡献分获取规则</div>
+  <div class="h5-nav-right">
+    <div class="h5-nav-icon" onclick="location.href='points-detail.html'">📊</div>
+  </div>
+</div>
+
+<div class="h5-page">
+
+  <!-- 顶部提示 hero -->
+  <div class="h5-section" style="padding-top: 12px;">
+    <div class="h5-rule-hero">
+      <div class="ic">📜</div>
+      <div class="text">
+        贡献分按 <b>服务时长 / 任务完成 / 服务评价 / 培训学习 / 特殊事件</b> 5 个维度自动累计，扣分项会从总分扣除。当前 <b>850 分</b>，距金牌还差 <b>150 分</b>。
+      </div>
+    </div>
+  </div>
+
+  <!-- 规则列表（JS 注入） -->
+  <div class="h5-section" style="padding-top: 0;" id="h5RuleBody"></div>
+
+  <div style="height: 12px;"></div>
+  <div style="padding: 8px 16px; text-align: center; font-size: 11px; color: var(--h5-text-3);">
+    — 最终解释权归慈商联营运营方所有 —
+  </div>
+  <div style="height: 24px;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="../public/js/h5.js"></script>
+<script>
+  H5.setRole('volunteer');
+
+  // 规则数据
+  const RULE_GROUPS = [
+    { title: '⏰ 服务时长', rules: [
+      { text: '每完成 1 小时志愿服务', delta: '+1/h' },
+      { text: '月度累计 ≥20h：额外奖励', delta: '+5/月' },
+      { text: '年度累计 ≥100h："百里领航先锋"勋章', delta: '+50/年' },
+    ]},
+    { title: '✅ 完成任务', rules: [
+      { text: '每完成 1 次任务', delta: '+3/次' },
+      { text: '紧急任务（24h 内响应）：额外加分', delta: '+8/次' },
+      { text: '连续 4 周完成任务：额外奖励', delta: '+5/月' },
+    ]},
+    { title: '⭐ 服务评价', rules: [
+      { text: '5★ 评价：每条加分', delta: '+1/次' },
+      { text: '4★ 评价：每条减半加分', delta: '+0.5/次' },
+      { text: '3★ 及以下：扣分（服务待提升）', delta: '-3/次', neg: true },
+    ]},
+    { title: '📖 培训学习', rules: [
+      { text: '完成 1 门必修课', delta: '+12.5/门' },
+      { text: '完成 1 门选修课', delta: '+6/门' },
+      { text: '通过培训考核：额外奖励', delta: '+10/次' },
+      { text: '12 项专业培训全部完成："培训大师"勋章 + 50 分', delta: '+50/次' },
+    ]},
+    { title: '🎯 特殊事件', rules: [
+      { text: '收到感谢信 / 锦旗', delta: '+30/次' },
+      { text: '重大灾害救援任务', delta: '+50/次' },
+      { text: '培训大师勋章获取', delta: '+50/勋章' },
+    ]},
+    { title: '⚠️ 扣分项', rules: [
+      { text: '任务取消 / 失约', delta: '-10/次', neg: true },
+      { text: '迟到（>15 分钟）', delta: '-3/次', neg: true },
+      { text: '物资派送损坏：照价扣分', delta: '—' },
+    ]},
+  ];
+
+  // 注入
+  const body = document.getElementById('h5RuleBody');
+  body.innerHTML = RULE_GROUPS.map(g => `
+    <div class="h5-rule-group">
+      <div class="title">${g.title}</div>
+      <div class="h5-rule-list">
+        ${g.rules.map(r => `
+          <div class="h5-rule-item">
+            <span class="text">${r.text}</span>
+            <span class="${r.neg ? 'delta-neg' : 'delta-pos'}">${r.delta}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // 规则组 stagger 入场
+  gsap.fromTo('.h5-rule-group', { x: -10, opacity: 0 }, {
+    x: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'power2.out'
+  });
+</script>
+</body>
+</html>

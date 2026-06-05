@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>企业工作台 — 美心食品集团 | 慈商联营</title>
+<title>企业工作台 · 美心食品集团 | 慈商联营</title>
 <link rel="stylesheet" href="../public/css/style.css">
 <link rel="stylesheet" href="../public/css/dashboard.css">
 <link rel="stylesheet" href="../public/css/messages.css">
@@ -65,16 +65,50 @@
   .donut-info .lbl { font-size: 12px; color: var(--color-text-3); }
 
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  /* ===== Polish (skill 6.B + 4.5 + a11y)：reduced-motion + focus + tactile + skip-link ===== */
+  /* 1) reduced-motion 兜底 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* 2) focus-visible 全局（a11y） */
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 3) active tactile 反馈（统一所有可点击元素按下缩放） */
+  .btn:active, .quick-action:active, .dim-card:active, button.btn:active {
+    transform: scale(0.98);
+  }
+  /* 4) skip-link 跳到主内容（a11y 键盘用户） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
 </style>
 </head>
 <body>
+
+<a href="#main-content" class="skip-link">跳到主内容</a>
 
 <div id="site-header"></div>
 
 <div class="dash-wrap">
   <div id="dash-side"></div>
 
-  <main class="dash-main">
+  <main class="dash-main" id="main-content">
     <!-- 欢迎卡 -->
     <div class="welcome-card">
       <div>

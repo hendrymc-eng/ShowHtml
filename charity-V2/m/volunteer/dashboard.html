@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>志愿者工作台 — 慈商联营</title>
+<title>志愿者工作台 · 慈商联营</title>
 <link rel="stylesheet" href="../public/css/h5.css">
 <style>
   /* 评分核心卡（双卡并排：贡献分 + 爱心足迹）*/
@@ -56,7 +56,7 @@
     width: 56px; height: 56px;
   }
 
-  /* 5 维度评分 — 横滑 */
+  /* 5 维度评分 - 横滑 */
   .h5-dim-scroll {
     display: flex; gap: 10px;
     overflow-x: auto;
@@ -271,9 +271,42 @@
     content: ""; width: 3px; height: 12px;
     background: var(--h5-primary); border-radius: 2px;
   }
+  /* ===== Polish (skill 6.B + 4.5 + a11y)：reduced-motion + focus + tactile + skip-link ===== */
+  /* 1) reduced-motion 兜底 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* 2) focus-visible 全局（a11y 移动端 + 键盘用户） */
+  button:focus-visible, a:focus-visible, .h5-btn:focus-visible {
+    outline: 2px solid #14B8A6;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* 3) active tactile 反馈（H5 专用类） */
+  .h5-btn:active, .h5-mall-tab:active, .btn:active, .quick-action:active {
+    transform: scale(0.98);
+  }
+  /* 4) skip-link 跳到主内容（H5 顶部 nav 之上） */
+  .skip-link {
+    position: fixed; top: -100px; left: 0;
+    background: #14B8A6; color: #fff;
+    padding: 10px 18px;
+    z-index: 99999;
+    border-radius: 0 0 8px 0;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: -4px; }
 </style>
 </head>
 <body data-role="volunteer" class="has-tabbar">
+<a href="#main-content" class="skip-link">跳到主内容</a>
 
 <!-- 顶部透明 nav -->
 <div class="h5-nav transparent">
@@ -284,7 +317,7 @@
   </div>
 </div>
 
-<div class="h5-page">
+<div class="h5-page" id="main-content">
 
   <!-- Hero 欢迎区 -->
   <div class="h5-hero" style="padding-bottom: 56px;">
@@ -406,7 +439,7 @@
           <div class="ic" style="background:linear-gradient(135deg,#FFE4D2,#FAEFD9);">🍞</div>
           <div class="body">
             <div class="title">美心临期面包 · 五华县派发</div>
-            <div class="meta">1,200 件 · 已派发 720 · 受惠 56/86 户</div>
+            <div class="meta">1,200 件 · 已派发 720，受惠 56/86 户</div>
           </div>
           <div class="right">
             <div class="progress-mini"><div style="width:65%"></div></div>
@@ -438,11 +471,11 @@
     </div>
   </div>
 
-  <!-- 贡献分兑换 -->
+  <!-- 贡献分商城 -->
   <div class="h5-section" style="padding-top: 0;">
     <div class="h5-card-title">
-      <div class="title">🎁 贡献分兑换</div>
-      <a class="more" style="color:#C44503;">余额 850 分 →</a>
+      <div class="title">🎁 贡献分商城</div>
+      <a class="more" style="color:#C44503;" onclick="location.href='points-mall.html'">余额 850 分 →</a>
     </div>
     <div class="h5-card">
       <div class="h5-exchange-grid">
@@ -538,7 +571,7 @@
     <div class="h5-card" style="font-size: 13px; line-height: 1.7; color: var(--h5-text-2);">
       <div>· 每累计 <b style="color:var(--h5-primary);">1 万步</b>，平台自动捐赠 <b style="color:var(--h5-primary);">¥1.00</b></div>
       <div>· 每累计 <b style="color:var(--h5-primary);">10 公里</b>，额外捐赠 <b style="color:var(--h5-primary);">¥2.00</b></div>
-      <div>· 您已累计 <b>13,033 步 · 8.70 km</b></div>
+      <div>· 您已累计 <b>13,033 步，8.70 km</b></div>
       <div>· 已自动捐赠 <b style="color:var(--h5-primary);">¥0.87</b>（含本周 ¥0.50）</div>
     </div>
   </div>
@@ -550,6 +583,7 @@
 <div class="h5-tabbar">
   <div class="h5-tab active"><div class="tab-ic">🏠</div><div class="tab-label">首页</div></div>
   <div class="h5-tab" onclick="openTask()"><div class="tab-ic">📋</div><div class="tab-label">任务</div></div>
+  <div class="h5-tab" onclick="location.href='points-mall.html'"><div class="tab-ic">🎁</div><div class="tab-label">商城</div></div>
   <div class="h5-tab" onclick="openMsg()"><div class="tab-ic" style="position:relative;">🔔<span class="badge" style="position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;background:var(--h5-danger);color:#fff;font-size:10px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 4px;">5</span></div><div class="tab-label">消息</div></div>
   <div class="h5-tab" onclick="openProfile()"><div class="tab-ic">👤</div><div class="tab-label">我的</div></div>
 </div>
