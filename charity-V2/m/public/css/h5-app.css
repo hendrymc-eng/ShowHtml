@@ -1,0 +1,599 @@
+/* ============================================================
+   H5 App Layout - Extension Layer
+   Extends h5.css with native-app-style components
+   Does NOT modify h5.css (preserves other 30 H5 pages)
+   ============================================================ */
+
+/* === 1. App Status Bar (44px top, with time + signal mock) === */
+.h5-status-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 44px; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 14px; font-weight: 600;
+  z-index: 1000;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+.h5-status-bar .time { letter-spacing: -0.5px; }
+.h5-status-bar .right { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.h5-status-bar.dark { color: #fff; }
+.h5-status-bar.light { color: var(--h5-text); }
+body.has-status-bar { padding-top: 44px; }
+body.has-status-bar .h5-nav { top: 44px; }
+body.has-status-bar .h5-tabbar { /* keep at bottom */ }
+body.has-status-bar.has-tabbar { padding-bottom: calc(var(--h5-tabbar-h) + var(--h5-safe-bottom)); }
+
+/* === 2. Sticky Section Header (like iOS section header) === */
+.h5-sticky-header {
+  position: sticky;
+  top: calc(44px + var(--h5-nav-h, 44px) + var(--h5-safe-top));
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 600;
+  color: var(--h5-text-2);
+  border-bottom: 1px solid var(--h5-divider);
+}
+
+/* === 3. List Item (replaces generic cards, native-app feel) === */
+.h5-list { background: var(--h5-card); }
+.h5-list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  background: var(--h5-card);
+  border-bottom: 1px solid var(--h5-divider);
+  cursor: pointer;
+  transition: background 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 56px;
+  text-decoration: none;
+  color: inherit;
+}
+.h5-list-item:active { background: var(--h5-bg); }
+.h5-list-item:last-child { border-bottom: 0; }
+.h5-list-item .avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--h5-primary-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  color: var(--h5-primary);
+}
+.h5-list-item .body { flex: 1; min-width: 0; }
+.h5-list-item .body .title { font-size: 15px; font-weight: 500; color: var(--h5-text); }
+.h5-list-item .body .meta {
+  font-size: 12px; color: var(--h5-text-3);
+  margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 220px;
+}
+.h5-list-item .trailing { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.h5-list-item .trailing .badge {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 9px;
+  background: var(--h5-danger);
+  color: #fff; font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+.h5-list-item .trailing .badge.dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
+.h5-list-item .chevron { color: var(--h5-text-3); font-size: 16px; flex-shrink: 0; font-weight: 300; }
+.h5-list-item .time-stamp {
+  font-size: 11px; color: var(--h5-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* === 4. FAB (Floating Action Button) === */
+.h5-fab {
+  position: fixed;
+  right: 16px; bottom: calc(var(--h5-tabbar-h) + var(--h5-safe-bottom) + 16px);
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--h5-primary);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 8px 24px rgba(232, 93, 4, 0.32);
+  cursor: pointer;
+  z-index: 100;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 0;
+  font-family: inherit;
+}
+.h5-fab:active { transform: scale(0.94); }
+.h5-fab.extended {
+  width: auto; padding: 0 20px; gap: 8px;
+  font-size: 15px; font-weight: 600; border-radius: 28px;
+}
+
+/* === 5. Bottom Sheet (modal from bottom, iOS-style) === */
+.h5-sheet-mask {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 9999;
+  display: none;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.h5-sheet-mask.open { display: flex; opacity: 1; }
+.h5-sheet {
+  width: 100%;
+  background: var(--h5-card);
+  border-radius: 16px 16px 0 0;
+  padding: 12px 16px calc(20px + var(--h5-safe-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+.h5-sheet-mask.open .h5-sheet { transform: translateY(0); }
+.h5-sheet::before {
+  content: '';
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  width: 36px; height: 4px;
+  background: var(--h5-border);
+  border-radius: 2px;
+}
+.h5-sheet-title {
+  font-size: 17px; font-weight: 700;
+  text-align: center;
+  padding: 16px 0;
+  color: var(--h5-text);
+}
+
+/* === 6. Skeleton Loader (shimmer effect) === */
+@keyframes h5-skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.h5-skeleton {
+  background: linear-gradient(90deg, var(--h5-bg) 0%, var(--h5-divider) 50%, var(--h5-bg) 100%);
+  background-size: 200% 100%;
+  animation: h5-skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+  display: block;
+}
+.h5-skeleton.line { height: 14px; }
+.h5-skeleton.line.lg { height: 20px; }
+.h5-skeleton.circle { border-radius: 50%; }
+
+/* === 7. Empty State === */
+.h5-empty {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--h5-text-3);
+}
+.h5-empty .emoji { font-size: 56px; opacity: 0.4; margin-bottom: 16px; line-height: 1; }
+.h5-empty .title { font-size: 15px; font-weight: 500; color: var(--h5-text-2); margin-bottom: 4px; }
+.h5-empty .desc { font-size: 13px; color: var(--h5-text-3); margin-bottom: 20px; line-height: 1.5; }
+.h5-empty .action {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--h5-primary-soft);
+  color: var(--h5-primary);
+  border-radius: 999px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.h5-empty .action:active { transform: scale(0.97); }
+
+/* === 8. Section Title (in-page, with optional "查看更多" trailing) === */
+.h5-section-title {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 16px 10px;
+  font-size: 16px; font-weight: 700;
+  color: var(--h5-text);
+}
+.h5-section-title .more {
+  font-size: 12px; font-weight: 500;
+  color: var(--h5-text-3);
+  display: flex; align-items: center; gap: 2px;
+  cursor: pointer;
+}
+
+/* === 9. App-style Card (replaces generic card, with tactile + elevation) === */
+.h5-app-card {
+  background: var(--h5-card);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 0 16px 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.h5-app-card:active {
+  transform: scale(0.99);
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.02);
+}
+
+/* === 10. Search Bar (app-style with icon + clear button) === */
+.h5-search {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--h5-bg);
+  border-radius: 10px;
+  margin: 12px 16px;
+  font-size: 14px;
+  color: var(--h5-text-3);
+  transition: background 0.15s;
+}
+.h5-search .ic { font-size: 14px; color: var(--h5-text-3); }
+.h5-search .placeholder { flex: 1; }
+.h5-search:active { background: var(--h5-divider); }
+
+/* === 11. Filter Chip Strip (horizontal scroll, app-style) === */
+.h5-chips {
+  display: flex; gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.h5-chips::-webkit-scrollbar { display: none; }
+.h5-chip {
+  display: inline-flex; align-items: center;
+  padding: 6px 14px;
+  background: var(--h5-bg);
+  color: var(--h5-text-2);
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  border: 0;
+  font-family: inherit;
+}
+.h5-chip.active {
+  background: var(--h5-primary);
+  color: #fff;
+}
+.h5-chip:active { transform: scale(0.97); }
+
+/* === 12. Pull-to-refresh indicator === */
+.h5-pull-indicator {
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px;
+  color: var(--h5-text-3);
+  font-size: 13px;
+  gap: 8px;
+}
+.h5-pull-indicator .spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--h5-divider);
+  border-top-color: var(--h5-primary);
+  border-radius: 50%;
+  animation: h5-spin 0.8s linear infinite;
+}
+@keyframes h5-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === 13. Improved Tabbar with safe-area + better active indicator === */
+body.has-tabbar .h5-tabbar {
+  padding-bottom: var(--h5-safe-bottom);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--h5-divider);
+}
+.h5-tab.active {
+  position: relative;
+}
+.h5-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 50%; transform: translateX(-50%);
+  width: 16px; height: 3px;
+  background: var(--h5-primary);
+  border-radius: 2px;
+}
+
+/* === 14. Improved Nav with backdrop-blur when solid === */
+.h5-nav {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* === 15. Focus-visible + Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.h5-list-item:focus-visible,
+.h5-fab:focus-visible,
+.h5-app-card:focus-visible,
+.h5-chip:focus-visible {
+  outline: 2px solid var(--h5-primary);
+  outline-offset: 2px;
+}
+
+/* === 16. App Header (iOS-style large title nav) === */
+.h5-app-header {
+  padding: 8px 16px 4px;
+  background: var(--h5-card);
+  position: sticky;
+  top: calc(44px + var(--h5-safe-top));
+  z-index: 60;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 0.5px solid var(--h5-divider);
+}
+.h5-app-header .row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.h5-app-header .greet {
+  font-size: 13px; color: var(--h5-text-3);
+  font-weight: 500;
+}
+.h5-app-header .actions { display: flex; gap: 4px; }
+.h5-app-header .icon-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--h5-text-2);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+  border: 0;
+  font-family: inherit;
+}
+.h5-app-header .icon-btn:active { background: var(--h5-bg); }
+.h5-app-header .icon-btn .badge-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px;
+  background: var(--h5-danger);
+  border-radius: 50%;
+  border: 2px solid var(--h5-card);
+}
+.h5-app-header .large-title {
+  font-size: 28px; font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--h5-text);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+/* === 17. Impact Hero (single app card with mini-stats) === */
+.h5-impact-hero {
+  margin: 12px 16px 0;
+  padding: 18px 18px 16px;
+  background: linear-gradient(135deg, #FF6B35 0%, #E85D04 50%, #C44503 100%);
+  color: #fff;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(232, 93, 4, 0.18);
+}
+.h5-impact-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -10%;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.h5-impact-hero .label {
+  font-size: 12px; opacity: 0.85; font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+.h5-impact-hero .value {
+  font-size: 36px; font-weight: 800;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.h5-impact-hero .unit {
+  font-size: 14px; font-weight: 500;
+  opacity: 0.85;
+  margin-left: 4px;
+}
+.h5-impact-hero .sub {
+  font-size: 12px; opacity: 0.85;
+  margin-bottom: 14px;
+}
+.h5-impact-hero .stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 1px;
+  margin-top: 8px;
+}
+.h5-impact-hero .stat {
+  background: rgba(0, 0, 0, 0.10);
+  padding: 8px 10px;
+  border-radius: 9px;
+  text-align: center;
+}
+.h5-impact-hero .stat .v {
+  font-size: 18px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.h5-impact-hero .stat .l {
+  font-size: 10px; opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* === 18. Quick Actions Row (4-5 circular icon buttons) === */
+.h5-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 16px 12px 4px;
+  background: var(--h5-card);
+  margin: 0 0 4px;
+}
+.h5-quick-action {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  padding: 8px 4px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--h5-text);
+  border-radius: 12px;
+  transition: background 0.15s;
+}
+.h5-quick-action:active { background: var(--h5-bg); }
+.h5-quick-action .ic {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  background: var(--h5-primary-soft);
+  color: var(--h5-primary);
+}
+.h5-quick-action.alt-1 .ic { background: rgba(20, 184, 166, 0.12); color: #0E8F80; }
+.h5-quick-action.alt-2 .ic { background: rgba(245, 158, 11, 0.14); color: #B45309; }
+.h5-quick-action.alt-3 .ic { background: rgba(124, 58, 237, 0.12); color: #7C3AED; }
+.h5-quick-action.alt-4 .ic { background: rgba(14, 90, 111, 0.12); color: #0E5A6F; }
+.h5-quick-action .l {
+  font-size: 11px; font-weight: 500;
+  color: var(--h5-text-2);
+  white-space: nowrap;
+}
+
+/* === 19. Horizontal Scroll (for project cards, etc.) === */
+.h5-h-scroll {
+  display: flex; gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 16px 4px;
+}
+.h5-h-scroll::-webkit-scrollbar { display: none; }
+.h5-h-card {
+  flex: 0 0 70%;
+  max-width: 240px;
+  background: var(--h5-card);
+  border-radius: 14px;
+  padding: 14px;
+  scroll-snap-align: start;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.h5-h-card:active { transform: scale(0.98); }
+.h5-h-card .pic {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.h5-h-card .pic .urgency {
+  position: absolute; top: 8px; left: 8px;
+  padding: 2px 8px;
+  background: rgba(220, 38, 38, 0.9);
+  color: #fff;
+  font-size: 10px; font-weight: 600;
+  border-radius: 6px;
+}
+.h5-h-card .title {
+  font-size: 14px; font-weight: 600;
+  color: var(--h5-text);
+  line-height: 1.3;
+  margin-bottom: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.h5-h-card .meta {
+  font-size: 11px; color: var(--h5-text-3);
+  margin-bottom: 8px;
+}
+.h5-h-card .progress {
+  height: 4px; background: var(--h5-divider);
+  border-radius: 2px; overflow: hidden;
+  margin-bottom: 4px;
+}
+.h5-h-card .progress-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--h5-primary);
+}
+.h5-h-card .progress-text {
+  font-size: 10px; color: var(--h5-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* === 20. Section Divider (thin hairline between sections) === */
+.h5-section-divider {
+  height: 8px;
+  background: var(--h5-bg);
+  margin: 0;
+}
+
+/* === 21. Inline feature row (icon + title + meta, no card wrapper) === */
+.h5-feature-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--h5-card);
+  border-bottom: 1px solid var(--h5-divider);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.h5-feature-row:active { background: var(--h5-bg); }
+.h5-feature-row .ic {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.h5-feature-row .body { flex: 1; min-width: 0; }
+.h5-feature-row .body .t {
+  font-size: 15px; font-weight: 500;
+  color: var(--h5-text);
+  margin-bottom: 2px;
+}
+.h5-feature-row .body .d {
+  font-size: 12px; color: var(--h5-text-3);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.h5-feature-row .chev { color: var(--h5-text-3); font-size: 16px; }
+
+/* === 22. Profile mini header (avatar + name + stats, app style) === */
+.h5-mini-profile {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  background: var(--h5-card);
+}
+.h5-mini-profile .avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--h5-primary-soft);
+  color: var(--h5-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+  flex-shrink: 0;
+}
+.h5-mini-profile .name { font-size: 15px; font-weight: 600; color: var(--h5-text); }
+.h5-mini-profile .role { font-size: 12px; color: var(--h5-text-3); margin-top: 2px; }

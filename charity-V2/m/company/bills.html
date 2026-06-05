@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>财务账单 — 美心食品 · 慈商联营</title>
+<title>财务账单 · 美心食品 · 慈商联营</title>
 <link rel="stylesheet" href="../public/css/h5.css">
+<link rel="stylesheet" href="../public/css/h5-app.css">
 <style>
   /* 顶部账户横幅 */
   .h5-bill-hero {
@@ -134,14 +135,22 @@
   }
 </style>
 </head>
-<body data-role="company" class="has-tabbar">
+<body data-role="company" class="has-tabbar has-status-bar">
 
-<div class="h5-nav">
-  <div class="h5-nav-back" onclick="history.back()">‹</div>
-  <div class="h5-nav-title">财务账单</div>
-  <div class="h5-nav-right">
-    <div class="h5-nav-text-btn" onclick="openFilter()">筛选</div>
+<!-- App 状态栏 -->
+<div class="h5-status-bar light">
+  <span class="time" id="statusTime">9:41</span>
+  <span class="right">📶 🔋</span>
+</div>
+
+<!-- App Header (sticky large title) -->
+<div class="h5-app-header">
+  <div class="row">
+    <span class="greet">账单流水</span>
+    <div class="actions"><button class="icon-btn" aria-label="操作">📤</button></div>
   </div>
+  <div class="large-title">账单</div>
+</div>
 </div>
 
 <!-- 顶部账户 -->
@@ -451,5 +460,91 @@
     }
   });
 </script>
+
+<script>
+// ===== 通用 GSAP 入场动画（按页面元素自动选择）=====
+(function() {
+  if (window.__h5GsapInit) return;
+  window.__h5GsapInit = true;
+  if (!window.gsap) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const $ = function(s, ctx) { return Array.from((ctx || document).querySelectorAll(s)); };
+
+  // 1) App Header 顶部滑入
+  var header = document.querySelector('.h5-app-header');
+  if (header) {
+    gsap.fromTo(header, { y: -12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: 'power2.out' });
+  }
+
+  // 2) Impact Hero 淡入
+  var hero = document.querySelector('.h5-impact-hero');
+  if (hero) {
+    gsap.fromTo(hero, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: 0.2, ease: 'power2.out' });
+  }
+
+  // 3) Counter 数字滚动
+  $('.counter').forEach(function(el, i) {
+    var t = parseFloat(el.dataset.target);
+    if (isNaN(t)) return;
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: t, duration: 1.4, delay: 0.4 + i * 0.1, ease: 'power2.out',
+      onUpdate: function() {
+        el.textContent = Number.isInteger(t)
+          ? Math.round(obj.v).toLocaleString()
+          : obj.v.toFixed(2);
+      }
+    });
+  });
+
+  // 4) 柱状图
+  $('.h5-rpt-bar[data-h]').forEach(function(el, i) {
+    var h = el.dataset.h;
+    gsap.set(el, { height: '0%' });
+    gsap.to(el, { height: h + '%', duration: 0.8, delay: 0.6 + i * 0.05, ease: 'power3.out' });
+  });
+
+  // 5) 进度条
+  $('[data-fill]').forEach(function(el, i) {
+    if (el.classList.contains('h5-rpt-bar')) return;
+    var w = el.dataset.fill;
+    if (!w) return;
+    gsap.set(el, { width: '0%' });
+    gsap.to(el, { width: w + (w.includes('%') ? '' : '%'), duration: 1, delay: 0.5 + i * 0.05, ease: 'power2.out' });
+  });
+
+  // 6) 列表/卡片 stagger
+  var staggerItems = [].concat(
+    $('.h5-list-item'),
+    $('.h5-feature-row'),
+    $('.h5-app-card'),
+    $('.h5-h-card'),
+    $('.h5-quick-action'),
+    $('.h5-section-title'),
+    $('.h5-section-divider')
+  );
+  if (staggerItems.length) {
+    gsap.fromTo(staggerItems, { y: 10, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 0.4, stagger: 0.04, delay: 0.5, ease: 'power2.out'
+    });
+  }
+
+  // 7) FAB 弹性入场
+  var fab = document.querySelector('.h5-fab');
+  if (fab) {
+    gsap.fromTo(fab, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, delay: 0.7, ease: 'back.out(1.7)' });
+  }
+
+  // 8) Chips 弹性入场
+  var chips = $('.h5-chip');
+  if (chips.length && chips.length <= 10) {
+    gsap.fromTo(chips, { scale: 0.9, opacity: 0 }, {
+      scale: 1, opacity: 1, duration: 0.3, stagger: 0.04, delay: 0.3, ease: 'back.out(2)'
+    });
+  }
+})();
+</script>
+
 </body>
 </html>

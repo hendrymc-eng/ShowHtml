@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>报告中心 — 慈商联营</title>
+<title>报告中心 · 慈商联营</title>
 <link rel="stylesheet" href="public/css/h5.css">
+<link rel="stylesheet" href="public/css/h5-app.css">
 <style>
   /* Hero 黑色 */
   .h5-rpt-hero {
@@ -187,187 +188,226 @@
   .h5-rpt-role .v { font-size: 14px; font-weight: 700; }
 </style>
 </head>
-<body class="has-tabbar">
+<body class="has-tabbar has-status-bar">
 
-<div class="h5-nav transparent">
-  <div class="h5-nav-back" onclick="history.back()">‹</div>
-  <div class="h5-nav-title">报告中心</div>
-  <div class="h5-nav-right">
-    <div class="h5-nav-icon" onclick="openShare()">📤</div>
-  </div>
+
+<!-- App 状态栏（44px 顶部时间+信号） -->
+<div class="h5-status-bar light">
+  <span class="time" id="statusTime">9:41</span>
+  <span class="right">📶 🔋</span>
 </div>
 
-<div class="h5-rpt-hero">
-  <div class="lbl">2024 ANNUAL IMPACT REPORT</div>
-  <div class="t">2024 年度报告</div>
-  <div class="d">本年累计服务 <b>126,800</b> 人次，5 角色协同 <b>3,200</b> 家企业，<b>0 损耗</b>。</div>
-  <div class="h5-rpt-stats">
-    <div class="h5-rpt-stat"><div class="v">¥2.86亿</div><div class="l">总价值</div></div>
-    <div class="h5-rpt-stat"><div class="v">86万</div><div class="l">物资</div></div>
-    <div class="h5-rpt-stat"><div class="v">126.8K</div><div class="l">受惠</div></div>
-    <div class="h5-rpt-stat"><div class="v">0</div><div class="l">损耗</div></div>
-  </div>
-</div>
+<div class="h5-page" id="mainContentBody">
 
-<div class="h5-rpt-tabs">
-  <div class="h5-rpt-tab active" onclick="selectRpt(this,'year')">年度</div>
-  <div class="h5-rpt-tab" onclick="selectRpt(this,'month')">本月</div>
-  <div class="h5-rpt-tab" onclick="selectRpt(this,'quarter')">本季</div>
-  <div class="h5-rpt-tab" onclick="selectRpt(this,'all')">历届</div>
-</div>
-
-<!-- 月度数据 -->
-<div class="h5-section" style="padding: 12px 0 0;">
-  <div class="h5-card">
-    <div class="h5-card-title">
-      <div class="title">📊 5 月数据</div>
-      <a class="more" onclick="openTip('查看完整','5 月运营月报已生成','含 8 项数据 + 26 个项目')">详情 →</a>
+  <!-- App Header -->
+  <div class="h5-app-header">
+    <div class="row">
+      <span class="greet">2024 ANNUAL IMPACT REPORT</span>
+      <div class="actions">
+        <button class="icon-btn" onclick="openShare()" aria-label="分享">📤</button>
+      </div>
     </div>
-    <div class="h5-rpt-month">
-      <div class="h5-rpt-month-card">
-        <div class="ic" style="background:rgba(232,93,4,0.1);color:#E85D04;">📦</div>
-        <div class="l">捐赠次数</div>
-        <div class="v">28<span class="u">次</span></div>
-        <div class="trend">↑ 同比 +12%</div>
+    <div class="large-title">报告中心</div>
+  </div>
+
+  <!-- Impact Hero -->
+  <div class="h5-impact-hero">
+    <div class="label">2024 年度报告</div>
+    <div class="value">¥<span class="counter" data-target="2.86">0</span><span class="unit">亿</span></div>
+    <div class="sub">本年累计服务 <span class="counter" data-target="126800">0</span> 人次，5 角色协同 3,200 家企业</div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="v">86万</div>
+        <div class="l">物资（件）</div>
       </div>
-      <div class="h5-rpt-month-card">
-        <div class="ic" style="background:rgba(20,184,166,0.12);color:#14B8A6;">💝</div>
-        <div class="l">受惠人次</div>
-        <div class="v">12.6<span class="u">万</span></div>
-        <div class="trend">↑ 同比 +42%</div>
+      <div class="stat">
+        <div class="v">0</div>
+        <div class="l">损耗</div>
       </div>
-      <div class="h5-rpt-month-card">
-        <div class="ic" style="background:rgba(196,132,42,0.12);color:#C4842A;">🚚</div>
-        <div class="l">派发物资</div>
-        <div class="v">8.26<span class="u">万件</span></div>
-        <div class="trend">↑ 同比 +38%</div>
-      </div>
-      <div class="h5-rpt-month-card">
-        <div class="ic" style="background:rgba(124,58,237,0.1);color:#7C3AED;">📋</div>
-        <div class="l">完成项目</div>
-        <div class="v">26</div>
-        <div class="trend">含紧急 2</div>
+      <div class="stat">
+        <div class="v">100%</div>
+        <div class="l">资质已认证</div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- 12 月趋势 -->
-<div class="h5-section" style="padding-top: 0;">
-  <div class="h5-card">
-    <div class="h5-card-title">
-      <div class="title">📈 近 12 月趋势</div>
-      <a class="more" onclick="openTip('趋势图','近 12 月物资价值趋势','单位：万元')">详情 →</a>
-    </div>
-    <div class="h5-rpt-bars" id="bars">
-      <div class="h5-rpt-bar" style="height: 38%;" data-h="38"><div class="label">1月</div></div>
-      <div class="h5-rpt-bar" style="height: 46%;" data-h="46"><div class="label">2月</div></div>
-      <div class="h5-rpt-bar" style="height: 32%;" data-h="32"><div class="label">3月</div></div>
-      <div class="h5-rpt-bar" style="height: 70%;" data-h="70"><div class="label">4月</div></div>
-      <div class="h5-rpt-bar" style="height: 78%;" data-h="78"><div class="label">5月</div></div>
-      <div class="h5-rpt-bar" style="height: 60%;" data-h="60"><div class="label">6月</div></div>
-      <div class="h5-rpt-bar" style="height: 68%;" data-h="68"><div class="label">7月</div></div>
-      <div class="h5-rpt-bar" style="height: 55%;" data-h="55"><div class="label">8月</div></div>
-      <div class="h5-rpt-bar" style="height: 50%;" data-h="50"><div class="label">9月</div></div>
-      <div class="h5-rpt-bar" style="height: 72%;" data-h="72"><div class="label">10月</div></div>
-      <div class="h5-rpt-bar" style="height: 80%;" data-h="80"><div class="label">11月</div></div>
-      <div class="h5-rpt-bar" style="height: 90%;" data-h="90"><div class="label">12月</div></div>
-    </div>
-    <div style="height: 24px;"></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--h5-text-3);margin-top:6px;">
-      <span>最低 70 万 (3月)</span>
-      <span>最高 175 万 (12月)</span>
+  <!-- Filter chips -->
+  <div class="h5-chips">
+    <button class="h5-chip active" onclick="selectRpt(this,'year')">📅 年度</button>
+    <button class="h5-chip" onclick="selectRpt(this,'month')">📆 本月</button>
+    <button class="h5-chip" onclick="selectRpt(this,'quarter')">📊 本季</button>
+    <button class="h5-chip" onclick="selectRpt(this,'all')">📚 历届</button>
+  </div>
+
+  <!-- Section: 5 月数据 -->
+  <div class="h5-section-title">
+    <span>5 月数据</span>
+    <span class="more" onclick="openTip('5 月月报','含 8 项数据 + 26 个项目')">完整报告 ›</span>
+  </div>
+  <div class="h5-impact-hero" style="background:linear-gradient(135deg, #14B8A6 0%, #0E8F80 100%);box-shadow:0 4px 12px rgba(20,184,166,0.15);margin-bottom:0;">
+    <div class="stats-row" style="margin-top:0;background:rgba(255,255,255,0.18);">
+      <div class="stat">
+        <div class="v">28</div>
+        <div class="l">捐赠次数 ↑12%</div>
+      </div>
+      <div class="stat">
+        <div class="v">12.6万</div>
+        <div class="l">受惠人次 ↑42%</div>
+      </div>
+      <div class="stat">
+        <div class="v">8.26万</div>
+        <div class="l">派发物资（件） ↑38%</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- 5 角色贡献分布 -->
-<div class="h5-section" style="padding-top: 0;">
-  <div class="h5-card">
-    <div class="h5-card-title">
-      <div class="title">🤝 5 角色贡献分布</div>
-      <a class="more" onclick="openTip('5 角色','企业 128 · 慈善会 26 · 组织 28 · 志愿者 1,260 · 受捐者 12.6万','完整数据')">详情 →</a>
+  <div class="h5-section-divider"></div>
+
+  <!-- Section: 近 12 月趋势 -->
+  <div class="h5-section-title">
+    <span>近 12 月趋势</span>
+    <span class="more">单位：万元</span>
+  </div>
+  <div class="h5-feature-row" style="display:block;padding:16px;">
+    <div class="h5-rpt-bars" id="bars" style="height:100px;display:flex;align-items:flex-end;gap:4px;padding:8px 4px 0;">
+      <div class="h5-rpt-bar" style="height: 38%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="38"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">1月</div></div>
+      <div class="h5-rpt-bar" style="height: 46%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="46"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">2月</div></div>
+      <div class="h5-rpt-bar" style="height: 32%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="32"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">3月</div></div>
+      <div class="h5-rpt-bar" style="height: 70%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="70"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">4月</div></div>
+      <div class="h5-rpt-bar" style="height: 78%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="78"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">5月</div></div>
+      <div class="h5-rpt-bar" style="height: 60%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="60"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">6月</div></div>
+      <div class="h5-rpt-bar" style="height: 68%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="68"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">7月</div></div>
+      <div class="h5-rpt-bar" style="height: 55%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="55"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">8月</div></div>
+      <div class="h5-rpt-bar" style="height: 50%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="50"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">9月</div></div>
+      <div class="h5-rpt-bar" style="height: 72%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="72"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">10月</div></div>
+      <div class="h5-rpt-bar" style="height: 80%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="80"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">11月</div></div>
+      <div class="h5-rpt-bar" style="height: 90%; background: linear-gradient(180deg, #E85D04 0%, #C44503 100%); border-radius: 3px 3px 0 0; flex:1; min-height:4px; position:relative;" data-h="90"><div style="position:absolute;bottom:-16px;left:0;right:0;font-size:8px;color:var(--h5-text-3);text-align:center;">12月</div></div>
     </div>
-    <div class="h5-rpt-role">
-      <div class="av" style="background:linear-gradient(135deg,#E85D04,#C44503);">🏢</div>
+    <div style="height: 18px;"></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--h5-text-3);">
+      <span>最低 70 万（3 月）</span>
+      <span>最高 175 万（12 月）</span>
+    </div>
+  </div>
+
+  <div class="h5-section-divider"></div>
+
+  <!-- Section: 5 角色贡献分布（list） -->
+  <div class="h5-section-title">
+    <span>5 角色贡献分布</span>
+    <span class="more" onclick="openTip('5 角色贡献','企业 128 · 慈善会 26 · 组织 28 · 志愿者 1,260 · 受捐者 12.6万')">完整数据 ›</span>
+  </div>
+  <div class="h5-list">
+    <a class="h5-list-item">
+      <div class="avatar" style="background:linear-gradient(135deg,#E85D04,#C44503);color:#fff;">🏢</div>
       <div class="body">
-        <div class="t">企业</div>
-        <div class="d">3,200 家</div>
+        <div class="title">企业</div>
+        <div class="meta">3,200 家</div>
       </div>
-      <div class="v" style="color:#E85D04;">¥1.86亿</div>
-    </div>
-    <div class="h5-rpt-role">
-      <div class="av" style="background:linear-gradient(135deg,#0E5A6F,#073D4D);">🏛</div>
+      <div class="trailing">
+        <span style="font-size:14px;font-weight:700;color:#E85D04;">¥1.86亿</span>
+      </div>
+    </a>
+    <a class="h5-list-item">
+      <div class="avatar" style="background:linear-gradient(135deg,#0E5A6F,#073D4D);color:#fff;">🏛</div>
       <div class="body">
-        <div class="t">慈善会</div>
-        <div class="d">86 家</div>
+        <div class="title">慈善会</div>
+        <div class="meta">86 家</div>
       </div>
-      <div class="v" style="color:#0E5A6F;">¥0.86亿</div>
-    </div>
-    <div class="h5-rpt-role">
-      <div class="av" style="background:linear-gradient(135deg,#C4842A,#8B5A1A);">🏢</div>
+      <div class="trailing">
+        <span style="font-size:14px;font-weight:700;color:#0E5A6F;">¥0.86亿</span>
+      </div>
+    </a>
+    <a class="h5-list-item">
+      <div class="avatar" style="background:linear-gradient(135deg,#C4842A,#8B5A1A);color:#fff;">🏢</div>
       <div class="body">
-        <div class="t">社会组织</div>
-        <div class="d">128 家</div>
+        <div class="title">社会组织</div>
+        <div class="meta">128 家</div>
       </div>
-      <div class="v" style="color:#C4842A;">¥0.32亿</div>
-    </div>
-    <div class="h5-rpt-role">
-      <div class="av" style="background:linear-gradient(135deg,#14B8A6,#0D8A7E);">🙋</div>
+      <div class="trailing">
+        <span style="font-size:14px;font-weight:700;color:#C4842A;">¥0.32亿</span>
+      </div>
+    </a>
+    <a class="h5-list-item">
+      <div class="avatar" style="background:linear-gradient(135deg,#14B8A6,#0D8A7E);color:#fff;">🙋</div>
       <div class="body">
-        <div class="t">志愿者</div>
-        <div class="d">1,260 人</div>
+        <div class="title">志愿者</div>
+        <div class="meta">1,260 人</div>
       </div>
-      <div class="v" style="color:#14B8A6;">12.6万h</div>
-    </div>
-    <div class="h5-rpt-role">
-      <div class="av" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">🎁</div>
+      <div class="trailing">
+        <span style="font-size:14px;font-weight:700;color:#14B8A6;">12.6万h</span>
+      </div>
+    </a>
+    <a class="h5-list-item">
+      <div class="avatar" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;">🎁</div>
       <div class="body">
-        <div class="t">受捐者</div>
-        <div class="d">12.6万 人</div>
+        <div class="title">受捐者</div>
+        <div class="meta">12.6万 人</div>
       </div>
-      <div class="v" style="color:#7C3AED;">86万件</div>
-    </div>
+      <div class="trailing">
+        <span style="font-size:14px;font-weight:700;color:#7C3AED;">86万件</span>
+      </div>
+    </a>
   </div>
-</div>
 
-<!-- 2024 关键里程碑 -->
-<div class="h5-section" style="padding-top: 0;">
-  <div class="h5-card">
-    <div class="h5-card-title">
-      <div class="title">🏆 2024 关键里程碑</div>
-      <a class="more" onclick="openTip('2024 里程碑','12 项关键事件','含 6 项行业首创')">详情 →</a>
-    </div>
-    <div class="h5-timeline">
-      <div class="h5-tl-item">
-        <div class="t">2024.12.31 · 年度收官</div>
-        <div class="d">年度受惠 126,800 人次，物资 86 万件，<b>0 损耗</b>。</div>
-      </div>
-      <div class="h5-tl-item">
-        <div class="t">2024.11.20 · 行业首创</div>
-        <div class="d">"慈商联营"模式获国家民政部表彰，纳入 2025 全国推广项目。</div>
-      </div>
-      <div class="h5-tl-item">
-        <div class="t">2024.10.10 · 标杆企业</div>
-        <div class="d">美心食品集团 / 伊利集团 / 格力电器 等 86 家企业获"标杆爱心企业"称号。</div>
-      </div>
-      <div class="h5-tl-item">
-        <div class="t">2024.09.05 · 平台 v2.0 上线</div>
-        <div class="d">引入区块链溯源 + 0.5% 自动捐赠 + 5 角色协同工作台。</div>
-      </div>
-      <div class="h5-tl-item">
-        <div class="t">2024.06.18 · 慈善法实施</div>
-        <div class="d">响应《慈善法》新规，全平台资质 100% 已认证。</div>
-      </div>
-      <div class="h5-tl-item gray">
-        <div class="t">2024.01.01 · 平台启动</div>
-        <div class="d">"慈商联营"平台正式上线，3 角色试点。</div>
-      </div>
-    </div>
+  <div class="h5-section-divider"></div>
+
+  <!-- Section: 2024 关键里程碑（timeline 用 list 风格） -->
+  <div class="h5-section-title">
+    <span>2024 关键里程碑</span>
+    <span class="more" onclick="openTip('2024 里程碑','12 项关键事件 · 含 6 项行业首创')">详情 ›</span>
   </div>
-</div>
+  <a class="h5-feature-row">
+    <div class="ic" style="background:rgba(232,93,4,0.12);color:#E85D04;">🏆</div>
+    <div class="body">
+      <div class="t">12.31 · 年度收官</div>
+      <div class="d">受惠 126,800 人次，物资 86 万件，0 损耗</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
+  <a class="h5-feature-row">
+    <div class="ic" style="background:rgba(232,93,4,0.12);color:#E85D04;">🏅</div>
+    <div class="body">
+      <div class="t">11.20 · 行业首创</div>
+      <div class="d">"慈商联营"模式获国家民政部表彰</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
+  <a class="h5-feature-row">
+    <div class="ic" style="background:rgba(245,158,11,0.14);color:#B45309;">⭐</div>
+    <div class="body">
+      <div class="t">10.10 · 标杆企业</div>
+      <div class="d">美心 / 伊利 / 格力 等 86 家企业获"标杆爱心企业"</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
+  <a class="h5-feature-row">
+    <div class="ic" style="background:rgba(20,184,166,0.12);color:#0E8F80;">🚀</div>
+    <div class="body">
+      <div class="t">09.05 · 平台 v2.0 上线</div>
+      <div class="d">区块链溯源 + 0.5% 自动捐赠 + 5 角色协同</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
+  <a class="h5-feature-row">
+    <div class="ic" style="background:rgba(14,90,111,0.12);color:#0E5A6F;">📜</div>
+    <div class="body">
+      <div class="t">06.18 · 慈善法实施</div>
+      <div class="d">全平台资质 100% 已认证</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
+  <a class="h5-feature-row" style="border-bottom:0;">
+    <div class="ic" style="background:rgba(124,58,237,0.1);color:#7C3AED;">🌱</div>
+    <div class="body">
+      <div class="t">01.01 · 平台启动</div>
+      <div class="d">"慈商联营"正式上线 · 3 角色试点</div>
+    </div>
+    <div class="chev">›</div>
+  </a>
 
-<div style="height: 24px;"></div>
+  <div style="height: 24px;"></div>
+</div>
 
 <!-- 底部 tab bar -->
 <div class="h5-tabbar">
@@ -432,10 +472,12 @@
     gsap.utils.toArray('.h5-section').forEach((sec, i) => {
       gsap.fromTo(sec, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.3 + i * 0.08, ease: 'power2.out' });
     });
-    // 柱状图
+    // 柱状图（先 set 0，再 fromTo 到 data-h）
     gsap.utils.toArray('.h5-rpt-bar').forEach((b, i) => {
       const h = b.dataset.h;
-      gsap.fromTo(b, { height: '0%' }, { height: h + '%', duration: 0.8, delay: 0.4 + i * 0.04, ease: 'power2.out' });
+      if (!h) return;
+      gsap.set(b, { height: '0%' });
+      gsap.to(b, { height: h + '%', duration: 0.8, delay: 0.5 + i * 0.05, ease: 'power3.out' });
     });
     // 时间轴
     gsap.utils.toArray('.h5-tl-item').forEach((it, i) => {
@@ -443,5 +485,91 @@
     });
   });
 </script>
+
+<script>
+// ===== 通用 GSAP 入场动画（按页面元素自动选择）=====
+(function() {
+  if (window.__h5GsapInit) return;
+  window.__h5GsapInit = true;
+  if (!window.gsap) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const $ = function(s, ctx) { return Array.from((ctx || document).querySelectorAll(s)); };
+
+  // 1) App Header 顶部滑入
+  var header = document.querySelector('.h5-app-header');
+  if (header) {
+    gsap.fromTo(header, { y: -12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: 'power2.out' });
+  }
+
+  // 2) Impact Hero 淡入
+  var hero = document.querySelector('.h5-impact-hero');
+  if (hero) {
+    gsap.fromTo(hero, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: 0.2, ease: 'power2.out' });
+  }
+
+  // 3) Counter 数字滚动
+  $('.counter').forEach(function(el, i) {
+    var t = parseFloat(el.dataset.target);
+    if (isNaN(t)) return;
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: t, duration: 1.4, delay: 0.4 + i * 0.1, ease: 'power2.out',
+      onUpdate: function() {
+        el.textContent = Number.isInteger(t)
+          ? Math.round(obj.v).toLocaleString()
+          : obj.v.toFixed(2);
+      }
+    });
+  });
+
+  // 4) 柱状图
+  $('.h5-rpt-bar[data-h]').forEach(function(el, i) {
+    var h = el.dataset.h;
+    gsap.set(el, { height: '0%' });
+    gsap.to(el, { height: h + '%', duration: 0.8, delay: 0.6 + i * 0.05, ease: 'power3.out' });
+  });
+
+  // 5) 进度条
+  $('[data-fill]').forEach(function(el, i) {
+    if (el.classList.contains('h5-rpt-bar')) return;
+    var w = el.dataset.fill;
+    if (!w) return;
+    gsap.set(el, { width: '0%' });
+    gsap.to(el, { width: w + (w.includes('%') ? '' : '%'), duration: 1, delay: 0.5 + i * 0.05, ease: 'power2.out' });
+  });
+
+  // 6) 列表/卡片 stagger
+  var staggerItems = [].concat(
+    $('.h5-list-item'),
+    $('.h5-feature-row'),
+    $('.h5-app-card'),
+    $('.h5-h-card'),
+    $('.h5-quick-action'),
+    $('.h5-section-title'),
+    $('.h5-section-divider')
+  );
+  if (staggerItems.length) {
+    gsap.fromTo(staggerItems, { y: 10, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 0.4, stagger: 0.04, delay: 0.5, ease: 'power2.out'
+    });
+  }
+
+  // 7) FAB 弹性入场
+  var fab = document.querySelector('.h5-fab');
+  if (fab) {
+    gsap.fromTo(fab, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, delay: 0.7, ease: 'back.out(1.7)' });
+  }
+
+  // 8) Chips 弹性入场
+  var chips = $('.h5-chip');
+  if (chips.length && chips.length <= 10) {
+    gsap.fromTo(chips, { scale: 0.9, opacity: 0 }, {
+      scale: 1, opacity: 1, duration: 0.3, stagger: 0.04, delay: 0.3, ease: 'back.out(2)'
+    });
+  }
+})();
+</script>
+
 </body>
 </html>

@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>注册 — 慈商联营</title>
+<title>注册 · 慈商联营</title>
 <link rel="stylesheet" href="./public/css/h5.css">
+<link rel="stylesheet" href="./public/css/h5-app.css">
 <style>
   body { background: #fff; }
   .h5-auth-wrap { min-height: 100vh; padding: 16px 24px 40px; display: flex; flex-direction: column; }
@@ -106,118 +107,24 @@
   }
 </style>
 </head>
-<body>
+<body class="has-status-bar">
 
-<div class="h5-auth-wrap">
-  <!-- 顶部 nav -->
-  <div class="h5-nav-row">
-    <div class="h5-nav-back" onclick="history.back()">‹</div>
-    <div class="h5-nav-title">注册</div>
-    <div class="h5-nav-spacer"></div>
-  </div>
-
-  <!-- 步骤条 -->
-  <div class="h5-progress-bar-row">
-    <div class="h5-step done"><div class="h5-step-num">1</div></div>
-    <div class="h5-step" id="step2"><div class="h5-step-num">2</div></div>
-  </div>
-
-  <!-- 步骤 1: 角色 + 手机号 -->
-  <div id="step1Panel">
-    <div class="h5-form-title">选择身份</div>
-    <div class="h5-form-sub">不同身份对应不同工作台</div>
-
-    <div class="h5-role-grid-mini" id="roleGrid">
-      <div class="h5-role-mini active" data-role="volunteer">
-        <div class="ic">🙋</div>
-        <div class="name">志愿者</div>
-      </div>
-      <div class="h5-role-mini" data-role="recipient">
-        <div class="ic">❤️</div>
-        <div class="name">受捐者</div>
-      </div>
-      <div class="h5-role-mini" data-role="company">
-        <div class="ic">🏢</div>
-        <div class="name">企业</div>
-      </div>
-      <div class="h5-role-mini" data-role="charity">
-        <div class="ic">慈</div>
-        <div class="name">慈善会</div>
-      </div>
-      <div class="h5-role-mini" data-role="org">
-        <div class="ic">社</div>
-        <div class="name">社会组织</div>
-      </div>
-    </div>
-
-    <div class="h5-form-group">
-      <div class="h5-input-icon">
-        <span class="ic">📱</span>
-        <input type="tel" class="h5-input" id="phone" placeholder="请输入手机号" maxlength="11">
-      </div>
-    </div>
-
-    <div class="h5-form-group">
-      <div class="h5-sms-row">
-        <div class="h5-input-icon">
-          <span class="ic">🔑</span>
-          <input type="text" class="h5-input" id="smsCode" placeholder="6 位验证码" maxlength="6">
-        </div>
-        <div class="h5-btn-sms" id="smsBtn" onclick="sendSms()">获取验证码</div>
-      </div>
-    </div>
-
-    <div class="h5-protocol">
-      <input type="checkbox" id="agreeChk" checked>
-      <label for="agreeChk">我已阅读并同意 <a href="#">《用户协议》</a> 和 <a href="#">《隐私政策》</a></label>
-    </div>
-
-    <!-- 占位防止被 fixed 按钮遮挡 -->
-    <div style="height: 100px;"></div>
-  </div>
-
-  <!-- 步骤 1 fixed bottom action -->
-  <div class="h5-bottom-action" id="step1Action">
-    <button class="h5-btn h5-btn-primary h5-btn-block h5-btn-lg" onclick="nextStep()">下一步</button>
-  </div>
-
-  <!-- 步骤 2: 设置密码 + 资料（简化）-->
-  <div id="step2Panel" style="display:none;">
-    <div class="h5-form-title">设置密码</div>
-    <div class="h5-form-sub">密码需 8-20 位，含字母和数字</div>
-
-    <div class="h5-form-group">
-      <div class="h5-input-icon">
-        <span class="ic">🔒</span>
-        <input type="password" class="h5-input" id="password" placeholder="请输入密码">
-      </div>
-    </div>
-    <div class="h5-form-group">
-      <div class="h5-input-icon">
-        <span class="ic">🔒</span>
-        <input type="password" class="h5-input" id="password2" placeholder="请再次输入密码">
-      </div>
-    </div>
-
-    <div class="h5-form-group">
-      <div class="h5-input-icon">
-        <span class="ic">👤</span>
-        <input type="text" class="h5-input" id="realname" placeholder="请输入真实姓名">
-      </div>
-    </div>
-
-    <div style="height: 100px;"></div>
-  </div>
-
-  <!-- 步骤 2 fixed bottom action -->
-  <div class="h5-bottom-action" id="step2Action" style="display:none;">
-    <button class="h5-btn h5-btn-primary h5-btn-block h5-btn-lg" onclick="doRegister()">完成注册</button>
-    <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--h5-text-3);">
-      <a href="javascript:void(0)" onclick="goBack()" style="color:var(--h5-text-3);">‹ 返回上一步</a>
-    </div>
-  </div>
+<!-- App 状态栏 -->
+<div class="h5-status-bar light">
+  <span class="time" id="statusTime">9:41</span>
+  <span class="right">📶 🔋</span>
 </div>
 
+<!-- App Header (sticky large title) -->
+<div class="h5-app-header">
+  <div class="row">
+    <span class="greet">创建账户</span>
+    <div class="actions"></div>
+  </div>
+  <div class="large-title">注册</div>
+</div>
+
+<div class="h5-auth-wrap">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="./public/js/h5.js"></script>
 <script>
@@ -304,5 +211,91 @@
     y: 16, opacity: 0, duration: 0.5, stagger: 0.06
   });
 </script>
+
+<script>
+// ===== 通用 GSAP 入场动画（按页面元素自动选择）=====
+(function() {
+  if (window.__h5GsapInit) return;
+  window.__h5GsapInit = true;
+  if (!window.gsap) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const $ = function(s, ctx) { return Array.from((ctx || document).querySelectorAll(s)); };
+
+  // 1) App Header 顶部滑入
+  var header = document.querySelector('.h5-app-header');
+  if (header) {
+    gsap.fromTo(header, { y: -12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: 'power2.out' });
+  }
+
+  // 2) Impact Hero 淡入
+  var hero = document.querySelector('.h5-impact-hero');
+  if (hero) {
+    gsap.fromTo(hero, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: 0.2, ease: 'power2.out' });
+  }
+
+  // 3) Counter 数字滚动
+  $('.counter').forEach(function(el, i) {
+    var t = parseFloat(el.dataset.target);
+    if (isNaN(t)) return;
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: t, duration: 1.4, delay: 0.4 + i * 0.1, ease: 'power2.out',
+      onUpdate: function() {
+        el.textContent = Number.isInteger(t)
+          ? Math.round(obj.v).toLocaleString()
+          : obj.v.toFixed(2);
+      }
+    });
+  });
+
+  // 4) 柱状图
+  $('.h5-rpt-bar[data-h]').forEach(function(el, i) {
+    var h = el.dataset.h;
+    gsap.set(el, { height: '0%' });
+    gsap.to(el, { height: h + '%', duration: 0.8, delay: 0.6 + i * 0.05, ease: 'power3.out' });
+  });
+
+  // 5) 进度条
+  $('[data-fill]').forEach(function(el, i) {
+    if (el.classList.contains('h5-rpt-bar')) return;
+    var w = el.dataset.fill;
+    if (!w) return;
+    gsap.set(el, { width: '0%' });
+    gsap.to(el, { width: w + (w.includes('%') ? '' : '%'), duration: 1, delay: 0.5 + i * 0.05, ease: 'power2.out' });
+  });
+
+  // 6) 列表/卡片 stagger
+  var staggerItems = [].concat(
+    $('.h5-list-item'),
+    $('.h5-feature-row'),
+    $('.h5-app-card'),
+    $('.h5-h-card'),
+    $('.h5-quick-action'),
+    $('.h5-section-title'),
+    $('.h5-section-divider')
+  );
+  if (staggerItems.length) {
+    gsap.fromTo(staggerItems, { y: 10, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 0.4, stagger: 0.04, delay: 0.5, ease: 'power2.out'
+    });
+  }
+
+  // 7) FAB 弹性入场
+  var fab = document.querySelector('.h5-fab');
+  if (fab) {
+    gsap.fromTo(fab, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, delay: 0.7, ease: 'back.out(1.7)' });
+  }
+
+  // 8) Chips 弹性入场
+  var chips = $('.h5-chip');
+  if (chips.length && chips.length <= 10) {
+    gsap.fromTo(chips, { scale: 0.9, opacity: 0 }, {
+      scale: 1, opacity: 1, duration: 0.3, stagger: 0.04, delay: 0.3, ease: 'back.out(2)'
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
