@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消息 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+  <style>
+    .pinned-section { background: #fafbfc; padding: 6px 16px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid #f0f2f5; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="../index.html" class="page-back">←</a>
+      <span class="page-title">消息</span>
+    </div>
+    <span class="kicker">CHAT · 7</span>
+  </header>
+
+  <!-- 顶栏搜索 + 加号 -->
+  <div class="top-search">
+    <input class="search-input" placeholder="🔍  搜索">
+    <div class="add-btn" title="新建">+</div>
+  </div>
+
+  <!-- 置顶会话 -->
+  <div class="pinned-section">📌 置顶</div>
+  <div id="pinnedList"></div>
+
+  <!-- 全部会话 -->
+  <div class="pinned-section" style="background: #fff; margin-top: 4px;">全部消息</div>
+  <div id="chatList"></div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item active"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    function getContact(id) { return CONTACTS.find(c => c.id === id); }
+
+    function renderItem(chat, isPinned) {
+      const c = getContact(chat.contactId);
+      if (!c) return '';
+      const isGroup = c.isGroup;
+      const isAgent = c.isAgent;
+      const tagHtml = isAgent
+        ? `<span class="tag ${c.tagColor}">${c.tag}</span>`
+        : isGroup
+          ? `<span class="tag purple">群聊</span>`
+          : '';
+      const vipHtml = c.isVip ? 'vip' : '';
+
+      return `
+        <a href="${isAgent && c.id === 'agent-customer' ? 'agent-customer.html' :
+                    isAgent && c.id === 'agent-sales' ? 'agent-sales.html' :
+                    isAgent && c.id === 'agent-meeting' ? 'agent-meeting.html' :
+                    'chat-single.html?contactId=' + c.id}"
+           class="list-item">
+          <div class="avatar ${vipHtml}">${c.avatar}</div>
+          <div class="item-body">
+            <div class="item-top">
+              <div class="item-name">${c.name} ${tagHtml}</div>
+              <div class="item-time">${chat.time}</div>
+            </div>
+            <div class="item-msg">${chat.lastMsg}</div>
+          </div>
+          ${chat.unread ? `<div class="unread">${chat.unread}</div>` : ''}
+        </a>
+      `;
+    }
+
+    const pinned = CHATS.filter(c => c.pinned);
+    const all = CHATS.filter(c => !c.pinned);
+
+    document.getElementById('pinnedList').innerHTML = pinned.map(c => renderItem(c, true)).join('');
+    document.getElementById('chatList').innerHTML = all.map(c => renderItem(c, false)).join('');
+  </script>
+
+</body>
+</html>

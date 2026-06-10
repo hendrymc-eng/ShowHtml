@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会议纪要 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+  <style>
+    .summary-banner {
+      background: linear-gradient(135deg, var(--agent-meeting), #34d399);
+      color: #fff;
+      padding: 20px 16px;
+    }
+    .summary-banner h1 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .summary-banner .ai-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .summary-banner .meta {
+      font-size: 11px; opacity: 0.9;
+      font-family: var(--font-mono);
+    }
+    .summary-toolbar {
+      display: flex; gap: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    .summary-toolbar .tb-btn {
+      flex: 1; padding: 6px;
+      background: #f5f8fc; color: var(--ink);
+      border-radius: 4px; text-align: center;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .summary-toolbar .tb-btn:hover { background: #e8f2fc; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="meeting-list.html" class="page-back">‹</a>
+      <span class="page-title">会议纪要</span>
+    </div>
+    <span class="kicker">AI · SUMMARY</span>
+  </header>
+
+  <div class="summary-banner" id="banner">
+    <div class="ai-tag">🤖 AI 生成</div>
+    <h1 id="stitle">Q3 营销策略评审会</h1>
+    <div class="meta" id="smeta">2026-06-08 10:00-11:30 · 90 分钟</div>
+  </div>
+
+  <div class="summary-toolbar">
+    <div class="tb-btn">📋 复制</div>
+    <div class="tb-btn">📤 分享</div>
+    <div class="tb-btn">📥 导出</div>
+    <div class="tb-btn">🔁 重新生成</div>
+  </div>
+
+  <div class="summary-section" id="overview">
+    <h3>📋 会议概要</h3>
+    <div id="soverview" style="font-size: 13px; line-height: 1.7; color: var(--ink);"></div>
+  </div>
+
+  <div class="summary-section">
+    <h3>💬 关键讨论点</h3>
+    <ul id="skey"></ul>
+  </div>
+
+  <div class="summary-section">
+    <h3>✅ 决策事项</h3>
+    <ul id="sdecisions"></ul>
+  </div>
+
+  <div class="summary-section">
+    <h3>📌 行动项</h3>
+    <div id="sactions"></div>
+  </div>
+
+  <div class="summary-section" style="background: #fafbfc;">
+    <h3>📤 相关文档</h3>
+    <div style="font-size: 12px; color: var(--ink-2);">
+      · 2026Q2 营销复盘报告.pdf<br>
+      · Q3 营销预算草案 v2.xlsx<br>
+      · 竞品调研汇总.docx
+    </div>
+  </div>
+
+  <!-- 占位：避免被底部 4 tab 遮挡 -->
+  <div style="height: 80px;"></div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item active"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const mid = params.get('meetingId') || 'm02';
+    const s = MEETING_SUMMARY[mid];
+
+    if (s) {
+      document.getElementById('stitle').textContent = s.title;
+      document.getElementById('smeta').textContent = s.meta;
+      document.getElementById('soverview').textContent = s.overview;
+      document.getElementById('skey').innerHTML = s.keyPoints.map(k => `<li>${k}</li>`).join('');
+      document.getElementById('sdecisions').innerHTML = s.decisions.map(d => `<li>${d}</li>`).join('');
+      document.getElementById('sactions').innerHTML = s.actions.map(a => `
+        <div class="action-item">
+          <div class="ai-task">${a.task}</div>
+          <div class="ai-meta">
+            <span class="ai-owner">@${a.owner}</span>
+            <span>·</span>
+            <span>截止 ${a.deadline}</span>
+            <span>·</span>
+            <span style="color: var(--accent-red); font-weight: 700;">${a.priority}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+
+</body>
+</html>

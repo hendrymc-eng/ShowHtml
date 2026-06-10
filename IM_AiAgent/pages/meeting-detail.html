@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会议详情 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+  <style>
+    .meeting-detail-action {
+      display: flex; gap: 8px;
+      padding: 16px;
+      background: #fff;
+      position: fixed; bottom: 60px; left: 0; right: 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+    }
+    .meeting-detail-action .btn {
+      flex: 1; padding: 12px;
+      border-radius: 6px; text-align: center;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-record { background: var(--accent-red); color: #fff; }
+    .btn-join   { background: var(--umakex-blue); color: #fff; }
+    .btn-disabled { background: #e5e7eb; color: var(--ink-2); cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="meeting-list.html" class="page-back">‹</a>
+      <span class="page-title">会议详情</span>
+    </div>
+    <span class="kicker">MEETING</span>
+  </header>
+
+  <div class="meeting-detail-banner" id="banner">
+    <h1 id="mtitle">Q3 营销策略评审会</h1>
+    <div class="meta" id="mmeta">2026-06-10 14:00-15:30 · 90 分钟</div>
+  </div>
+
+  <div class="detail-section">
+    <h3>会议信息</h3>
+    <div style="font-size: 13px; line-height: 1.8; color: var(--ink);">
+      <div>📅 日期：<span id="mdate"></span></div>
+      <div>⏰ 时间：<span id="mtime"></span></div>
+      <div>📍 地点：腾讯会议（线上）</div>
+      <div>🆔 会议号：<span id="mid"></span></div>
+      <div>📌 主办：<span id="morg"></span></div>
+    </div>
+  </div>
+
+  <div class="detail-section">
+    <h3>参与人员 · <span id="mcount"></span></h3>
+    <div class="attendee-list" id="mattendees"></div>
+  </div>
+
+  <div class="detail-section">
+    <h3>会议议程</h3>
+    <ul class="agenda-list" id="magenda"></ul>
+  </div>
+
+  <div class="detail-section">
+    <h3>会议纪要</h3>
+    <div style="text-align: center; padding: 24px 0; color: var(--ink-2); font-size: 13px;">
+      <div style="font-size: 32px; margin-bottom: 8px;">🤖</div>
+      <div>会议结束后，AI 会议助手将自动生成纪要</div>
+      <div style="margin-top: 4px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;">AUTO-SUMMARY · 6/10 15:30</div>
+    </div>
+  </div>
+
+  <div class="meeting-detail-action" id="actions"></div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item active"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const mid = params.get('meetingId') || 'm01';
+    const m = MEETINGS.find(x => x.id === mid);
+
+    if (m) {
+      document.getElementById('mtitle').textContent = m.title;
+      document.getElementById('mmeta').textContent = `${m.startTime} → ${m.endTime} · ${m.duration} 分钟`;
+      document.getElementById('mdate').textContent = m.startTime.split(' ')[0];
+      document.getElementById('mtime').textContent = m.startTime.split(' ')[1] + ' - ' + m.endTime.split(' ')[1];
+      document.getElementById('mid').textContent = '725-388-2941';
+      document.getElementById('morg').textContent = m.organizer;
+      document.getElementById('mcount').textContent = m.attendees;
+      document.getElementById('mattendees').innerHTML = m.attendeeList.map(a => `<span class="attendee-chip">${a}</span>`).join('');
+      document.getElementById('magenda').innerHTML = m.agenda.map(a => `<li>${a}</li>`).join('');
+
+      // 底部操作按钮
+      const actions = document.getElementById('actions');
+      if (m.status === 'soon') {
+        actions.innerHTML = `<div class="btn btn-record">🔴 开始录制</div><div class="btn btn-join">进入会议</div>`;
+      } else if (m.status === 'scheduled') {
+        actions.innerHTML = `<div class="btn btn-disabled">未到时间</div><div class="btn btn-join">进入会议</div>`;
+      } else {
+        actions.innerHTML = `<div class="btn btn-disabled">会议已结束</div><div class="btn btn-join" onclick="location.href='agent-meeting.html?meetingId=${m.id}'">查看纪要</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

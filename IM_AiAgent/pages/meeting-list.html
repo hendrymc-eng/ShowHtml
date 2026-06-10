@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会议 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+  <style>
+    .meeting-top {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      background: #fff;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    .meeting-top .new-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--umakex-blue);
+      color: #fff;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .meeting-top .quick-link {
+      padding: 10px 16px;
+      background: #f5f8fc;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="../index.html" class="page-back">←</a>
+      <span class="page-title">会议</span>
+    </div>
+    <span class="kicker">MEETING · 3</span>
+  </header>
+
+  <div class="meeting-top">
+    <div class="new-btn">+ 预定会议</div>
+    <div class="quick-link">加入会议</div>
+  </div>
+
+  <div id="meetingList"></div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item active"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    document.getElementById('meetingList').innerHTML = MEETINGS.map(m => {
+      const statusTag = m.status === 'soon'
+        ? '<span class="meeting-tag soon">即将开始</span>'
+        : m.status === 'ended'
+          ? '<span class="meeting-tag ended">已结束</span>'
+          : '<span class="meeting-tag scheduled">待开始</span>';
+      const summaryTag = m.hasSummary
+        ? '<span class="meeting-tag summary">纪要已生成</span>'
+        : '';
+      return `
+        <a href="${m.status === 'ended' && m.hasSummary ? 'agent-meeting.html?meetingId=' + m.id : 'meeting-detail.html?meetingId=' + m.id}"
+           class="meeting-card ${m.status}">
+          <div class="meeting-title">${m.title} ${statusTag} ${summaryTag}</div>
+          <div class="meeting-time">${m.startTime} → ${m.endTime}</div>
+          <div class="meeting-meta">
+            <span>👥 ${m.attendees} 人</span>
+            <span>·</span>
+            <span>${m.organizer}</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  </script>
+
+</body>
+</html>

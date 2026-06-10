@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通讯录 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="../index.html" class="page-back">←</a>
+      <span class="page-title">通讯录</span>
+    </div>
+    <span class="kicker">CONTACT</span>
+  </header>
+
+  <!-- 顶栏：客服号入口 + 加号 -->
+  <div class="top-search">
+    <input class="search-input" placeholder="🔍  搜索联系人/群聊">
+    <div class="add-btn" title="加好友">+</div>
+  </div>
+
+  <!-- 3 Agent 卡片（突出展示） -->
+  <a href="agent-customer.html" class="agent-card-list cust">
+    <div class="ac-avatar">客</div>
+    <div class="ac-body">
+      <div class="ac-name">智能客服 <span class="kicker-tag blue" style="font-size:9px;padding:1px 5px;">客服</span></div>
+      <div class="ac-desc">7×24 在线 · 秒回咨询</div>
+    </div>
+    <div class="ac-arrow">›</div>
+  </a>
+
+  <a href="agent-sales.html" class="agent-card-list sales">
+    <div class="ac-avatar">销</div>
+    <div class="ac-body">
+      <div class="ac-name">AI 销冠·小销 <span class="kicker-tag orange" style="font-size:9px;padding:1px 5px;">销冠</span></div>
+      <div class="ac-desc">主动引导成交 · 5 阶段流水线</div>
+    </div>
+    <div class="ac-arrow">›</div>
+  </a>
+
+  <a href="agent-meeting.html" class="agent-card-list meet">
+    <div class="ac-avatar">议</div>
+    <div class="ac-body">
+      <div class="ac-name">会议助手 <span class="kicker-tag green" style="font-size:9px;padding:1px 5px;">会议</span></div>
+      <div class="ac-desc">会议纪要 · 文档总结</div>
+    </div>
+    <div class="ac-arrow">›</div>
+  </a>
+
+  <!-- 4 个分类 -->
+  <div class="cat-bar">
+    <a class="cat-btn">
+      <div class="cat-icon">新</div>
+      <span class="cat-name">新朋友</span>
+      <span class="cat-count">3</span>
+    </a>
+    <a class="cat-btn">
+      <div class="cat-icon" style="background: var(--umakex-purple);">私</div>
+      <span class="cat-name">私聊</span>
+      <span class="cat-count">12</span>
+    </a>
+    <a class="cat-btn">
+      <div class="cat-icon" style="background: var(--umakex-green);">群</div>
+      <span class="cat-name">群聊</span>
+      <span class="cat-count">5</span>
+    </a>
+    <a class="cat-btn">
+      <div class="cat-icon" style="background: #6b7280;">黑</div>
+      <span class="cat-name">黑名单</span>
+      <span class="cat-count">0</span>
+    </a>
+  </div>
+
+  <!-- 联系人列表 -->
+  <div id="contactList"></div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item active"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    // 只显示用户联系人（不显示 Agent，Agent 已经在上面卡片里）
+    const users = CONTACTS.filter(c => !c.isAgent);
+    document.getElementById('contactList').innerHTML = users.map(c => `
+      <a href="chat-single.html?contactId=${c.id}" class="list-item">
+        <div class="avatar ${c.isVip ? 'vip' : ''}">${c.avatar}</div>
+        <div class="item-body">
+          <div class="item-top">
+            <div class="item-name">${c.name}</div>
+          </div>
+          <div class="item-msg">${c.dept || ''}</div>
+        </div>
+        ${c.type === '群聊' ? '' : '<div class="private-btn">私聊</div>'}
+      </a>
+    `).join('');
+  </script>
+
+</body>
+</html>

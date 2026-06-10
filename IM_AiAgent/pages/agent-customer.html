@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>客服 Agent · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    body { background: var(--bg-warm); }
+    .page-body { max-width: 1200px; margin: 0 auto; padding: var(--s-6); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--s-6);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* 左侧：Agent 信息 */
+    .agent-info {
+      background: var(--umakex-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-3);
+      padding: var(--s-5);
+      position: sticky; top: 80px;
+    }
+    .agent-info .agent-icon {
+      width: 56px; height: 56px; border-radius: var(--r-2);
+      background: var(--agent-customer);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif); font-size: 24px; font-weight: 700;
+      margin-bottom: var(--s-3);
+    }
+    .agent-info h2 { font-family: var(--font-serif); font-size: 24px; margin-bottom: 4px; }
+    .agent-info .agent-en { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); letter-spacing: 0.05em; margin-bottom: var(--s-3); }
+    .agent-info p { color: var(--ink-2); line-height: 1.6; margin-bottom: var(--s-4); }
+
+    .capabilities { margin-bottom: var(--s-4); }
+    .capabilities h4 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--s-2); }
+    .cap-tag {
+      display: inline-block; padding: 4px 10px; margin: 2px 4px 2px 0;
+      background: var(--agent-customer-2); color: var(--agent-customer);
+      font-family: var(--font-mono); font-size: 10px; border-radius: var(--r-full);
+      letter-spacing: 0.05em;
+    }
+
+    .quick-test { padding: var(--s-3); background: var(--bg-warm-2); border-radius: var(--r-2); }
+    .quick-test h4 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--s-2); }
+    .quick-btn {
+      display: inline-block; padding: 6px 10px; margin: 2px 4px 2px 0;
+      background: #fff; border: 1px solid var(--border-2); border-radius: var(--r-1);
+      font-size: 11px; cursor: pointer; transition: all 0.15s;
+    }
+    .quick-btn:hover { background: var(--agent-customer); color: #fff; border-color: var(--agent-customer); }
+
+    /* 右侧：手机模型 + 对话 */
+    .chat-frame {
+      background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+      border-radius: 32px;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 2px #000;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .chat-frame::before {
+      content: ''; position: absolute; top: 18px; left: 50%;
+      transform: translateX(-50%);
+      width: 100px; height: 20px;
+      background: #000; border-radius: 0 0 12px 12px;
+      z-index: 10;
+    }
+    .chat-screen {
+      background: #ededed;
+      border-radius: 22px;
+      height: 600px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 14px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 20px;
+    }
+    .chat-header .back { color: #1a1a1a; font-size: 18px; cursor: pointer; }
+    .chat-header .avatar {
+      width: 36px; height: 36px; border-radius: 6px;
+      background: var(--agent-customer);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif); font-size: 16px; font-weight: 700;
+      position: relative;
+    }
+    .chat-header .avatar::after {
+      content: 'AI'; position: absolute; bottom: -2px; right: -2px;
+      background: var(--accent-red); color: #fff; font-size: 8px;
+      padding: 1px 3px; border-radius: 3px; font-family: var(--font-mono);
+      font-weight: 500;
+    }
+    .chat-header .info { flex: 1; }
+    .chat-header .name { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+    .chat-header .status { font-size: 11px; color: var(--agent-customer); }
+
+    .chat-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .msg {
+      max-width: 75%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      animation: msgIn 0.3s ease;
+    }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .msg.them {
+      background: #fff;
+      color: #1a1a1a;
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+    }
+    .msg.me {
+      background: #95ec69;
+      color: #1a1a1a;
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+    }
+    .msg.thinking {
+      background: #fff;
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+      display: flex; align-items: center; gap: 6px; padding: 12px 16px;
+    }
+
+    .chat-footer {
+      padding: 10px 12px;
+      background: #f7f7f7;
+      border-top: 1px solid #e5e5e5;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    .chat-send {
+      padding: 8px 16px;
+      background: var(--agent-customer);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .quick-replies { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 8px; background: #f7f7f7; }
+    .quick-reply {
+      padding: 5px 10px; background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 14px; font-size: 12px; color: #1a1a1a; cursor: pointer;
+    }
+    .quick-reply:hover { background: var(--agent-customer-2); color: var(--agent-customer); }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="agent-center.html" class="page-back">←</a>
+      <span class="page-title">客服 Agent</span>
+    </div>
+    <span class="kicker-tag blue">P0 · AGENT 1</span>
+  </header>
+
+  <main class="page-body">
+
+    <div class="layout">
+
+      <!-- 左侧 Agent 信息 -->
+      <aside class="agent-info">
+        <div class="agent-icon">客</div>
+        <span class="kicker-tag blue">P0 · CUSTOMER SERVICE</span>
+        <h2 class="mt-2">智能客服小客</h2>
+        <div class="agent-en">AI CUSTOMER · 7×24 ONLINE</div>
+        <p>7×24 在线智能客服，秒回客户咨询。处理订单、退款、物流、发票等高频问题，复杂场景无缝转人工。智能匹配 200+ FAQ，平均响应 2 秒。</p>
+
+        <div class="capabilities">
+          <h4>核心能力</h4>
+          <span class="cap-tag">关键词匹配</span>
+          <span class="cap-tag">多轮对话</span>
+          <span class="cap-tag">上下文记忆</span>
+          <span class="cap-tag">转人工</span>
+          <span class="cap-tag">满意度调研</span>
+        </div>
+
+        <div class="quick-test">
+          <h4>试试这些关键词</h4>
+          <span class="quick-btn" onclick="quickSend('怎么退款？')">退款</span>
+          <span class="quick-btn" onclick="quickSend('快递到哪了？')">物流</span>
+          <span class="quick-btn" onclick="quickSend('开发票')">发票</span>
+          <span class="quick-btn" onclick="quickSend('价格多少？')">价格</span>
+          <span class="quick-btn" onclick="quickSend('我要投诉')">投诉</span>
+        </div>
+      </aside>
+
+      <!-- 右侧手机模型 + 对话 -->
+      <div>
+        <div class="chat-frame">
+          <div class="chat-screen">
+            <div class="chat-header">
+              <span class="back" onclick="history.back()">‹</span>
+              <div class="avatar">客</div>
+              <div class="info">
+                <div class="name">智能客服</div>
+                <div class="status">● 在线</div>
+              </div>
+              <span style="font-size: 18px; color: #999;">⋯</span>
+            </div>
+
+            <div class="chat-body" id="chatBody">
+              <div class="msg them">您好！我是智能客服小客 👋</div>
+              <div class="msg them">请问您要咨询什么问题？</div>
+              <div class="msg them" style="font-size: 12px; color: #888; align-self: flex-start; background: transparent; padding: 4px 0;">我可以帮您处理：订单查询 / 退款 / 物流 / 发票 / 投诉</div>
+            </div>
+
+            <div class="quick-replies">
+              <span class="quick-reply" onclick="quickSend('怎么退款？')">怎么退款？</span>
+              <span class="quick-reply" onclick="quickSend('快递到哪了？')">快递查询</span>
+              <span class="quick-reply" onclick="quickSend('开发票')">开发票</span>
+            </div>
+
+            <div class="chat-footer">
+              <input type="text" class="chat-input" id="chatInput" placeholder="输入消息..." onkeypress="if(event.key==='Enter')sendMsg()">
+              <button class="chat-send" onclick="sendMsg()">发送</button>
+            </div>
+          </div>
+        </div>
+
+        <p style="text-align: center; margin-top: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); letter-spacing: 0.05em;">
+          ↑ 这是手机模型里的真实对话界面（420px 宽），输入即触发 mock AI 回复
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/mock-ai.js"></script>
+  <script>
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+
+    function appendMsg(text, from) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + from;
+      div.textContent = text;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showThinking() {
+      const div = document.createElement('div');
+      div.className = 'msg them thinking';
+      div.id = 'thinking';
+      div.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function hideThinking() {
+      const t = document.getElementById('thinking');
+      if (t) t.remove();
+    }
+
+    function sendMsg() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMsg(text, 'me');
+      chatInput.value = '';
+      showThinking();
+      setTimeout(() => {
+        hideThinking();
+        const reply = getAgentReply('customer', text);
+        appendMsg(reply, 'them');
+      }, 700 + Math.random() * 500);
+    }
+
+    function quickSend(text) {
+      chatInput.value = text;
+      sendMsg();
+    }
+  </script>
+
+</body>
+</html>

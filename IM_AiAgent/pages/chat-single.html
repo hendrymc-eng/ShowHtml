@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夏目 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+  <style>
+    .chat-page {
+      position: fixed; top: 64px; bottom: 0; left: 0; right: 0;
+      display: flex; flex-direction: column;
+    }
+    .chat-page-body { flex: 1; overflow-y: auto; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="chat-list.html" class="page-back">‹</a>
+      <span class="page-title" id="chatTitle">夏目</span>
+    </div>
+    <span class="kicker">CHAT</span>
+  </header>
+
+  <div class="chat-page">
+    <div class="chat-page-body" id="chatBody"></div>
+  </div>
+
+  <div class="chat-input-bar">
+    <div class="icon-btn">🎤</div>
+    <input type="text" class="msg-input" id="msgInput" placeholder="输入消息..." onkeypress="if(event.key==='Enter')sendMsg()">
+    <div class="icon-btn">😊</div>
+    <div class="icon-btn">+</div>
+    <div class="send-btn" onclick="sendMsg()">发送</div>
+  </div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item active"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    // 从 URL 拿 contactId
+    const params = new URLSearchParams(window.location.search);
+    const cid = params.get('contactId') || 'u01';
+    const contact = getContact(cid);
+    if (contact) {
+      document.getElementById('chatTitle').textContent = contact.name;
+    }
+
+    function renderInitial() {
+      const body = document.getElementById('chatBody');
+      body.innerHTML = CHAT_WITH_NATSUME.map(m => {
+        if (m.from === 'them') {
+          return `<div class="bubble them">${m.text}</div>`;
+        } else {
+          return `<div class="bubble me">${m.text}</div>`;
+        }
+      }).join('<div class="bubble-time">—— 14:20 ——</div>');
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function sendMsg() {
+      const input = document.getElementById('msgInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const body = document.getElementById('chatBody');
+      const div = document.createElement('div');
+      div.className = 'bubble me';
+      div.textContent = text;
+      body.appendChild(div);
+      input.value = '';
+      body.scrollTop = body.scrollHeight;
+    }
+
+    renderInitial();
+  </script>
+
+</body>
+</html>

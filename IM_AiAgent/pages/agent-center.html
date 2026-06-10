@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent 中心 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    body { background: var(--bg-warm); }
+    .page-body { max-width: 1200px; margin: 0 auto; padding: var(--s-6); }
+
+    .breadcrumb {
+      font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);
+      margin-bottom: var(--s-3); letter-spacing: 0.05em;
+    }
+    .breadcrumb a { color: var(--ink-2); }
+    .breadcrumb a:hover { color: var(--accent-red); }
+
+    .page-hero { margin-bottom: var(--s-6); }
+    .page-hero h1 { font-size: 32px; line-height: 1.2; margin-bottom: var(--s-3); }
+    .page-hero p { color: var(--ink-2); max-width: 600px; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--s-5);
+    }
+    .agent-detail {
+      background: var(--umakex-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-4);
+      overflow: hidden;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: flex; flex-direction: column;
+    }
+    .agent-detail:hover { transform: translateY(-4px); box-shadow: var(--sh-3); }
+    .agent-banner {
+      height: 80px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .agent-banner.cust { background: linear-gradient(135deg, var(--agent-customer), #6ba8e8); }
+    .agent-banner.sales { background: linear-gradient(135deg, var(--agent-sales), #ff8c5a); }
+    .agent-banner.meet { background: linear-gradient(135deg, var(--agent-meeting), #4ade80); }
+    .agent-banner-icon {
+      font-family: var(--font-serif); font-weight: 700; font-size: 32px; color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .agent-content { padding: var(--s-5); flex: 1; display: flex; flex-direction: column; }
+    .agent-content h3 { font-family: var(--font-serif); font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .agent-content .agent-en { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); letter-spacing: 0.05em; margin-bottom: var(--s-3); }
+    .agent-content p { color: var(--ink-2); font-size: 13px; line-height: 1.6; margin-bottom: var(--s-4); flex: 1; }
+
+    .caps-list { margin-bottom: var(--s-4); }
+    .caps-list li {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: 6px 0; font-size: 12px; color: var(--ink);
+      border-bottom: 1px dashed var(--border);
+    }
+    .caps-list li::before {
+      content: '✓'; color: var(--accent-red); font-weight: 700; font-size: 14px;
+    }
+
+    .agent-cta {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: var(--s-3); border-top: 1px solid var(--border);
+    }
+    .agent-cta-btn {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
+      color: var(--accent-red); cursor: pointer; font-weight: 500;
+    }
+    .agent-cta-btn::after { content: ' →'; transition: margin-left 0.2s; }
+    .agent-detail:hover .agent-cta-btn::after { content: ' →'; margin-left: 4px; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2);
+      padding: var(--s-3); background: var(--bg-warm-2); border-radius: var(--r-2);
+      margin-bottom: var(--s-4);
+    }
+    .stats-row .stat { text-align: center; font-family: var(--font-mono); }
+    .stats-row .stat-val { font-size: 18px; font-weight: 700; color: var(--ink); display: block; }
+    .stats-row .stat-lbl { font-size: 9px; color: var(--ink-2); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+
+    /* 流程示意 */
+    .flow-section {
+      margin-top: var(--s-7);
+      padding: var(--s-6);
+      background: var(--bg-warm-2);
+      border-radius: var(--r-3);
+    }
+    .flow-section h2 { font-family: var(--font-serif); font-size: 20px; margin-bottom: var(--s-4); }
+    .flow-row {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: var(--s-3); background: #fff; border-radius: var(--r-2);
+      margin-bottom: var(--s-2); font-size: 13px;
+    }
+    .flow-step {
+      padding: 4px 10px; background: var(--accent-red-3); color: var(--accent-red);
+      font-family: var(--font-mono); font-size: 10px; border-radius: var(--r-1);
+      font-weight: 500; letter-spacing: 0.05em;
+    }
+    .flow-arrow { color: var(--ink-3); font-family: var(--font-mono); }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="../index.html" class="page-back">←</a>
+      <span class="page-title">AI Agent 中心</span>
+    </div>
+    <span class="kicker">AGENTS · 3</span>
+  </header>
+
+  <main class="page-body">
+
+    <div class="breadcrumb">
+      <a href="../index.html">UMAKEX</a> · 我的 · 应用中心 · <span style="color: var(--ink)">AI AGENT 中心</span>
+    </div>
+
+    <div class="page-hero">
+      <span class="kicker">企业 IM 智能升级 · 3 AGENTS READY</span>
+      <h1 class="serif mt-2">让你的 IM 不只是聊天工具</h1>
+      <p>3 个 AI Agent 嵌入 UmakeX，覆盖咨询 / 销售 / 会议全场景。点击下方卡片，立即体验 Agent 对话。</p>
+    </div>
+
+    <!-- 3 Agent 详情卡 -->
+    <div class="grid-3 stagger">
+
+      <a href="agent-customer.html" class="agent-detail">
+        <div class="agent-banner cust"><div class="agent-banner-icon">客</div></div>
+        <div class="agent-content">
+          <span class="kicker-tag blue">P0 · 客服</span>
+          <h3 class="mt-2">客服 Agent</h3>
+          <div class="agent-en">CUSTOMER SERVICE · 7×24</div>
+          <p>7×24 在线智能客服，秒回客户咨询。处理订单、退款、物流、发票等高频问题，复杂场景无缝转人工。</p>
+          <div class="stats-row">
+            <div class="stat"><span class="stat-val">62%</span><span class="stat-lbl">节省人力</span></div>
+            <div class="stat"><span class="stat-val">2s</span><span class="stat-lbl">响应时间</span></div>
+            <div class="stat"><span class="stat-val">200+</span><span class="stat-lbl">FAQ 覆盖</span></div>
+          </div>
+          <ul class="caps-list">
+            <li>关键词智能匹配（退款/物流/发票/价格）</li>
+            <li>多轮对话 + 上下文记忆</li>
+            <li>人工坐席无缝转接</li>
+            <li>满意度调研 + 数据回流</li>
+          </ul>
+          <div class="agent-cta">
+            <span class="agent-cta-btn">立即体验对话</span>
+            <span class="subtitle">可输入</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="agent-sales.html" class="agent-detail">
+        <div class="agent-banner sales"><div class="agent-banner-icon">销</div></div>
+        <div class="agent-content">
+          <span class="kicker-tag orange">P0 · 销冠</span>
+          <h3 class="mt-2">AI 销冠 Agent</h3>
+          <div class="agent-en">SALES · 主动引导成交</div>
+          <p>专业销售顾问，主动出击。挖需、推荐、议价、促单、跟进 —— 全流程自动化，核心差异化，直接带来收入。</p>
+          <div class="stats-row">
+            <div class="stat"><span class="stat-val">+18%</span><span class="stat-lbl">转化提升</span></div>
+            <div class="stat"><span class="stat-val">¥4980</span><span class="stat-lbl">客单价</span></div>
+            <div class="stat"><span class="stat-val">×5</span><span class="stat-lbl">跟进效率</span></div>
+          </div>
+          <ul class="caps-list">
+            <li>开场 / 挖需 / 推荐 / 议价 / 促单 5 阶段</li>
+            <li>产品库 SKU 实时匹配</li>
+            <li>优惠话术 + 限时折扣推送</li>
+            <li>下单链接 + 支付引导</li>
+          </ul>
+          <div class="agent-cta">
+            <span class="agent-cta-btn">立即体验对话</span>
+            <span class="subtitle">可输入</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="agent-meeting.html" class="agent-detail">
+        <div class="agent-banner meet"><div class="agent-banner-icon">议</div></div>
+        <div class="agent-content">
+          <span class="kicker-tag green">P1 · 会议</span>
+          <h3 class="mt-2">会议 Agent</h3>
+          <div class="agent-en">MEETING · 纪要与总结</div>
+          <p>会议纪要 + 文档总结。说话人识别、关键信息抽取、行动项跟踪，让知识沉淀可复用，让会议效率 ×12。</p>
+          <div class="stats-row">
+            <div class="stat"><span class="stat-val">×12</span><span class="stat-lbl">纪要效率</span></div>
+            <div class="stat"><span class="stat-val">100%</span><span class="stat-lbl">行动项</span></div>
+            <div class="stat"><span class="stat-val">中/英</span><span class="stat-lbl">多语言</span></div>
+          </div>
+          <ul class="caps-list">
+            <li>实时录音 + ASR 转写</li>
+            <li>说话人分离 + 角色识别</li>
+            <li>关键决策 + 行动项自动提取</li>
+            <li>文档上传自动摘要</li>
+          </ul>
+          <div class="agent-cta">
+            <span class="agent-cta-btn">查看会议纪要</span>
+            <span class="subtitle">静态展示</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- 流程示意 -->
+    <div class="flow-section">
+      <h2 class="serif">典型使用流程</h2>
+
+      <div class="flow-row">
+        <span class="flow-step">进 IM</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">通讯录</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">客服号</span>
+        <span class="flow-arrow">→</span>
+        <span style="color: var(--agent-customer)">客服 Agent 自动答</span>
+      </div>
+
+      <div class="flow-row">
+        <span class="flow-step">客户进店</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">触发销冠</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">挖需</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">推荐</span>
+        <span class="flow-arrow">→</span>
+        <span style="color: var(--agent-sales)">引导下单（mock 支付）</span>
+      </div>
+
+      <div class="flow-row">
+        <span class="flow-step">开会</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">开始录制</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">结束</span>
+        <span class="flow-arrow">→</span>
+        <span style="color: var(--agent-meeting)">自动出纪要 + 行动项</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer style="text-align: center; padding: var(--s-6); color: var(--ink-2); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;">
+    project01-IM-AiAgent · §11 阶段 3 实施中 · 2026-06-09
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/im.css">
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="../index.html" class="page-back">←</a>
+      <span class="page-title">我的</span>
+    </div>
+    <span class="kicker">PROFILE</span>
+  </header>
+
+  <!-- 个人信息 -->
+  <div class="profile-header">
+    <div class="profile-avatar" id="avatar">陈</div>
+    <div class="profile-info">
+      <div class="profile-name" id="name">陈志远</div>
+      <div class="profile-account">@zhiyuan · 市场部</div>
+      <div class="profile-meta">
+        <span class="profile-tag">VIP</span>
+        <span class="profile-points">2,380 积分</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资料操作 -->
+  <div class="profile-actions">
+    <div class="action-btn">📱 二维码名片</div>
+    <div class="action-btn">✏️ 编辑资料</div>
+  </div>
+
+  <!-- 4 个基础菜单 -->
+  <div class="profile-section">
+    <div class="profile-section-title">基础服务</div>
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-icon">📦</div>
+        <div class="menu-name">订单</div>
+        <div class="menu-count">3</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon">🎫</div>
+        <div class="menu-name">卡券</div>
+        <div class="menu-count">5</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon">📁</div>
+        <div class="menu-name">收藏</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon">📜</div>
+        <div class="menu-name">历史</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 应用中心（重点：AI Agent 中心） -->
+  <div class="profile-section">
+    <div class="profile-section-title">应用中心</div>
+    <div class="app-grid">
+      <a href="agent-center.html" class="app-item">
+        <div class="app-icon red">🤖</div>
+        <div class="app-name">AI Agent 中心</div>
+        <div class="app-new">NEW</div>
+      </a>
+      <div class="app-item">
+        <div class="app-icon purple">🏢</div>
+        <div class="app-name">我的企业</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon amber">👑</div>
+        <div class="app-name">会员中心</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon green">📊</div>
+        <div class="app-name">数据中心</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon">🎨</div>
+        <div class="app-name">模板</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon gray">⚙️</div>
+        <div class="app-name">设置</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon purple">🛡️</div>
+        <div class="app-name">隐私</div>
+      </div>
+      <div class="app-item">
+        <div class="app-icon green">💬</div>
+        <div class="app-name">帮助</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 tab 底栏 -->
+  <nav class="tabbar">
+    <a href="chat-list.html" class="tabbar-item"><div class="tab-icon">💬</div>消息</a>
+    <a href="contact.html" class="tabbar-item"><div class="tab-icon">📒</div>通讯录</a>
+    <a href="meeting-list.html" class="tabbar-item"><div class="tab-icon">📅</div>会议</a>
+    <a href="profile.html" class="tabbar-item active"><div class="tab-icon">👤</div>我的</a>
+  </nav>
+
+  <script src="../js/mock-data.js"></script>
+  <script>
+    const data = PROFILE_DATA;
+    document.getElementById('avatar').textContent = data.avatar;
+    document.getElementById('name').textContent = data.name;
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+/* ========================================
+   base.css — 设计系统（变量 + reset + 组件）
+   按规则手册 §4 老板审美：暖白红黑 + DM Mono + 手机模型
+   ======================================== */
+
+/* === Google Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
+/* === CSS 变量（设计 token） === */
+:root {
+  /* 老板配色 */
+  --bg-warm:        #faf8f5;
+  --bg-warm-2:      #f5f0e8;
+  --bg-warm-3:      #efe8da;
+  --ink:            #1a1a1a;
+  --ink-2:          #4a4a4a;
+  --ink-3:          #8a8a8a;
+  --accent-red:     #ff3b30;
+  --accent-red-2:   #e53935;
+  --accent-red-3:   #fff5f4;
+  --border:         #e5e0d5;
+  --border-2:       #d4ccba;
+
+  /* UmakeX 借鉴色 */
+  --umakex-green:   #00c853;
+  --umakex-purple:  #8b5cf6;
+  --umakex-blue:    #4a90e2;
+  --umakex-bg:      #f5f8fc;
+  --umakex-card:    #ffffff;
+
+  /* Agent 配色 */
+  --agent-customer: #4a90e2;
+  --agent-customer-2: #e8f2fc;
+  --agent-sales:    #ff6b35;
+  --agent-sales-2:  #fff0e8;
+  --agent-meeting:  #10b981;
+  --agent-meeting-2: #e8f8f1;
+
+  /* 字体 */
+  --font-mono:      'DM Mono', 'SF Mono', Menlo, monospace;
+  --font-serif:     'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif;
+  --font-body:      -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+
+  /* 间距 */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  /* 圆角 */
+  --r-1: 4px;  --r-2: 8px;  --r-3: 12px;  --r-4: 16px;
+  --r-5: 24px; --r-full: 999px;
+
+  /* 阴影 */
+  --sh-1: 0 1px 2px rgba(0,0,0,0.04);
+  --sh-2: 0 2px 8px rgba(0,0,0,0.06);
+  --sh-3: 0 8px 24px rgba(0,0,0,0.08);
+  --sh-phone: 0 4px 16px rgba(0,0,0,0.12), 0 0 0 4px #1a1a1a;
+}
+
+/* === Reset === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg-warm);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; outline: none; border: none; }
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; }
+
+/* === 字体工具类 === */
+.mono     { font-family: var(--font-mono); }
+.serif    { font-family: var(--font-serif); font-weight: 700; }
+.kicker   { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-red); font-weight: 500; }
+.subtitle { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
+
+/* === Kicker 标签 === */
+.kicker-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--accent-red-3);
+  color: var(--accent-red);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--r-full);
+  font-weight: 500;
+}
+.kicker-tag.green  { background: var(--agent-meeting-2); color: var(--agent-meeting); }
+.kicker-tag.blue   { background: var(--agent-customer-2); color: var(--agent-customer); }
+.kicker-tag.orange { background: var(--agent-sales-2); color: var(--agent-sales); }
+
+/* === 按钮 === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 10px 18px;
+  border-radius: var(--r-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--accent-red); color: #fff; }
+.btn-primary:hover { background: var(--accent-red-2); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--border-2); }
+.btn-ghost:hover { background: var(--bg-warm-2); }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+
+/* === 卡片 === */
+.card {
+  background: var(--umakex-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--s-5);
+  transition: all 0.2s ease;
+}
+.card:hover { box-shadow: var(--sh-2); transform: translateY(-2px); }
+
+/* === 手机模型（老板铁律） === */
+.phone-frame {
+  width: 74px;
+  height: 148px;
+  border-radius: var(--r-3);
+  background: #000;
+  padding: 3px;
+  box-shadow: var(--sh-phone);
+  flex-shrink: 0;
+  position: relative;
+}
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 3px;
+  background: #333;
+  border-radius: 2px;
+  z-index: 2;
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-warm);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--ink-2);
+}
+
+.phone-frame.lg {
+  width: 148px; height: 296px;
+}
+.phone-frame.lg::before {
+  width: 48px; height: 6px;
+  top: 12px;
+}
+
+.phone-frame.xl {
+  width: 220px; height: 440px;
+}
+.phone-frame.xl::before {
+  width: 72px; height: 8px;
+  top: 18px;
+}
+
+/* === 通用动画 === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.4s ease both; }
+.stagger > * { animation: fadeInUp 0.4s ease both; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.30s; }
+
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; }
+  30% { opacity: 1; }
+}
+.typing-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--ink-2);
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: typing 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* === 头部/页脚 === */
+.page-header {
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-warm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.page-title { font-family: var(--font-serif); font-size: 18px; font-weight: 700; }
+.page-back { color: var(--ink-2); font-size: 18px; cursor: pointer; }
+.page-back:hover { color: var(--accent-red); }
+
+/* === 工具类 === */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.gap-1 { gap: var(--s-1); } .gap-2 { gap: var(--s-2); } .gap-3 { gap: var(--s-3); }
+.gap-4 { gap: var(--s-4); } .gap-5 { gap: var(--s-5); } .gap-6 { gap: var(--s-6); }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.text-center { text-align: center; }
+.mt-1 { margin-top: var(--s-1); } .mt-2 { margin-top: var(--s-2); } .mt-3 { margin-top: var(--s-3); }
+.mt-4 { margin-top: var(--s-4); } .mt-5 { margin-top: var(--s-5); } .mt-6 { margin-top: var(--s-6); }
+.mb-2 { margin-bottom: var(--s-2); } .mb-3 { margin-bottom: var(--s-3); } .mb-4 { margin-bottom: var(--s-4); }
+.text-red { color: var(--accent-red); }
+.text-2 { color: var(--ink-2); }
+.text-3 { color: var(--ink-3); }
+.text-sm { font-size: 12px; }
+.text-lg { font-size: 16px; }
+.text-xl { font-size: 20px; }
+.fw-500 { font-weight: 500; }
+.fw-700 { font-weight: 700; }
+.w-full { width: 100%; }
+.rounded { border-radius: var(--r-2); }
+.rounded-full { border-radius: var(--r-full); }
+.cursor-pointer { cursor: pointer; }
+.hidden { display: none; }

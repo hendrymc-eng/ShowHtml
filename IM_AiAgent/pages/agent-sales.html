@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 销冠 Agent · UmakeX</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    body { background: var(--bg-warm); }
+    .page-body { max-width: 1200px; margin: 0 auto; padding: var(--s-6); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--s-6);
+      align-items: start;
+    }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+    /* 左侧：Agent 信息 */
+    .agent-info {
+      background: var(--umakex-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-3);
+      padding: var(--s-5);
+      position: sticky; top: 80px;
+    }
+    .agent-info .agent-icon {
+      width: 56px; height: 56px; border-radius: var(--r-2);
+      background: var(--agent-sales);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif); font-size: 24px; font-weight: 700;
+      margin-bottom: var(--s-3);
+    }
+    .agent-info h2 { font-family: var(--font-serif); font-size: 24px; margin-bottom: 4px; }
+    .agent-info .agent-en { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); letter-spacing: 0.05em; margin-bottom: var(--s-3); }
+    .agent-info p { color: var(--ink-2); line-height: 1.6; margin-bottom: var(--s-4); }
+
+    .pipeline {
+      background: var(--agent-sales-2);
+      border-radius: var(--r-2);
+      padding: var(--s-3);
+      margin-bottom: var(--s-4);
+    }
+    .pipeline h4 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--s-2); }
+    .pipeline-flow { display: flex; flex-wrap: wrap; gap: 4px; }
+    .pipeline-step {
+      padding: 4px 8px;
+      background: #fff;
+      border: 1px solid var(--agent-sales);
+      color: var(--agent-sales);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      border-radius: var(--r-1);
+    }
+
+    .capabilities { margin-bottom: var(--s-4); }
+    .capabilities h4 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--s-2); }
+    .cap-tag {
+      display: inline-block; padding: 4px 10px; margin: 2px 4px 2px 0;
+      background: var(--agent-sales-2); color: var(--agent-sales);
+      font-family: var(--font-mono); font-size: 10px; border-radius: var(--r-full);
+      letter-spacing: 0.05em;
+    }
+
+    .quick-test { padding: var(--s-3); background: var(--bg-warm-2); border-radius: var(--r-2); }
+    .quick-test h4 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--s-2); }
+    .quick-btn {
+      display: inline-block; padding: 6px 10px; margin: 2px 4px 2px 0;
+      background: #fff; border: 1px solid var(--border-2); border-radius: var(--r-1);
+      font-size: 11px; cursor: pointer; transition: all 0.15s;
+    }
+    .quick-btn:hover { background: var(--agent-sales); color: #fff; border-color: var(--agent-sales); }
+
+    /* 右侧：手机模型 + 对话（复用客服页样式） */
+    .chat-frame {
+      background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+      border-radius: 32px;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 2px #000;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .chat-frame::before {
+      content: ''; position: absolute; top: 18px; left: 50%;
+      transform: translateX(-50%);
+      width: 100px; height: 20px;
+      background: #000; border-radius: 0 0 12px 12px;
+      z-index: 10;
+    }
+    .chat-screen {
+      background: #ededed;
+      border-radius: 22px;
+      height: 600px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 14px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 20px;
+    }
+    .chat-header .back { color: #1a1a1a; font-size: 18px; cursor: pointer; }
+    .chat-header .avatar {
+      width: 36px; height: 36px; border-radius: 6px;
+      background: var(--agent-sales);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif); font-size: 16px; font-weight: 700;
+      position: relative;
+    }
+    .chat-header .avatar::after {
+      content: 'AI'; position: absolute; bottom: -2px; right: -2px;
+      background: var(--accent-red); color: #fff; font-size: 8px;
+      padding: 1px 3px; border-radius: 3px; font-family: var(--font-mono);
+      font-weight: 500;
+    }
+    .chat-header .info { flex: 1; }
+    .chat-header .name { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+    .chat-header .status { font-size: 11px; color: var(--agent-sales); }
+
+    .chat-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .msg {
+      max-width: 75%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      animation: msgIn 0.3s ease;
+    }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .msg.them {
+      background: #fff;
+      color: #1a1a1a;
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+    }
+    .msg.me {
+      background: #95ec69;
+      color: #1a1a1a;
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+    }
+    .msg.thinking {
+      background: #fff;
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+      display: flex; align-items: center; gap: 6px; padding: 12px 16px;
+    }
+    /* 产品卡片 */
+    .product-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 12px;
+      align-self: flex-start;
+      max-width: 85%;
+      animation: msgIn 0.3s ease;
+    }
+    .product-card .tag {
+      display: inline-block; padding: 2px 6px; background: var(--accent-red);
+      color: #fff; font-family: var(--font-mono); font-size: 9px;
+      border-radius: 3px; margin-bottom: 6px;
+    }
+    .product-card .pname { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .product-card .pdesc { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .product-card .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .product-card .price { font-size: 18px; color: var(--accent-red); font-weight: 700; }
+    .product-card .original { font-size: 12px; color: #999; text-decoration: line-through; }
+    .product-card .buy-btn {
+      width: 100%; padding: 8px;
+      background: var(--accent-red); color: #fff; border: none;
+      border-radius: 6px; font-size: 13px; cursor: pointer;
+    }
+
+    .chat-footer {
+      padding: 10px 12px;
+      background: #f7f7f7;
+      border-top: 1px solid #e5e5e5;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    .chat-send {
+      padding: 8px 16px;
+      background: var(--agent-sales);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .quick-replies { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 8px; background: #f7f7f7; }
+    .quick-reply {
+      padding: 5px 10px; background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 14px; font-size: 12px; color: #1a1a1a; cursor: pointer;
+    }
+    .quick-reply:hover { background: var(--agent-sales-2); color: var(--agent-sales); }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div>
+      <a href="agent-center.html" class="page-back">←</a>
+      <span class="page-title">AI 销冠 Agent</span>
+    </div>
+    <span class="kicker-tag orange">P0 · AGENT 2 · 核心差异化</span>
+  </header>
+
+  <main class="page-body">
+
+    <div class="layout">
+
+      <!-- 左侧 Agent 信息 -->
+      <aside class="agent-info">
+        <div class="agent-icon">销</div>
+        <span class="kicker-tag orange">P0 · SALES CHAMPION</span>
+        <h2 class="mt-2">销售顾问·小销</h2>
+        <div class="agent-en">AI SALES · PROACTIVE CLOSER</div>
+        <p>专业销售顾问，主动出击。挖需、推荐、议价、促单、跟进 —— 全流程自动化。把"销售冠军"的打法灌进 AI，让每个客户都享受顶配服务。</p>
+
+        <div class="pipeline">
+          <h4>5 阶段销售流水线</h4>
+          <div class="pipeline-flow">
+            <span class="pipeline-step">1. 开场</span>
+            <span class="pipeline-step">2. 挖需</span>
+            <span class="pipeline-step">3. 推荐</span>
+            <span class="pipeline-step">4. 议价</span>
+            <span class="pipeline-step">5. 促单</span>
+          </div>
+        </div>
+
+        <div class="capabilities">
+          <h4>核心能力</h4>
+          <span class="cap-tag">产品 SKU 匹配</span>
+          <span class="cap-tag">优惠话术</span>
+          <span class="cap-tag">限时折扣</span>
+          <span class="cap-tag">下单引导</span>
+          <span class="cap-tag">二次跟进</span>
+        </div>
+
+        <div class="quick-test">
+          <h4>试试这些关键词</h4>
+          <span class="quick-btn" onclick="quickSend('你好')">打个招呼</span>
+          <span class="quick-btn" onclick="quickSend('多少钱？')">问价格</span>
+          <span class="quick-btn" onclick="quickSend('有什么功能？')">问功能</span>
+          <span class="quick-btn" onclick="quickSend('要看案例')">要案例</span>
+          <span class="quick-btn" onclick="quickSend('好，下单')">直接下单</span>
+        </div>
+      </aside>
+
+      <!-- 右侧手机模型 + 对话 -->
+      <div>
+        <div class="chat-frame">
+          <div class="chat-screen">
+            <div class="chat-header">
+              <span class="back" onclick="history.back()">‹</span>
+              <div class="avatar">销</div>
+              <div class="info">
+                <div class="name">AI 销冠·小销</div>
+                <div class="status">● 在线 · 已读</div>
+              </div>
+              <span style="font-size: 18px; color: #999;">⋯</span>
+            </div>
+
+            <div class="chat-body" id="chatBody">
+              <div class="msg them">您好！我是您的专属销售顾问小销 👋</div>
+              <div class="msg them">看到您对 VIC 套餐感兴趣，我整理了最适合您的方案</div>
+              <div class="msg them">5 分钟给您讲明白～ 请问您是个人用还是团队用？</div>
+            </div>
+
+            <div class="quick-replies">
+              <span class="quick-reply" onclick="quickSend('你好')">你好</span>
+              <span class="quick-reply" onclick="quickSend('多少钱？')">多少钱？</span>
+              <span class="quick-reply" onclick="quickSend('试用')">想试用</span>
+            </div>
+
+            <div class="chat-footer">
+              <input type="text" class="chat-input" id="chatInput" placeholder="输入消息..." onkeypress="if(event.key==='Enter')sendMsg()">
+              <button class="chat-send" onclick="sendMsg()">发送</button>
+            </div>
+          </div>
+        </div>
+
+        <p style="text-align: center; margin-top: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); letter-spacing: 0.05em;">
+          ↑ 真实手机模型对话界面 · 销冠 Agent 用 5 阶段流水线引导客户下单
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/mock-ai.js"></script>
+  <script>
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+    let turnCount = 0;
+
+    function appendMsg(text, from) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + from;
+      div.textContent = text;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function appendProduct(p) {
+      const div = document.createElement('div');
+      div.className = 'product-card';
+      div.innerHTML = `
+        <span class="tag">${p.tag}</span>
+        <div class="pname">${p.icon} ${p.name}</div>
+        <div class="pdesc">${p.desc}</div>
+        <div class="price-row">
+          <span class="price">¥${p.price.toLocaleString()}</span>
+          <span class="original">¥${p.original.toLocaleString()}</span>
+        </div>
+        <button class="buy-btn" onclick="quickSend('好，下单')">立即下单</button>
+      `;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showThinking() {
+      const div = document.createElement('div');
+      div.className = 'msg them thinking';
+      div.id = 'thinking';
+      div.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function hideThinking() {
+      const t = document.getElementById('thinking');
+      if (t) t.remove();
+    }
+
+    function sendMsg() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMsg(text, 'me');
+      chatInput.value = '';
+      turnCount++;
+      showThinking();
+      setTimeout(() => {
+        hideThinking();
+        const input = text.toLowerCase();
+
+        // 触发产品卡片：第 2 轮问价格/功能时
+        if (turnCount === 1 && (input.includes('多') || input.includes('钱') || input.includes('价'))) {
+          appendMsg(getAgentReply('sales', text), 'them');
+          setTimeout(() => {
+            appendProduct(PRODUCTS[1]);  // 推荐专业套餐
+          }, 500);
+        } else if (turnCount === 2 && (input.includes('好') || input.includes('下') || input.includes('买'))) {
+          // 第 2 轮直接下单，简化回复
+          appendMsg('已为您生成订单 🎉\n\n【VIC 专业套餐】¥4980\n内部券 -¥500\n新人券 -¥200\n────────────\n实付 ¥4280\n\n🎁 赠送 1 次专家 1v1\n\n[点击立即支付]', 'them');
+        } else {
+          appendMsg(getAgentReply('sales', text), 'them');
+        }
+      }, 700 + Math.random() * 500);
+    }
+
+    function quickSend(text) {
+      chatInput.value = text;
+      sendMsg();
+    }
+  </script>
+
+</body>
+</html>
