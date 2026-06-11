@@ -9,8 +9,9 @@ let currentTitle = '消息';
 
 // Agent 对话历史
 const agentChats = {
-  'agent-customer': [],
-  'agent-sales': [],
+  'agent-grow': [],
+  'agent-customer': [], // legacy
+  'agent-sales': [],    // legacy
   'agent-meeting': []
 };
 
@@ -78,7 +79,8 @@ function updateHeader(viewName, arg) {
     'meeting-detail': '会议详情',
     'chat-single': getContact(arg)?.name || '对话',
     'agent-chat': getContact(arg)?.name || 'AI Agent',
-    'agent-meeting': '会议纪要'
+    'agent-meeting': '会议纪要',
+    'agent-config': getContact(AG_ID_MAP[arg] || arg)?.name || 'Agent 配置',
   };
 
   document.getElementById('phoneTitle').textContent = titles[viewName] || '';
@@ -189,6 +191,10 @@ function bindGlobalClicks() {
         viewStack.push('agent-center');
         renderCurrentView();
         break;
+      case 'open-agent-config':
+        viewStack.push('agent-config:' + agent);
+        renderCurrentView();
+        break;
       case 'send-chat':
         sendChat(cid);
         break;
@@ -237,9 +243,12 @@ function bindGlobalClicks() {
     if (e.target.id.startsWith('msgInput-')) {
       const cid = e.target.dataset.cid;
       if (cid) sendChat(cid);
-    } else if (e.target.id.startsWith('agentInput-')) {
+    } else if (e.target.id.startsWith('agentInput-') || e.target.id.startsWith('accChatInput-')) {
       const agentId = e.target.dataset.agent;
-      if (agentId) sendAgent(agentId);
+      if (agentId) {
+        const text = e.target.value.trim();
+        if (text) accSend(agentId, text);
+      }
     }
   });
 }
@@ -583,6 +592,148 @@ function updateTime() {
   const m = String(now.getMinutes()).padStart(2, '0');
   el.textContent = `${h}:${m}`;
 }
+
+/* ============================================
+   AI Agent 中心：开通/关闭 + 配置中心 chat（v9）
+   ============================================ */
+
+// 短 id → 全 id（兼容 mockAIReply）
+const AG_ID_MAP = {
+  grow:  'agent-grow',
+  cust:  'agent-customer',  // legacy
+  sales: 'agent-sales',     // legacy
+  meet:  'agent-meeting',
+  img:   'agent-img',
+  write: 'agent-write',
+  audio: 'agent-audio',
+};
+const AG_FULL_TO_SHORT = Object.fromEntries(Object.entries(AG_ID_MAP).map(([k,v]) => [v, k]));
+
+// 全局：开通/关闭 Agent
+window.__toggleAgent = function(id) {
+  try {
+    const state = JSON.parse(localStorage.getItem('umakex_agent_state') || '{}');
+    state[id] = !state[id];
+    localStorage.setItem('umakex_agent_state', JSON.stringify(state));
+    renderCurrentView();
+    const NAMES = { grow:'客户增长', cust:'客服', sales:'AI 销冠', meet:'会议', img:'AI 生图', write:'AI 写作', audio:'AI 录音' };
+    const name = NAMES[id] || id;
+    showPrototypeToast(state[id] ? `✅ ${name} Agent 已开通` : `${name} Agent 已关闭`, state[id] ? 'success' : 'info');
+  } catch(e) {
+    showPrototypeToast('操作失败：' + e.message, 'error');
+  }
+};
+
+// 3 个新 Agent 的 mock 回复（img/write/audio）
+const AG_NEW_REPLIES = {
+  'agent-img': (text) => {
+    if (/海报|宣传|促销/.test(text)) return `已生成 4 张「${text}」候选图（写实/插画/水彩/漫画各 1）\n\n需要换风格或加 LOGO 吗？`;
+    if (/头像|照片|自拍/.test(text)) return `已生成 3 张「${text}」头像候选\n\n需要换背景或加滤镜吗？`;
+    return `收到～「${text}」\n\n正在调用 SDXL 生成 4 张候选图，预计 8-12 秒。需要指定风格吗？`;
+  },
+  'agent-write': (text) => {
+    if (/朋友圈|种草/.test(text)) return `种草朋友圈 v1：\n\n"姐妹们！挖到宝了 💎\n\n[VIC 套餐] 一个月只要 ¥199\n每天 1 杯奶茶钱 = 1 整年的私聊自由\n关键是不用凑单！不用会员日！\n打开手机就能跟"真人"聊\n\n⭐ 我已经续了 3 个月了\n\n#VIC套餐 #私域神器"\n\n— 240 字 · 适配朋友圈，需要再短或更长吗？`;
+    if (/详情页/.test(text)) return `详情页文案结构（3 段式）：\n\n【痛点】还在为消息回复不及时丢单？\n【方案】VIC 套餐 = 24h 在线 + 真人级 AI\n【行动】¥199/月，首月 9 折\n\n需要我展开成完整详情页（800-1200 字）吗？`;
+    if (/周报/.test(text)) return `本周周报框架：\n\n一、本周核心数据\n- 营收 ¥X（+X%）\n- 新增客户 X\n\n二、关键动作\n- 1. XX 上线\n- 2. XX 活动\n\n三、下周计划\n- XX\n\n需要我按这个框架生成完整周报吗？`;
+    return `好的，告诉我「${text}」的写什么、给谁看、什么场景～`;
+  },
+  'agent-audio': (text) => {
+    if (/会议|纪要/.test(text)) return `📋 30 分钟会议摘要：\n\n📌 核心决策\n- 7 月活动方案 v3 通过\n- 预算 5 万 → 7 万\n\n✅ 待办\n- 张三：海报初稿 (周五)\n- 李四：渠道对接 (周三)\n\n🎯 关键数字\n- 预期 GMV ¥120 万\n- ROI 目标 3.2`;
+    if (/决策|要点/.test(text)) return `已提取 3 个关键决策：\n\n1. 上线 7 月限时活动 (5-7 月)\n2. 暂停私域投放，预算转入直播\n3. 招 1 名内容运营 (Q3 前到岗)`;
+    if (/待办|任务|行动/.test(text)) return `已生成 5 条待办清单：\n\n☐ 1. 张三 / 海报初稿 / 7.5\n☐ 2. 李四 / 渠道对接 / 7.3\n☐ 3. 王五 / 直播脚本 / 7.7\n☐ 4. 赵六 / 选品清单 / 7.4\n☐ 5. 钱七 / 数据复盘 / 7.10`;
+    return `好的，请上传录音或粘贴文字，我帮您提取「${text}」～`;
+  },
+};
+
+// 通用回复兜底
+function accMockReply(agentKey, text) {
+  if (AG_NEW_REPLIES[agentKey]) return AG_NEW_REPLIES[agentKey](text);
+  // cust/sales/meet 走 mock-ai.js
+  const reply = mockAIReply(agentKey, text);
+  return reply.text || '收到～';
+}
+
+// 配置中心 chat 发送
+function accSend(agentId, text) {
+  if (!text || !text.trim()) return;
+  const cfgView = document.querySelector(`.phone-view[data-view="agent-config"][data-agent="${agentId}"]`);
+  if (!cfgView) return;
+  const body = cfgView.querySelector(`#accChatBody-${agentId}`);
+  const input = cfgView.querySelector(`#accChatInput-${agentId}`);
+  if (!body) return;
+
+  // append user bubble
+  const userRow = document.createElement('div');
+  userRow.className = 'acc-msg me';
+  userRow.textContent = text;
+  body.appendChild(userRow);
+  if (input) input.value = '';
+  body.scrollTop = body.scrollHeight;
+
+  // typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'acc-msg them thinking';
+  typing.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  body.appendChild(typing);
+  body.scrollTop = body.scrollHeight;
+
+  // 调 mock
+  setTimeout(() => {
+    typing.remove();
+    const fullId = AG_ID_MAP[agentId] || agentId;
+    const replyText = accMockReply(fullId, text);
+    const themRow = document.createElement('div');
+    themRow.className = 'acc-msg them';
+    themRow.textContent = replyText;
+    body.appendChild(themRow);
+    body.scrollTop = body.scrollHeight;
+  }, 700 + Math.random() * 500);
+}
+
+// 配置中心：事件代理（点击）
+document.addEventListener('click', (e) => {
+  // 快速测试按钮 / 快速回复 chip
+  const qb = e.target.closest('.acc-qbtn, .acc-qrep');
+  if (qb) {
+    const cfgView = qb.closest('.phone-view[data-view="agent-config"]');
+    if (!cfgView) return;
+    const agentId = cfgView.dataset.agent;
+    const text = qb.dataset.quick || qb.textContent.trim();
+    accSend(agentId, text);
+    return;
+  }
+  // 发送按钮
+  const sendBtn = e.target.closest('.acc-chat-send');
+  if (sendBtn) {
+    const cfgView = sendBtn.closest('.phone-view[data-view="agent-config"]');
+    if (!cfgView) return;
+    const agentId = cfgView.dataset.agent;
+    const input = cfgView.querySelector(`#accChatInput-${agentId}`);
+    accSend(agentId, input ? input.value : '');
+    return;
+  }
+  // 返回按钮
+  const back = e.target.closest('.acc-chat-back');
+  if (back) {
+    if (viewStack.length > 1) {
+      viewStack.pop();
+      renderCurrentView();
+    }
+    return;
+  }
+});
+
+// 配置中心：Enter 发送
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (e.target.classList && e.target.classList.contains('acc-chat-input')) {
+    e.preventDefault();
+    const cfgView = e.target.closest('.phone-view[data-view="agent-config"]');
+    if (!cfgView) return;
+    const agentId = cfgView.dataset.agent;
+    accSend(agentId, e.target.value);
+  }
+});
 
 /* ============================================
    启动

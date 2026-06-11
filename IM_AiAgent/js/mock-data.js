@@ -16,15 +16,22 @@ const CONTACTS = [
     lastMsg: '已修复，请重试', time: '周一' },
   { id: 'u06', name: '运营-阿明', avatar: '阿', type: '私聊', dept: '运营部',
     lastMsg: '活动数据已出', time: '6/5' },
-  { id: 'agent-customer', name: '智能客服', avatar: '客', type: 'Agent',
-    tag: '客服', tagColor: 'blue', isAgent: true,
-    desc: '7×24 在线，秒回您的咨询', welcome: '您好，我是智能客服小客。请问您要咨询什么？我可以帮您处理订单、退款、物流等问题。' },
-  { id: 'agent-sales', name: 'AI 销冠·小销', avatar: '销', type: 'Agent',
-    tag: '销冠', tagColor: 'orange', isAgent: true,
-    desc: '专业销售顾问，主动引导成交', welcome: '您好！我是您的专属销售顾问小销。👋\n看到您对 VIC 套餐感兴趣，我整理了最适合您的方案，5 分钟给您讲明白～' },
+  { id: 'agent-grow', name: '客户增长助手', avatar: '增', type: 'Agent',
+    tag: '增长', tagColor: 'rose', isAgent: true,
+    desc: '智能客服 + AI 销冠一体化，接待咨询到促成成交全流程',
+    welcome: '您好！我是您的客户增长助手。\n我同时承担客服（秒回咨询、处理售后）和销冠（挖掘需求、促单成交）的角色。有什么可以帮您？' },
   { id: 'agent-meeting', name: '会议助手', avatar: '议', type: 'Agent',
     tag: '会议', tagColor: 'green', isAgent: true,
-    desc: '自动出纪要、总结文档', welcome: '我可以帮您做会议纪要、文档总结、行动项跟踪。' }
+    desc: '自动出纪要、总结文档', welcome: '我可以帮您做会议纪要、文档总结、行动项跟踪。' },
+  { id: 'agent-img', name: 'AI 生图·小艺', avatar: '🎨', type: 'Agent',
+    tag: '生图', tagColor: 'purple', isAgent: true,
+    desc: '文字转图片，秒出素材', welcome: '我是 AI 生图小艺 🎨\n\n告诉我您想画什么 —— 海报 / 产品图 / 头像 / 插画，一句话生成。' },
+  { id: 'agent-write', name: 'AI 写作·小笔', avatar: '✍️', type: 'Agent',
+    tag: '写作', tagColor: 'red', isAgent: true,
+    desc: '种草 / 详情页 / 周报 / 活动话术', welcome: '我是 AI 写作小笔 ✍️\n\n告诉我您要写什么、给谁看、什么场景 —— 我帮您起草。' },
+  { id: 'agent-audio', name: 'AI 录音·小记', avatar: '🎙️', type: 'Agent',
+    tag: '录音', tagColor: 'amber', isAgent: true,
+    desc: '录音转文字，30 秒看完 1 小时会议', welcome: '我是 AI 录音小记 🎙️\n\n上传录音或粘贴文字，我帮您提取要点 / 决策 / 待办。' }
 ];
 
 // === helper：按 id 查联系人 ===

@@ -117,14 +117,14 @@ const VIEWS = {
   /* ============ AI 已处理消息 ============ */
   'ai-inbox': () => {
     const items = [
-      ['销冠', '高意向客户：王总追问 VIC 套餐价格', '已生成报价话术 · 建议 10 分钟内跟进', 'HOT', 'agent-sales'],
-      ['客服', '3 条退款咨询集中出现', '已归并为售后工单 · 等待订单号', '售后', 'agent-customer'],
+      ['销冠', '高意向客户：王总追问 VIC 套餐价格', '已生成报价话术 · 建议 10 分钟内跟进', 'HOT', 'agent-grow'],
+      ['客服', '3 条退款咨询集中出现', '已归并为售后工单 · 等待订单号', '售后', 'agent-grow'],
       ['会议', '产品周会录音已完成转写', '纪要草稿 86% · 3 个待确认行动项', '纪要', 'agent-meeting'],
-      ['销冠', '李女士查看企业版 4 次', 'AI 判断为复购机会 · 推荐优惠券', '机会', 'agent-sales'],
-      ['客服', '会员权益问题重复提问', '已匹配 FAQ · 自动回复草稿可发送', 'FAQ', 'agent-customer'],
-      ['销冠', '群聊里有人询问付款方式', '建议发送分期/对公转账说明', '成交', 'agent-sales'],
+      ['销冠', '李女士查看企业版 4 次', 'AI 判断为复购机会 · 推荐优惠券', '机会', 'agent-grow'],
+      ['客服', '会员权益问题重复提问', '已匹配 FAQ · 自动回复草稿可发送', 'FAQ', 'agent-grow'],
+      ['销冠', '群聊里有人询问付款方式', '建议发送分期/对公转账说明', '成交', 'agent-grow'],
       ['会议', '客户需求评审有新 @我', '已摘出 2 条风险点 · 建议确认排期', '风险', 'agent-meeting'],
-      ['客服', '黑名单用户重复私信', '已降低优先级 · 不触发提醒', '低优先', 'agent-customer']
+      ['客服', '黑名单用户重复私信', '已降低优先级 · 不触发提醒', '低优先', 'agent-grow']
     ];
     return `
       <div class="phone-view" data-view="ai-inbox">
@@ -354,79 +354,97 @@ const VIEWS = {
 
   /* ============ AI Agent 中心：6 Agent 库 + 已开通区（方案 C）============ */
   'agent-center': () => {
-    // 6 Agent 静态数据
+    // 5 Agent 静态数据（客户服务 + AI 销冠已合并为客户增长助手）
     const AGENTS = [
-      { id:'cust',  name:'客服 Agent',    icon:'客', color:'#4A90E2', colorSoft:'#e8f0fe', en:'7×24 ONLINE',      desc:'秒回咨询/退款/物流',         kicker:'P0 · 客服' },
-      { id:'sales', name:'AI 销冠 Agent',  icon:'销', color:'#f59e0b', colorSoft:'#fef3c7', en:'PROACTIVE SALES',   desc:'挖需/推荐/议价/促单 5 阶段', kicker:'P0 · 销冠' },
-      { id:'meet',  name:'会议 Agent',     icon:'议', color:'#10b981', colorSoft:'#d1fae5', en:'AUTO SUMMARY',      desc:'录音转文字 + 纪要 + 行动项', kicker:'P1 · 会议' },
-      { id:'img',   name:'AI 生图 Agent',  icon:'🎨', color:'#8B5CF6', colorSoft:'#f3e8ff', en:'TEXT TO PICTURE',   desc:'海报/产品图/头像 4 风格',     kicker:'P1 · 生图' },
-      { id:'write', name:'AI 写作 Agent',  icon:'✍️', color:'#ef4444', colorSoft:'#fee2e2', en:'COPY & CONTENT',    desc:'种草/详情页/周报/活动话术',  kicker:'P1 · 写作' },
-      { id:'audio', name:'AI 录音总结',    icon:'🎙️', color:'#f59e0b', colorSoft:'#fef3c7', en:'VOICE TO SUMMARY',  desc:'30 秒看完 1 小时录音',         kicker:'P1 · 录音' },
+      { id:'grow',  name:'客户增长助手', icon:'增', color:'#c8102e', colorSoft:'#fee2e2', en:'SERVICE + SALES',    desc:'客服接待 / 售后处理 / 需求挖掘 / 报价促单', kicker:'P0 · 增长中枢', stat:'12 模块', lead:'客服与销冠合并后的主控 Agent' },
+      { id:'meet',  name:'会议 Agent',   icon:'议', color:'#10b981', colorSoft:'#d1fae5', en:'AUTO SUMMARY',     desc:'录音转文字 + 纪要 + 行动项', kicker:'P1 · 会议', stat:'6 配置', lead:'会议内容自动沉淀' },
+      { id:'img',   name:'AI 生图 Agent',icon:'🎨', color:'#8B5CF6', colorSoft:'#f3e8ff', en:'TEXT TO PICTURE',  desc:'海报/产品图/头像 4 风格',     kicker:'P1 · 生图', stat:'6 配置', lead:'营销素材即时生成' },
+      { id:'write', name:'AI 写作 Agent',icon:'✍️', color:'#ef4444', colorSoft:'#fee2e2', en:'COPY & CONTENT',   desc:'种草/详情页/周报/活动话术',  kicker:'P1 · 写作', stat:'6 配置', lead:'内容发布前置生产' },
+      { id:'audio', name:'AI 录音总结',  icon:'🎙️', color:'#06b6d4', colorSoft:'#cffafe', en:'VOICE TO SUMMARY', desc:'30 秒看完 1 小时录音',         kicker:'P1 · 录音', stat:'6 配置', lead:'语音资产结构化' },
     ];
 
-    // 读取开通状态（localStorage）
     const state = (() => { try { return JSON.parse(localStorage.getItem('umakex_agent_state') || '{}'); } catch(e){ return {}; } })();
     const onCount = AGENTS.filter(a => state[a.id]).length;
+    const core = AGENTS[0];
+    const others = AGENTS.slice(1);
+    const opened = AGENTS.filter(a => state[a.id]);
 
-    // === 已开通区 ===
-    const onCards = onCount === 0
-      ? '<div class="ac-on-empty"><span>🤖</span><p>还没开通任何 Agent<br><em>从下方「Agent 库」选一个开通</em></p></div>'
-      : AGENTS.filter(a => state[a.id]).map(a => `
-          <div class="ac-on-card" style="border-left:3px solid ${a.color}" data-action="open" data-target="agent-config:${a.id}">
-            <div class="ac-on-icon" style="background:${a.color}">${a.icon}</div>
-            <div class="ac-on-info">
-              <strong>${a.name}</strong>
-              <span>${a.en} · ${a.desc}</span>
-            </div>
-            <em class="ac-on-go" style="color:${a.color}">进入 ›</em>
-          </div>
-        `).join('');
+    const openRail = opened.length
+      ? opened.map((a, i) => `
+        <div class="ac-open-row" data-action="open" data-target="agent-config:${a.id}">
+          <span>${String(i + 1).padStart(2, '0')}</span>
+          <strong>${a.name}</strong>
+          <em>${a.en}</em>
+        </div>`).join('')
+      : `<div class="ac-open-empty"><strong>还没有开通 Agent</strong><span>先开通「客户增长助手」，再按场景补充会议、生图、写作、录音能力。</span></div>`;
 
-    // === Agent 库（条目列表）===
-    const storeCards = AGENTS.map(a => {
+    const libraryRows = AGENTS.map((a, i) => {
       const on = !!state[a.id];
+      const isCore = a.id === 'grow';
       return `
-        <div class="ac-store-card ${on ? 'is-on' : ''}" data-id="${a.id}">
-          <div class="ac-store-top" style="background:${a.color}">
-            <span class="ac-store-icon">${a.icon}</span>
-          </div>
-          <div class="ac-store-body">
+        <div class="ac-library-row ${isCore ? 'is-core' : ''} ${on ? 'is-on' : ''}" data-action="${on ? 'open' : ''}" data-target="${on ? `agent-config:${a.id}` : ''}" style="--agent-color:${a.color};--agent-soft:${a.colorSoft};">
+          <div class="ac-library-no">${String(i + 1).padStart(2, '0')}</div>
+          <div class="ac-library-mark">${a.icon}</div>
+          <div class="ac-library-copy">
+            <span>${a.kicker}</span>
             <strong>${a.name}</strong>
-            <em>${a.en}</em>
             <p>${a.desc}</p>
           </div>
-          <button class="ac-store-btn ${on ? 'on' : 'off'}" onclick="window.__toggleAgent('${a.id}')">
-            ${on ? '✓ 已开通' : '+ 开通'}
-          </button>
-        </div>
-      `;
+          <div class="ac-library-meta">
+            <em>${a.stat}</em>
+            <button class="ac-library-btn ${on ? 'on' : 'off'}" onclick="event.stopPropagation(); window.__toggleAgent('${a.id}')">${on ? '已开通' : '开通'}</button>
+          </div>
+        </div>`;
     }).join('');
 
+    const sceneRows = others.map(a => `
+      <div class="ac-scene-row" style="--agent-color:${a.color};">
+        <span>${a.icon}</span>
+        <div><strong>${a.lead}</strong><em>${a.en}</em></div>
+      </div>`).join('');
+
     return `
-      <div class="phone-view" data-view="agent-center" id="phoneAgentCenter">
-        <div class="ac-hero">
-          <span class="kicker-tag" style="background:#fee2e2;color:#c8102e;">AGENT CENTER</span>
-          <h2>我的 AI Agent 中心</h2>
-          <p>已开通 <strong>${onCount}</strong> / 6 · 按需开启，立即可用</p>
-        </div>
-
-        <div class="ac-section">
-          <div class="ac-section-label">
-            <span>已开通</span>
-            <em>${onCount} 个</em>
+      <div class="phone-view ac-editorial" data-view="agent-center" id="phoneAgentCenter">
+        <section class="ac-mag-hero">
+          <div class="ac-mag-kicker">AGENT CENTER · 5 AGENTS</div>
+          <div class="ac-mag-titleline">
+            <h2>AI Agent<br>能力中心</h2>
+            <div class="ac-mag-number">05</div>
           </div>
-          <div class="ac-on-list">${onCards}</div>
-        </div>
-
-        <div class="ac-section">
-          <div class="ac-section-label">
-            <span>Agent 库</span>
-            <em>点击开通</em>
+          <p>客服 Agent 和 AI 销冠 Agent 已合并为「客户增长助手」。一个主控 Agent 覆盖接待、售后、挖需、报价、成交。</p>
+          <div class="ac-mag-stats">
+            <span><strong>${onCount}</strong><em>已开通</em></span>
+            <span><strong>12</strong><em>增长模块</em></span>
+            <span><strong>4</strong><em>专项能力</em></span>
           </div>
-          <div class="ac-store-grid">${storeCards}</div>
-        </div>
+        </section>
 
-        <div style="height: 60px;"></div>
+        <section class="ac-core-card ${state.grow ? 'is-on' : ''}" style="--agent-color:${core.color};--agent-soft:${core.colorSoft};" ${state.grow ? 'data-action="open" data-target="agent-config:grow"' : ''}>
+          <div class="ac-core-index">P0</div>
+          <div class="ac-core-main">
+            <span>${core.en}</span>
+            <strong>${core.name}</strong>
+            <p>${core.desc}</p>
+          </div>
+          <button class="ac-core-btn" onclick="event.stopPropagation(); window.__toggleAgent('grow')">${state.grow ? '已开通 · 进入配置' : '开通增长中枢'}</button>
+        </section>
+
+        <section class="ac-section ac-scene-section">
+          <div class="ac-section-label"><span>专项能力</span><em>SCENES · 4</em></div>
+          <div class="ac-scene-grid">${sceneRows}</div>
+        </section>
+
+        <section class="ac-section ac-open-section">
+          <div class="ac-section-label"><span>已开通</span><em>${onCount} 个</em></div>
+          <div class="ac-open-rail">${openRail}</div>
+        </section>
+
+        <section class="ac-section ac-library-section">
+          <div class="ac-section-label"><span>Agent 库</span><em>点击开通 / 配置</em></div>
+          <div class="ac-library-list">${libraryRows}</div>
+        </section>
+
+        <div class="sub-safe-space"></div>
       </div>
     `;
   },
@@ -435,15 +453,20 @@ const VIEWS = {
   'agent-config': (agentId) => {
     // 6 Agent 完整数据（kicker/title/en/desc/caps/quick/greet）
     const AG = {
+      grow: {
+        kicker:'P0 · CUSTOMER GROWTH', title:'客户增长助手', en:'AI GROWTH · SERVICE + SALES',
+        desc:'把智能客服和 AI 销冠合成一个增长中枢：先接待咨询、处理售后，再识别购买意向、推荐产品、生成报价、推动成交。一个 Agent 覆盖客户全生命周期。',
+        caps:['秒回咨询','售后工单','需求识别','商品推荐','报价促单','复购跟进'],
+      },
       cust: {
-        kicker:'P0 · CUSTOMER SERVICE', title:'智能销冠·小客', en:'AI SALES CHAMPION · MASTER AGENT',
-        desc:'全能销售主控 AI，统筹知识库、商品库、客户画像，自动调度 5 大专项 Agent。洞察客户意图、推荐最优方案、全程转化跟进，把每个线索都变成成交。',
-        caps:['多 Agent 调度','意图识别','话术推荐','成交转化','实时数据看板'],
+        kicker:'P0 · CUSTOMER GROWTH', title:'客户增长助手', en:'AI GROWTH · SERVICE + SALES',
+        desc:'智能客服和 AI 销冠已合并为客户增长助手，客服接待与销售转化统一在一个配置中心管理。',
+        caps:['秒回咨询','售后工单','需求识别','商品推荐','报价促单','复购跟进'],
       },
       sales: {
-        kicker:'P0 · SALES CHAMPION', title:'销售顾问·小销', en:'AI SALES · PROACTIVE CLOSER',
-        desc:'专业销售顾问，主动出击。挖需、推荐、议价、促单、跟进 —— 全流程自动化。把"销售冠军"打法灌进 AI，让每个客户都享受顶配服务。',
-        caps:['产品 SKU 匹配','优惠话术','限时折扣','下单引导','二次跟进'],
+        kicker:'P0 · CUSTOMER GROWTH', title:'客户增长助手', en:'AI GROWTH · SERVICE + SALES',
+        desc:'智能客服和 AI 销冠已合并为客户增长助手，销售话术、报价、转化漏斗继续保留为子配置模块。',
+        caps:['秒回咨询','售后工单','需求识别','商品推荐','报价促单','复购跟进'],
       },
       meet: {
         kicker:'P1 · MEETING TRANSCRIBER', title:'会议助手·小议', en:'AI MEETING · VOICE TO SUMMARY',
@@ -469,22 +492,22 @@ const VIEWS = {
 
     // 各 Agent 专属子配置（cust=6个通用管理卡，其他各自专属）
     const SUB_CONFIGS = {
-      cust: [ // 销冠主控 → 6 大管理模块
-        ['📚', '知识库', '知识库配置', 'FAQ / 话术库 / 售后规则', 'agent-kb'],
+      grow: [ // 客户增长 → 客服 + 销冠合并后的 12 个模块
+        ['📚', '客服知识库', '客服知识库配置', 'FAQ / 售后规则 / 自动回复', 'agent-kb'],
+        ['🏷', '客户标签', '客户标签', '高意向 / 售后 / 黑名单', 'agent-tags'],
         ['🛒', '商品库', '商品库配置', '商品 / 价格 / 卖点说明', 'agent-products'],
         ['👤', '人设风格', '人设配置', '语气 / 边界 / 禁用词', 'agent-persona'],
-        ['📊', '数据看板', '数据看板', '对话 / 订单 / 转化率', 'agent-analytics'],
-        ['📋', '工作日志', '工作日志', 'Agent 操作记录', 'agent-logs'],
-        ['🏷', '客户标签', '客户标签', '高意向 / 售后 / 黑名单', 'agent-tags'],
-      ],
-      sales: [ // 销售 → 专项配置
         ['📦', '产品知识', '产品知识库', 'SKU / 功能 / 卖点', 'sales-products'],
         ['⚔️', '竞品对比', '竞品对比库', 'vs 同行 / 差异化话术', 'sales-competitors'],
-        ['💬', '话术库', '销售话术库', '开场 / 挖需 / 促单', 'sales-scripts'],
+        ['💬', '销售话术', '销售话术库', '开场 / 挖需 / 促单', 'sales-scripts'],
         ['🎯', '跟进策略', '客户跟进策略', '首次联系 / 复购提醒', 'sales-followup'],
-        ['📊', '转化漏斗', '转化漏斗配置', '线索→成交各阶段', 'sales-funnel'],
+        ['📊', '增长看板', '数据看板', '咨询 / 订单 / 转化率', 'agent-analytics'],
+        ['📈', '转化漏斗', '转化漏斗配置', '线索→成交各阶段', 'sales-funnel'],
         ['🔄', '报价模板', '报价模板库', '标准报价 / 折扣规则', 'sales-quote'],
+        ['📋', '工作日志', '工作日志', 'Agent 操作记录', 'agent-logs'],
       ],
+      cust: [],
+      sales: [],
       meet: [ // 会议 → 专项配置
         ['🎙️', '录音设置', '录音识别配置', 'ASR / 语言 / 降噪', 'meet-recording'],
         ['👥', '发言分离', '说话人分离', '角色标注 / 自动编号', 'meet-speakers'],
@@ -523,19 +546,29 @@ const VIEWS = {
     const agentFullId = (typeof AG_ID_MAP !== 'undefined' && AG_ID_MAP[agentId]) || agentId;
     const agent = getContact(agentFullId);
     if (!agent) return VIEWS['agent-center']();
-    const cfg = AG[agentId] || AG.cust;
-    const subConfigs = SUB_CONFIGS[agentId] || SUB_CONFIGS.cust;
+    const cfg = AG[agentId] || AG.grow;
+    const subConfigs = (SUB_CONFIGS[agentId] && SUB_CONFIGS[agentId].length ? SUB_CONFIGS[agentId] : SUB_CONFIGS.grow);
+    const AGENT_VISUAL = {
+      grow:  { color:'#c8102e', soft:'#fee2e2', avatar:'增' },
+      cust:  { color:'#c8102e', soft:'#fee2e2', avatar:'增' },
+      sales: { color:'#c8102e', soft:'#fee2e2', avatar:'增' },
+      meet:  { color:'#10b981', soft:'#d1fae5', avatar:'议' },
+      img:   { color:'#8b5cf6', soft:'#f3e8ff', avatar:'艺' },
+      write: { color:'#ef4444', soft:'#fee2e2', avatar:'笔' },
+      audio: { color:'#06b6d4', soft:'#cffafe', avatar:'记' },
+    };
+    const visual = AGENT_VISUAL[agentId] || AGENT_VISUAL.cust;
 
     const capHTML = cfg.caps.map(t => `<span class="acc-cap">${t}</span>`).join('');
 
     return `
       <div class="phone-view agent-subpage" data-view="agent-config" data-agent="${agentId}">
         <!-- Hero：Agent 介绍卡 -->
-        <div class="acc-hero" style="border-left:3px solid ${agent.color}">
+        <div class="acc-hero" style="border-left:3px solid ${visual.color}">
           <div class="acc-hero-top">
-            <div class="acc-hero-icon" style="background:${agent.color}">${agent.avatar}</div>
+            <div class="acc-hero-icon" style="background:${visual.color}">${visual.avatar}</div>
             <div class="acc-hero-id">
-              <span class="kicker-tag" style="background:${agent.colorSoft || '#e8f0fe'};color:${agent.color}">${cfg.kicker}</span>
+              <span class="kicker-tag" style="background:${visual.soft};color:${visual.color}">${cfg.kicker}</span>
               <h2 class="acc-hero-title">${cfg.title}</h2>
               <div class="acc-hero-en">${cfg.en}</div>
             </div>
@@ -553,16 +586,17 @@ const VIEWS = {
             <span>${agentId === 'cust' ? '管理模块' : '功能配置'}</span>
             <em>CONFIG · ${subConfigs.length} 项</em>
           </div>
-          <div class="acc-config-grid">
-            ${subConfigs.map(c => `
-              <div class="acc-config-card" data-action="open" data-target="${c[4]}">
+          <div class="acc-config-grid acc-config-editorial">
+            ${subConfigs.map((c, idx) => `
+              <div class="acc-config-card ${idx === 0 ? 'is-primary' : ''}" data-action="open" data-target="${c[4]}">
+                <div class="acc-config-index">${String(idx + 1).padStart(2, '0')}</div>
                 <div class="acc-config-icon">${c[0]}</div>
-                <div>
+                <div class="acc-config-copy">
                   <strong>${c[1]}</strong>
                   <span>${c[2]}</span>
                   <em>${c[3]}</em>
                 </div>
-                <b>配置 ›</b>
+                <b>${idx === 0 ? '进入主配置 ›' : '打开 ›'}</b>
               </div>
             `).join('')}
           </div>
@@ -1635,6 +1669,170 @@ const VIEWS = {
     `;
   },
 
+'sales-products': () => {
+    const products = [
+      ['企业版 10 席', '团队管理·数据看板·专属客服', '高客单', '#'],
+      ['销售自动化包', 'AI 销冠 + 商品卡 + 线索标签', '加购', '#'],
+      ['VIC 年卡', '长期客户首推，降低月均成本', '推荐', '#'],
+      ['基础版 3 席', '轻量消息·助理·快捷回复', '日常', '#'],
+    ];
+    return `
+    <div class="phone-view agent-subpage" data-view="sales-products">
+      <div class="sub-hero" style="border-left:3px solid #f59e0b"><span>PRODUCT KNOWLEDGE</span><strong>产品知识库</strong><em>SKU / 功能 / 卖点 / 适用客户 — 每个产品附带推荐策略</em></div>
+      <div class="sub-toolbar"><button>＋ 添加产品</button><button>导入 SKU</button><button>训练卖点</button></div>
+      <div class="add-panel compact-add">
+        <div class="add-panel-head"><strong>添加新产品</strong><span>录入后 AI 自动学习卖点和推荐策略</span></div>
+        <input placeholder="产品名称（如 企业版 10 席）">
+        <textarea placeholder="产品描述、核心卖点、适用客户场景"></textarea>
+        <div class="form-two"><input placeholder="价格 / 折扣区间"><button>保存</button></div>
+      </div>
+      <div class="sub-section-title"><span>在售产品</span><em>${products.length} 个主推</em></div>
+      <div class="product-config-list">
+        ${products.map(p => `
+          <div>
+            <strong>${p[0]}</strong>
+            <span>${p[1]}</span>
+            <i>${p[2]}</i>
+          </div>
+        `).join('')}
+      </div>
+      <div class="sub-section-title"><span>推荐逻辑规则</span><em>AI 分配策略</em></div>
+      <div class="rule-sheet">
+        <div><strong>人数 + 预算匹配</strong><span>先问团队规模和预算范围，再匹配对应套餐。</span></div>
+        <div><strong>价格敏感 → 年卡</strong><span>客户强调"太贵"或"预算有限"时，优先推荐 VIC 年卡。</span></div>
+        <div><strong>团队客户 → 企业版</strong><span>提到"团队管理"、"多人协作"、"权限"直接推荐企业版 10 席。</span></div>
+      </div>
+      <div class="sub-safe-space"></div>
+    </div>`;
+  },
+
+  /* ============ 补齐子页精修版（会议/生图/写作） ============ */
+  'meet-recording': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="meet-recording">
+        <div class="sub-hero" style="border-left:3px solid #10b981"><span>RECORDING SETTINGS</span><strong>录音设置</strong><em>ASR 引擎 / 语言 / 降噪 / 自动分段 — 会议 Agent 的耳朵</em></div>
+        <div class="sub-toolbar"><button>测试麦克风</button><button>保存配置</button></div>
+        <div class="sub-section-title"><span>音频处理</span><em>技术参数</em></div>
+        <div class="tech-matrix"><div><strong>识别引擎</strong><span>Deepgram Nova-2 · 98.3% 准确率</span></div><div><strong>识别语言</strong><span>中文普通话 + 英文混合，自动检测切换</span></div><div><strong>智能降噪</strong><span>会议室回声 · 键盘声 · 空调底噪 · 人声增强</span></div><div><strong>自动分段</strong><span>按发言停顿 + 议题切换 + 说话人变化，默认 15s 最小间隔</span></div></div>
+        <div class="sub-section-title"><span>高级规则</span><em>按需配置</em></div>
+        <div class="rule-sheet"><div><strong>静音过滤</strong><span>连续 5s 以上静音自动跳过，不生成空白段落。</span></div><div><strong>语速适配</strong><span>慢速说话保留完整自然停顿；快速说话自动收紧间距。</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'meet-speakers': () => VIEWS['meeting-attendees'](),
+  'meet-template': () => VIEWS['meeting-summary-template'](),
+  'meet-todo': () => VIEWS['meeting-actions'](),
+  'meet-calendar': () => {
+    const agenda=[{t:'今日 14:00',d:'产品方案会 · 自动开启录音提醒'},{t:'明日 10:30',d:'客户复盘会 · 自动准备上次纪要'},{t:'周五 16:00',d:'销售周会 · 输出行动项看板'},{t:'下周一 09:30',d:'产品评审 · 自动发送参会提醒'}];
+    return `
+      <div class="phone-view agent-subpage" data-view="meet-calendar">
+        <div class="sub-hero" style="border-left:3px solid #10b981"><span>CALENDAR SYNC</span><strong>日程同步</strong><em>同步会议 · 自动录音 · 纪要归档一条龙</em></div>
+        <div class="sub-toolbar"><button>连接日历</button><button>同步近 7 天</button></div>
+        <div class="sub-section-title"><span>即将到来的会议</span><em>联动 AI 自动准备</em></div>
+        <div class="agenda-list">${agenda.map(a=>`<div><strong>${a.t}</strong><span>${a.d}</span></div>`).join('')}</div>
+        <div class="rule-sheet"><div><strong>自动规则</strong><span>已授权的日历，AI 会在每次会议开始前 5 分钟自动启动录音和准备上次纪要。</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'meet-translate': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="meet-translate">
+        <div class="sub-hero" style="border-left:3px solid #10b981"><span>BILINGUAL OUTPUT</span><strong>双语翻译</strong><em>中英双语字幕 + 纪要对译 + 术语保护</em></div>
+        <div class="sub-toolbar"><button>添加术语</button><button>翻译测试</button></div>
+        <div class="sub-section-title"><span>输出格式</span><em>默认配置</em></div>
+        <div class="tech-matrix"><div><strong>字幕</strong><span>中文原文 + 英文译文同步显示</span></div><div><strong>纪要</strong><span>中文完整版 + 英文摘要 + 关键决策双语对照</span></div><div><strong>术语保护</strong><span>品牌名、产品名、客户名保持原文，不自动翻译</span></div></div>
+        <div class="sub-section-title"><span>术语库</span><em>已录入 5 条</em></div>
+        <div class="keyword-cloud"><span>ARR</span><span>Pipeline</span><span>PoC</span><span>企业版</span><span>私域</span></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'img-sizes': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="img-sizes">
+        <div class="sub-hero" style="border-left:3px solid #8b5cf6"><span>SIZE PRESETS</span><strong>尺寸设置</strong><em>9 种常用输出尺寸，覆盖社媒与电商</em></div>
+        <div class="sub-toolbar"><button>自定义尺寸</button><button>储存为默认</button></div>
+        <div class="style-grid"><div class="style-card active"><b>1:1 正方形</b><p>商品主图 · 头像</p></div><div class="style-card"><b>3:4 小红书</b><p>种草封面</p></div><div class="style-card"><b>16:9 横幅</b><p>Banner · 头图</p></div><div class="style-card"><b>9:16 竖屏</b><p>短视频封面</p></div><div class="style-card"><b>4:3 展示</b><p>产品详情</p></div><div class="style-card"><b>2:3 卡片</b><p>电商列表</p></div></div>
+        <div class="rule-sheet"><div><strong>高清输出</strong><span>所有预设支持 2K/4K 输出，比例锁定，智能主体居中裁切。</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'img-text': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="img-text">
+        <div class="sub-hero" style="border-left:3px solid #8b5cf6"><span>TEXT OVERLAY</span><strong>文字叠加</strong><em>标题 / 卖点 / 价格标签 / 水印 — 自动排版引擎</em></div>
+        <div class="sub-toolbar"><button>新建规则</button><button>保存模板</button></div>
+        <div class="tech-matrix"><div><strong>字体风格</strong><span>黑体标题 + 宋体副标题 + DM Mono 标签</span></div><div><strong>位置优先级</strong><span>左上 ＞ 底部安全区 ＞ 非主体区域</span></div><div><strong>颜色规则</strong><span>暖白底用黑字，深色底用白字，强调用红色</span></div></div>
+        <div class="sub-section-title"><span>模板预设</span><em>3 套</em></div>
+        <div class="rule-sheet"><div><strong>电商标题</strong><span>左上角 · 品名 + 价格 · 黑底白字 18px</span></div><div><strong>种草标注</strong><span>底部 · 半透明白底 + 红强调标签</span></div><div><strong>水印保护</strong><span>右下角 · 品牌 DM · 半透明 10px</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'img-batch': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="img-batch">
+        <div class="sub-hero" style="border-left:3px solid #8b5cf6"><span>BATCH GENERATION</span><strong>批量生成</strong><em>产品 × 风格 × 尺寸组合，一次输出 N 张</em></div>
+        <div class="analytics-kpis"><div><strong>12</strong><span>待生成</span></div><div><strong>48</strong><span>今日完成</span></div><div><strong>92%</strong><span>通过率</span></div><div><strong>2</strong><span>等待中</span></div></div>
+        <div class="sub-section-title"><span>批量策略</span><em>防重复 · 防溢出</em></div>
+        <div class="rule-sheet"><div><strong>去重规则</strong><span>同一产品最多 6 张风格变体，SSIM > 95% 自动去重。</span></div><div><strong>尺寸组合</strong><span>仅勾选的尺寸输出，避免渲染浪费。</span></div></div>
+        <div class="sub-toolbar" style="margin-top:10px"><button>导入商品列表</button><button>启动任务</button></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'img-hd': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="img-hd">
+        <div class="sub-hero" style="border-left:3px solid #8b5cf6"><span>HD REDRAW</span><strong>高清重绘</strong><em>2K / 4K 输出 · 细节修复 · 背景增强 · 人像保护</em></div>
+        <div class="sub-toolbar"><button>立即重绘</button><button>批量处理</button></div>
+        <div class="tech-matrix"><div><strong>输出清晰度</strong><span>2K（2560×1440）默认，4K 需二次确认</span></div><div><strong>细节增强</strong><span>产品边缘平滑、文字清晰度提升、材质强化</span></div><div><strong>人像保护</strong><span>面部修复 + 手部检测 + 肤色优化</span></div><div><strong>背景增强</strong><span>低光照补光、背景虚化或替换</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'write-platforms': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="write-platforms">
+        <div class="sub-hero" style="border-left:3px solid #ef4444"><span>PLATFORM ADAPTATION</span><strong>多平台适配</strong><em>一稿生成朋友圈 / 小红书 / 公众号 / 私聊版本</em></div>
+        <div class="sub-toolbar"><button>新增平台</button><button>保存配置</button></div>
+        <div class="template-list">
+          <div class="template-section"><b>1</b><div><strong>朋友圈</strong><span>短句 · 强利益点 · 少标签</span></div><em>启用</em></div>
+          <div class="template-section"><b>2</b><div><strong>小红书</strong><span>标题钩子 + 场景痛点 + 收藏引导</span></div><em>启用</em></div>
+          <div class="template-section"><b>3</b><div><strong>公众号</strong><span>长文结构 · 案例前置 · CTA</span></div><em>启用</em></div>
+          <div class="template-section"><b>4</b><div><strong>私聊/社群</strong><span>自然口语 · 非模板感 · 个性化破冰</span></div><em>启用</em></div>
+        </div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'write-filter': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="write-filter">
+        <div class="sub-hero" style="border-left:3px solid #ef4444"><span>SENSITIVE FILTER</span><strong>敏感词过滤</strong><em>合规保障 · 自动改写 · 风险标记 · 人工复核</em></div>
+        <div class="sub-toolbar"><button>添加禁用词</button><button>批量导入</button></div>
+        <div class="sub-section-title"><span>禁用词库</span><em>15 条生效中</em></div>
+        <div class="forbidden-words"><strong>演示词</strong><span>稳赚 · 第一 · 国家级 · 100% · 保证成交 · 立即到账 · 绝不 · 首选 · 全网最低</span></div>
+        <div class="rule-sheet"><div><strong>自动改写</strong><span>命中禁用词自动替换为合规表达，标记来源。</span></div><div><strong>人工复核</strong><span>金融 / 医疗 / 投资 / 未成年人内容强制转人工。</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'write-batch': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="write-batch">
+        <div class="sub-hero" style="border-left:3px solid #ef4444"><span>BATCH WRITING</span><strong>批量创作</strong><em>主题 × 平台 × 语气 × 角度，一次批量 20+ 篇</em></div>
+        <div class="analytics-kpis"><div><strong>20</strong><span>今日生成</span></div><div><strong>6</strong><span>待审核</span></div><div><strong>88%</strong><span>通过率</span></div><div><strong>3</strong><span>进行中</span></div></div>
+        <div class="sub-section-title"><span>批量策略</span></div>
+        <div class="rule-sheet"><div><strong>角度覆盖</strong><span>同一主题生成 3 个角度：痛点 / 案例 / 促销。</span></div><div><strong>平台 × 语气矩阵</strong><span>每个角度自动适配全部已启用平台，按语气切换版本。</span></div></div>
+        <div class="sub-toolbar" style="margin-top:10px"><button>新建批量任务</button><button>查看历史</button></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+  'write-rewrite': () => {
+    return `
+      <div class="phone-view agent-subpage" data-view="write-rewrite">
+        <div class="sub-hero" style="border-left:3px solid #ef4444"><span>REWRITE MODE</span><strong>改写润色</strong><em>语气升级 · 长度调整 · 风格统一 — 覆盖所有改写场景</em></div>
+        <div class="sub-toolbar"><button>粘贴原文</button><button>选择模式</button><button>预览效果</button></div>
+        <div class="tech-matrix"><div><strong>更专业</strong><span>压缩口语，增强商务表达，去掉弱词。</span></div><div><strong>更有力</strong><span>强化利益点和行动引导，加入紧迫感。</span></div><div><strong>更自然</strong><span>减少模板感，保留自然语气，加入口语衔接。</span></div><div><strong>调长度</strong><span>朋友圈短句 vs 公众号长文 vs 私信适中。</span></div></div>
+        <div class="sub-safe-space"></div>
+      </div>`;
+  },
+
   /* ============ 真人单聊 ============ */
   'chat-single': (cid) => {
     const c = getContact(cid) || CONTACTS[0];
@@ -1683,7 +1881,7 @@ const VIEWS = {
             <div class="bubble them">${(agent.welcome || '您好！').replace(/\n/g, '<br>')}</div>
           </div>
         </div>
-        ${agent.id === 'agent-sales' ? '' : `
+        ${agent.id === 'agent-grow' ? '' : `
         <div style="padding:6px 12px;background:#fff;border-top:1px solid #f0f2f5;display:flex;gap:6px;overflow-x:auto;">
           ${getQuickPrompts(agent.id).map(p => `<div class="quick-prompt" data-action="quick-prompt" data-text="${p}" style="padding:4px 10px;background:#f5f8fc;border-radius:12px;font-size:11px;color:var(--ink);white-space:nowrap;cursor:pointer;">${p}</div>`).join('')}
         </div>
@@ -1793,14 +1991,16 @@ function renderContactItem(c) {
 }
 
 function getAgentColor(id) {
-  if (id === 'agent-customer') return 'linear-gradient(135deg, #4a90e2, #6ba8e8)';
-  if (id === 'agent-sales')    return 'linear-gradient(135deg, #ff6b35, #ff8c42)';
+  if (id === 'agent-grow')     return 'linear-gradient(135deg, #c8102e, #e53935)';
+  if (id === 'agent-customer') return 'linear-gradient(135deg, #c8102e, #e53935)'; // legacy
+  if (id === 'agent-sales')    return 'linear-gradient(135deg, #c8102e, #e53935)'; // legacy
   if (id === 'agent-meeting')  return 'linear-gradient(135deg, #10b981, #34d399)';
   return 'linear-gradient(135deg, #4a90e2, #6ba8e8)';
 }
 
 function getQuickPrompts(agentId) {
-  if (agentId === 'agent-customer') return ['我要退款', '查物流', '开发票', '投诉', '价格咨询'];
-  if (agentId === 'agent-sales')    return ['了解 VIC 套餐', '推荐一款', '价格多少', '有优惠吗'];
+  if (agentId === 'agent-grow')      return ['我要退款', '查物流', '开发票', '推荐套餐', '了解 VIC'];
+  if (agentId === 'agent-customer')  return ['我要退款', '查物流', '开发票', '投诉', '价格咨询'];  // legacy
+  if (agentId === 'agent-sales')     return ['了解 VIC 套餐', '推荐一款', '价格多少', '有优惠吗'];  // legacy
   return [];
 }
