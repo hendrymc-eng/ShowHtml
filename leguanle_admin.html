@@ -190,14 +190,12 @@ textarea{height:80px;padding:10px;resize:vertical}
     <div class="nav-item active" data-page="dashboard" onclick="nav('dashboard')"><span>📊</span>总览仪表盘</div>
     <div class="nav-item" data-page="users" onclick="nav('users')"><span>👥</span>用户管理</div>
     <div class="nav-item" data-page="products" onclick="nav('products')"><span>📦</span>商品管理</div>
-    <div class="nav-item" data-page="orders" onclick="nav('orders')"><span>📋</span>订单与物流 <span class="badge">2</span></div>
+    <div class="nav-item" data-page="orders" onclick="nav('orders')"><span>📋</span>订单与物流</div>
     <div class="nav-item" data-page="merchants" onclick="nav('merchants')"><span>🏪</span>商家管理</div>
     <div class="nav-item" data-page="config" onclick="nav('config')"><span>⚙️</span>配置管理</div>
     <div class="nav-item" data-page="monitor" onclick="nav('monitor')"><span>🛡️</span>风控监控 <span class="badge">2</span></div>
     <div class="nav-item" data-page="logs" onclick="nav('logs')"><span>📝</span>日志管理</div>
-    <div class="nav-item" data-page="zones-ex" onclick="nav('zones-ex')"><span>🎁</span>兑换专区</div>
-    <div class="nav-item" data-page="zones-nw" onclick="nav('zones-nw')"><span>🌟</span>新人专区</div>
-    <div class="nav-item" data-page="zones-jb" onclick="nav('zones-jb')"><span>🔍</span>鉴宝专区</div>
+    <div class="nav-item" data-page="zones" onclick="nav('zones')"><span>🎯</span>专区管理</div>
   </div>
   <div class="sidebar-footer">管理员 · Michael · v2.0</div>
 </div>
@@ -226,108 +224,6 @@ textarea{height:80px;padding:10px;resize:vertical}
         <div class="stat-card"><div class="label">💰 月营收 (UMDT)</div><div class="value">286,400</div><div class="change up">↑ +18.3%</div><div style="margin-top:6px;font-size:11px;color:var(--muted)">今日 <b style="color:var(--green)">12,840</b> UMDT</div></div>
         <div class="stat-card"><div class="label">🔄 金豆消耗 (月)</div><div class="value">3.2M</div><div class="change down">↓ -2.1%</div><div style="margin-top:6px;font-size:11px;color:var(--muted)">人均 <b style="color:var(--amber)">24.9</b> 金豆/日</div></div>
         <div class="stat-card"><div class="label">⭐ 星池总奖金 (月)</div><div class="value">12,800</div><div class="change up">↑ +5.4%</div><div style="margin-top:6px;font-size:11px;color:var(--muted)">累计发放 <b style="color:var(--ink)">386,400</b></div></div>
-        <div class="stat-card"><div class="label">💎 累计金豆消耗</div><div class="value" style="color:var(--amber)">48.6M</div><div class="change up">↑ +3.2M 本月</div><div style="margin-top:6px;font-size:11px;color:var(--muted)">人均 <b style="color:var(--ink)">378.5</b> 金豆/人</div></div>
-      </div>
-
-      <!-- Row 1.5: User Level Distribution -->
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-header"><h3>👑 用户等级分布 <span class="text-muted" style="font-size:12px;margin-left:8px">Lv.0 ~ Lv.9 · 共 128,420 用户</span></h3></div>
-        <div class="card-body">
-          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center">
-            <!-- Left: Level Tower -->
-            <div style="display:flex;align-items:flex-end;gap:8px;height:140px">
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#ef4444,#b91c1c);border-radius:6px 6px 0 0;height:12px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.9</span>
-                </div>
-                <div style="font-size:10px;color:#ef4444;font-weight:700">1.2%</div>
-                <div style="font-size:9px;color:var(--muted)">1,542</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#f59e0b,#d97706);border-radius:6px 6px 0 0;height:28px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.8</span>
-                </div>
-                <div style="font-size:10px;color:#f59e0b;font-weight:700">5.8%</div>
-                <div style="font-size:9px;color:var(--muted)">7,449</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#10b981,#059669);border-radius:6px 6px 0 0;height:46px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.7</span>
-                </div>
-                <div style="font-size:10px;color:#10b981;font-weight:700">9.1%</div>
-                <div style="font-size:9px;color:var(--muted)">11,686</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#8b5cf6,#7c3aed);border-radius:6px 6px 0 0;height:72px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.6</span>
-                </div>
-                <div style="font-size:10px;color:#8b5cf6;font-weight:700">14.3%</div>
-                <div style="font-size:9px;color:var(--muted)">18,364</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#3b82f6,#2563eb);border-radius:6px 6px 0 0;height:108px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.5</span>
-                </div>
-                <div style="font-size:10px;color:#3b82f6;font-weight:700">21.6%</div>
-                <div style="font-size:9px;color:var(--muted)">27,739</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#34d399,#10b981);border-radius:6px 6px 0 0;height:96px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.4</span>
-                </div>
-                <div style="font-size:10px;color:#34d399;font-weight:700">19.2%</div>
-                <div style="font-size:9px;color:var(--muted)">24,657</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#6b7280,#4b5563);border-radius:6px 6px 0 0;height:84px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.3</span>
-                </div>
-                <div style="font-size:10px;color:#6b7280;font-weight:700">16.8%</div>
-                <div style="font-size:9px;color:var(--muted)">21,575</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#9ca3af,#6b7280);border-radius:6px 6px 0 0;height:52px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.2</span>
-                </div>
-                <div style="font-size:10px;color:#9ca3af;font-weight:700">8.2%</div>
-                <div style="font-size:9px;color:var(--muted)">10,531</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#d1d5db,#9ca3af);border-radius:6px 6px 0 0;height:22px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#fff;font-weight:700">Lv.1</span>
-                </div>
-                <div style="font-size:10px;color:#9ca3af;font-weight:700">2.8%</div>
-                <div style="font-size:9px;color:var(--muted)">3,596</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                <div style="width:44px;background:linear-gradient(180deg,#e5e7eb,#d1d5db);border-radius:6px 6px 0 0;height:14px;display:flex;align-items:center;justify-content:center">
-                  <span style="font-size:9px;color:#6b7280;font-weight:700">Lv.0</span>
-                </div>
-                <div style="font-size:10px;color:#9ca3af;font-weight:700">1.0%</div>
-                <div style="font-size:9px;color:var(--muted)">1,284</div>
-              </div>
-            </div>
-            <!-- Right: Stats -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:12px;padding:16px;text-align:center;border:1px solid #c4b5fd">
-                <div style="font-size:28px;font-weight:800;color:#7c3aed">78.4%</div>
-                <div class="text-xs" style="color:#6d28d9;margin-top:2px">Lv.4+ 活跃用户</div>
-              </div>
-              <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:12px;padding:16px;text-align:center;border:1px solid #86efac">
-                <div style="font-size:28px;font-weight:800;color:#16a34a">1,248</div>
-                <div class="text-xs" style="color:#15803d;margin-top:2px">本月升级中</div>
-              </div>
-              <div style="background:linear-gradient(135deg,#fef2f2,#fee2e2);border-radius:12px;padding:16px;text-align:center;border:1px solid #fca5a5">
-                <div style="font-size:28px;font-weight:800;color:#dc2626">86</div>
-                <div class="text-xs" style="color:#b91c1c;margin-top:2px">降级风险</div>
-              </div>
-              <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border-radius:12px;padding:16px;text-align:center;border:1px solid #fcd34d">
-                <div style="font-size:28px;font-weight:800;color:#d97706">128K</div>
-                <div class="text-xs" style="color:#92400e;margin-top:2px">总用户数</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Row 2: Pending Items Alert Strip -->
@@ -690,42 +586,23 @@ textarea{height:80px;padding:10px;resize:vertical}
         <span class="text-muted" style="font-size:12px">共 <b id="userCount">12</b> 条</span>
       </div>
       <div class="card"><div class="table-wrap">
-      <table><thead><tr><th>用户ID</th><th>名称</th><th>登录账号</th><th>类型</th><th>等级</th><th>UMDT</th><th>金豆</th><th>乐币</th><th>拉新/累计</th><th>星池</th><th>诚信分</th><th>注册日期</th><th>成为商家</th><th>最后登录</th><th>状态</th><th>操作</th></tr></thead>
+      <table><thead><tr><th>用户ID</th><th>名称</th><th>登录账号</th><th>类型</th><th>等级</th><th>UMDT</th><th>金豆</th><th>乐币</th><th>拉新/累计</th><th>星池</th><th>诚信分</th><th>注册日期</th><th>状态</th><th>操作</th></tr></thead>
       <tbody id="userTableBody">
-        <tr data-type="玩家" data-level="Lv.5" data-status="正常"><td>#10001</td><td><b>乾坤小霸王</b></td><td style="font-size:12px;color:var(--muted)">qiankun_xbw</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.5 🏆</td><td>12,800</td><td>45,200</td><td>3</td><td>12 / 48</td><td>5星池</td><td>--</td><td>2025-08-12</td><td>--</td><td>2026-04-22 14:20</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10001','乾坤小霸王')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10001','乾坤小霸王')">封号</button></div></td></tr>
-        <tr data-type="商家" data-level="Lv.3" data-status="正常"><td>#10002</td><td><b>商家老王</b></td><td style="font-size:12px;color:var(--muted)">laowang_shop</td><td><span class="tag tag-green">商家</span></td><td>Lv.3</td><td>3,200</td><td>9,000</td><td>1</td><td>5 / 23</td><td>3星池</td><td>72</td><td>2025-06-03</td><td>2025-06-03</td><td>2026-04-22 10:05</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10002','商家老王')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10002','商家老王')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.4" data-status="正常"><td>#10003</td><td><b>抽奖达人阿强</b></td><td style="font-size:12px;color:var(--muted)">aqiang_lucky</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.4</td><td>680</td><td>2,100</td><td>0</td><td>3 / 15</td><td>4星池</td><td>--</td><td>2025-09-20</td><td>--</td><td>2026-04-22 08:15</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10003','抽奖达人阿强')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10003','抽奖达人阿强')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.0" data-status="异常"><td>#10004</td><td><b>疑似刷号_889</b></td><td style="font-size:12px;color:var(--muted)">suspicious_889</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.0</td><td>0</td><td>0</td><td>1</td><td>0 / 0</td><td>无</td><td>--</td><td>2026-04-22</td><td>--</td><td>2026-04-22 03:15</td><td><span class="tag tag-red">异常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10004','疑似刷号_889')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10004','疑似刷号_889')">封号</button></div></td></tr>
-        <tr data-type="商家" data-level="Lv.2" data-status="正常"><td>#10005</td><td><b>珠宝商李姐</b></td><td style="font-size:12px;color:var(--muted)">lijie_jewelry</td><td><span class="tag tag-green">商家</span></td><td>Lv.2</td><td>15,600</td><td>28,000</td><td>2</td><td>8 / 32</td><td>2星池</td><td>85</td><td>2025-04-15</td><td>2025-04-15</td><td>2026-04-22 09:30</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10005','珠宝商李姐')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10005','珠宝商李姐')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.3" data-status="正常"><td>#10006</td><td><b>欧皇小王</b></td><td style="font-size:12px;color:var(--muted)">ouhuang_xw</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.3</td><td>5,420</td><td>18,300</td><td>4</td><td>6 / 28</td><td>3星池</td><td>--</td><td>2025-07-18</td><td>--</td><td>2026-04-22 07:50</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10006','欧皇小王')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10006','欧皇小王')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.1" data-status="正常"><td>#10007</td><td><b>新人小白</b></td><td style="font-size:12px;color:var(--muted)">newbie_xb</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.1</td><td>120</td><td>3,800</td><td>1</td><td>1 / 4</td><td>无</td><td>--</td><td>2026-03-15</td><td>--</td><td>2026-04-22 06:30</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10007','新人小白')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10007','新人小白')">封号</button></div></td></tr>
-        <tr data-type="商家" data-level="Lv.4" data-status="正常"><td>#10008</td><td><b>数码旗舰店</b></td><td style="font-size:12px;color:var(--muted)">shuma_flagship</td><td><span class="tag tag-green">商家</span></td><td>Lv.4</td><td>28,000</td><td>92,000</td><td>5</td><td>15 / 62</td><td>4星池</td><td>92</td><td>2024-11-08</td><td>2024-11-08</td><td>2026-04-22 15:40</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10008','数码旗舰店')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10008','数码旗舰店')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.0" data-status="已封禁"><td>#10009</td><td><b>刷量脚本_442</b></td><td style="font-size:12px;color:var(--muted)">script_442</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.0</td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0 / 0</span></td><td>无</td><td>--</td><td>2026-04-18</td><td>--</td><td>2026-04-18 22:00</td><td><span class="tag tag-red">已封禁</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserBanModal('#10009','刷量脚本_442')">解封</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.2" data-status="正常"><td>#10010</td><td><b>幸运锦鲤</b></td><td style="font-size:12px;color:var(--muted)">xingyun_jl</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.2</td><td>2,150</td><td>11,400</td><td>2</td><td>4 / 16</td><td>1星池</td><td>--</td><td>2025-11-30</td><td>--</td><td>2026-04-22 12:00</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10010','幸运锦鲤')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10010','幸运锦鲤')">封号</button></div></td></tr>
-        <tr data-type="商家" data-level="Lv.1" data-status="异常"><td>#10011</td><td><b>快速开店_05</b></td><td style="font-size:12px;color:var(--muted)">quick_shop_05</td><td><span class="tag tag-green">商家</span></td><td>Lv.1</td><td>0</td><td>120</td><td>0</td><td>0 / 1</td><td>无</td><td>38</td><td>2026-04-20</td><td>2026-04-20</td><td>2026-04-21 18:00</td><td><span class="tag tag-amber">异常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline btn-sm" onclick="openBalanceAdjust('#10011','快速开店_05')">💰 调整</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10011','快速开店_05')">封号</button></div></td></tr>
-        <tr data-type="玩家" data-level="Lv.1" data-status="已封禁"><td>#10012</td><td><b>违规发言_773</b></td><td style="font-size:12px;color:var(--muted)">weigui_773</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.1</td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0 / 3</span></td><td>无</td><td>--</td><td>2026-04-10</td><td>--</td><td>2026-04-10 20:00</td><td><span class="tag tag-red">已封禁</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserBanModal('#10012','违规发言_773')">解封</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.5" data-status="正常"><td>#10001</td><td><b>乾坤小霸王</b></td><td style="font-size:12px;color:var(--muted)">qiankun_xbw</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.5 🏆</td><td>12,800</td><td>45,200</td><td>3</td><td>12 / 48</td><td>5星池</td><td>--</td><td>2025-08-12</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10001','乾坤小霸王')">封号</button></div></td></tr>
+        <tr data-type="商家" data-level="Lv.3" data-status="正常"><td>#10002</td><td><b>商家老王</b></td><td style="font-size:12px;color:var(--muted)">laowang_shop</td><td><span class="tag tag-green">商家</span></td><td>Lv.3</td><td>3,200</td><td>9,000</td><td>1</td><td>5 / 23</td><td>3星池</td><td>72</td><td>2025-06-03</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10002','商家老王')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.4" data-status="正常"><td>#10003</td><td><b>抽奖达人阿强</b></td><td style="font-size:12px;color:var(--muted)">aqiang_lucky</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.4</td><td>680</td><td>2,100</td><td>0</td><td>3 / 15</td><td>4星池</td><td>--</td><td>2025-09-20</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10003','抽奖达人阿强')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.0" data-status="异常"><td>#10004</td><td><b>疑似刷号_889</b></td><td style="font-size:12px;color:var(--muted)">suspicious_889</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.0</td><td>0</td><td>0</td><td>1</td><td>0 / 0</td><td>无</td><td>--</td><td>2026-04-22</td><td><span class="tag tag-red">异常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10004','疑似刷号_889')">封号</button></div></td></tr>
+        <tr data-type="商家" data-level="Lv.2" data-status="正常"><td>#10005</td><td><b>珠宝商李姐</b></td><td style="font-size:12px;color:var(--muted)">lijie_jewelry</td><td><span class="tag tag-green">商家</span></td><td>Lv.2</td><td>15,600</td><td>28,000</td><td>2</td><td>8 / 32</td><td>2星池</td><td>85</td><td>2025-04-15</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserDetail(this)" style="color:var(--blue)">详情</button><button class="btn btn-sm btn-outline" onclick="openUserModal(this)">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10005','珠宝商李姐')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.3" data-status="正常"><td>#10006</td><td><b>欧皇小王</b></td><td style="font-size:12px;color:var(--muted)">ouhuang_xw</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.3</td><td>5,420</td><td>18,300</td><td>4</td><td>6 / 28</td><td>3星池</td><td>--</td><td>2025-07-18</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10006','欧皇小王')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.1" data-status="正常"><td>#10007</td><td><b>新人小白</b></td><td style="font-size:12px;color:var(--muted)">newbie_xb</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.1</td><td>120</td><td>3,800</td><td>1</td><td>1 / 4</td><td>无</td><td>--</td><td>2026-03-15</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10007','新人小白')">封号</button></div></td></tr>
+        <tr data-type="商家" data-level="Lv.4" data-status="正常"><td>#10008</td><td><b>数码旗舰店</b></td><td style="font-size:12px;color:var(--muted)">shuma_flagship</td><td><span class="tag tag-green">商家</span></td><td>Lv.4</td><td>28,000</td><td>92,000</td><td>5</td><td>15 / 62</td><td>4星池</td><td>92</td><td>2024-11-08</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10008','数码旗舰店')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.0" data-status="已封禁"><td>#10009</td><td><b>刷量脚本_442</b></td><td style="font-size:12px;color:var(--muted)">script_442</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.0</td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0 / 0</span></td><td>无</td><td>--</td><td>2026-04-18</td><td><span class="tag tag-red">已封禁</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserBanModal('#10009','刷量脚本_442')">解封</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.2" data-status="正常"><td>#10010</td><td><b>幸运锦鲤</b></td><td style="font-size:12px;color:var(--muted)">xingyun_jl</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.2</td><td>2,150</td><td>11,400</td><td>2</td><td>4 / 16</td><td>1星池</td><td>--</td><td>2025-11-30</td><td><span class="tag tag-green">正常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10010','幸运锦鲤')">封号</button></div></td></tr>
+        <tr data-type="商家" data-level="Lv.1" data-status="异常"><td>#10011</td><td><b>快速开店_05</b></td><td style="font-size:12px;color:var(--muted)">quick_shop_05</td><td><span class="tag tag-green">商家</span></td><td>Lv.1</td><td>0</td><td>120</td><td>0</td><td>0 / 1</td><td>无</td><td>38</td><td>2026-04-20</td><td><span class="tag tag-amber">异常</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red" onclick="openUserBanModal('#10011','快速开店_05')">封号</button></div></td></tr>
+        <tr data-type="玩家" data-level="Lv.1" data-status="已封禁"><td>#10012</td><td><b>违规发言_773</b></td><td style="font-size:12px;color:var(--muted)">weigui_773</td><td><span class="tag tag-purple">玩家</span></td><td>Lv.1</td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0</span></td><td><span style="color:var(--muted)">0 / 3</span></td><td>无</td><td>--</td><td>2026-04-10</td><td><span class="tag tag-red">已封禁</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openUserBanModal('#10012','违规发言_773')">解封</button></div></td></tr>
       </tbody></table>
       </div></div>
       <div class="flex-between mt-2"><span class="text-muted"><span id="userPageInfo">1-12 / 12</span></span><div class="btn-group"><button class="btn btn-sm btn-outline">‹ 上一页</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm btn-outline">2</button><button class="btn btn-sm btn-outline">3</button><button class="btn btn-sm btn-outline">下一页 ›</button></div></div>
-
-      <!-- 🏆 用户消费排行 TOP 10 -->
-      <div class="card mt-3">
-        <div class="card-header"><h3>🏆 消费排行 TOP 10</h3><span class="text-muted text-xs">按累计消费总额（UMDT）排名</span></div>
-        <div class="card-body" style="padding:16px">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#f59e0b;width:22px;text-align:center">🥇</span><span style="width:80px;font-weight:600">玩家_009</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#f59e0b,#fbbf24);height:100%;width:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 128,450</span></div></div><span style="color:#92400e;font-weight:700;font-size:13px">¥128,450</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#9ca3af;width:22px;text-align:center">🥈</span><span style="width:80px;font-weight:600">玩家_023</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#9ca3af,#d1d5db);height:100%;width:78%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 99,820</span></div></div><span style="color:#6b7280;font-weight:700;font-size:13px">¥99,820</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#cd7c2d;width:22px;text-align:center">🥉</span><span style="width:80px;font-weight:600">玩家_047</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#cd7c2d,#f59e0b);height:100%;width:62%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 79,500</span></div></div><span style="color:#92400e;font-weight:700;font-size:13px">¥79,500</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">4</span><span style="width:80px;font-weight:600">玩家_101</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:48%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 61,200</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥61,200</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">5</span><span style="width:80px;font-weight:600">玩家_088</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:40%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 51,300</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥51,300</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">6</span><span style="width:80px;font-weight:600">玩家_056</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:33%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 42,880</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥42,880</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">7</span><span style="width:80px;font-weight:600">玩家_033</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:27%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 35,100</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥35,100</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">8</span><span style="width:80px;font-weight:600">玩家_071</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:22%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 28,640</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥28,640</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">9</span><span style="width:80px;font-weight:600">玩家_015</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:18%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 23,500</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥23,500</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">10</span><span style="width:80px;font-weight:600">玩家_062</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#60a5fa;height:100%;width:15%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 19,200</span></div></div><span style="color:#1d4ed8;font-weight:700;font-size:13px">¥19,200</span></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ==================== PRODUCTS ==================== -->
@@ -734,7 +611,7 @@ textarea{height:80px;padding:10px;resize:vertical}
       <div class="toolbar">
         <input class="search-input" placeholder="搜索商品名称/商家...">
         <select style="width:130px;height:34px;font-size:12px" id="prodStatusFilter"><option>全部状态</option><option>待审核</option><option>已上架</option><option>已结束</option></select>
-        <select style="width:130px;height:34px;font-size:12px" id="prodZoneFilter"><option>全部</option><option>爆金专区</option><option>鉴宝专区</option></select>
+        <select style="width:130px;height:34px;font-size:12px" id="prodZoneFilter"><option>全部专区</option><option>兑换专区</option><option>新人专区</option><option>爆金专区</option><option>鉴宝专区</option></select>
         <span class="text-muted" style="font-size:12px">共 1,247 件</span>
       </div>
       <div class="card"><div class="table-wrap">
@@ -744,8 +621,7 @@ textarea{height:80px;padding:10px;resize:vertical}
         <tr><td><b>和田玉手镯</b></td><td>珠宝商李姐</td><td>珠宝配饰</td><td>鉴宝</td><td>120</td><td>5</td><td><span class="tag tag-blue">1对N</span></td><td>1.4x</td><td><span class="tag tag-amber">待审核</span></td><td>0/60</td><td><span class="tag tag-amber">待上传</span></td><td>2026-04-22</td><td>--</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openReviewModal()">审核</button><button class="btn btn-sm btn-outline">编辑</button></div></td></tr>
         <tr><td><b>茅台飞天 53°</b></td><td>酒业专营</td><td>食品</td><td>爆金</td><td>88</td><td>3</td><td><span class="tag tag-red">SOLO 1v1</span></td><td>1.5x</td><td><span class="tag tag-green">已上架</span></td><td>2/2</td><td><span class="tag tag-green">✓</span></td><td>2026-04-19</td><td>admin</td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red">下架</button></div></td></tr>
         <tr><td><b>LV Neverfull</b></td><td>奢侈品专营</td><td>奢侈品</td><td>鉴宝</td><td>320</td><td>8</td><td><span class="tag tag-blue">1对N</span></td><td>1.4x</td><td><span class="tag tag-amber">待审核</span></td><td>0/160</td><td><span class="tag tag-amber">待检测</span></td><td>2026-04-21</td><td>--</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openReviewModal()">审核</button><button class="btn btn-sm btn-outline">编辑</button></div></td></tr>
-        <tr><td><b>AirPods Pro 3</b></td><td>数码旗舰店</td><td>3C数码</td><td>爆金</td><td>18</td><td>1</td><td><span class="tag tag-red">SOLO 1v1</span></td><td>1.4x</td><td><span class="tag tag-red">已结束</span></td><td>2/2</td><td><span class="tag tag-green">✓</span></td><td>2026-04-15</td><td>admin</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openLotteryResultModal('AirPods Pro 3','1v1')">已结算</button></div></td></tr>
-        <tr><td><b>Switch 2</b></td><td>数码旗舰店</td><td>3C数码</td><td>爆金</td><td>68</td><td>2</td><td><span class="tag tag-blue">1对N</span></td><td>1.4x</td><td><span class="tag tag-red">已结束</span></td><td>36/50</td><td><span class="tag tag-green">✓</span></td><td>2026-04-10</td><td>admin</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openLotteryResultModal('Switch 2','1N')">已结算</button></div></td></tr>
+        <tr><td><b>AirPods Pro 3</b></td><td>数码旗舰店</td><td>3C数码</td><td>爆金</td><td>18</td><td>1</td><td><span class="tag tag-red">SOLO 1v1</span></td><td>1.4x</td><td><span class="tag tag-red">已结束</span></td><td>2/2</td><td><span class="tag tag-green">✓</span></td><td>2026-04-15</td><td>admin</td><td><div class="btn-group"><span class="text-muted text-xs">已结算</span></div></td></tr>
       </tbody></table>
       </div></div>
     </div>
@@ -760,109 +636,13 @@ textarea{height:80px;padding:10px;resize:vertical}
         <span class="text-muted" style="font-size:12px">共 <span id="orderCount">3</span> 条</span>
       </div>
       <div class="card"><div class="table-wrap">
-      <table><thead><tr><th style="width:36px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th><th>订单号</th><th>中签人</th><th>商品名称</th><th>商家</th><th>收件人</th><th>状态</th><th>创建日期</th><th style="width:80px">操作</th></tr></thead>
+      <table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th><th>订单号</th><th>中签人</th><th>商品名称</th><th>收件人</th><th>电话</th><th>地址</th><th>状态</th><th>快递单号</th><th>快递状态</th><th>创建日期</th><th>操作</th></tr></thead>
       <tbody id="orderTableBody">
-        <tr data-status="pending"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260422-001</span></td><td><b>乾坤小霸王</b></td><td>iPhone 16 Pro Max</td><td><b>数码旗舰店</b><br><span class="text-xs text-muted">Lv.4 · Lv.3</span></td><td>张三 · 138****1234</td><td><span class="tag tag-amber">待发货</span></td><td>2026-04-22</td><td><button class="btn btn-sm btn-primary" onclick="openShipModal('ORD-20260422-001','张三','北京市朝阳区建国路88号','iPhone 16 Pro Max')">发货</button></td></tr>
-        <tr data-status="pending"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260422-002</span></td><td><b>幸运锦鲤</b></td><td>AirPods Pro 3</td><td><b>数码旗舰店</b><br><span class="text-xs text-muted">Lv.4 · Lv.3</span></td><td>赵六 · 136****4321</td><td><span class="tag tag-amber">待发货</span></td><td>2026-04-22</td><td><button class="btn btn-sm btn-primary" onclick="openShipModal('ORD-20260422-002','赵六','浙江省杭州市西湖区...','AirPods Pro 3')">发货</button></td></tr>
-        <tr data-status="shipped" class="order-row-shipped" onclick="toggleLogistics(this)" style="cursor:pointer"><td><input type="checkbox" class="order-check" onclick="event.stopPropagation()"></td><td><span class="text-xs">ORD-20260421-015</span></td><td><b>抽奖达人阿强</b></td><td>茅台飞天 53°</td><td><b>酒业专营</b><br><span class="text-xs text-muted">Lv.3 · Lv.2</span></td><td>李四 · 139****5678</td><td><span class="tag tag-blue">已发货</span></td><td>2026-04-21</td><td><button class="btn btn-sm btn-outline" onclick="event.stopPropagation();toggleLogistics(this.closest('tr'))">查看物流 <span style="font-size:10px">▼</span></button></td></tr>
-        <tr class="logistics-detail" style="display:none"><td colspan="9" style="padding:0;border:none">
-          <div style="background:#f9fafb;padding:14px 16px;border-top:1px solid #e5e7eb">
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
-              <div style="font-size:13px"><span class="text-muted text-xs">快递公司：</span><b>顺丰速运</b></div>
-              <div style="font-size:13px"><span class="text-muted text-xs">运单号：</span><b style="font-family:monospace">SF1234567890</b></div>
-              <div style="margin-left:auto"><span class="tag tag-green">运输中</span></div>
-            </div>
-            <div style="position:relative;padding-left:20px">
-              <div style="position:absolute;left:6px;top:4px;bottom:0;width:2px;background:#e5e7eb"></div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#10b981;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">商品已签收</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-23 14:32 · 深圳市南山区桃源街道分部</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">派送中</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-23 08:15 · 深圳市南山区桃源街道快递员正在派送</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">到达深圳市南山区转运中心</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-22 19:45</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">已发出，从上海市发出</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-22 16:20</div>
-              </div>
-              <div style="position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">商家已发货</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-21 10:30 · 上海市浦东新区张江路88号</div>
-              </div>
-            </div>
-          </div>
-        </td></tr>
-        <tr data-status="shipped" class="order-row-shipped" onclick="toggleLogistics(this)" style="cursor:pointer"><td><input type="checkbox" class="order-check" onclick="event.stopPropagation()"></td><td><span class="text-xs">ORD-20260421-008</span></td><td><b>欧皇小王</b></td><td>Switch 2</td><td><b>数码旗舰店</b><br><span class="text-xs text-muted">Lv.4 · Lv.3</span></td><td>孙七 · 135****8765</td><td><span class="tag tag-blue">已发货</span></td><td>2026-04-21</td><td><button class="btn btn-sm btn-outline" onclick="event.stopPropagation();toggleLogistics(this.closest('tr'))">查看物流 <span style="font-size:10px">▼</span></button></td></tr>
-        <tr class="logistics-detail" style="display:none"><td colspan="9" style="padding:0;border:none">
-          <div style="background:#f9fafb;padding:14px 16px;border-top:1px solid #e5e7eb">
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
-              <div style="font-size:13px"><span class="text-muted text-xs">快递公司：</span><b>中通快递</b></div>
-              <div style="font-size:13px"><span class="text-muted text-xs">运单号：</span><b style="font-family:monospace">ZTO246813579</b></div>
-              <div style="margin-left:auto"><span class="tag tag-amber">派送中</span></div>
-            </div>
-            <div style="position:relative;padding-left:20px">
-              <div style="position:absolute;left:6px;top:4px;bottom:0;width:2px;background:#e5e7eb"></div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">派送中</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-23 09:20 · 四川省成都市锦江区营业点</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">到达四川省成都市转运中心</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-22 22:15</div>
-              </div>
-              <div style="position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">已发出，从深圳市发出</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-21 18:30</div>
-              </div>
-            </div>
-          </div>
-        </td></tr>
-        <tr data-status="received" class="order-row-shipped" onclick="toggleLogistics(this)" style="cursor:pointer"><td><input type="checkbox" class="order-check" onclick="event.stopPropagation()"></td><td><span class="text-xs">ORD-20260420-032</span></td><td><b>珠宝商李姐</b></td><td>和田玉手镯</td><td><b>珠宝商李姐</b><br><span class="text-xs text-muted">Lv.2 · Lv.1</span></td><td>王五 · 137****9012</td><td><span class="tag tag-green">已签收</span></td><td>2026-04-20</td><td><button class="btn btn-sm btn-outline" onclick="event.stopPropagation();toggleLogistics(this.closest('tr'))">查看物流 <span style="font-size:10px">▼</span></button></td></tr>
-        <tr class="logistics-detail" style="display:none"><td colspan="9" style="padding:0;border:none">
-          <div style="background:#f9fafb;padding:14px 16px;border-top:1px solid #e5e7eb">
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
-              <div style="font-size:13px"><span class="text-muted text-xs">快递公司：</span><b>圆通速递</b></div>
-              <div style="font-size:13px"><span class="text-muted text-xs">运单号：</span><b style="font-family:monospace">YT9876543210</b></div>
-              <div style="margin-left:auto"><span class="tag tag-green">已签收</span></div>
-            </div>
-            <div style="position:relative;padding-left:20px">
-              <div style="position:absolute;left:6px;top:4px;bottom:0;width:2px;background:#e5e7eb"></div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#10b981;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">已签收</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-20 16:20 · 广东省深圳市南山区桃源街道</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">派送中</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-20 11:35 · 深圳市南山区桃源街道快递员正在派送</div>
-              </div>
-              <div style="margin-bottom:10px;position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">到达深圳市南山区转运中心</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-19 22:30</div>
-              </div>
-              <div style="position:relative">
-                <div style="position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:#dbeafe;border:2px solid #fff"></div>
-                <div style="font-size:12px;color:#374151;font-weight:600">已发出，从云南省昆明市发出</div>
-                <div style="font-size:11px;color:#6b7280">2026-04-19 09:10 · 云南省昆明市官渡区矣六街道</div>
-              </div>
-            </div>
-          </div>
-        </td></tr>
+        <tr data-status="pending"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260422-001</span></td><td>乾坤小霸王</td><td>iPhone 16 Pro Max</td><td>张三</td><td>138****1234</td><td class="truncate" style="max-width:120px">北京市朝阳区建国路88号</td><td><span class="tag tag-amber">待发货</span></td><td>--</td><td>--</td><td>2026-04-22</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openShipModal('ORD-20260422-001','张三','北京市朝阳区建国路88号','iPhone 16 Pro Max')">发货</button></div></td></tr>
+        <tr data-status="pending"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260422-002</span></td><td>幸运锦鲤</td><td>AirPods Pro 3</td><td>赵六</td><td>136****4321</td><td class="truncate" style="max-width:120px">浙江省杭州市西湖区...</td><td><span class="tag tag-amber">待发货</span></td><td>--</td><td>--</td><td>2026-04-22</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="openShipModal('ORD-20260422-002','赵六','浙江省杭州市西湖区...','AirPods Pro 3')">发货</button></div></td></tr>
+        <tr data-status="shipped"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260421-015</span></td><td>抽奖达人阿强</td><td>茅台飞天 53°</td><td>李四</td><td>139****5678</td><td class="truncate" style="max-width:120px">上海市浦东新区张江路...</td><td><span class="tag tag-blue">已发货</span></td><td>SF1234567890</td><td><span class="tag tag-green">运输中</span></td><td>2026-04-21</td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openLogisticsModal('SF1234567890','顺丰速运','茅台飞天 53°','抽奖达人阿强')">物流</button></div></td></tr>
+        <tr data-status="shipped"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260421-008</span></td><td>欧皇小王</td><td>Switch 2</td><td>孙七</td><td>135****8765</td><td class="truncate" style="max-width:120px">四川省成都市锦江区...</td><td><span class="tag tag-blue">已发货</span></td><td>ZTO246813579</td><td><span class="tag tag-amber">派送中</span></td><td>2026-04-21</td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openLogisticsModal('ZTO246813579','中通快递','Switch 2','欧皇小王')">物流</button></div></td></tr>
+        <tr data-status="received"><td><input type="checkbox" class="order-check"></td><td><span class="text-xs">ORD-20260420-032</span></td><td>珠宝商李姐</td><td>和田玉手镯</td><td>王五</td><td>137****9012</td><td class="truncate" style="max-width:120px">广东省深圳市南山区...</td><td><span class="tag tag-green">已签收</span></td><td>YT9876543210</td><td><span class="tag tag-green">已签收</span></td><td>2026-04-20</td><td><div class="btn-group"><button class="btn btn-sm btn-outline" onclick="openLogisticsModal('YT9876543210','圆通速递','和田玉手镯','珠宝商李姐')">物流</button></div></td></tr>
       </tbody></table>
       </div></div>
       <div class="alert alert-blue mt-2"><span>ℹ️</span><div><b>不支持发货区域：</b>西藏、新疆。系统已自动过滤上述地址的订单。</div></div>
@@ -887,31 +667,12 @@ textarea{height:80px;padding:10px;resize:vertical}
         <tr><td><b>疑似违规店_03</b></td><td><span class="tag tag-red">Lv.0</span></td><td>42</td><td>1个月</td><td>--</td><td>--</td><td>0</td><td>0</td><td><span class="tag tag-red">封号</span></td><td><button class="btn btn-sm btn-outline" onclick="openBanModal()">查看</button></td></tr>
       </tbody></table>
       </div></div>
-
-      <!-- 🏆 商家收入排行 TOP 10 -->
-      <div class="card mt-3">
-        <div class="card-header"><h3>🏆 收入排行 TOP 10</h3><span class="text-muted text-xs">按累计收入总额（UMDT）排名</span></div>
-        <div class="card-body" style="padding:16px">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#f59e0b;width:22px;text-align:center">🥇</span><span style="width:90px;font-weight:600">数码旗舰店</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#f59e0b,#fbbf24);height:100%;width:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 2,180,000</span></div></div><span style="color:#92400e;font-weight:700;font-size:13px">¥218W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#9ca3af;width:22px;text-align:center">🥈</span><span style="width:90px;font-weight:600">酒业专营</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#9ca3af,#d1d5db);height:100%;width:72%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 1,580,000</span></div></div><span style="color:#6b7280;font-weight:700;font-size:13px">¥158W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700;color:#cd7c2d;width:22px;text-align:center">🥉</span><span style="width:90px;font-weight:600">珠宝商李姐</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:linear-gradient(90deg,#cd7c2d,#f59e0b);height:100%;width:55%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 1,200,000</span></div></div><span style="color:#92400e;font-weight:700;font-size:13px">¥120W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">4</span><span style="width:90px;font-weight:600">奢侈品专营</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:42%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 920,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥92W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">5</span><span style="width:90px;font-weight:600">美妆正品坊</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:33%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 720,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥72W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">6</span><span style="width:90px;font-weight:600">数码城03店</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:26%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 560,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥56W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">7</span><span style="width:90px;font-weight:600">家电精选</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:20%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 430,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥43W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">8</span><span style="width:90px;font-weight:600">潮牌服饰铺</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:16%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 350,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥35W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">9</span><span style="width:90px;font-weight:600">快销零食铺</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:12%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 260,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥26W</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="width:22px;text-align:center;font-size:12px;color:#6b7280;font-weight:600">10</span><span style="width:90px;font-weight:600">家居精选馆</span><div style="flex:1;background:#f3f4f6;border-radius:4px;height:22px;overflow:hidden"><div style="background:#10b981;height:100%;width:9%;border-radius:4px;display:flex;align-items:center;padding-left:8px"><span style="font-size:11px;font-weight:700;color:#fff">¥ 200,000</span></div></div><span style="color:#047857;font-weight:700;font-size:13px">¥20W</span></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ==================== CONFIG ==================== -->
     <div class="page" id="page-config">
       <div class="flex-between" style="margin-bottom:14px"><h2 style="font-size:18px">⚙️ 配置管理</h2><button class="btn btn-primary btn-sm">保存全部</button></div>
-      <div class="grid-3">
+      <div class="grid-2">
         <div class="card">
           <div class="card-header"><h3>🎯 专区配置</h3></div>
           <div class="card-body">
@@ -931,95 +692,12 @@ textarea{height:80px;padding:10px;resize:vertical}
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><h3>🎰 盲盒配置</h3></div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group"><label>单次消耗（金豆）</label><input value="5 金豆"></div>
-              <div class="form-group"><label>每日上限（次）</label><input value="20 次"></div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label>碎片数量（块）</label><input value="5 块"></div>
-              <div class="form-group"><label>合成所需碎片</label><input value="5 块/次"></div>
-            </div>
-            <div class="form-group"><label>最高稀有度</label><select><option>SSR（1%）</option><option>SR（5%）</option><option>R（15%）</option></select></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3>🤖 AI 生图配置</h3></div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group"><label>商家免费次数/月</label><input value="1,200 次（Lv.4）"></div>
-              <div class="form-group"><label>超出计费标准</label><input value="1 元/张"></div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label>新手免费次数</label><input value="50 张/人"></div>
-              <div class="form-group"><label>最大生成尺寸</label><select><option>1024×1024</option><option>512×512</option></select></div>
-            </div>
-            <div class="form-group"><div class="flex-between"><label>生图功能开关</label><div class="toggle on"></div></div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3>📢 广告栏排期</h3></div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group"><label>每次展示时长</label><input value="12 小时"></div>
-              <div class="form-group"><label>展示位置</label><select><option>首页左侧</option><option>悬浮广告</option></select></div>
-            </div>
-            <div class="form-group"><label>优先级排序</label>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <span class="tag tag-purple">Lv.5 商家优先</span>
-                <span class="tag tag-blue">付费推广</span>
-                <span class="tag tag-green">新人专区</span>
-              </div>
-            </div>
-            <div class="form-group"><div class="flex-between"><label>自动轮播</label><div class="toggle on"></div></div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3>🛡️ 商家诚信分规则</h3></div>
-          <div class="card-body" style="padding:8px 12px">
-            <table style="font-size:11px;width:100%"><thead><tr><th>行为</th><th>达标加分</th><th>违规扣分</th></tr></thead>
-            <tbody>
-              <tr><td>准时发货（48h内）</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-4</td></tr>
-              <tr><td>玩家投诉</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-6</td></tr>
-              <tr><td>真实发货/快递有效</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-8</td></tr>
-              <tr><td>商品描述一致</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-8</td></tr>
-              <tr><td>售出假货</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-10</td></tr>
-              <tr><td>刷量行为</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-6</td></tr>
-              <tr><td>借号发布</td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-6</td></tr>
-            </tbody></table>
-            <div class="flex-between" style="margin-top:6px;font-size:11px"><span class="text-muted">封号阈值</span><b style="color:var(--red)">诚信分 &lt; 50 → Lv.0 封号</b></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3>🚫 不支持发货区域</h3></div>
-          <div class="card-body">
-            <div class="alert alert-red" style="margin-bottom:10px"><span>⚠️</span><div>以下地区因物流限制，订单自动拦截</div></div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-              <span class="tag tag-red">西藏</span><span class="tag tag-red">新疆</span>
-            </div>
-            <div class="form-group"><label>添加受限区域</label>
-              <div style="display:flex;gap:6px">
-                <select style="flex:1"><option>选择省/自治区</option><option>内蒙古</option><option>青海</option><option>宁夏</option><option>甘肃</option><option>四川</option></select>
-                <button class="btn btn-sm btn-outline">＋ 添加</button>
-              </div>
-            </div>
-            <div class="form-group" style="margin-bottom:0"><label>限制原因</label><input value="物流不可达" disabled style="background:#F3F4F6"></div>
-          </div>
-        </div>
-        <div class="card">
           <div class="card-header"><h3>🍎 娱乐玩法配置</h3></div>
           <div class="card-body">
-            <div class="form-row">
-              <div class="form-group"><label>每日投喂上限（金豆）</label><input value="1,000"></div>
-              <div class="form-group"><label>补签费用（金豆）</label><input value="50"></div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label>种树每日浇灌（金豆）</label><input value="50"></div>
-              <div class="form-group"><label>种树成熟周期</label><input value="7 天"></div>
-            </div>
-            <div class="form-group"><label>盲盒单次消耗（金豆）</label><input value="5"></div>
-            <div class="form-group" style="margin-bottom:0"><label>碎片集齐合成</label><input value="5 碎片合成 1 次"></div>
+            <div class="form-group"><label>每日投喂上限（金豆）</label><input value="1,000"></div>
+            <div class="form-row"><div class="form-group"><label>补签费用（金豆）</label><input value="50"></div><div class="form-group"><label>盲盒单次消耗</label><input value="5 金豆"></div></div>
+            <div class="form-row"><div class="form-group"><label>每日盲盒上限</label><input value="20 次"></div><div class="form-group"><label>盲盒碎片数</label><input value="5 块"></div></div>
+            <div class="form-group"><label>种树每日浇灌消耗</label><input value="50 金豆"></div>
           </div>
         </div>
         <div class="card">
@@ -1058,8 +736,6 @@ textarea{height:80px;padding:10px;resize:vertical}
       <div style="display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:16px">
         <div class="merch-tab active" data-ltab="user" onclick="switchLogTab('user')">👤 用户日志 <span style="font-size:11px;color:var(--muted);margin-left:4px">5条</span></div>
         <div class="merch-tab" data-ltab="system" onclick="switchLogTab('system')">🖥️ 系统操作日志 <span style="font-size:11px;color:var(--muted);margin-left:4px">20条</span></div>
-        <div class="merch-tab" data-ltab="merchant" onclick="switchLogTab('merchant')">🛡️ 商家诚信分 <span style="font-size:11px;color:var(--muted);margin-left:4px">12条</span></div>
-        <div class="merch-tab" data-ltab="asset" onclick="switchLogTab('asset')">💰 资产变动 <span style="font-size:11px;color:var(--muted);margin-left:4px">8条</span></div>
       </div>
       <!-- Tab: User Logs -->
       <div class="log-panel" id="lpanel-user">
@@ -1102,225 +778,91 @@ textarea{height:80px;padding:10px;resize:vertical}
         </tbody></table></div></div>
         <div class="flex-between mt-2"><span class="text-muted" id="systemLogPageInfo">1-10 / 20</span><div class="btn-group" id="systemLogPager"><button class="btn btn-sm btn-outline" disabled>‹</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm btn-outline" onclick="logPage('system',2)">2</button><button class="btn btn-sm btn-outline" onclick="logPage('system',2)">›</button></div></div>
       </div>
-      <!-- Tab: Merchant Credit -->
-      <div class="log-panel" id="lpanel-merchant" style="display:none">
-        <div class="card" style="border-color:var(--line);box-shadow:none;margin-bottom:12px">
-          <div class="card-header" style="padding:8px 12px"><h3 style="font-size:13px">📊 商家诚信分排行榜</h3></div>
-          <div style="padding:0;overflow-x:auto">
-            <table style="font-size:12px"><thead><tr><th>排名</th><th>商家</th><th>等级</th><th>诚信分</th><th>趋势</th><th>本月加分</th><th>本月扣分</th><th>操作</th></tr></thead>
-            <tbody>
-              <tr><td>🥇 1</td><td>数码旗舰店</td><td>Lv.4</td><td><b style="color:var(--green)">92</b></td><td><span style="color:var(--green)">↑ +4</span></td><td style="color:var(--green)">+8</td><td style="color:var(--red)">-4</td><td><button class="btn btn-sm btn-outline" onclick="openMerchantModal()">详情</button></td></tr>
-              <tr><td>🥈 2</td><td>珠宝商李姐</td><td>Lv.2</td><td><b style="color:var(--green)">85</b></td><td><span style="color:var(--green)">↑ +6</span></td><td style="color:var(--green)">+12</td><td style="color:var(--red)">-6</td><td><button class="btn btn-sm btn-outline">详情</button></td></tr>
-              <tr><td>🥉 3</td><td>商家老王</td><td>Lv.3</td><td><b style="color:var(--amber)">72</b></td><td><span style="color:var(--red)">↓ -2</span></td><td style="color:var(--green)">+6</td><td style="color:var(--red)">-8</td><td><button class="btn btn-sm btn-outline">详情</button></td></tr>
-              <tr><td>4</td><td>快速开店_05</td><td>Lv.1</td><td><b style="color:var(--red)">38 ⚠️</b></td><td><span style="color:var(--red)">↓ -22</span></td><td style="color:var(--green)">+2</td><td style="color:var(--red)">-24</td><td><button class="btn btn-sm btn-red" onclick="openBanModal()">封号</button></td></tr>
-            </tbody></table>
-          </div>
-        </div>
-        <div class="card" style="border-color:var(--line);box-shadow:none">
-          <div class="card-header" style="padding:8px 12px"><h3 style="font-size:13px">📝 诚信分变更明细</h3></div>
-          <div style="padding:0;overflow-x:auto">
-            <table style="font-size:12px"><thead><tr><th>日期</th><th>商家</th><th>行为</th><th>分值</th><th>变更后</th><th>来源</th><th>操作人</th></tr></thead>
-            <tbody>
-              <tr><td>2026-04-22 15:00</td><td>数码旗舰店</td><td>✅ 真实发货/快递有效</td><td><b style="color:var(--green)">+2</b></td><td>92</td><td>系统检测</td><td>系统</td></tr>
-              <tr><td>2026-04-22 10:00</td><td>快速开店_05</td><td>❌ 商品描述不符</td><td><b style="color:var(--red)">-8</b></td><td>38</td><td>玩家投诉</td><td>管理员</td></tr>
-              <tr><td>2026-04-21 16:00</td><td>珠宝商李姐</td><td>✅ 准时发货（48h内）</td><td><b style="color:var(--green)">+2</b></td><td>85</td><td>系统检测</td><td>系统</td></tr>
-              <tr><td>2026-04-21 12:00</td><td>商家老王</td><td>❌ 虚假发货/快递无效</td><td><b style="color:var(--red)">-8</b></td><td>72</td><td>快递验证</td><td>管理员</td></tr>
-              <tr><td>2026-04-20 14:30</td><td>数码旗舰店</td><td>✅ 商品描述一致</td><td><b style="color:var(--green)">+2</b></td><td>90</td><td>抽检</td><td>系统</td></tr>
-              <tr><td>2026-04-20 10:00</td><td>快速开店_05</td><td>❌ 售出假货</td><td><b style="color:var(--red)">-10</b></td><td>46</td><td>玩家投诉</td><td>管理员</td></tr>
-              <tr><td>2026-04-18 16:20</td><td>快速开店_05</td><td>❌ 借号发布</td><td><b style="color:var(--red)">-6</b></td><td>56</td><td>商品归属核查</td><td>管理员</td></tr>
-              <tr><td>2026-04-15 08:00</td><td>快速开店_05</td><td>❌ 刷量行为检测</td><td><b style="color:var(--red)">-6</b></td><td>62</td><td>系统自动</td><td>系统</td></tr>
-              <tr><td>2026-04-12 10:00</td><td>商家老王</td><td>✅ 准时发货（48h内）</td><td><b style="color:var(--green)">+2</b></td><td>80</td><td>系统检测</td><td>系统</td></tr>
-              <tr><td>2026-04-01 00:00</td><td>所有商家</td><td>🗓️ 月度重置加分</td><td><b style="color:var(--green)">+10</b></td><td>--</td><td>四项达标奖励</td><td>系统</td></tr>
-            </tbody></table>
-          </div>
-        </div>
-        <div class="flex-between mt-2"><span class="text-muted text-xs">1-10 / 12</span><div class="btn-group"><button class="btn btn-sm btn-outline" disabled>‹</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm btn-outline" disabled>›</button></div></div>
-      </div>
-      <!-- Tab: Asset -->
-      <div class="log-panel" id="lpanel-asset" style="display:none">
-        <div class="flex-between mb-2"><div class="text-muted text-sm">共 <b>8</b> 条资产异常记录</div><button class="btn btn-sm btn-outline">导出</button></div>
-        <table><thead><tr><th>时间</th><th>用户</th><th>类型</th><th>资产</th><th>变动</th><th>原因</th><th>操作人</th></tr></thead>
-        <tbody>
-          <tr><td>2026-04-22 16:00</td><td>#10008 数码旗舰店</td><td><span class="tag tag-amber">出金豆</span></td><td>金豆</td><td style="color:var(--red)">-5,000</td><td>商家违规扣款</td><td>管理员</td></tr>
-          <tr><td>2026-04-22 14:30</td><td>#10001 乾坤小霸王</td><td><span class="tag tag-blue">加金豆</span></td><td>金豆</td><td style="color:var(--green)">+10,000</td><td>拉新奖励发放</td><td>系统</td></tr>
-          <tr><td>2026-04-22 12:00</td><td>#10003 抽奖达人阿强</td><td><span class="tag tag-red">出金豆</span></td><td>金豆</td><td style="color:var(--red)">-2,100</td><td>系统扣除异常余额</td><td>系统</td></tr>
-          <tr><td>2026-04-21 18:00</td><td>#10005 珠宝商李姐</td><td><span class="tag tag-blue">加UMDT</span></td><td>UMDT</td><td style="color:var(--green)">+8,000</td><td>订单结算入账</td><td>系统</td></tr>
-          <tr><td>2026-04-21 10:00</td><td>#10010 幸运锦鲤</td><td><span class="tag tag-amber">加乐币</span></td><td>乐币</td><td style="color:var(--green)">+5</td><td>新人任务奖励</td><td>系统</td></tr>
-          <tr><td>2026-04-20 15:00</td><td>#10006 欧皇小王</td><td><span class="tag tag-red">出金豆</span></td><td>金豆</td><td style="color:var(--red)">-3,600</td><td>刷号作弊扣除</td><td>管理员</td></tr>
-          <tr><td>2026-04-20 12:00</td><td>#10007 新人小白</td><td><span class="tag tag-blue">加乐币</span></td><td>乐币</td><td style="color:var(--green)">+10</td><td>新手任务奖励</td><td>系统</td></tr>
-          <tr><td>2026-04-19 09:00</td><td>#10009 刷量脚本_442</td><td><span class="tag tag-red">冻结</span></td><td>全部资产</td><td style="color:var(--red)">冻结</td><td>封号资产冻结</td><td>系统</td></tr>
-        </tbody></table>
-        <div class="flex-between mt-2"><span class="text-muted text-xs">1-8 / 8</span><div class="btn-group"><button class="btn btn-sm btn-outline" disabled>‹</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm btn-outline" disabled>›</button></div></div>
-      </div>
     </div>
 
-    <!-- ==================== ZONE-EX (兑换管理) ==================== -->
-    <div class="page" id="page-zones-ex">
-      <div class="flex-between" style="margin-bottom:14px"><h2 style="font-size:18px">🎁 兑换专区</h2><button class="btn btn-primary btn-sm" onclick="openExchangeProductModal()">＋ 上架商品</button></div>
-      <div class="card">
-        <div class="card-header"><h3>📦 商品管理</h3><span class="text-muted text-xs">金豆积分兑换商城 · UMDT/CNY+金豆混合支付</span></div>
+    <!-- ==================== ZONES ==================== -->
+    <div class="page" id="page-zones">
+      <div class="flex-between" style="margin-bottom:14px"><h2 style="font-size:18px">🎯 专区管理</h2><button class="btn btn-primary btn-sm" onclick="openZoneCreateModal()">＋ 创建新抽签</button></div>
+      <!-- Zone Stats Overview -->
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+        <div class="stat-card"><div class="label">🎁 兑换专区</div><div class="value" style="font-size:18px">328 件</div><div class="change up">今日兑换 42 单</div></div>
+        <div class="stat-card"><div class="label">🌟 新人专区</div><div class="value" style="font-size:18px">第 24 期</div><div class="change up">参与 586 人</div></div>
+        <div class="stat-card"><div class="label">💥 爆金专区</div><div class="value" style="font-size:18px">12 场</div><div class="change up">进行中 2 场</div></div>
+        <div class="stat-card"><div class="label">🔍 鉴宝专区</div><div class="value" style="font-size:18px">3 件</div><div class="change up">检测中 1 件</div></div>
+      </div>
+
+      <!-- 兑换专区 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><h3>🎁 兑换专区 · 商品管理</h3><span class="text-muted text-xs">金豆积分兑换商城 · UMDT/CNY+金豆混合支付</span></div>
         <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
-            <div style="background:linear-gradient(135deg,#f0f7ff,#faf5ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #e0e7ff"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">在售商品</div><div style="font-size:24px;font-weight:700;color:#1d4ed8">328</div><div style="font-size:11px;color:#6b7280;margin-top:2px">件</div></div>
-            <div style="background:linear-gradient(135deg,#f0fdf4,#f0f7ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #bbf7d0"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">今日兑换</div><div style="font-size:24px;font-weight:700;color:#16a34a">42</div><div style="font-size:11px;color:#6b7280;margin-top:2px">单</div></div>
-            <div style="background:linear-gradient(135deg,#fef9c3,#f0f7ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #fde047"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">本月GMV</div><div style="font-size:24px;font-weight:700;color:#ca8a04">1.28M</div><div style="font-size:11px;color:#6b7280;margin-top:2px">UMDT</div></div>
-          </div>
           <div class="table-wrap"><table><thead><tr><th>商品名称</th><th>售价(UMDT)</th><th>金豆</th><th>库存</th><th>类目</th><th>状态</th><th>上架日期</th><th>操作</th></tr></thead>
           <tbody>
             <tr><td><b>戴森V15吸尘器</b></td><td>10</td><td>5,000</td><td>28</td><td>3C数码</td><td><span class="tag tag-green">在售</span></td><td>2026-04-18</td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red">下架</button></div></td></tr>
             <tr><td><b>SK-II 神仙水套装</b></td><td>8</td><td>3,000</td><td>15</td><td>美妆</td><td><span class="tag tag-green">在售</span></td><td>2026-04-16</td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red">下架</button></div></td></tr>
             <tr><td><b>乐高兰博基尼</b></td><td>5</td><td>2,000</td><td>42</td><td>潮品</td><td><span class="tag tag-green">在售</span></td><td>2026-04-14</td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red">下架</button></div></td></tr>
             <tr><td><b>三只松鼠大礼包</b></td><td>2</td><td>800</td><td>120</td><td>食品</td><td><span class="tag tag-green">在售</span></td><td>2026-04-12</td><td><div class="btn-group"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-red">下架</button></div></td></tr>
-          </tbody></table></div>
+          </tbody></table>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ==================== ZONE-NW (新人管理) ==================== -->
-    <div class="page" id="page-zones-nw">
-      <div class="flex-between" style="margin-bottom:14px"><h2 style="font-size:18px">🌟 新人专区</h2><button class="btn btn-primary btn-sm" onclick="openNewcomerCreateModal()">＋ 新建期数</button></div>
-      <div class="card">
-        <div class="card-header"><h3>📋 期数管理</h3><span class="text-muted text-xs">当前第 24 期 · 最少 300 人 / 最多 10,000 人</span></div>
+      <!-- 新人专区 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><h3>🌟 新人专区 · 乐币抽签</h3><span class="text-muted text-xs">当前第 24 期 · 最少 300 人 / 最多 10,000 人</span></div>
         <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
-            <div style="background:linear-gradient(135deg,#fdf4ff,#f0f7ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #e9d5ff"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">当前期数</div><div style="font-size:24px;font-weight:700;color:#7c3aed">#24</div><div style="font-size:11px;color:#6b7280;margin-top:2px">进行中</div></div>
-            <div style="background:linear-gradient(135deg,#f0f7ff,#faf5ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #e0e7ff"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">参与人数</div><div style="font-size:24px;font-weight:700;color:#1d4ed8">586</div><div style="font-size:11px;color:#6b7280;margin-top:2px">人</div></div>
-            <div style="background:linear-gradient(135deg,#f0fdf4,#f0f7ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #bbf7d0"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">累计开奖</div><div style="font-size:24px;font-weight:700;color:#16a34a">21</div><div style="font-size:11px;color:#6b7280;margin-top:2px">期</div></div>
-            <div style="background:linear-gradient(135deg,#fef9c3,#f0f7ff);border-radius:10px;padding:14px;text-align:center;border:1px solid #fde047"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">新人中签</div><div style="font-size:24px;font-weight:700;color:#ca8a04">21</div><div style="font-size:11px;color:#6b7280;margin-top:2px">人</div></div>
-          </div>
           <div class="toolbar" style="margin-bottom:10px;padding:0">
+            <button class="btn btn-sm btn-primary" onclick="toast('新建新人专区抽签')">＋ 新建期数</button>
             <span class="text-muted text-xs" style="margin-left:8px">每期仅 1 人中签，未中签自动返还乐币</span>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>期数</th><th>商品</th><th>商品价值(UMDT)</th><th>参与人数</th><th>上限</th><th>下限达标</th><th>状态</th><th>开奖时间</th><th>操作</th></tr></thead>
+          <div class="table-wrap"><table><thead><tr><th>期数</th><th>商品</th><th>值(UMDT)</th><th>参与人数</th><th>上限</th><th>下限达标</th><th>状态</th><th>开奖时间</th><th>操作</th></tr></thead>
           <tbody>
-            <tr><td>#24</td><td>小米手环 9 Pro</td><td>150</td><td>586</td><td>3,000</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-blue">进行中</span></td><td>2026-04-23 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#24')">详情</button></td></tr>
-            <tr><td>#23</td><td>飞利浦电动牙刷</td><td>80</td><td>1,280</td><td>2,000</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-green">已开奖</span></td><td>2026-04-22 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#23')">查看结果</button></td></tr>
-            <tr><td>#22</td><td>蓝牙耳机</td><td>60</td><td>168</td><td>1,000</td><td><span class="tag tag-red">✗ 未达标</span></td><td><span class="tag tag-red">已取消</span></td><td>2026-04-21 20:00</td><td><span class="tag tag-red text-xs" style="padding:2px 6px;border-radius:4px">自动取消</span></td></tr>
-            <tr><td>#21</td><td>保温杯礼盒</td><td>40</td><td>856</td><td>500</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-red">已开奖</span></td><td>2026-04-20 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#21')">查看结果</button></td></tr>
-          </tbody></table></div>
+            <tr><td>#24</td><td>小米手环 9 Pro</td><td>3</td><td>586</td><td>3,000</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-blue">进行中</span></td><td>2026-04-23 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#24')">详情</button></td></tr>
+            <tr><td>#23</td><td>飞利浦电动牙刷</td><td>2</td><td>1,280</td><td>2,000</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-green">已开奖</span></td><td>2026-04-22 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#23')">查看结果</button></td></tr>
+            <tr><td>#22</td><td>蓝牙耳机</td><td>1.5</td><td>168</td><td>1,000</td><td><span class="tag tag-red">✗ 未达标</span></td><td><span class="tag tag-red">已取消</span></td><td>2026-04-21 20:00</td><td><span class="tag tag-red text-xs" style="padding:2px 6px;border-radius:4px">自动取消</span></td></tr>
+            <tr><td>#21</td><td>保温杯礼盒</td><td>1</td><td>856</td><td>500</td><td><span class="tag tag-green">✓ 达标</span></td><td><span class="tag tag-red">已开奖</span></td><td>2026-04-20 20:00</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('newcomer','#21')">查看结果</button></td></tr>
+          </tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 爆金专区 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><h3>💥 爆金专区 · 金豆抽签</h3><span class="text-muted text-xs">未中签立即返还 9 倍金豆 · 一人N签 / SOLO 1v1</span></div>
+        <div class="card-body">
+          <div class="toolbar" style="margin-bottom:10px;padding:0">
+            <button class="btn btn-sm btn-primary" onclick="openProductModal()">＋ 上架爆金商品</button>
+            <span class="text-muted text-xs" style="margin-left:8px">仅商家可上架</span>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>商品</th><th>商家</th><th>玩法</th><th>售价(UMDT)</th><th>返还倍数</th><th>参与/总数</th><th>签数限制</th><th>状态</th><th>比价</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><b>iPhone 16 Pro Max</b></td><td>数码旗舰店</td><td><span class="tag tag-blue">一人N签</span></td><td>44</td><td>9x</td><td>18/22</td><td>最多11签</td><td><span class="tag tag-green">进行中</span></td><td><span class="text-xs">天猫¥218<br>京东¥228</span></td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('baojin','iPhone 16 Pro Max')">详情</button></td></tr>
+            <tr><td><b>茅台飞天 53°</b></td><td>酒业专营</td><td><span class="tag tag-red">SOLO 1v1</span></td><td>88</td><td>9x</td><td>2/2</td><td>1v1 PK</td><td><span class="tag tag-green">进行中</span></td><td><span class="text-xs">天猫¥2,899</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('baojin','茅台飞天 53°')">详情</button></td></tr>
+            <tr><td><b>AirPods Pro 3</b></td><td>数码旗舰店</td><td><span class="tag tag-red">SOLO 1v1</span></td><td>18</td><td>9x</td><td>2/2</td><td>1v1 PK</td><td><span class="tag tag-red">已结束</span></td><td><span class="text-xs">已结算</span></td><td><button class="btn btn-sm btn-outline">查看结果</button></td></tr>
+          </tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 鉴宝专区 -->
+      <div class="card">
+        <div class="card-header"><h3>🔍 鉴宝专区 · 检测流程管理</h3><span class="text-muted text-xs">强制检测：商家上传 → 平台送检 → 出具证书 → 上架 → 中签发货</span></div>
+        <div class="card-body">
+          <div class="alert alert-blue" style="margin-bottom:10px"><span>🔍</span><div><b>适用品类：</b>珠宝配饰、3C数码、奢侈品、汽车、房屋。平台合作检测机构出具证书并保管商品，假一赔十。</div></div>
+          <div class="table-wrap"><table><thead><tr><th>商品</th><th>商家</th><th>类目</th><th>估值(UMDT)</th><th>检测状态</th><th>证书</th><th>送检日期</th><th>预计出证</th><th>上架状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><b>和田玉手镯</b></td><td>珠宝商李姐</td><td>珠宝配饰</td><td>120</td><td><span class="tag tag-amber">待送检</span></td><td>--</td><td>--</td><td>--</td><td>待审核</td><td><div class="btn-group"><button class="btn btn-sm btn-primary" onclick="toast('送检已提交')">送检</button><button class="btn btn-sm btn-outline">编辑</button></div></td></tr>
+            <tr><td><b>卡地亚手表</b></td><td>奢侈品专营</td><td>奢侈品</td><td>320</td><td><span class="tag tag-blue">检测中</span></td><td>--</td><td>2026-04-19</td><td>2026-04-22</td><td>待上架</td><td><button class="btn btn-sm btn-outline" onclick="openZoneDetailModal('jianbao','卡地亚手表')">查看进度</button></td></tr>
+            <tr><td><b>LV Neverfull</b></td><td>奢侈品专营</td><td>奢侈品</td><td>280</td><td><span class="tag tag-green">已出证</span></td><td><span class="tag tag-green">✓ LV240422</span></td><td>2026-04-15</td><td>2026-04-18</td><td><span class="tag tag-green">已上架</span></td><td><div class="btn-group"><button class="btn btn-sm btn-outline">查看证书</button><button class="btn btn-sm btn-green">上架</button></div></td></tr>
+          </tbody></table>
+          </div>
         </div>
       </div>
     </div>
 
- <div class="modal-overlay" id="exchangeProductModal">
-   <div class="modal" style="width:680px">
-     <div class="modal-header"><h3>🎁 上架兑换商品</h3><span onclick="closeModal('exchangeProductModal')" style="cursor:pointer;font-size:20px">×</span></div>
-     <div class="modal-body" style="max-height:60vh;overflow-y:auto">
-       <div style="display:grid;gap:0">
+  </div>
+</div>
 
-         <!-- 基本信息 -->
-         <div class="card" style="border:none;box-shadow:none;margin-bottom:14px">
-           <div class="card-header" style="padding:0 0 10px"><h3>📋 基本信息</h3></div>
-           <div class="card-body" style="padding:0">
-             <div class="form-row">
-               <div class="form-group"><label>商品名称 <em>必填</em></label><input id="exProdName" placeholder="输入商品名称"></div>
-               <div class="form-group"><label>商品类目</label>
-                 <select id="exProdCategory">
-                   <option>3C数码</option><option>美妆护肤</option><option>食品饮料</option><option>珠宝配饰</option><option>奢侈品</option><option>家居用品</option><option>潮品潮玩</option><option>其他</option>
-                 </select>
-               </div>
-             </div>
-             <div class="form-group"><label>商品描述</label><textarea id="exProdDesc" placeholder="简要描述商品特点（选填）" rows="2" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px"></textarea></div>
-           </div>
-         </div>
-
-         <!-- 价格与库存 -->
-         <div class="card" style="border:none;box-shadow:none;margin-bottom:14px">
-           <div class="card-header" style="padding:0 0 10px"><h3>💰 价格与库存</h3></div>
-           <div class="card-body" style="padding:0">
-             <div class="form-row">
-               <div class="form-group"><label>UMDT售价 <em>必填</em></label><input id="exProdPriceUMDT" type="number" placeholder="0" oninput="calcExchangeProfit()"></div>
-               <div class="form-group"><label>金豆售价 <em>必填</em></label><input id="exProdPriceGold" type="number" placeholder="0" oninput="calcExchangeProfit()"></div>
-             </div>
-             <div class="form-row">
-               <div class="form-group"><label>划线价（参考价）</label><input id="exProdRefPrice" type="number" placeholder="0"></div>
-               <div class="form-group"><label>库存数量 <em>必填</em></label><input id="exProdStock" type="number" placeholder="0"></div>
-             </div>
-             <div style="background:#f0fdf4;border-radius:8px;padding:12px;margin-top:8px">
-               <div style="font-size:12px;color:#166534;line-height:1.8">
-                 <b>计算参考：</b><br>
-                 · UMDT定价参考：同类商品市场均价 ÷ 2（兑换优势）<br>
-                 · 金豆定价参考：商品价值 × 100（100金豆≈1元）<br>
-                 · 建议划线价高于实际售价30%以上，刺激购买欲
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <!-- 物流与发货 -->
-         <div class="card" style="border:none;box-shadow:none;margin-bottom:14px">
-           <div class="card-header" style="padding:0 0 10px"><h3>📦 物流与发货</h3></div>
-           <div class="card-body" style="padding:0">
-             <div class="form-row">
-               <div class="form-group"><label>商品重量</label>
-                 <select id="exProdWeight">
-                   <option>&lt;1kg（首重6元）</option><option>1-3kg（首重8元）</option><option>3-5kg（首重12元）</option><option>5-10kg（首重18元）</option><option>&gt;10kg（按实计费）</option>
-                 </select>
-               </div>
-               <div class="form-group"><label>发货方式</label>
-                 <select id="exProdShipType">
-                   <option>平台现货仓发货</option><option>商家直发</option><option>品牌方直发</option>
-                 </select>
-               </div>
-             </div>
-             <div class="form-group"><label>承诺发货时效</label>
-               <select id="exProdShipDays">
-                 <option>48小时内发货</option><option>3天内发货</option><option>5天内发货</option><option>7天内发货</option>
-               </select>
-             </div>
-           </div>
-         </div>
-
-         <!-- 商品图片 -->
-         <div class="card" style="border:none;box-shadow:none;margin-bottom:14px">
-           <div class="card-header" style="padding:0 0 10px"><h3>🖼️ 商品图片</h3></div>
-           <div class="card-body" style="padding:0">
-             <div class="form-group"><label>商品主图（封面）</label>
-               <div style="display:flex;gap:8px;align-items:center">
-                 <div id="exProdMainImg" style="width:72px;height:72px;background:#f3f4f6;border-radius:8px;display:grid;place-items:center;font-size:28px;border:2px dashed #d1d5db;cursor:pointer" onclick="toast('选择图片')">📷</div>
-                 <div style="flex:1">
-                   <button class="btn btn-sm btn-outline" onclick="toast('AI生成主图中...')">🤖 AI 生成主图</button>
-                   <button class="btn btn-sm btn-outline" style="margin-left:6px">📁 本地上传</button>
-                   <div class="text-muted text-xs mt-2">支持 JPG/PNG，建议 800×800px 以上</div>
-                 </div>
-               </div>
-             </div>
-             <div class="form-group"><label>详情图（多张）</label>
-               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                 <div style="width:64px;height:64px;background:#f3f4f6;border-radius:6px;display:grid;place-items:center;font-size:22px;border:2px dashed #d1d5db;cursor:pointer">➕</div>
-                 <div style="width:64px;height:64px;background:#f3f4f6;border-radius:6px;display:grid;place-items:center;font-size:22px;border:2px dashed #d1d5db;cursor:pointer">➕</div>
-                 <div style="width:64px;height:64px;background:#f3f4f6;border-radius:6px;display:grid;place-items:center;font-size:22px;border:2px dashed #d1d5db;cursor:pointer">➕</div>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <!-- 售后与保障 -->
-         <div class="card" style="border:none;box-shadow:none;margin-bottom:4px">
-           <div class="card-header" style="padding:0 0 10px"><h3>🛡️ 售后与保障</h3></div>
-           <div class="card-body" style="padding:0">
-             <div class="form-group"><label>售后服务</label>
-               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-                 <label style="display:flex;align-items:center;gap:4px;padding:5px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" checked> 7天无理由退货</label>
-                 <label style="display:flex;align-items:center;gap:4px;padding:5px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" checked> 平台赔付保障</label>
-                 <label style="display:flex;align-items:center;gap:4px;padding:5px 10px;background:#fdf4ff;border:1px solid #e9d5ff;border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox"> 官方正品</label>
-               </div>
-             </div>
-             <div class="form-group"><label>退货政策</label>
-               <select id="exProdReturnPolicy">
-                 <option>支持退货，平台退款（推荐）</option><option>支持退货，退回平台积分</option><option>特卖商品，不支持退货</option>
-               </select>
-             </div>
-           </div>
-         </div>
-
-       </div>
-     </div>
-     <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('exchangeProductModal')">取消</button><button class="btn btn-primary" onclick="submitExchangeProduct()">💾 确认上架</button></div>
-   </div>
- </div>
-
- <!-- ===== PRODUCT MODAL ===== -->
+<!-- ===== PRODUCT MODAL ===== -->
 <div class="modal-overlay" id="productModal">
   <div class="modal" style="width:680px">
     <div class="modal-header"><h3>📦 上架商品</h3><span onclick="closeModal('productModal')" style="cursor:pointer;font-size:20px">×</span></div>
@@ -1487,198 +1029,6 @@ textarea{height:80px;padding:10px;resize:vertical}
       </div>
     </div>
     <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('shipModal')">取消</button><button class="btn btn-primary" id="shipBtn" onclick="confirmShip()">确认发货</button></div>
-  </div>
-</div>
-
-<!-- ===== CERT UPLOAD MODAL ===== -->
-<div class="modal-overlay" id="certUploadModal">
-  <div class="modal" style="width:500px">
-    <div class="modal-header"><h3>📄 上传鉴定证书</h3><span onclick="closeModal('certUploadModal')" style="cursor:pointer;font-size:20px">×</span></div>
-    <div style="padding:20px">
-      <div style="background:linear-gradient(135deg,#f8f4ff,#f0f7ff);border-radius:12px;padding:16px;border:1px solid #e8d5fc;margin-bottom:16px;text-align:center">
-        <div style="font-size:30px;margin-bottom:6px">🏅</div>
-        <div style="font-size:15px;font-weight:700;color:#6d28d9;margin-bottom:2px">国家珠宝检测中心（深圳）</div>
-        <div style="font-size:11px;color:#888">认证检测机构 · 官方背书</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">商品名称</label>
-        <div id="certProductName" style="font-weight:600;color:var(--primary);padding:8px 12px;background:#f5f0ff;border-radius:6px;border:1px solid #e8d5fc;">—</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group">
-          <label class="form-label">证书编号</label>
-          <input type="text" id="certNo" class="form-input" placeholder="例：LV240422">
-        </div>
-        <div class="form-group">
-          <label class="form-label">检测日期</label>
-          <input type="date" id="certDate" class="form-input" value="2026-04-18">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">检测机构</label>
-        <input type="text" id="certOrg" class="form-input" value="国家珠宝检测中心（深圳）">
-      </div>
-      <div class="form-group">
-        <label class="form-label">上传证书文件</label>
-        <div class="file-upload-area" onclick="document.getElementById('certFileInput').click()" style="cursor:pointer">
-          <div style="text-align:center">
-            <div style="font-size:24px;margin-bottom:4px">📄</div>
-            <div style="font-weight:500">点击上传证书</div>
-            <div class="text-muted text-xs" style="margin-top:4px">支持 JPG/PNG/PDF</div>
-          </div>
-        </div>
-        <input type="file" id="certFileInput" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleCertFileSelect(this)">
-        <div id="certUploadPreview" style="margin-top:8px"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">鉴定结果</label>
-        <select id="certResult" class="form-input">
-          <option value="">请选择鉴定结果</option>
-          <option value="pass">✅ 正品 — 鉴定通过</option>
-          <option value="fail">❌ 仿品 — 鉴定不通过</option>
-          <option value="pending">⏳ 待定 — 需进一步检测</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">备注说明</label>
-        <textarea id="certRemarks" class="form-input" placeholder="填写鉴定备注，如：符合品牌工艺特征，未检测到仿品痕迹" style="height:60px"></textarea>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#f9fafb;border-radius:10px;margin-top:4px">
-        <div style="width:36px;height:36px;background:#f0f7ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px">🅰</div>
-        <div style="flex:1">
-          <div style="font-size:11px;color:#888">质检员</div>
-          <input type="text" id="certInspector" class="form-input" value="李建国" style="font-size:13px;padding:4px 8px;height:30px">
-        </div>
-        <div>
-          <div style="font-size:11px;color:#888">资质号</div>
-          <input type="text" id="certInspectorId" class="form-input" value="A202604001" style="font-size:13px;padding:4px 8px;height:30px;width:120px">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('certUploadModal')">取消</button><button class="btn btn-primary" onclick="submitCertUpload()">✅ 确认上传</button></div>
-  </div>
-</div>
-
-<!-- ===== CERT VIEW MODAL ===== -->
-<div class="modal-overlay" id="certViewModal">
-  <div class="modal">
-    <div class="modal-header"><h3>📜 鉴定证书</h3><span onclick="closeCertViewModal()" style="cursor:pointer;font-size:20px">×</span></div>
-    <div style="padding:20px">
-      <div style="background:linear-gradient(135deg,#f8f4ff,#f0f7ff);border-radius:12px;padding:20px;border:1px solid #e8d5fc;margin-bottom:16px;text-align:center">
-        <div style="font-size:36px;margin-bottom:8px">🏅</div>
-        <div style="font-size:18px;font-weight:700;color:#6d28d9;margin-bottom:4px">国家珠宝检测中心（深圳）</div>
-        <div style="font-size:12px;color:#888">认证检测机构 · 官方背书</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div><div class="text-muted text-xs" style="margin-bottom:2px">商品名称</div><div id="viewCertProduct" style="font-weight:600">—</div></div>
-        <div><div class="text-muted text-xs" style="margin-bottom:2px">证书编号</div><div id="viewCertNo" style="font-weight:600;color:var(--primary)">—</div></div>
-        <div><div class="text-muted text-xs" style="margin-bottom:2px">检测日期</div><div id="viewCertDate" style="font-weight:600">—</div></div>
-        <div><div class="text-muted text-xs" style="margin-bottom:2px">检测机构</div><div id="viewCertOrg" style="font-weight:600">—</div></div>
-      </div>
-      <div style="margin-top:16px;padding:16px;background:#f9fafb;border-radius:10px">
-        <div class="text-muted text-xs" style="margin-bottom:6px">鉴定结论</div>
-        <div id="viewCertResult" style="font-size:20px;font-weight:700">—</div>
-        <div id="viewCertRemarks" style="margin-top:8px;font-size:13px;color:#374151">—</div>
-      </div>
-      <div style="margin-top:14px;display:flex;align-items:center;gap:8px">
-        <div style="width:40px;height:40px;background:#f0f7ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">🅰</div>
-        <div>
-          <div style="font-size:12px;color:#888">质检员</div>
-          <div style="font-weight:600;font-size:13px"><span id="viewCertInspector">李建国</span>（资质号：<span id="viewCertInspectorId">A202604001</span>）</div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-primary" onclick="closeCertViewModal()">关闭</button></div>
-  </div>
-</div>
-
-<!-- ===== LOTTERY RESULT MODAL ===== -->
-<div class="modal-overlay" id="lotteryResultModal">
-  <div class="modal">
-    <div class="modal-header"><h3>🎯 中签结果</h3><span onclick="closeLotteryResultModal()" style="cursor:pointer;font-size:20px">×</span></div>
-    <div style="padding:20px">
-      <div style="background:linear-gradient(135deg,#fff7ed,#fef3c7);border-radius:12px;padding:16px;border:1px solid #fcd34d;margin-bottom:16px;display:flex;align-items:center;gap:12px">
-        <div style="font-size:32px">🎁</div>
-        <div>
-          <div style="font-size:14px;font-weight:700;color:#92400e" id="lotteryProductName">—</div>
-          <div style="font-size:12px;color:#b45309;margin-top:2px" id="lotteryTypeTag">SOLO 1v1 · 已结束 · 已结算</div>
-        </div>
-      </div>
-
-      <!-- 1v1 双方视图 -->
-      <div id="lotteryWinnerSection" style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:8px">🏆 中签人</div>
-        <div style="display:flex;align-items:center;gap:10px;background:#fef9c3;border-radius:10px;padding:12px;border:1px solid #fde047;margin-bottom:12px">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,#eab308,#ca8a04);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">🏆</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:#713f12" id="lotteryWinnerName">幸运锦鲤</div>
-            <div style="font-size:11px;color:#a16207" id="lotteryWinnerLevel">Lv.5 · 参与2签 · 第1签中签</div>
-          </div>
-          <div style="margin-left:auto;text-align:right">
-            <div style="font-size:12px;color:#713f12;font-weight:600">商品归您</div>
-            <div style="font-size:10px;color:#a16207">无需返还</div>
-          </div>
-        </div>
-        <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:8px">📋 未中签人</div>
-        <div style="display:flex;align-items:center;gap:10px;background:#eff6ff;border-radius:10px;padding:12px;border:1px solid #bfdbfe">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">🐟</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:#1e40af" id="lotteryLoserName">幸运锦鲤</div>
-            <div style="font-size:11px;color:#1e3a8a" id="lotteryLoserLevel">Lv.3 · 参与1签 · 未中签</div>
-          </div>
-          <div style="margin-left:auto;text-align:right">
-            <div style="font-size:12px;color:#1d4ed8;font-weight:600">+9x</div>
-            <div style="font-size:10px;color:#1e40af">返还积分</div>
-          </div>
-        </div>
-      </div>
-
-<!-- 中签人 + 参与人（1N满员展示） -->
-      <div id="lotteryFullSection" style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:8px">🏆 中签人</div>
-        <div style="display:flex;align-items:center;gap:10px;background:#fef9c3;border-radius:10px;padding:12px;border:1px solid #fde047;margin-bottom:16px">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,#eab308,#ca8a04);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">🏆</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:#713f12" id="lotteryWinnerName2">好运连连</div>
-            <div style="font-size:11px;color:#a16207" id="lotteryWinnerLevel2">Lv.7 · 参与5签 · 第3签中签</div>
-          </div>
-          <div style="margin-left:auto;text-align:right">
-            <div style="font-size:12px;color:#713f12;font-weight:600">商品归您</div>
-            <div style="font-size:10px;color:#a16207">无需返还</div>
-          </div>
-        </div>
-        <div style="font-size:13px;font-weight:700;color:#1f2937;margin-bottom:8px" id="lotteryAllPlayersLabel">📋 参与抽签（50人）</div>
-        <div style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;max-height:220px;overflow-y:auto">
-          <div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:0;background:#f9fafb;border-bottom:1px solid #e5e7eb;padding:8px 12px;font-size:10px;font-weight:700;color:#6b7280;position:sticky;top:0">
-            <div>昵称</div><div>等级</div><div>签数</div><div>结果</div>
-          </div>
-          <div id="lotteryParticipantsList">
-            <!-- JS 动态填充50人 -->
-          </div>
-        </div>
-      </div>
-
-      <!-- 通用统计 -->
-      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div style="background:#f9fafb;border-radius:8px;padding:12px;text-align:center">
-          <div style="font-size:20px;font-weight:800;color:#374151" id="lotteryTotalSigns">4</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:2px">总签数</div>
-        </div>
-        <div style="background:#f9fafb;border-radius:8px;padding:12px;text-align:center">
-          <div style="font-size:20px;font-weight:800;color:#10b981" id="lotteryWinCount">1</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:2px">中签数量</div>
-        </div>
-        <div style="background:#f9fafb;border-radius:8px;padding:12px;text-align:center">
-          <div style="font-size:20px;font-weight:800;color:#374151" id="lotteryTotalUsers">2</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:2px">参与用户</div>
-        </div>
-        <div style="background:#f9fafb;border-radius:8px;padding:12px;text-align:center">
-          <div style="font-size:20px;font-weight:800;color:#d97706" id="lotteryWinRate">25%</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:2px">中签率</div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-primary" onclick="closeLotteryResultModal()">关闭</button></div>
   </div>
 </div>
 
@@ -2236,177 +1586,12 @@ function toast(msg){
   t.style.opacity='1';t.style.transform='translateY(0)';
   clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)'},2200);
 }
-function openCertUploadModal(productName){
-  var modal=document.getElementById('certUploadModal');
-  var inner=modal.querySelector('.modal');
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;display:flex;align-items:center;justify-content:center';
-  inner.style.cssText='background:#fff;border-radius:16px;width:460px;max-width:95vw;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:inherit';
-  document.getElementById('certProductName').textContent=productName;
-  document.getElementById('certUploadPreview').innerHTML='';
-  document.getElementById('certNo').value='';
-  document.getElementById('certResult').value='';
-}
-function handleCertFileSelect(obj){
-  const file=obj.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const ext=file.name.split('.').pop().toLowerCase();
-    if(ext==='pdf'){
-      document.getElementById('certUploadPreview').innerHTML='<div class="cert-pdf-preview"><span class="text-xs">📄 '+file.name+'</span><span class="text-muted text-xs" style="margin-left:8px">PDF</span></div>';
-    } else {
-      document.getElementById('certUploadPreview').innerHTML='<img src="'+e.target.result+'" style="max-width:100%;max-height:80px;border-radius:6px;border:1px solid #eee;">';
-    }
-  };
-  reader.readAsDataURL(file);
-}
-function submitCertUpload(){
-  const certNo=document.getElementById('certNo').value.trim();
-  const certResult=document.getElementById('certResult').value;
-  if(!certNo){toast('⚠️ 请填写证书编号');return;}
-  if(!certResult){toast('⚠️ 请选择鉴定结果');return;}
-  toast('✅ 证书上传成功，商品已通过检测');
-  var m=document.getElementById('certUploadModal');
-  m.classList.remove('show');
-  m.style.cssText='';
-  m.querySelector('.modal').style.cssText='background:#fff;border-radius:var(--radius-lg);width:500px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .2s ease';
-}
-function openCertViewModal(productName, certNo){
-  document.getElementById('viewCertProduct').textContent=productName;
-  document.getElementById('viewCertNo').textContent=certNo;
-  document.getElementById('viewCertDate').textContent='2026-04-18';
-  document.getElementById('viewCertOrg').textContent='国家珠宝检测中心（深圳）';
-  document.getElementById('viewCertResult').innerHTML='<span style="color:#22c55e;font-weight:700">✅ 正品</span>';
-  document.getElementById('viewCertRemarks').textContent='符合品牌工艺特征，未检测到仿品痕迹';
-  document.getElementById('viewCertInspector').textContent='李建国';
-  document.getElementById('viewCertInspectorId').textContent='A202604001';
-  var modal=document.getElementById('certViewModal');
-  var inner=modal.querySelector('.modal');
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;display:flex;align-items:center;justify-content:center';
-  inner.style.cssText='background:#fff;border-radius:16px;width:500px;max-width:95vw;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:inherit';
-}
-function closeCertViewModal(){
-  var m=document.getElementById('certViewModal');
-  m.style.cssText='';
-  m.querySelector('.modal').style.cssText='background:#fff;border-radius:var(--radius-lg);width:520px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .2s ease';
-}
-function openLotteryResultModal(productName, lotteryType){
-  document.getElementById('lotteryProductName').textContent=productName;
-  var modal=document.getElementById('lotteryResultModal');
-  var inner=modal.querySelector('.modal');
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;display:flex;align-items:center;justify-content:center';
-  inner.style.cssText='background:#fff;border-radius:16px;width:560px;max-width:95vw;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:inherit;max-height:85vh;overflow-y:auto';
-
-  // 生成参与人列表（50人满员）
-  var participants = [
-    {name:'好运连连',level:'Lv.7',signs:5,win:true},
-    {name:'欧皇降临',level:'Lv.6',signs:3,win:false},
-    {name:'锦鲤体质',level:'Lv.5',signs:4,win:false},
-    {name:'抽奖达人阿强',level:'Lv.5',signs:2,win:false},
-    {name:'乾坤小霸王',level:'Lv.6',signs:3,win:false},
-    {name:'幸运小张',level:'Lv.5',signs:5,win:false},
-    {name:'财富自由',level:'Lv.4',signs:2,win:false},
-    {name:'星之卡比',level:'Lv.4',signs:1,win:false},
-    {name:'小财神',level:'Lv.3',signs:1,win:false},
-    {name:'神秘玩家',level:'Lv.4',signs:2,win:false},
-    {name:'好运降临',level:'Lv.6',signs:4,win:false},
-    {name:'锦鲤王',level:'Lv.5',signs:3,win:false},
-    {name:'中奖专业户',level:'Lv.7',signs:5,win:false},
-    {name:'手气爆棚',level:'Lv.4',signs:2,win:false},
-    {name:'欧气十足',level:'Lv.3',signs:1,win:false},
-  ];
-  for(var i=16;i<=50;i++){
-    participants.push({name:'用户'+String(i).padStart(3,'0'),level:'Lv.'+String(Math.floor(Math.random()*7)),signs:Math.floor(Math.random()*5)+1,win:false});
-  }
-  var html='<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:0;padding:8px 12px;border-bottom:1px solid #f3f4f6;align-items:center;background:#f0fdf4;font-weight:700"><div style="font-size:12px">'+participants[0].name+'</div><div><span class="tag" style="background:#dcfce7;color:#15803d;font-size:10px;padding:1px 6px">'+participants[0].level+'</span></div><div style="font-size:12px">'+participants[0].signs+'签</div><div><span style="background:#10b981;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px">🏆 中</span></div></div>';
-  for(var i=1;i<participants.length;i++){
-    var p=participants[i];
-    var bg=i%2===0?'#f9fafb':'#fff';
-    html+='<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:0;padding:8px 12px;border-bottom:1px solid #f3f4f6;align-items:center;background:'+bg+'"><div style="font-size:12px">'+p.name+'</div><div><span class="tag" style="background:#f3f4f6;color:#6b7280;font-size:10px;padding:1px 6px">'+p.level+'</span></div><div style="font-size:12px">'+p.signs+'签</div><div><span style="background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px">+9x</span></div></div>';
-  }
-  document.getElementById('lotteryParticipantsList').innerHTML=html;
-
-  if(lotteryType==='1N'){
-    document.getElementById('lotteryTypeTag').textContent='1对N · 已结束 · 已结算';
-    document.getElementById('lotteryWinnerSection').style.display='none';
-    document.getElementById('lotteryFullSection').style.display='block';
-    document.getElementById('lotteryWinnerName2').textContent='好运连连';
-    document.getElementById('lotteryWinnerLevel2').textContent='Lv.7 · 参与5签 · 第3签中签';
-    document.getElementById('lotteryAllPlayersLabel').textContent='📋 参与抽签（50人）';
-    document.getElementById('lotteryTotalSigns').textContent='62';
-    document.getElementById('lotteryWinCount').textContent='1';
-    document.getElementById('lotteryTotalUsers').textContent='50';
-    document.getElementById('lotteryWinRate').textContent='1.6%';
-  } else {
-    document.getElementById('lotteryTypeTag').textContent='SOLO 1v1 · 已结束 · 已结算';
-    document.getElementById('lotteryWinnerSection').style.display='block';
-    document.getElementById('lotteryFullSection').style.display='none';
-    document.getElementById('lotteryWinnerName').textContent='幸运锦鲤';
-    document.getElementById('lotteryWinnerLevel').textContent='Lv.5 · 参与2签 · 第1签中签';
-    document.getElementById('lotteryLoserName').textContent='欧气满满';
-    document.getElementById('lotteryLoserLevel').textContent='Lv.3 · 参与1签 · 未中签';
-    document.getElementById('lotteryTotalSigns').textContent='4';
-    document.getElementById('lotteryWinCount').textContent='1';
-    document.getElementById('lotteryTotalUsers').textContent='2';
-    document.getElementById('lotteryWinRate').textContent='50%';
-  }
-}
-function closeLotteryResultModal(){
-  var m=document.getElementById('lotteryResultModal');
-  m.style.cssText='';
-  m.querySelector('.modal').style.cssText='background:#fff;border-radius:var(--radius-lg);width:560px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .2s ease';
-}
-function openProductModal(){
-  document.getElementById('productModal').classList.add('show');
-  updateProdPricing();
-  var m=document.getElementById('productModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
-function openNewcomerCreateModal(){
-  var m=document.getElementById('newcomerCreateModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
-function calcNewcomerTicket(){
-  var fee=document.getElementById('ncTicketPrice').value;
-  var max=document.getElementById('ncMaxTickets').value.replace(' 签','');
-  var min=document.getElementById('ncMinUsers').value;
-  var dt=document.getElementById('ncDrawTime').value;
-  var name=document.getElementById('ncProdName').value;
-  document.getElementById('ncPreviewFee').textContent=fee||0;
-  document.getElementById('ncPreviewMax').textContent=max||1;
-  document.getElementById('ncPreviewMin').textContent=min||300;
-  document.getElementById('ncPreviewTime').textContent=dt?dt.replace('T',' '):'—';
-  document.getElementById('ncPreviewProd').textContent=name||'—';
-}
-function submitNewcomerCreate(){
-  var name=document.getElementById('ncProdName').value;
-  var fee=document.getElementById('ncTicketPrice').value;
-  var min=document.getElementById('ncMinUsers').value;
-  if(!name){toast('请填写商品名称');return;}
-  if(!fee){toast('请填写参与乐币');return;}
-  if(!min){toast('请填写参与人数下限');return;}
-  toast('✅ 新人专区 #25 已发布：'+name+' · '+fee+'乐币/签');
-  closeModal('newcomerCreateModal');
-}
-function openExchangeProductModal(){
-  var m=document.getElementById('exchangeProductModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
-function submitExchangeProduct(){
-  var name=document.getElementById('exProdName').value;
-  var umdt=document.getElementById('exProdPriceUMDT').value;
-  var gold=document.getElementById('exProdPriceGold').value;
-  var stock=document.getElementById('exProdStock').value;
-  if(!name||!umdt||!gold||!stock){toast('请填写必填字段');return;}
-  toast('✅ '+name+' 已成功上架（'+umdt+' UMDT + '+gold+' 金豆）');
-  closeModal('exchangeProductModal');
-}
+function openProductModal(){document.getElementById('productModal').classList.add('show');updateProdPricing();}
 function openShipModal(orderId, recipient, address, product){
   document.getElementById('shipOrderInfo').innerHTML='📦 订单：'+orderId+' · 收件人：'+recipient;
   document.getElementById('shipProduct').textContent=product;
   document.getElementById('shipAddress').textContent=address;
-  var m=document.getElementById('shipModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('shipModal').classList.add('show');
 }
 function confirmShip(){
   const courier=document.getElementById('shipCourier').value;
@@ -2420,34 +1605,17 @@ function openLogisticsModal(tracking, courier, product, recipient){
   document.getElementById('logCourier').textContent=courier;
   document.getElementById('logProduct').textContent=product;
   document.getElementById('logRecipient').textContent=recipient+' · 139****5678';
-  var m=document.getElementById('logisticsModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('logisticsModal').classList.add('show');
 }
 function openBatchShipModal(){
   const checked=document.querySelectorAll('.order-check:checked').length;
   document.getElementById('batchCount').textContent=checked||2;
-  var m=document.getElementById('batchShipModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('batchShipModal').classList.add('show');
 }
-function openImportModal(){
-  var m=document.getElementById('importModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
+function openImportModal(){document.getElementById('importModal').classList.add('show');}
 function toggleSelectAll(){
   const checked=document.getElementById('selectAll').checked;
   document.querySelectorAll('.order-check').forEach(c=>c.checked=checked);
-}
-function toggleLogistics(row){
-  // 点击已发货行展开/收起物流详情
-  const next=row.nextElementSibling;
-  if(next&&next.classList.contains('logistics-detail')){
-    const isHidden=next.style.display==='none'||next.style.display==='';
-    // 收起其他展开的物流行
-    document.querySelectorAll('.logistics-detail').forEach(d=>d.style.display='none');
-    if(isHidden){
-      next.style.display='table-row';
-    }
-  }
 }
 function filterOrders(){
   const val=document.getElementById('orderStatusFilter').value;
@@ -2502,12 +1670,7 @@ function selectDrawType(type){
   document.getElementById('soloEvenHint').style.display=type==='1v1'?'block':'none';
   document.getElementById('multiSignField').style.display=type==='1vN'?'flex':'none';
 }
-function openZoneCreateModal(){
-  document.getElementById('zoneCreateModal').classList.add('show');
-  toggleZoneCreateFields();
-  var m=document.getElementById('zoneCreateModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
+function openZoneCreateModal(){document.getElementById('zoneCreateModal').classList.add('show');toggleZoneCreateFields();}
 function toggleZoneCreateFields(){
   const v=document.getElementById('zoneType').value;
   document.getElementById('zoneNewcomerFields').style.display=v==='newcomer'?'block':'none';
@@ -2522,11 +1685,11 @@ function openZoneDetailModal(zone,item){
   const winner=document.getElementById('zdWinnerSection');
   if(zone==='newcomer'&&(item==='#23'||item==='#21')){winner.style.display='block';document.getElementById('zdStatus').className='tag tag-red';document.getElementById('zdStatus').textContent='已开奖';}
   else{winner.style.display='none';document.getElementById('zdStatus').className='tag tag-blue';document.getElementById('zdStatus').textContent='进行中';}
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  modal.classList.add('show');
 }
 function openUserModal(btn){
   var tr=btn?btn.closest('tr'):null;
-  if(!tr){var m=document.getElementById('userModal');m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';return;}
+  if(!tr){document.getElementById('userModal').classList.add('show');return;}
   var cells=tr.cells;
   // Helper to get clean text (strip HTML tags inside cell)
   function ct(i){return cells[i]?cells[i].textContent.trim():'';}
@@ -2545,17 +1708,10 @@ function openUserModal(btn){
   document.getElementById('editInvite').value=ct(8);
   document.getElementById('editRegDate').value=ct(11);
   document.getElementById('editRemark').value='';
-  var m=document.getElementById('userModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('userModal').classList.add('show');
 }
-function openReviewModal(){
-  var m=document.getElementById('reviewModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
-function openMerchantModal(){
-  var m=document.getElementById('merchantModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
+function openReviewModal(){document.getElementById('reviewModal').classList.add('show')}
+function openMerchantModal(){document.getElementById('merchantModal').classList.add('show')}
 function switchMerchTab(tab){
   document.querySelectorAll('#merchantModal .merch-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
   document.querySelectorAll('#merchantModal .merch-panel').forEach(p=>p.style.display='none');
@@ -2578,17 +1734,8 @@ function saveMerchantAdjust(){
   if(gold)msg+=' · 金豆'+gold;
   toast(msg);
 }
-function closeModal(id){
-  var m=document.getElementById(id);
-  m.classList.remove('show');
-  m.style.cssText='';
-  var inner=m.querySelector('.modal');
-  if(inner)inner.style.cssText='background:#fff;border-radius:var(--radius-lg);width:520px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .2s ease';
-}
-function openBanModal(){
-  var m=document.getElementById('banModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
-}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function openBanModal(){document.getElementById('banModal').classList.add('show')}
 function switchBanTab(tab){
   document.querySelectorAll('#banModal .merch-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
   document.querySelectorAll('#banModal .merch-panel').forEach(p=>p.style.display='none');
@@ -2612,8 +1759,7 @@ function openNewUserModal(){
   document.getElementById('newStar').value='无';
   document.getElementById('newCredit').value='--';
   document.getElementById('newRemark').value='';
-  var m=document.getElementById('newUserModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('newUserModal').classList.add('show');
 }
 function createNewUser(){
   var name=document.getElementById('newUserName').value.trim();
@@ -2705,8 +1851,7 @@ function openUserDetail(btn){
   document.getElementById('dLoginBody').innerHTML=loginHtml;
   // Reset tabs
   switchDetailTab('info');
-  var m=document.getElementById('userDetailModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
+  document.getElementById('userDetailModal').classList.add('show');
 }
 function switchDetailTab(tab){
   document.querySelectorAll('#userDetailModal .merch-tab').forEach(function(t){t.classList.toggle('active',t.dataset.dtab===tab)});
@@ -2846,8 +1991,6 @@ function openUserBanModal(uid,name){
     });
   }
   document.getElementById('userBanModal').classList.add('show');
-  var m=document.getElementById('userBanModal');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center';
 }
 function confirmUserBan(){
   var isBanned=document.getElementById('userBanTitle').textContent.indexOf('解封')>=0;
@@ -2903,43 +2046,6 @@ function confirmUserBan(){
     }
   });
   filterUsers();
-}
-function openBalanceAdjust(uid, name) {
-  var modal = document.getElementById('balanceAdjustModal');
-  document.getElementById('balUid').textContent = uid;
-  document.getElementById('balName').textContent = name;
-  document.getElementById('balTitle').textContent = '💰 资产调整 · ' + name;
-  // Reset fields
-  document.getElementById('balGoldAdjust').value = '';
-  document.getElementById('balCoinAdjust').value = '';
-  document.getElementById('balUMDTAdjust').value = '';
-  document.getElementById('balReason').value = '';
-  modal.classList.add('show');
-}
-function submitBalanceAdjust() {
-  var uid = document.getElementById('balUid').textContent;
-  var name = document.getElementById('balName').textContent;
-  var gold = document.getElementById('balGoldAdjust').value;
-  var coin = document.getElementById('balCoinAdjust').value;
-  var reason = document.getElementById('balReason').value.trim();
-  if (!gold && !coin) { toast('⚠️ 请至少填写一项调整'); return; }
-  if (!reason) { toast('⚠️ 请填写调整原因'); return; }
-  closeModal('balanceAdjustModal');
-  var msgs = [];
-  if (gold) msgs.push('金豆 ' + gold);
-  if (coin) msgs.push('乐币 ' + coin);
-  toast('✅ ' + name + ' 资产已调整：' + msgs.join(' / ') + ' · 原因：' + reason);
-}
-function switchZoneTab(zone){
-  document.querySelectorAll('.zone-tab').forEach(t=>{
-    t.style.borderBottom='3px solid transparent';
-    t.style.color='#6b7280';
-  });
-  var activeTab=document.querySelector('.zone-tab[data-zone="'+zone+'"]');
-  if(activeTab){activeTab.style.borderBottom='3px solid #7c3aed';activeTab.style.color='#7c3aed';}
-  document.querySelectorAll('.zone-panel').forEach(p=>p.style.display='none');
-  var panel=document.getElementById('zone-'+zone);
-  if(panel)panel.style.display='block';
 }
 </script>
 
@@ -3024,26 +2130,6 @@ function switchZoneTab(zone){
       <div class="form-group"><label>操作备注 <em>可选</em></label><textarea id="banRemark" placeholder="补充说明..."></textarea></div>
     </div>
     <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('userBanModal')">取消</button><button class="btn btn-red" onclick="confirmUserBan()">🚫 确认封禁</button></div>
-  </div>
-</div>
-
-<!-- ===== BALANCE ADJUST MODAL ===== -->
-<div class="modal-overlay" id="balanceAdjustModal">
-  <div class="modal" style="width:480px">
-    <div class="modal-header"><h3 id="balTitle">💰 资产调整</h3><span onclick="closeModal('balanceAdjustModal')" style="cursor:pointer;font-size:20px">×</span></div>
-    <div class="modal-body">
-      <div class="alert alert-blue" style="margin-bottom:14px"><span>ℹ️</span><div>用户 <b id="balName">--</b>（<span id="balUid">--</span>）资产调整，正数增加，负数扣除</div></div>
-      <div style="background:#F9FAFB;border-radius:var(--radius-sm);padding:12px;margin-bottom:14px">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">💰 调整项（至少填写一项）</div>
-        <div class="grid-3" style="gap:8px">
-          <div class="form-group" style="margin-bottom:0"><label>金豆调整</label><input id="balGoldAdjust" placeholder="+500 / -200"></div>
-          <div class="form-group" style="margin-bottom:0"><label>乐币调整</label><input id="balCoinAdjust" placeholder="+1 / -3"></div>
-          <div class="form-group" style="margin-bottom:0"><label>UMDT调整</label><input id="balUMDTAdjust" placeholder="+10 / -5"></div>
-        </div>
-      </div>
-      <div class="form-group"><label>调整原因 <em>必填</em></label><textarea id="balReason" placeholder="填写调整原因，将写入日志记录" rows="2"></textarea></div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('balanceAdjustModal')">取消</button><button class="btn btn-primary" onclick="submitBalanceAdjust()">💾 确认调整</button></div>
   </div>
 </div>
 
