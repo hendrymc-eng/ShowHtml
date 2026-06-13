@@ -9314,7 +9314,7 @@ body {
 }
 .ai-marketing-msg .ai-scene-chip{
   height:86px !important;
-  min-height:86px !important;
+  min-height:92px !important;
   max-height:86px !important;
   box-sizing:border-box !important;
   opacity:1 !important;
@@ -9418,4 +9418,181 @@ body {
   display:-webkit-box !important;
   -webkit-line-clamp:2 !important;
   -webkit-box-orient:vertical !important;
+}
+
+
+/* === v36R Text repair after rollback: precise, structure-preserving === */
+/* Keep the approved horizontal AI scene strip. Only repair inner text clipping. */
+.ai-scene-strip {
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  gap: 8px !important;
+  height: 104px !important;
+  min-height: 104px !important;
+  padding-bottom: 6px !important;
+  scroll-snap-type: x proximity;
+}
+.ai-scene-chip {
+  flex: 0 0 116px !important;
+  width: 116px !important;
+  min-width: 116px !important;
+  height: 92px !important;
+  min-height: 92px !important;
+  padding: 8px 9px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+  scroll-snap-align: start;
+}
+.ai-scene-chip strong {
+  font-size: 12px !important;
+  line-height: 1.16 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+.ai-scene-chip span {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  margin-top: 3px !important;
+  white-space: normal !important;
+}
+.ai-scene-chip em {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  height: auto !important;
+  min-height: 24px !important;
+  max-height: 27px !important;
+  font-size: 9.5px !important;
+  line-height: 1.28 !important;
+  margin-top: 4px !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+/* Agent Center: descriptions were one-line clamped by old rules; allow a compact real two-line read. */
+.ac-library-copy p,
+.ac-agent-copy p,
+.agent-card p {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  height: auto !important;
+  min-height: 34px !important;
+  max-height: 38px !important;
+  font-size: 11.5px !important;
+  line-height: 1.45 !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+/* Agent config hero: keep hero compact but readable. */
+.acc-app-hero .acc-hero-desc,
+.acc-hero-desc {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: initial !important;
+}
+
+/* Profile mini metrics: prevent two Chinese count labels from shaving the last glyph. */
+.profile-ops-stat em,
+.profile-ops-mini em,
+.profile-ops-count em,
+.profile-ops-kpi em {
+  min-width: 62px !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.02em !important;
+}
+
+
+/* === v36R.1 Specificity lock: no layout restructure === */
+/* Fix only the text leaves still clamped by older, later rules. */
+.phone-view.ac-editorial.ac-v3 .ac-library-list .ac-library-row .ac-library-copy p {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  height: auto !important;
+  min-height: 34px !important;
+  max-height: 40px !important;
+  font-size: 9px !important;
+  line-height: 1.45 !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+}
+.phone-view.agent-config-app .acc-app-hero > .acc-hero-desc,
+.phone-view.agent-subpage.agent-config-app .acc-app-hero > p.acc-hero-desc {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: initial !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  font-size: 12.6px !important;
+  line-height: 1.45 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+}
+.phone-view.profile-ops-view .profile-agent-row .profile-agent-count,
+.phone-view.profile-ops-view .profile-agent-row .profile-agent-count em {
+  width: 64px !important;
+  min-width: 64px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  letter-spacing: -0.025em !important;
+}
+/* Scene cards are intentionally 2-line clamped inside a horizontal strip; keep them compact but not visually broken. */
+.phone-view.chat-list-view .ai-scene-chip em {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  height: 25px !important;
+  min-height: 25px !important;
+  max-height: 25px !important;
+  line-height: 12.5px !important;
+  overflow: hidden !important;
+}
+
+
+/* === v36R.2 Agent library two-line fit === */
+.phone-view.ac-editorial.ac-v3 .ac-library-list .ac-library-row .ac-library-copy p {
+  font-size: 8.6px !important;
+  line-height: 1.32 !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  overflow: hidden !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+
+/* === v36R.3 Agent library no vertical shave === */
+.phone-view.ac-editorial.ac-v3 .ac-library-list .ac-library-row {
+  min-height: 72px !important;
+}
+.phone-view.ac-editorial.ac-v3 .ac-library-list .ac-library-row .ac-library-copy p {
+  font-size: 8.6px !important;
+  line-height: 1.38 !important;
+  height: auto !important;
+  min-height: 35px !important;
+  max-height: 36px !important;
+  overflow: hidden !important;
+  -webkit-line-clamp: 2 !important;
 }
