@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甘肃临夏特大泥石流 · 应急慈善 | 慈商联营</title>
+<link rel="stylesheet" href="../../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+  .em-hero {
+    background: linear-gradient(135deg, #92400E 0%, #B45309 50%, #D97706 100%);
+    color: #fff; border-radius: var(--radius-lg);
+    padding: 0; margin-bottom: 24px; position: relative; overflow: hidden;
+  }
+  .em-hero::after { content: '⛰️'; position: absolute; right: 60px; top: 50px; font-size: 280px; opacity: 0.10; }
+  .em-hero .hero-inner { padding: 48px 40px; position: relative; z-index: 1; }
+  .em-hero .crumbs { font-size: 12px; opacity: 0.85; margin-bottom: 16px; }
+  .em-hero .crumbs a { color: rgba(255,255,255,0.85); text-decoration: none; }
+  .em-hero .live-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .em-hero .live-row .pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600; backdrop-filter: blur(10px); }
+  .em-hero .live-row .pill .dot { width: 8px; height: 8px; background: #FBBF24; border-radius: 50%; animation: pulse-dot 1.6s infinite; }
+  .em-hero .live-row .pill.severe { background: rgba(220,38,38,0.4); border-color: #fff; }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } }
+  .em-hero h1 { font-size: 40px; font-weight: 900; line-height: 1.15; margin-bottom: 12px; }
+  .em-hero .sub { font-size: 16px; opacity: 0.92; max-width: 760px; line-height: 1.7; }
+  .em-hero .sub strong { color: #FCD34D; }
+  .em-hero .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+  .em-hero .hero-stat { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 14px 18px; backdrop-filter: blur(10px); }
+  .em-hero .hero-stat .v { font-size: 24px; font-weight: 900; line-height: 1; color: #FCD34D; }
+  .em-hero .hero-stat .l { font-size: 11px; opacity: 0.9; margin-top: 4px; }
+
+  .emergency-cta { position: sticky; top: 64px; z-index: 50; background: linear-gradient(135deg, #D97706, #92400E); color: #fff; padding: 12px 0; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
+  .emergency-cta .container { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .emergency-cta .info { flex: 1; display: flex; gap: 12px; align-items: center; }
+  .emergency-cta .info .pulse { width: 10px; height: 10px; background: #FCD34D; border-radius: 50%; animation: pulse-dot 1.6s infinite; }
+  .emergency-cta .btn-white { background: #fff; color: #92400E; font-weight: 700; }
+  .emergency-cta .btn-ghost-w { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+
+  .em-layout { display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+  @media (max-width: 980px) { .em-layout { grid-template-columns: 1fr; } }
+  .panel { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 16px; }
+  .panel h3 { font-size: 17px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .panel p { font-size: 13px; line-height: 1.8; color: var(--color-text-2); }
+
+  .disaster-data { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+  .data-mini { padding: 14px; background: linear-gradient(135deg, #FEF3C7, #fff); border-radius: 10px; border-left: 3px solid #D97706; }
+  .data-mini .v { font-size: 22px; font-weight: 900; line-height: 1; color: #B45309; }
+  .data-mini .l { font-size: 11px; color: var(--color-text-3); margin-top: 4px; }
+
+  .em-timeline { position: relative; padding-left: 28px; }
+  .em-timeline::before { content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--color-border); }
+  .em-timeline .ev { position: relative; padding-bottom: 16px; }
+  .em-timeline .ev::before { content: ''; position: absolute; left: -23px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-trust); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--color-trust); }
+  .em-timeline .ev.now::before { background: #D97706; box-shadow: 0 0 0 1px #D97706, 0 0 0 4px rgba(217,119,6,0.3); }
+  .em-timeline .ev .t { font-size: 12px; font-weight: 700; }
+  .em-timeline .ev .t .badge { display: inline-block; background: #D97706; color: #fff; padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+  .em-timeline .ev .d { font-size: 12px; color: var(--color-text-2); margin-top: 2px; line-height: 1.5; }
+
+  .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .team-card { padding: 12px; background: var(--color-bg); border-radius: 8px; display: flex; gap: 10px; align-items: center; }
+  .team-card .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #B45309, #92400E); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .team-card .name { font-size: 13px; font-weight: 700; }
+  .team-card .role { font-size: 11px; color: var(--color-text-3); }
+
+  .need-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .need-table th { background: var(--color-bg); padding: 10px 8px; text-align: left; font-size: 12px; font-weight: 600; color: var(--color-text-2); border-bottom: 1px solid var(--color-border); }
+  .need-table td { padding: 12px 8px; border-bottom: 1px solid var(--color-border-light); }
+  .need-table tr.urgent td { background: rgba(254, 226, 226, 0.4); }
+  .need-table .progress { display: flex; align-items: center; gap: 6px; }
+  .need-table .progress .bar { width: 80px; height: 6px; background: var(--color-border); border-radius: 3px; overflow: hidden; }
+  .need-table .progress .bar .fill { height: 100%; background: linear-gradient(90deg, var(--color-trust), var(--color-primary)); }
+  .need-table .progress .pct { font-size: 11px; font-weight: 700; color: var(--color-trust); min-width: 36px; }
+
+  .fund-bar { display: flex; height: 32px; border-radius: 8px; overflow: hidden; margin: 16px 0; }
+  .fund-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; padding: 0 8px; }
+
+  .live-stream { background: linear-gradient(135deg, #1E293B, #0F172A); color: #fff; border-radius: var(--radius-md); padding: 24px; text-align: center; position: relative; overflow: hidden; }
+  .live-stream::before { content: '🔴'; position: absolute; left: 20px; top: 20px; font-size: 16px; animation: pulse-dot 1.6s infinite; }
+  .live-stream .ic-big { font-size: 80px; margin-bottom: 8px; opacity: 0.6; }
+  .live-stream .t { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .live-stream .d { font-size: 12px; opacity: 0.7; margin-bottom: 16px; }
+
+  .donate-row { display: flex; gap: 10px; align-items: center; padding: 12px; background: var(--color-bg); border-radius: 8px; margin-bottom: 8px; }
+  .donate-row .ic { width: 40px; height: 40px; border-radius: 8px; background: #fff; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .donate-row .body { flex: 1; }
+  .donate-row .body .t { font-size: 13px; font-weight: 700; }
+  .donate-row .body .d { font-size: 11px; color: var(--color-text-3); }
+
+  .faq-item { padding: 14px; background: var(--color-bg); border-radius: 8px; margin-bottom: 8px; }
+  .faq-item .q { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .faq-item .a { font-size: 12px; color: var(--color-text-2); line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding: 24px 0 0;">
+  <div class="em-hero">
+    <div class="hero-inner">
+      <div class="crumbs">
+        <a href="../../index.html">首页</a> /
+        <a href="../projects.html">慈善项目</a> /
+        <a href="../emergency.html">应急救援</a> /
+        甘肃临夏特大泥石流
+      </div>
+      <div class="live-row">
+        <span class="pill severe">🟠 严重 · 特大泥石流 · 持续救助中</span>
+        <span class="pill"><span class="dot"></span>第 2 天 · 道路抢通中</span>
+        <span class="pill">📍 甘肃 · 临夏 · 东乡族自治县</span>
+        <span class="pill">🏛️ 主救助方：甘肃省慈善总会</span>
+      </div>
+      <h1>甘肃临夏<br>特大泥石流灾害救助</h1>
+      <div class="sub">
+        2026-06-14 03:20 发生特大泥石流，<strong>23 个自然村受灾</strong>，<strong>1.8 万人紧急转移</strong>，道路中断 6 处。急需<strong>挖掘设备 / 救援工具 / 临时安置物资 / 消毒用品</strong>。当前已进入第 2 天，4 支救援队 + 36 名志愿者已抵达。
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="v">1.8<span style="font-size:14px;font-weight:600;"> 万</span></div>
+          <div class="l">紧急转移人口</div>
+        </div>
+        <div class="hero-stat">
+          <div class="v">23</div>
+          <div class="l">受灾自然村</div>
+        </div>
+        <div class="hero-stat">
+          <div class="v">36</div>
+          <div class="l">志愿者已派</div>
+        </div>
+        <div class="hero-stat">
+          <div class="v">¥ 152,000<span style="font-size:14px;font-weight:600;"> / ¥ 400,000</span></div>
+          <div class="l">已筹 / 目标</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="emergency-cta">
+  <div class="container">
+    <div class="info">
+      <span class="pulse"></span>
+      <div>
+        <div style="font-size:14px;font-weight:700;">⏰ 紧急程度：严重 · 道路抢通后第一时间送达</div>
+        <div style="font-size:11px;opacity:0.9;">挖掘设备优先（重型机械）· 临时安置物资同步</div>
+      </div>
+    </div>
+    <a href="#donate" class="btn btn-white">📦 立即捐物资</a>
+    <a href="../../pages/track.html" class="btn btn-ghost-w">🔍 查看物资轨迹</a>
+    <a href="#join" class="btn btn-ghost-w">🙋 报名志愿者</a>
+  </div>
+</div>
+
+<div class="container" style="padding: 32px 0 60px;">
+
+  <div class="em-layout">
+    <div>
+      <div class="panel">
+        <h3>📊 灾情实时数据 · 截至 2026-06-16 09:00</h3>
+        <div class="disaster-data">
+          <div class="data-mini">
+            <div class="v">23 <span style="font-size:12px;">村</span></div>
+            <div class="l">受灾自然村</div>
+          </div>
+          <div class="data-mini">
+            <div class="v">1.8 <span style="font-size:12px;">万</span></div>
+            <div class="l">紧急转移人口</div>
+          </div>
+          <div class="data-mini">
+            <div class="v">6</div>
+            <div class="l">道路中断（处）</div>
+          </div>
+          <div class="data-mini">
+            <div class="v">12 <span style="font-size:12px;">人</span></div>
+            <div class="l">失踪（搜救中）</div>
+          </div>
+          <div class="data-mini">
+            <div class="v">68 <span style="font-size:12px;">人</span></div>
+            <div class="l">受伤（无危重）</div>
+          </div>
+          <div class="data-mini">
+            <div class="v">2</div>
+            <div class="l">村物资缺口（紧急）</div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--color-text-3);margin-top:8px;">数据来源：甘肃省应急管理厅 + 甘肃省慈善总会 · 每 6 小时更新</p>
+      </div>
+
+      <div class="panel">
+        <h3>⏱️ 救助时间线</h3>
+        <div class="em-timeline">
+          <div class="ev"><div class="t">2026-06-14 03:20 <span class="badge">T+0</span></div><div class="d">甘肃临夏东乡族自治县发生特大泥石流。</div></div>
+          <div class="ev"><div class="t">2026-06-14 04:00 <span class="badge">T+40min</span></div><div class="d">慈商联营应急小组启动，通知所有用户。</div></div>
+          <div class="ev"><div class="t">2026-06-14 06:00 <span class="badge">T+2.5h</span></div><div class="d">正式发布"甘肃临夏特大泥石流"应急项目，开放 4 端入口。</div></div>
+          <div class="ev"><div class="t">2026-06-14 14:00 <span class="badge">T+11h</span></div><div class="d">首批救援队 12 人抵达，挖掘设备从兰州调拨 4 台。</div></div>
+          <div class="ev"><div class="t">2026-06-15 10:00 <span class="badge">T+30h</span></div><div class="d">3 条主干道路抢通，恢复 18 个村通信；2 个村仍孤岛。</div></div>
+          <div class="ev now"><div class="t">2026-06-16 09:00 <span class="badge">T+2d</span></div><div class="d"><strong>当前进度</strong>：已筹 ¥ 152,000（38%），2 个村仍孤岛（挖掘设备在路上），临时安置物资开始分发。下一批物资今日 14:00 出发。</div></div>
+        </div>
+      </div>
+
+      <div class="panel" id="donate">
+        <h3>📦 物资需求清单</h3>
+        <table class="need-table">
+          <thead><tr><th>物资</th><th>紧急度</th><th>需求 / 已筹</th><th>进度</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr class="urgent">
+              <td>🚜 <strong>挖掘设备（租赁）</strong></td>
+              <td><span class="tag" style="background:#FEE2E2;color:#991B1B;font-size:10px;">🔴 极紧急</span></td>
+              <td>8 台 / 4 台</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:50%"></div></div><span class="pct">50%</span></div></td>
+              <td><button class="btn btn-primary btn-sm" style="background:#D97706;border:0;">立即租赁</button></td>
+            </tr>
+            <tr class="urgent">
+              <td>⛺ <strong>帐篷</strong></td>
+              <td><span class="tag" style="background:#FEE2E2;color:#991B1B;font-size:10px;">🔴 极紧急</span></td>
+              <td>600 / 180</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:30%"></div></div><span class="pct">30%</span></div></td>
+              <td><button class="btn btn-primary btn-sm" style="background:#D97706;border:0;">立即捐赠</button></td>
+            </tr>
+            <tr>
+              <td>💊 消毒用品</td>
+              <td><span class="tag" style="background:#FEF3C7;color:#92400E;font-size:10px;">🟠 紧急</span></td>
+              <td>400 / 120</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:30%"></div></div><span class="pct">30%</span></div></td>
+              <td><button class="btn btn-ghost btn-sm">捐赠</button></td>
+            </tr>
+            <tr>
+              <td>🍞 食品</td>
+              <td><span class="tag" style="background:#FEF3C7;color:#92400E;font-size:10px;">🟠 紧急</span></td>
+              <td>2,400 / 1,440</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:60%"></div></div><span class="pct">60%</span></div></td>
+              <td><button class="btn btn-ghost btn-sm">捐赠</button></td>
+            </tr>
+            <tr>
+              <td>💧 饮用水</td>
+              <td><span class="tag" style="background:#FEF3C7;color:#92400E;font-size:10px;">🟠 紧急</span></td>
+              <td>3,000 / 2,400</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:80%"></div></div><span class="pct">80%</span></div></td>
+              <td><button class="btn btn-ghost btn-sm">捐赠</button></td>
+            </tr>
+            <tr>
+              <td>🛏️ 临时安置物资</td>
+              <td><span class="tag" style="background:#E0FAF5;color:#0D9488;font-size:10px;">🟢 常规</span></td>
+              <td>600 / 360</td>
+              <td><div class="progress"><div class="bar"><div class="fill" style="width:60%"></div></div><span class="pct">60%</span></div></td>
+              <td><button class="btn btn-ghost btn-sm">捐赠</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>👥 现场救援队 · 4 支 · 共 36 人</h3>
+        <div class="team-grid">
+          <div class="team-card"><div class="avatar">马</div><div><div class="name">马队长</div><div class="role">⛰️ 地形救援专家 · 18 年</div></div></div>
+          <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg, #0D9488, #14B8A6);">韩</div><div><div class="name">韩医师</div><div class="role">⚕️ 现场医疗</div></div></div>
+          <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg, #7C3AED, #C44569);">刘</div><div><div class="name">刘老师</div><div class="role">📚 儿童心理援助</div></div></div>
+          <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg, #1E40AF, #3B82F6);">+</div><div><div class="name">报名加入</div><div class="role">🙋 应急池待派单 · 26 人</div></div></div>
+        </div>
+      </div>
+
+      <div class="panel" style="padding:0;overflow:hidden;">
+        <div class="live-stream" style="border-radius:0;">
+          <div class="ic-big">🎥</div>
+          <div class="t">📺 现场救援直播</div>
+          <div class="d">甘肃省慈善总会 + 4 支救援队实时画面</div>
+          <button class="btn btn-lg" style="background:#D97706;color:#fff;font-weight:700;">▶ 立即观看</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>💰 资金使用 100% 公开 · ¥ 152,000 / ¥ 400,000</h3>
+        <p style="font-size:12px;color:var(--color-text-3);margin-bottom:8px;">所有捐赠资金 100% 用于物资采购 + 物流，平台 0 抽成</p>
+        <div class="fund-bar">
+          <div class="fund-seg" style="background:#D97706;width:50%;">物资采购 50%</div>
+          <div class="fund-seg" style="background:#B45309;width:25%;">挖掘设备租赁 25%</div>
+          <div class="fund-seg" style="background:#0D9488;width:15%;">物流 15%</div>
+          <div class="fund-seg" style="background:#7C3AED;width:10%;">应急人员 10%</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button class="btn btn-primary btn-sm">📥 下载资金使用明细</button>
+          <button class="btn btn-ghost btn-sm">📊 第三方审计</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>❓ 常见问题</h3>
+        <div class="faq-item"><div class="q">Q1. 道路中断如何送达？</div><div class="a">A. 慈商联营 + 当地救援队采用"挖掘设备先行开路 + 小型物资手提 / 骡马运输"双轨方案。孤岛村优先空投物资包，3 小时内送达。</div></div>
+        <div class="faq-item"><div class="q">Q2. 平台是否从中抽取管理费？</div><div class="a">A. <strong>0 抽成 + 0 管理费</strong>。所有捐赠资金 100% 用于物资采购和物流。</div></div>
+        <div class="faq-item"><div class="q">Q3. 想要企业捐赠怎么操作？</div><div class="a">A. 企业工作台 → 发起捐赠 → 应急捐赠标签 → 系统自动关联本项目。捐赠票据 5 工作日内由甘肃省慈善总会出具。</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel" style="background:linear-gradient(135deg, #FEF3C7 0%, #fff 100%);">
+        <h3>📍 项目信息</h3>
+        <div style="font-size:13px;line-height:1.9;">
+          <div><strong>项目 ID：</strong>EM-2026-0614-02</div>
+          <div><strong>灾害类型：</strong>⛰️ 特大泥石流</div>
+          <div><strong>发生时间：</strong>2026-06-14 03:20</div>
+          <div><strong>主救助方：</strong>甘肃省慈善总会</div>
+          <div><strong>协办：</strong>12 家慈善组织 + 36 名志愿者</div>
+          <div><strong>企业参与：</strong>8 家（伊利 / 立白 / 美的…）</div>
+          <div><strong>持续时间：</strong>预计 21 天</div>
+          <div><strong>目标金额：</strong>¥ 400,000</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>💝 捐赠渠道</h3>
+        <div class="donate-row"><div class="ic">🏢</div><div class="body"><div class="t">企业直发</div><div class="d">从企业仓库直达灾区</div></div><button class="btn btn-primary btn-sm">企业捐</button></div>
+        <div class="donate-row"><div class="ic">🏛️</div><div class="body"><div class="t">慈善组织代采</div><div class="d">平台代采购</div></div><button class="btn btn-ghost btn-sm">代采</button></div>
+        <div class="donate-row"><div class="ic">💰</div><div class="body"><div class="t">个人小额捐</div><div class="d">¥10 / ¥50 / ¥100</div></div><button class="btn btn-ghost btn-sm">个人捐</button></div>
+        <div class="donate-row"><div class="ic">🤝</div><div class="body"><div class="t">基金会联合行动</div><div class="d">基金会 / 协会</div></div><button class="btn btn-ghost btn-sm">联合</button></div>
+      </div>
+
+      <div class="panel" id="join" style="background:linear-gradient(135deg, #F0F9FF 0%, #fff 100%);">
+        <h3>🙋 报名志愿者</h3>
+        <p>本项目当前 <strong>36 / 60 名</strong> 已派单，急需 <strong>24 名</strong>。优先需要：<br>· 🚜 挖掘机操作员 4 名<br>· 🏥 现场医师 4 名<br>· 📋 信息登记 8 名<br>· 🚚 物资转运 8 名</p>
+        <button class="btn btn-primary btn-block" style="background:linear-gradient(135deg, #D97706, #92400E);color:#fff;font-weight:700;border:0;">📋 立即报名</button>
+        <p style="font-size:10px;color:var(--color-text-3);margin-top:8px;text-align:center;">⚠️ 应急池志愿者享 3 倍积分 + 专项保险</p>
+      </div>
+
+      <div class="panel">
+        <h3>🔗 相关链接</h3>
+        <div style="font-size:12px;line-height:2;">
+          · <a href="../track.html" class="text-primary">🔍 物资全流程轨迹查询</a><br>
+          · <a href="../transparency.html" class="text-primary">📊 平台透明公示</a><br>
+          · <a href="../../company/donate-publish.html" class="text-primary">📦 企业发起捐赠</a><br>
+          · <a href="../../volunteer/dashboard.html" class="text-primary">🙋 志愿者中心</a><br>
+          · <a href="../emergency.html" class="text-primary">🚨 应急慈善栏目</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../../public/js/common.js?v=4"></script>
+<script>CS.renderHeader(); CS.renderFooter();</script>
+</body>
+</html>

@@ -91,6 +91,10 @@
     display: flex; align-items: center; gap: 10px;
     z-index: 50; font-size: 14px; font-weight: 600;
   }
+  @keyframes pulse-emergency {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+  }
   .cart-floating .count {
     background: #fff; color: var(--color-primary);
     width: 22px; height: 22px; border-radius: 50%;
@@ -126,6 +130,16 @@
 </div>
 
 <div class="container">
+
+  <!-- P2-5 应急慈善提醒条 -->
+  <a href="../pages/emergency.html" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg, #DC2626, #B91C1C);color:#fff;padding:12px 20px;border-radius:var(--radius-md);margin-bottom:16px;text-decoration:none;box-shadow:0 4px 16px rgba(220,38,38,0.2);">
+    <span style="font-size:24px;animation:pulse-emergency 1.6s infinite;">🚨</span>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:700;">3 个灾害项目紧急救助中 · 云南鲁甸地震 6.0 级 + 甘肃泥石流 + 福建台风</div>
+      <div style="font-size:11px;opacity:0.9;margin-top:2px;">企业 / 个人 / 志愿者 4 端入口已开放 · 所有物资 6 节点可追溯</div>
+    </div>
+    <span style="background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;">立即进入 →</span>
+  </a>
 
   <!-- 商城 Hero -->
   <div class="mall-hero">
@@ -337,7 +351,7 @@
 
 <div id="site-footer"></div>
 
-<script src="../public/js/common.js"></script>
+<script src="../public/js/common.js?v=4"></script>
 <script>CS.renderHeader('mall'); CS.renderFooter();</script>
 </body>
 </html>

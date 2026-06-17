@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>应急慈善 · 灾害救助项目 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+
+  /* 顶部红色应急 hero（区别于普通蓝色 hero） */
+  .em-hero {
+    background: linear-gradient(135deg, #7F1D1D 0%, #991B1B 50%, #DC2626 100%);
+    color: #fff; border-radius: var(--radius-lg);
+    padding: 48px 40px; margin-bottom: 24px; position: relative; overflow: hidden;
+  }
+  .em-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(252, 165, 165, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(254, 215, 170, 0.18) 0%, transparent 50%);
+  }
+  .em-hero::after { content: '🚨'; position: absolute; right: 60px; top: -20px; font-size: 220px; opacity: 0.10; }
+  .em-hero .live-pulse { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+  .em-hero .live-pulse .dot { width: 8px; height: 8px; background: #FBBF24; border-radius: 50%; box-shadow: 0 0 0 0 #FBBF24; animation: pulse-ring 1.6s infinite; }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+  }
+  .em-hero h1 { font-size: 36px; line-height: 1.2; margin-bottom: 12px; max-width: 720px; }
+  .em-hero .lead { font-size: 15px; opacity: 0.92; max-width: 720px; line-height: 1.7; }
+  .em-hero .quick-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .em-hero .quick-actions .btn { background: #fff; color: #991B1B; font-weight: 700; }
+  .em-hero .quick-actions .btn-ghost { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+  /* 4 类灾害类型分类条 */
+  .category-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 768px) { .category-bar { grid-template-columns: repeat(2, 1fr); } }
+  .cat-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 20px; text-align: center;
+    transition: all .2s; cursor: pointer;
+  }
+  .cat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .cat-card.active { background: linear-gradient(135deg, #FEE2E2, #fff); border-color: #DC2626; }
+  .cat-card .ic { font-size: 32px; margin-bottom: 6px; }
+  .cat-card .t { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .cat-card .l { font-size: 11px; color: var(--color-text-3); }
+  .cat-card .count { display: inline-block; background: #FEE2E2; color: #991B1B; padding: 1px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-top: 4px; }
+  .cat-card.active .count { background: #DC2626; color: #fff; }
+
+  /* 应急 KPI 实时数据条 */
+  .live-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .live-stat { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; display: flex; gap: 12px; align-items: center; }
+  .live-stat .ic { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .live-stat .v { font-size: 20px; font-weight: 800; line-height: 1; }
+  .live-stat .l { font-size: 11px; color: var(--color-text-3); margin-top: 4px; }
+  .live-stat.danger .ic { background: #FEE2E2; color: #DC2626; }
+  .live-stat.danger .v { color: #DC2626; }
+  .live-stat.primary .ic { background: var(--color-primary-soft); color: var(--color-primary); }
+  .live-stat.primary .v { color: var(--color-primary); }
+  .live-stat.trust .ic { background: #E0FAF5; color: var(--color-trust); }
+  .live-stat.trust .v { color: var(--color-trust); }
+
+  /* 项目卡片（按严重度配色） */
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-tabs .chip { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--color-border); background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--color-text-2); }
+  .filter-tabs .chip.active { background: #DC2626; color: #fff; border-color: #DC2626; }
+  .filter-tabs .chip .num { background: rgba(255,255,255,0.25); padding: 1px 6px; border-radius: 999px; font-size: 10px; margin-left: 4px; }
+
+  .project-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .em-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); overflow: hidden;
+    display: grid; grid-template-columns: 280px 1fr 200px; gap: 0;
+    transition: all .2s; cursor: pointer; text-decoration: none; color: inherit;
+  }
+  .em-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); border-color: var(--color-primary); }
+  @media (max-width: 880px) { .em-card { grid-template-columns: 1fr; } }
+
+  /* 左侧封面图（按灾害类型配色） */
+  .em-card .cover {
+    padding: 24px; color: #fff; position: relative; overflow: hidden;
+    min-height: 200px;
+  }
+  .em-card .cover.earthquake { background: linear-gradient(135deg, #7F1D1D 0%, #991B1B 100%); }
+  .em-card .cover.mudslide { background: linear-gradient(135deg, #92400E 0%, #B45309 100%); }
+  .em-card .cover.typhoon { background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%); }
+  .em-card .cover.fire { background: linear-gradient(135deg, #DC2626 0%, #EA580C 100%); }
+  .em-card .cover.epidemic { background: linear-gradient(135deg, #581C87 0%, #6B21A8 100%); }
+  .em-card .cover.transportation { background: linear-gradient(135deg, #374151 0%, #4B5563 100%); }
+  .em-card .cover.security { background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 100%); }
+  .em-card .cover::after { content: ''; position: absolute; right: -20px; bottom: -20px; font-size: 120px; opacity: 0.12; }
+  .em-card .cover.earthquake::after { content: '🌋'; }
+  .em-card .cover.mudslide::after { content: '⛰️'; }
+  .em-card .cover.typhoon::after { content: '🌀'; }
+  .em-card .cover.fire::after { content: '🔥'; }
+  .em-card .cover.epidemic::after { content: '🦠'; }
+  .em-card .cover.transportation::after { content: '✈️'; }
+  .em-card .cover.security::after { content: '🛡️'; }
+  .em-card .cover .severity {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+    padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    backdrop-filter: blur(10px);
+  }
+  .em-card .cover .severity.severe { background: rgba(220,38,38,0.4); border-color: #fff; }
+  .em-card .cover h3 { font-size: 18px; font-weight: 800; margin: 12px 0 6px; line-height: 1.3; }
+  .em-card .cover .time { font-size: 11px; opacity: 0.9; }
+
+  /* 中间：项目说明 */
+  .em-card .body { padding: 20px 24px; }
+  .em-card .meta-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; color: var(--color-text-2); }
+  .em-card .meta-row .loc { font-weight: 600; color: var(--color-text); }
+  .em-card .desc { font-size: 13px; line-height: 1.6; color: var(--color-text-2); margin-bottom: 12px; }
+  .em-card .resource-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .em-card .resource-tags .tag-r { background: var(--color-bg); padding: 3px 8px; border-radius: 4px; font-size: 11px; color: var(--color-text-2); }
+  .em-card .resource-tags .tag-r.urgent { background: #FEE2E2; color: #991B1B; font-weight: 700; }
+  .em-card .progress { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--color-text-3); }
+  .em-card .progress .bar { flex: 1; height: 6px; background: var(--color-bg); border-radius: 3px; overflow: hidden; }
+  .em-card .progress .bar .fill { height: 100%; background: linear-gradient(90deg, var(--color-trust), var(--color-primary)); }
+  .em-card .progress .pct { font-weight: 700; color: var(--color-trust); }
+
+  /* 右侧：操作 */
+  .em-card .actions { padding: 20px 16px; background: var(--color-bg); display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .em-card .actions .btn { width: 100%; }
+  .em-card .actions .need { background: #fff; border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 10px; font-size: 11px; }
+  .em-card .actions .need .t { font-weight: 700; color: var(--color-text-2); margin-bottom: 2px; }
+  .em-card .actions .need .v { font-size: 13px; font-weight: 800; color: #DC2626; }
+
+  /* 历史归档区 */
+  .archive-section { margin-top: 32px; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 24px; }
+  .archive-section h3 { font-size: 16px; margin-bottom: 12px; }
+  .archive-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 768px) { .archive-list { grid-template-columns: 1fr; } }
+  .archive-item { padding: 12px; background: var(--color-bg); border-radius: 8px; font-size: 12px; }
+  .archive-item .t { font-weight: 700; margin-bottom: 4px; color: var(--color-text-2); }
+  .archive-item .d { font-size: 11px; color: var(--color-text-3); }
+
+  /* 自愿加入应急救援队 */
+  .join-banner {
+    background: linear-gradient(135deg, #7F1D1D 0%, #DC2626 100%);
+    color: #fff; border-radius: var(--radius-md); padding: 32px;
+    margin-top: 24px; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
+  }
+  .join-banner h3 { font-size: 20px; margin-bottom: 6px; }
+  .join-banner p { opacity: 0.92; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding: 24px 0 60px;">
+
+  <!-- 面包屑 -->
+  <div style="font-size:12px;color:var(--color-text-3);margin-bottom:14px;">
+    <a href="../index.html" style="color:var(--color-text-3);">首页</a> /
+    <a href="projects.html" style="color:var(--color-text-3);">慈善项目</a> /
+    <span>应急救援</span>
+  </div>
+
+  <!-- 红色应急 hero -->
+  <div class="em-hero">
+    <div style="position:relative;z-index:1;">
+      <div class="live-pulse">
+        <span class="dot"></span>
+        🔴 实时救助 · 当前 3 个灾害项目进行中
+      </div>
+      <h1>🚨 应急慈善 · 灾害救助紧急响应</h1>
+      <div class="lead">当自然灾害 / 公共卫生事件 / 事故灾难 / 社会安全事件发生时，慈商联营 <strong>2 小时内启动应急救助</strong>，汇聚企业、慈善组织、志愿者、物资 4 端力量，<strong>24 小时内物资直达受灾群众</strong>。所有资金 100% 公开，物资 6 节点可追溯。</div>
+      <div class="quick-actions">
+        <a href="track.html" class="btn">🔍 追踪我的捐赠</a>
+        <button class="btn btn-ghost">🤝 加入应急救援队</button>
+        <button class="btn btn-ghost">📞 24h 救助热线 400-888-0000</button>
+        <button class="btn btn-ghost">📜 历史救助档案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 类灾害分类条 -->
+  <h3 style="font-size:18px;margin-bottom:12px;">📂 灾害类型分类</h3>
+  <div class="category-bar">
+    <div class="cat-card active">
+      <div class="ic">🌋</div>
+      <div class="t">自然灾害</div>
+      <div class="l">地震 / 洪灾 / 台风 / 泥石流</div>
+      <div class="count">3 进行中</div>
+    </div>
+    <div class="cat-card">
+      <div class="ic">🦠</div>
+      <div class="t">公共卫生</div>
+      <div class="l">疫情 / 传染病 / 食品安全</div>
+      <div class="count">0 进行中</div>
+    </div>
+    <div class="cat-card">
+      <div class="ic">🔥</div>
+      <div class="t">事故灾难</div>
+      <div class="l">火灾 / 矿难 / 交通事故</div>
+      <div class="count">0 进行中</div>
+    </div>
+    <div class="cat-card">
+      <div class="ic">🛡️</div>
+      <div class="t">社会安全</div>
+      <div class="l">重大刑事 / 恐怖袭击 / 涉外事件</div>
+      <div class="count">0 进行中</div>
+    </div>
+  </div>
+
+  <!-- 实时数据条 -->
+  <div class="live-stats">
+    <div class="live-stat danger">
+      <div class="ic">🚨</div>
+      <div>
+        <div class="v">3</div>
+        <div class="l">进行中灾害</div>
+      </div>
+    </div>
+    <div class="live-stat primary">
+      <div class="ic">📦</div>
+      <div>
+        <div class="v">12,860</div>
+        <div class="l">应急物资已发（件）</div>
+      </div>
+    </div>
+    <div class="live-stat trust">
+      <div class="ic">💰</div>
+      <div>
+        <div class="v">¥ 186,200</div>
+        <div class="l">企业应急捐赠（本周）</div>
+      </div>
+    </div>
+    <div class="live-stat danger">
+      <div class="ic">🙋</div>
+      <div>
+        <div class="v">286</div>
+        <div class="l">已报名应急志愿者</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 筛选 -->
+  <h3 style="font-size:18px;margin-bottom:12px;">🔥 紧急救助项目（3 个进行中）</h3>
+  <div class="filter-tabs">
+    <span class="chip active">全部 <span class="num">3</span></span>
+    <span class="chip">🔴 极严重 <span class="num">1</span></span>
+    <span class="chip">🟠 严重 <span class="num">2</span></span>
+    <span class="chip">🌍 自然灾害 <span class="num">3</span></span>
+    <span class="chip">📍 我的附近</span>
+  </div>
+
+  <!-- 项目列表 -->
+  <div class="project-list">
+
+    <!-- 云南鲁甸地震 · 极严重 -->
+    <a href="emergency/yunnan-earthquake.html" class="em-card">
+      <div class="cover earthquake">
+        <span class="severity severe">🔴 极严重 · 6.0 级</span>
+        <h3>云南鲁甸 6.0 级地震<br>抗震救灾</h3>
+        <div class="time">📅 2026-06-12 14:30 发生 · 持续 4 天</div>
+      </div>
+      <div class="body">
+        <div class="meta-row">
+          <span class="loc">📍 云南 · 昭通 · 鲁甸县</span>
+          <span>·</span>
+          <span>🏛️ 主救助：云南省慈善总会</span>
+        </div>
+        <div class="desc">
+          6.0 级地震致鲁甸县 12 个乡镇受灾，<strong>3.6 万人紧急转移</strong>，急需帐篷 / 棉被 / 饮用水 / 方便食品 / 儿童奶粉等物资。已接收企业捐赠 18 批次，志愿者 86 人投入救援，仍有 6 个村物资缺口。
+        </div>
+        <div class="resource-tags">
+          <span class="tag-r urgent">⛺ 帐篷 1,200 顶</span>
+          <span class="tag-r urgent">🛏️ 棉被 2,400 床</span>
+          <span class="tag-r urgent">💧 饮用水 5,000 件</span>
+          <span class="tag-r">🍞 方便食品 3,600 份</span>
+          <span class="tag-r">🍼 婴幼儿奶粉 800 罐</span>
+        </div>
+        <div class="progress">
+          <div class="bar"><div class="fill" style="width:62%"></div></div>
+          <span class="pct">62%</span>
+          <span>· 已筹 ¥ 386,200 / 需 ¥ 620,000</span>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="need">
+          <div class="t">⏰ 紧急程度</div>
+          <div class="v">🔴 极严重</div>
+        </div>
+        <button class="btn btn-primary" style="background:linear-gradient(135deg, #DC2626, #B91C1C);color:#fff;font-weight:700;border:0;">📦 立即捐物资</button>
+        <button class="btn btn-ghost btn-sm">🔍 查看详情</button>
+        <div style="font-size:10px;color:var(--color-text-3);text-align:center;margin-top:4px;">📍 项目 ID: EM-2026-0612-01</div>
+      </div>
+    </a>
+
+    <!-- 甘肃临夏泥石流 · 严重 -->
+    <a href="emergency/gansu-mudslide.html" class="em-card">
+      <div class="cover mudslide">
+        <span class="severity">🟠 严重 · 泥石流</span>
+        <h3>甘肃临夏<br>特大泥石流灾害</h3>
+        <div class="time">📅 2026-06-14 03:20 发生 · 持续 2 天</div>
+      </div>
+      <div class="body">
+        <div class="meta-row">
+          <span class="loc">📍 甘肃 · 临夏 · 东乡族自治县</span>
+          <span>·</span>
+          <span>🏛️ 主救助：甘肃省慈善总会</span>
+        </div>
+        <div class="desc">
+          持续强降雨引发特大泥石流，<strong>23 个自然村受灾</strong>，道路中断 6 处。急需挖掘设备 / 救援工具 / 临时安置物资 / 消毒用品等。
+        </div>
+        <div class="resource-tags">
+          <span class="tag-r urgent">🚜 挖掘设备</span>
+          <span class="tag-r urgent">🛏️ 临时安置物资</span>
+          <span class="tag-r urgent">💊 消毒用品</span>
+          <span class="tag-r">⛺ 帐篷 600 顶</span>
+          <span class="tag-r">🍞 食品 2,400 份</span>
+        </div>
+        <div class="progress">
+          <div class="bar"><div class="fill" style="width:38%"></div></div>
+          <span class="pct">38%</span>
+          <span>· 已筹 ¥ 152,000 / 需 ¥ 400,000</span>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="need">
+          <div class="t">⏰ 紧急程度</div>
+          <div class="v">🟠 严重</div>
+        </div>
+        <button class="btn btn-primary" style="background:linear-gradient(135deg, #DC2626, #B91C1C);color:#fff;font-weight:700;border:0;">📦 立即捐物资</button>
+        <button class="btn btn-ghost btn-sm">🔍 查看详情</button>
+        <div style="font-size:10px;color:var(--color-text-3);text-align:center;margin-top:4px;">📍 项目 ID: EM-2026-0614-02</div>
+      </div>
+    </a>
+
+    <!-- 福建福州台风 · 严重 -->
+    <a href="emergency/fujian-typhoon.html" class="em-card">
+      <div class="cover typhoon">
+        <span class="severity">🟠 严重 · 14 级台风</span>
+        <h3>福建福州<br>超强台风"海鸥"应急</h3>
+        <div class="time">📅 2026-06-15 08:00 登陆 · 持续中</div>
+      </div>
+      <div class="body">
+        <div class="meta-row">
+          <span class="loc">📍 福建 · 福州 · 5 区 8 县</span>
+          <span>·</span>
+          <span>🏛️ 主救助：福建省慈善总会</span>
+        </div>
+        <div class="desc">
+          14 级超强台风"海鸥"登陆，<strong>沿海 6 县紧急转移 8.6 万人</strong>。已造成 12 万户停电、280 处房屋受损。台风过境后急需：<strong>饮用水、应急照明、消毒用品、临时安置</strong>。
+        </div>
+        <div class="resource-tags">
+          <span class="tag-r urgent">💧 饮用水 8,000 件</span>
+          <span class="tag-r urgent">🔦 应急照明 1,200 个</span>
+          <span class="tag-r urgent">💊 消毒用品 600 套</span>
+          <span class="tag-r">⛺ 帐篷 800 顶</span>
+          <span class="tag-r">🍞 食品 4,200 份</span>
+        </div>
+        <div class="progress">
+          <div class="bar"><div class="fill" style="width:24%"></div></div>
+          <span class="pct">24%</span>
+          <span>· 已筹 ¥ 86,000 / 需 ¥ 360,000</span>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="need">
+          <div class="t">⏰ 紧急程度</div>
+          <div class="v">🟠 严重</div>
+        </div>
+        <button class="btn btn-primary" style="background:linear-gradient(135deg, #DC2626, #B91C1C);color:#fff;font-weight:700;border:0;">📦 立即捐物资</button>
+        <button class="btn btn-ghost btn-sm">🔍 查看详情</button>
+        <div style="font-size:10px;color:var(--color-text-3);text-align:center;margin-top:4px;">📍 项目 ID: EM-2026-0615-03</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 应急救援队招募 -->
+  <div class="join-banner">
+    <div>
+      <h3>🙋 加入慈商联营应急救援志愿者队伍</h3>
+      <p>注册志愿者 + 完成 4 项基础培训（急救 / 心理 / 物流 / 沟通）即可加入应急池<br>灾害发生后 2 小时内派单，<strong>专项积分 +3 倍</strong> + 优先获得应急专项保险</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="volunteer/dashboard.html" class="btn btn-lg" style="background:#fff;color:#7F1D1D;font-weight:700;">📋 立即注册</a>
+    </div>
+  </div>
+
+  <!-- 历史救助档案 -->
+  <div class="archive-section">
+    <h3>📜 历史救助档案（已完结）</h3>
+    <p style="font-size:12px;color:var(--color-text-2);margin-bottom:14px;">2020-2026 共完成 32 次重大灾害救助，累计惠及 12.6 万人次</p>
+    <div class="archive-list">
+      <div class="archive-item">
+        <div class="t">🌋 2024 年甘肃积石山 6.2 级地震</div>
+        <div class="d">2024-12-18 · 持续 30 天 · 惠及 8.6 万人<br>物资 1.8 万件 · ¥ 1,260 万</div>
+      </div>
+      <div class="archive-item">
+        <div class="t">🌀 2023 年台风"杜苏芮"</div>
+        <div class="d">2023-07-28 · 持续 14 天 · 惠及 4.2 万人<br>物资 1.2 万件 · ¥ 860 万</div>
+      </div>
+      <div class="archive-item">
+        <div class="t">🦠 2022 年上海新冠疫情</div>
+        <div class="d">2022-03-15 · 持续 60 天 · 惠及 12.8 万人<br>物资 4.6 万件 · ¥ 3,260 万</div>
+      </div>
+      <div class="archive-item">
+        <div class="t">⛰️ 2022 年泸定 6.8 级地震</div>
+        <div class="d">2022-09-05 · 持续 25 天 · 惠及 6.2 万人<br>物资 1.4 万件 · ¥ 920 万</div>
+      </div>
+      <div class="archive-item">
+        <div class="t">🌊 2021 年河南"7·20"特大暴雨</div>
+        <div class="d">2021-07-20 · 持续 21 天 · 惠及 9.8 万人<br>物资 1.6 万件 · ¥ 1,180 万</div>
+      </div>
+      <div class="archive-item">
+        <div class="t">🌋 2020 年湖北新冠疫情</div>
+        <div class="d">2020-01-23 · 持续 90 天 · 惠及 18.6 万人<br>物资 6.2 万件 · ¥ 4,860 万</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js?v=4"></script>
+<script>CS.renderHeader(); CS.renderFooter();</script>
+</body>
+</html>

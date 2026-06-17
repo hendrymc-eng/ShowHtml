@@ -65,6 +65,7 @@
     </button>
     <nav class="nav" id="siteNav">
       <a href="${p}index.html" ${active==='home'?'class="active"':''}>首页</a>
+      <a href="${p}pages/projects.html" ${active==='projects' || active==='emergency' ?'class="active"':''} style="color:#DC2626;font-weight:700;">💖 慈善项目</a>
       <a href="${p}pages/track.html" ${active==='track'?'class="active"':''}>物资轨迹</a>
       <a href="${p}pages/companies.html" ${active==='companies'?'class="active"':''}>标杆企业</a>
       <a href="${p}pages/transparency.html" ${active==='transparency'?'class="active"':''}>透明公示</a>

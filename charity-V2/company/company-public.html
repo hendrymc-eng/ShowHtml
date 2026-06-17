@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业品宣主页 · 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+
+  /* 顶部品牌色 hero（按企业色变化） */
+  .cp-hero {
+    background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
+    color: #fff; border-radius: var(--radius-lg);
+    padding: 0; margin-bottom: 24px; position: relative; overflow: hidden;
+  }
+  .cp-hero::after {
+    content: '🏢'; position: absolute; right: 60px; top: 20px; font-size: 240px; opacity: 0.08;
+  }
+  .cp-hero .inner { padding: 48px 40px; position: relative; z-index: 1; }
+  .cp-hero .top-row { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+  .cp-hero .logo-mark {
+    width: 64px; height: 64px; border-radius: 14px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 800; backdrop-filter: blur(10px);
+  }
+  .cp-hero .name { font-size: 36px; font-weight: 800; line-height: 1.15; }
+  .cp-hero .slogan { font-size: 16px; opacity: 0.92; margin-top: 6px; max-width: 720px; line-height: 1.6; }
+  .cp-hero .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .cp-hero .tag-row .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600; backdrop-filter: blur(10px);
+  }
+  .cp-hero .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 24px; }
+  .cp-hero .stat-mini {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px; padding: 14px 18px; backdrop-filter: blur(10px);
+  }
+  .cp-hero .stat-mini .v { font-size: 22px; font-weight: 900; line-height: 1; color: #FFF8E1; }
+  .cp-hero .stat-mini .l { font-size: 11px; opacity: 0.9; margin-top: 4px; }
+
+  /* 主导航 tabs */
+  .cp-tabs {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 6px;
+    display: flex; gap: 4px; margin-bottom: 24px; overflow-x: auto;
+    position: sticky; top: 64px; z-index: 40;
+  }
+  .cp-tabs a {
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; color: var(--color-text-2);
+    text-decoration: none; white-space: nowrap;
+  }
+  .cp-tabs a:hover { background: var(--color-bg); color: var(--color-primary); }
+  .cp-tabs a.active { background: var(--c1); color: #fff; }
+
+  .cp-section { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 28px; margin-bottom: 16px; }
+  .cp-section h2 { font-size: 20px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .cp-section h2 .sub { font-size: 12px; color: var(--color-text-3); font-weight: 400; margin-left: auto; }
+  .cp-section p { font-size: 14px; line-height: 1.8; color: var(--color-text-2); }
+
+  /* 关于 3 列 */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-item { padding: 16px; background: var(--color-bg); border-radius: 10px; }
+  .about-item .lbl { font-size: 11px; color: var(--color-text-3); margin-bottom: 4px; }
+  .about-item .val { font-size: 14px; font-weight: 700; }
+
+  /* 时间线 */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--color-border); }
+  .timeline .ev { position: relative; padding-bottom: 14px; }
+  .timeline .ev::before { content: ''; position: absolute; left: -23px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--c1); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--c1); }
+  .timeline .ev .t { font-size: 13px; font-weight: 700; }
+  .timeline .ev .d { font-size: 12px; color: var(--color-text-2); margin-top: 2px; line-height: 1.5; }
+
+  /* 捐赠类目柱状 */
+  .cat-bar { display: flex; gap: 10px; align-items: flex-end; height: 180px; padding: 0 12px; }
+  .cat-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .cat-col .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--c1) 0%, var(--c2) 100%);
+    transition: height .6s;
+  }
+  .cat-col .lbl { font-size: 11px; color: var(--color-text-2); }
+  .cat-col .val { font-size: 12px; font-weight: 700; }
+
+  /* 地区 map */
+  .region-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .region-item { padding: 10px; background: var(--color-bg); border-radius: 6px; }
+  .region-item .name { font-size: 12px; font-weight: 600; }
+  .region-item .meta { font-size: 10px; color: var(--color-text-3); }
+
+  /* 感谢信卡 */
+  .thanks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 768px) { .thanks-grid { grid-template-columns: 1fr; } }
+  .thanks-card { padding: 18px; background: var(--color-bg); border-radius: 10px; }
+  .thanks-card.voice { background: linear-gradient(135deg, #FFE4D2, #fff); }
+  .thanks-card.handwritten { background: linear-gradient(135deg, #FEF3C7, #fff); }
+  .thanks-card .author { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .thanks-card .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--c1), var(--c2)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .thanks-card .name { font-size: 12px; font-weight: 700; }
+  .thanks-card .meta { font-size: 10px; color: var(--color-text-3); }
+  .thanks-card .body { font-size: 13px; line-height: 1.6; color: var(--color-text); margin-bottom: 8px; }
+  .thanks-card .body.handwriting { font-family: "STKaiti", "KaiTi", "楷体", serif; font-size: 15px; line-height: 1.8; }
+  .thanks-card .privacy { font-size: 10px; color: var(--color-trust); padding-top: 6px; border-top: 1px dashed var(--color-border); }
+
+  /* 项目参与列表 */
+  .project-list { display: flex; flex-direction: column; gap: 10px; }
+  .project-row { display: flex; gap: 14px; align-items: center; padding: 12px; background: var(--color-bg); border-radius: 8px; transition: all .15s; }
+  .project-row:hover { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .project-row .date { font-size: 12px; color: var(--color-text-3); min-width: 90px; }
+  .project-row .name { flex: 1; font-size: 13px; font-weight: 600; }
+  .project-row .name .badge { display: inline-block; background: var(--c1); color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 9px; margin-left: 4px; }
+  .project-row .meta { font-size: 11px; color: var(--color-text-2); }
+  .project-row .amount { font-weight: 700; color: var(--c1); }
+
+  /* 4 大勋章 */
+  .medal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .medal-card { padding: 18px; border-radius: 10px; text-align: center; color: #fff; }
+  .medal-card .ic { font-size: 32px; margin-bottom: 6px; }
+  .medal-card .t { font-size: 13px; font-weight: 800; }
+  .medal-card .d { font-size: 11px; opacity: 0.9; margin-top: 4px; }
+
+  /* 6 项荣誉徽章 */
+  .honor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .honor-item { padding: 12px 14px; background: var(--color-bg); border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+  .honor-item .ic { font-size: 22px; }
+  .honor-item .name { font-size: 12px; font-weight: 600; }
+
+  /* 联系 CTA */
+  .contact-cta {
+    background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
+    color: #fff; border-radius: var(--radius-md); padding: 32px;
+    display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
+  }
+
+  /* 加载失败 fallback */
+  .fallback {
+    text-align: center; padding: 60px 24px;
+    color: var(--color-text-3);
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding: 24px 0 60px;">
+
+  <!-- 面包屑 -->
+  <div style="font-size:12px;color:var(--color-text-3);margin-bottom:14px;">
+    <a href="../index.html" style="color:var(--color-text-3);">首页</a> /
+    <a href="../pages/companies.html" style="color:var(--color-text-3);">标杆企业</a> /
+    <span id="crumb-name">企业主页</span>
+  </div>
+
+  <!-- hero 区域（数据由 JS 注入） -->
+  <div class="cp-hero" id="cpHero">
+    <div class="inner">
+      <div class="top-row">
+        <div class="logo-mark" id="cpLogo">🏢</div>
+        <div style="flex:1;">
+          <div class="name" id="cpName">加载中…</div>
+          <div class="slogan" id="cpSlogan"></div>
+        </div>
+        <a href="../pages/companies.html" class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);">← 返回榜单</a>
+      </div>
+      <div class="tag-row" id="cpTags"></div>
+      <div class="stat-row" id="cpStats"></div>
+    </div>
+  </div>
+
+  <!-- 主导航 tabs -->
+  <div class="cp-tabs">
+    <a href="#about" class="active">🏢 关于</a>
+    <a href="#timeline">📅 公益历程</a>
+    <a href="#donate-data">📊 捐赠数据</a>
+    <a href="#projects">📋 参与项目</a>
+    <a href="#thanks">💌 受捐者感谢信</a>
+    <a href="#honor">🏆 荣誉</a>
+    <a href="#contact">📞 联系</a>
+  </div>
+
+  <!-- 关于企业 -->
+  <div class="cp-section" id="about">
+    <h2>🏢 关于 <span id="cpAboutName">本企业</span><span class="sub">数据更新时间：<span id="cpUpdateTime">2026-06-15</span></span></h2>
+    <p id="cpDesc">加载中…</p>
+    <div class="about-grid" style="margin-top:18px;">
+      <div class="about-item"><div class="lbl">🏭 所属行业</div><div class="val" id="cpIndustry">—</div></div>
+      <div class="about-item"><div class="lbl">📅 入驻时间</div><div class="val" id="cpJoined">—</div></div>
+      <div class="about-item"><div class="lbl">📍 总部所在地</div><div class="val" id="cpHQ">—</div></div>
+      <div class="about-item"><div class="lbl">👥 员工规模</div><div class="val" id="cpEmployees">—</div></div>
+      <div class="about-item"><div class="lbl">🌍 公益覆盖</div><div class="val" id="cpCoverage">—</div></div>
+      <div class="about-item"><div class="lbl">⭐ 企业等级</div><div class="val" id="cpLevel">—</div></div>
+    </div>
+  </div>
+
+  <!-- 公益历程 -->
+  <div class="cp-section" id="timeline">
+    <h2>📅 公益历程<span class="sub" id="cpTimelineYears">—</span></h2>
+    <div class="timeline" id="cpTimeline"></div>
+  </div>
+
+  <!-- 捐赠数据 -->
+  <div class="cp-section" id="donate-data">
+    <h2>📊 捐赠数据全景<span class="sub">数据可下载可审计</span></h2>
+
+    <h3 style="font-size:14px;color:var(--color-text-2);margin:14px 0 8px;">📦 捐赠类目分布</h3>
+    <div class="cat-bar" id="cpCatBar"></div>
+
+    <h3 style="font-size:14px;color:var(--color-text-2);margin:24px 0 8px;">🌍 受惠地区覆盖</h3>
+    <div class="region-grid" id="cpRegion"></div>
+
+    <div style="margin-top:20px;background:linear-gradient(135deg, var(--c1-soft, #FFE4D2), #fff);padding:14px 18px;border-radius:10px;font-size:12px;color:var(--color-text-2);">
+      🛡️ <strong>合规说明</strong>：本页所有数据来源于平台真实捐赠记录 + 企业工作台提交，<strong>每笔捐赠都有捐赠证书</strong>，受第三方审计。访客可下载完整《<span id="cpCertName">XX</span>· 2025 年度公益报告》。
+    </div>
+  </div>
+
+  <!-- 参与项目 -->
+  <div class="cp-section" id="projects">
+    <h2>📋 参与的公益项目<span class="sub" id="cpProjectCount">—</span></h2>
+    <div class="project-list" id="cpProjects"></div>
+  </div>
+
+  <!-- 受捐者感谢信 -->
+  <div class="cp-section" id="thanks">
+    <h2>💌 受捐者感谢信<span class="sub" id="cpThanksCount">—</span></h2>
+    <div class="thanks-grid" id="cpThanks"></div>
+  </div>
+
+  <!-- 荣誉墙 -->
+  <div class="cp-section" id="honor">
+    <h2>🏆 公益荣誉墙<span class="sub">企业 CSR 报告可直接引用</span></h2>
+    <div class="medal-grid" id="cpMedals"></div>
+    <h3 style="font-size:14px;color:var(--color-text-2);margin:24px 0 12px;">📜 累计荣誉</h3>
+    <div class="honor-grid" id="cpHonors"></div>
+  </div>
+
+  <!-- 联系 -->
+  <div class="cp-section" id="contact" style="padding:0;overflow:hidden;">
+    <div class="contact-cta" style="border-radius:0;">
+      <div>
+        <h2 style="color:#fff;font-size:20px;margin-bottom:6px;">📞 与 <span id="cpContactName">本企业</span> 合作</h2>
+        <p style="opacity:0.92;font-size:14px;">企业 CSR 合作 · 联合公益项目 · 应急救援 · 长期物资捐赠<br>可通过 CSR 经理直接对接，或通过平台中转</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-lg" style="background:#fff;color:var(--c1);font-weight:700;">🤝 申请合作</button>
+        <button class="btn btn-lg" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);">📞 联系 CSR 经理</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js?v=4"></script>
+<script src="../public/js/company-public.js"></script>
+<script>CS.renderHeader(); CS.renderFooter();</script>
+</body>
+</html>

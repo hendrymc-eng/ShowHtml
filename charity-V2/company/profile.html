@@ -41,7 +41,7 @@
         <div class="sub">对外展示企业的公益形象、捐赠历史、ESG 表现</div>
       </div>
       <div class="flex gap-2">
-        <button class="btn btn-ghost">👁️ 预览主页</button>
+        <a href="company-public.html?slug=meixin" class="btn btn-ghost">👁️ 预览主页</a>
         <button class="btn btn-primary">📤 发布更新</button>
       </div>
     </div>
@@ -273,10 +273,30 @@
   </main>
 </div>
 
-<script src="../public/js/common.js"></script>
+<script src="../public/js/common.js?v=4"></script>
 <script>
   CS.renderDashHeader('企业', '李经理');
   CS.renderSidebar('company', 'profile');
+
+  // 📤 发布更新 → 写入 localStorage，公开页会读取
+  document.querySelector('.btn.btn-primary')?.addEventListener('click', () => {
+    const data = {
+      name: '美心食品集团',
+      slogan: '用食品传递温暖 · 让每一份美味都不被浪费',
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem('company_profile_meixin', JSON.stringify(data));
+      // 简单提示
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✓ 已发布';
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2000);
+    } catch (e) {
+      alert('发布失败：' + e.message);
+    }
+  });
 </script>
 </body>
 </html>

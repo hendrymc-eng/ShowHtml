@@ -757,6 +757,7 @@
     </button>
     <nav class="front-nav nav" id="siteNav">
       <a href="index.html" class="active">首页</a>
+      <a href="pages/projects.html" style="color:#DC2626;font-weight:700;">💖 慈善项目</a>
       <a href="pages/track.html">物资轨迹</a>
       <a href="pages/companies.html">标杆企业</a>
       <a href="pages/transparency.html">透明公示</a>
@@ -811,6 +812,7 @@
         <div class="hero-actions">
           <a href="pages/register.html" class="btn btn-primary btn-lg">企业免费入驻 →</a>
           <a href="#flows" class="btn btn-outline-light btn-lg">了解三种捐赠流程</a>
+          <a href="pages/emergency.html" class="btn btn-lg" style="background:linear-gradient(135deg, #DC2626, #B91C1C);color:#fff;font-weight:700;border:0;box-shadow:0 4px 16px rgba(220,38,38,0.4);">🚨 应急救援 · 3 个项目紧急中</a>
         </div>
         <div class="hero-compliance">
           <span class="ic">🛡️</span>
@@ -1693,10 +1695,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="public/js/common.js"></script>
+<script src="public/js/common.js?v=4"></script>
 <!-- MotionPathPlugin 是 ESM，用 +esm 路径自动转换 + module 异步加载；内部自动 registerPlugin 到 window.gsap -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/MotionPathPlugin/+esm"></script>
 <script>
+  CS.renderHeader('home');  // 首页导航（含应急慈善入口）
   CS.initMobileNav();  // 移动端汉堡菜单（front-header 自己渲染时复用 drawer 逻辑）
   CS.renderFooter();
 

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目详情 · 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+
+  /* ========== HERO（类目色贯通） ========== */
+  .pj-hero {
+    background: var(--hero-bg, linear-gradient(135deg, #FFF1E5 0%, #FFE4D2 100%));
+    border-radius: var(--radius-lg);
+    padding: 40px 40px 32px;
+    margin-bottom: 24px;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--c1-soft, #FFE4D2);
+    border-left: 6px solid var(--c1, var(--color-primary));
+  }
+  .pj-hero::after {
+    content: ''; position: absolute; right: -100px; top: -100px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, var(--c1-soft, rgba(232,93,4,0.10)) 0%, transparent 70%);
+  }
+  .pj-hero .top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; position: relative; z-index: 1; }
+  .pj-hero .cat-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--c1, var(--color-primary)); color: #fff;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  }
+  .pj-hero .urgent-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FBBF24; color: #7F1D1D;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800;
+  }
+  .pj-hero .urgent-tag .dot { width: 6px; height: 6px; background: #DC2626; border-radius: 50%; animation: pulse 1.6s infinite; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+    100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+  }
+  .pj-hero .urgent-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FEF3C7; color: #92400E;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  }
+  .pj-hero h1 {
+    font-size: 32px; line-height: 1.2; margin-bottom: 10px; max-width: 800px;
+    position: relative; z-index: 1; color: var(--color-text);
+  }
+  .pj-hero .org { font-size: 13px; color: var(--color-text-2); margin-bottom: 4px; position: relative; z-index: 1; }
+  .pj-hero .region { font-size: 12px; color: var(--color-text-3); position: relative; z-index: 1; }
+
+  /* ========== 核心统计 + 进度条 + CTA ========== */
+  .pj-hero .info-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin-top: 20px; position: relative; z-index: 1; }
+  .pj-hero .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pj-hero .stat {
+    background: rgba(255,255,255,0.7); border: 1px solid var(--c1-soft, #FFE4D2);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .pj-hero .stat .v {
+    font-size: 22px; font-weight: 800; line-height: 1.1;
+    color: var(--c1, var(--color-primary));
+  }
+  .pj-hero .stat .l { font-size: 11px; color: var(--color-text-3); margin-top: 3px; }
+
+  .pj-hero .progress-card {
+    background: rgba(255,255,255,0.7); border: 1px solid var(--c1-soft, #FFE4D2);
+    border-radius: 12px; padding: 16px;
+  }
+  .pj-hero .progress-card .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .pj-hero .progress-card .pct-big {
+    font-size: 28px; font-weight: 900; line-height: 1;
+    color: var(--c1, var(--color-primary));
+  }
+  .pj-hero .progress-card .raised-text { font-size: 12px; color: var(--color-text-3); }
+  .pj-hero .progress-card .pbar { height: 10px; background: rgba(232,93,4,0.1); border-radius: 5px; overflow: hidden; margin-bottom: 8px; }
+  .pj-hero .progress-card .pfill {
+    height: 100%; background: linear-gradient(90deg, var(--c1, var(--color-primary)), var(--color-trust));
+    border-radius: 5px; transition: width 0.6s;
+  }
+  .pj-hero .progress-card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pj-hero .progress-card .tag {
+    font-size: 10px; color: var(--color-text-3);
+    background: var(--color-bg); padding: 2px 8px; border-radius: 4px;
+  }
+
+  .pj-hero .cta-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .pj-hero .cta-primary {
+    flex: 1; min-width: 160px;
+    background: var(--color-primary); color: #fff; border: 0;
+    padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(232,93,4,0.3);
+  }
+  .pj-hero .cta-primary:hover { background: var(--color-primary-dark); transform: translateY(-1px); }
+  .pj-hero .cta-secondary {
+    background: #fff; border: 1px solid var(--color-border); color: var(--color-text);
+    padding: 14px 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .pj-hero .cta-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  /* ========== Sticky Tab 切换 ========== */
+  .pj-tabs {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 6px;
+    display: flex; gap: 4px; margin-bottom: 20px; overflow-x: auto;
+    position: sticky; top: 64px; z-index: 40;
+  }
+  .pj-tabs button {
+    padding: 10px 16px; border-radius: 8px; border: 0; background: transparent;
+    font-size: 13px; font-weight: 600; color: var(--color-text-2);
+    cursor: pointer; white-space: nowrap;
+  }
+  .pj-tabs button:hover { background: var(--color-bg); color: var(--c1, var(--color-primary)); }
+  .pj-tabs button.active { background: var(--c1, var(--color-primary)); color: #fff; }
+
+  /* ========== 区块 ========== */
+  .pj-section {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 28px; margin-bottom: 16px;
+  }
+  .pj-section h2 {
+    font-size: 20px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    color: var(--color-text);
+  }
+  .pj-section h2 .sub { font-size: 12px; color: var(--color-text-3); font-weight: 400; margin-left: auto; }
+  .pj-section h3 { font-size: 14px; color: var(--color-text-2); margin: 18px 0 8px; }
+  .pj-section p { font-size: 14px; line-height: 1.8; color: var(--color-text-2); margin-bottom: 10px; }
+
+  /* 项目目标 */
+  .goals-list { padding: 0; margin: 0; list-style: none; }
+  .goals-list li {
+    padding: 10px 14px 10px 36px; position: relative;
+    border-bottom: 1px dashed var(--color-border);
+    font-size: 13px; color: var(--color-text-2); line-height: 1.6;
+  }
+  .goals-list li:last-child { border-bottom: 0; }
+  .goals-list li::before {
+    content: '✓'; position: absolute; left: 12px; top: 10px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--c1, var(--color-primary)); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+  }
+
+  /* 时间线 */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--color-border); }
+  .timeline .ev { position: relative; padding-bottom: 14px; }
+  .timeline .ev::before { content: ''; position: absolute; left: -23px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--c1, var(--color-primary)); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--c1, var(--color-primary)); }
+  .timeline .ev .t { font-size: 13px; font-weight: 700; color: var(--c1, var(--color-primary)); }
+  .timeline .ev .d { font-size: 12px; color: var(--color-text-2); margin-top: 2px; line-height: 1.5; }
+
+  /* 资金分配柱 */
+  .fund-bar {
+    display: flex; height: 36px; border-radius: 8px; overflow: hidden;
+    margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .fund-seg {
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 700;
+    padding: 0 8px; transition: all 0.3s;
+    position: relative;
+  }
+  .fund-seg:hover { filter: brightness(1.1); }
+  .fund-seg .seg-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fund-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  @media (max-width: 768px) { .fund-list { grid-template-columns: 1fr; } }
+  .fund-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; background: var(--color-bg); border-radius: 8px;
+  }
+  .fund-row .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .fund-row .info { flex: 1; min-width: 0; }
+  .fund-row .name { font-size: 13px; font-weight: 700; }
+  .fund-row .desc { font-size: 11px; color: var(--color-text-3); margin-top: 2px; }
+  .fund-row .val { font-size: 14px; font-weight: 800; color: var(--c1, var(--color-primary)); white-space: nowrap; }
+  .fund-row .val .pct { font-size: 11px; color: var(--color-text-3); font-weight: 400; margin-left: 4px; }
+
+  /* 4 节点 */
+  .nodes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 640px) { .nodes-grid { grid-template-columns: repeat(2, 1fr); } }
+  .node {
+    padding: 16px; text-align: center;
+    background: var(--color-bg); border-radius: 10px;
+    border-top: 3px solid var(--c1, var(--color-primary));
+  }
+  .node .ic { font-size: 28px; margin-bottom: 4px; }
+  .node .t { font-size: 13px; font-weight: 700; }
+  .node .d { font-size: 11px; color: var(--color-text-3); margin-top: 2px; }
+
+  /* 感谢信 */
+  .thanks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 768px) { .thanks-grid { grid-template-columns: 1fr; } }
+  .thanks-card { padding: 18px; background: var(--color-bg); border-radius: 10px; }
+  .thanks-card.voice { background: linear-gradient(135deg, var(--c1-soft, #FFE4D2), #fff); }
+  .thanks-card.handwritten { background: linear-gradient(135deg, #FEF3C7, #fff); }
+  .thanks-card .author { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .thanks-card .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--c1, var(--color-primary)), var(--c1-dark));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+  .thanks-card .name { font-size: 13px; font-weight: 700; }
+  .thanks-card .meta { font-size: 11px; color: var(--color-text-3); }
+  .thanks-card .body { font-size: 13px; line-height: 1.6; color: var(--color-text); margin-bottom: 8px; }
+  .thanks-card .body.handwriting { font-family: "STKaiti", "KaiTi", "楷体", serif; font-size: 15px; line-height: 1.8; }
+  .thanks-card .privacy { font-size: 10px; color: var(--color-trust); padding-top: 6px; border-top: 1px dashed var(--color-border); }
+
+  /* CTA 收口 */
+  .cta-final {
+    background: linear-gradient(135deg, var(--c1, var(--color-primary)) 0%, var(--c1-dark) 100%);
+    color: #fff; border-radius: var(--radius-md); padding: 32px;
+  }
+  .cta-final h2 { color: #fff; font-size: 24px; margin-bottom: 8px; }
+  .cta-final p { color: rgba(255,255,255,0.92); font-size: 14px; margin-bottom: 18px; line-height: 1.6; }
+  .cta-final .amount-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .cta-final .amt {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; padding: 10px 20px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .cta-final .amt:hover { background: rgba(255,255,255,0.25); }
+  .cta-final .amt.active { background: #fff; color: var(--c1, var(--color-primary)); }
+  .cta-final .custom-amt {
+    display: flex; gap: 8px; align-items: center;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 14px; border-radius: 8px;
+  }
+  .cta-final .custom-amt input {
+    background: transparent; border: 0; color: #fff;
+    font-size: 16px; font-weight: 700; width: 100px; outline: none;
+  }
+  .cta-final .custom-amt input::placeholder { color: rgba(255,255,255,0.6); }
+  .cta-final .channel-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .cta-final .ch {
+    background: #fff; color: var(--c1, var(--color-primary));
+    padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    border: 0; cursor: pointer;
+  }
+  .cta-final .ch-ghost {
+    background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .cta-final .pledge {
+    margin-top: 14px; padding: 10px 14px; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 8px;
+    font-size: 11px; color: rgba(255,255,255,0.92); line-height: 1.5;
+  }
+
+  /* 相关项目 */
+  .related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .related-grid { grid-template-columns: 1fr; } }
+  .related-card {
+    display: flex; align-items: center; gap: 12px; padding: 14px;
+    background: var(--color-bg); border-radius: 10px;
+    text-decoration: none; color: var(--color-text);
+    transition: all 0.2s;
+  }
+  .related-card:hover { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .related-card .ic {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: var(--c1-soft, var(--color-primary-soft));
+  }
+  .related-card .name { font-size: 13px; font-weight: 700; line-height: 1.4; }
+  .related-card .meta { font-size: 11px; color: var(--color-text-3); margin-top: 2px; }
+
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .pj-hero { padding: 24px 20px; }
+    .pj-hero h1 { font-size: 24px; }
+    .pj-hero .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding: 24px 0 60px;">
+
+  <!-- 面包屑 -->
+  <div style="font-size:12px;color:var(--color-text-3);margin-bottom:14px;">
+    <a href="../index.html" style="color:var(--color-text-3);">首页</a> /
+    <a href="projects.html" style="color:var(--color-text-3);">慈善项目</a> /
+    <span id="crumbName">项目详情</span>
+  </div>
+
+  <!-- ============== HERO ============== -->
+  <div class="pj-hero">
+    <div class="top-row">
+      <span class="cat-badge" id="pjCatBadge">—</span>
+      <span class="urgent-tag" id="pjUrgent" style="display:none;">
+        <span class="dot"></span>紧急中 · 实时响应
+      </span>
+      <span class="urgent-status">🔒 资金 100% 公开 · 第三方审计</span>
+    </div>
+    <div style="display:flex;gap:16px;align-items:flex-start;">
+      <div style="font-size:48px;line-height:1;" id="pjIcon">🏛️</div>
+      <div style="flex:1;min-width:0;">
+        <h1 id="pjName">—</h1>
+        <div class="org" id="pjOrg">—</div>
+        <div class="region">📍 <span id="pjRegion">—</span></div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="stats">
+        <div class="stat"><div class="v" id="pjStatDonate">—</div><div class="l">💰 筹款额</div></div>
+        <div class="stat"><div class="v" id="pjStatPeople">—</div><div class="l">👥 受惠人数</div></div>
+        <div class="stat"><div class="v" id="pjStatSpeed">—</div><div class="l">⚡ 响应速度</div></div>
+      </div>
+      <div class="progress-card">
+        <div class="head">
+          <div class="pct-big" id="pjProgressPct">0%</div>
+          <div class="raised-text" id="pjProgressText">—</div>
+        </div>
+        <div class="pbar"><div class="pfill" id="pjProgressFill" style="width:0%;"></div></div>
+        <div class="tags">
+          <span class="tag">🕐 实时更新</span>
+          <span class="tag">🛡️ 受审计</span>
+          <span class="tag">📊 可下载明细</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <button class="cta-primary">💖 我要捐赠</button>
+      <button class="cta-secondary">🔄 转发筹款</button>
+      <button class="cta-secondary">🤝 加入志愿者</button>
+    </div>
+  </div>
+
+  <!-- ============== Sticky Tabs ============== -->
+  <div class="pj-tabs">
+    <button class="active" data-section="trust">🛡️ 信任背书</button>
+    <button data-section="story">📖 项目故事</button>
+    <button data-section="data">📊 数据明细</button>
+    <button data-section="thanks">💌 受捐者反馈 (<span id="pjThanksCount">—</span>)</button>
+    <button data-section="donate">💖 立即捐赠</button>
+  </div>
+
+  <!-- ============== 信任背书 ============== -->
+  <div class="pj-section" id="section-trust">
+    <h2>🛡️ 信任背书<span class="sub">5 重保障 · 让你的每一分钱都安全</span></h2>
+    <div class="nodes-grid" id="pjNodes"></div>
+    <div style="margin-top:16px;background:linear-gradient(135deg, var(--c1-soft, #FFE4D2), #fff);padding:14px 18px;border-radius:10px;font-size:12px;color:var(--color-text-2);line-height:1.6;">
+      🛡️ <strong>5 重资金保障</strong>：① 主办方公募资质 ② 银行专户托管 ③ 第三方审计 ④ 6 节点物资追溯 ⑤ 捐赠人实时查询。 所有资金流向 100% 公开，物资 6 节点（采购→仓储→承运→中转→送达→签收）全追溯。
+    </div>
+  </div>
+
+  <!-- ============== 项目故事 ============== -->
+  <div class="pj-section" id="section-story">
+    <h2>📖 项目故事<span class="sub">为什么要做这件事</span></h2>
+    <p id="pjStory">—</p>
+    <h3>📌 背景</h3>
+    <p id="pjBackground">—</p>
+    <h3>🎯 项目目标</h3>
+    <ul class="goals-list" id="pjGoals"></ul>
+    <h3>📅 关键时间线</h3>
+    <div class="timeline" id="pjTimeline"></div>
+  </div>
+
+  <!-- ============== 数据明细 ============== -->
+  <div class="pj-section" id="section-data">
+    <h2>📊 资金与物资明细<span class="sub">每笔支出可追溯</span></h2>
+    <h3>💰 资金分配</h3>
+    <div class="fund-bar" id="pjFundBar"></div>
+    <div class="fund-list" id="pjFundList"></div>
+
+    <h3>📦 物资节点</h3>
+    <div class="nodes-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="node"><div class="ic">🏛️</div><div class="t">发起方</div><div class="d">资金拨付</div></div>
+      <div class="node"><div class="ic">🏭</div><div class="t">采购</div><div class="d">物资到位</div></div>
+      <div class="node"><div class="ic">🚚</div><div class="t">承运</div><div class="d">顺丰专送</div></div>
+      <div class="node"><div class="ic">✅</div><div class="t">签收</div><div class="d">受益人确认</div></div>
+    </div>
+  </div>
+
+  <!-- ============== 受捐者反馈 ============== -->
+  <div class="pj-section" id="section-thanks">
+    <h2>💌 受捐者反馈<span class="sub">真实的声音 · 已脱敏</span></h2>
+    <div class="thanks-grid" id="pjThanks"></div>
+  </div>
+
+  <!-- ============== 立即捐赠（CTA 收口） ============== -->
+  <div class="cta-final" id="section-donate">
+    <h2>💖 立即捐赠 · 让善意抵达</h2>
+    <p>4 步完成捐赠：选金额 → 选通道 → 完成支付 → 收到证书。每一笔捐赠 24 小时内可下载捐赠证书，可享受个人 / 企业捐赠税收抵扣。</p>
+    <div class="amount-row">
+      <button class="amt">¥ 50</button>
+      <button class="amt active">¥ 200</button>
+      <button class="amt">¥ 500</button>
+      <button class="amt">¥ 1,000</button>
+      <button class="amt">¥ 5,000</button>
+      <div class="custom-amt">
+        <span style="opacity:0.9;">¥</span>
+        <input type="text" placeholder="自定义" />
+      </div>
+    </div>
+    <div class="channel-row">
+      <button class="ch">💳 个人捐赠</button>
+      <button class="ch">🏢 企业捐赠（含发票）</button>
+      <button class="ch-ghost">📦 物资捐赠</button>
+      <button class="ch-ghost">🔄 转发筹款</button>
+    </div>
+    <div class="pledge">
+      📋 <strong>平台财务披露承诺</strong>：每一笔捐赠均开具公益事业捐赠票据；所有资金由具备公募资质的合作基金会专户托管；季度发布资金使用报告；接受第三方审计和捐赠人查询。
+    </div>
+  </div>
+
+  <!-- ============== 相关项目 ============== -->
+  <div class="pj-section">
+    <h2>🔗 相关项目<span class="sub">同类目继续支持</span></h2>
+    <div class="related-grid" id="pjRelated"></div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js?v=4"></script>
+<script src="../public/js/project-detail.js"></script>
+<script>CS.renderHeader('projects'); CS.renderFooter();</script>
+</body>
+</html>

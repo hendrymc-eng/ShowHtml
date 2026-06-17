@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慈善项目 · 6 大类目一站式参与 | 慈商联营</title>
+<link rel="stylesheet" href="../public/css/style.css">
+<style>
+  body { background: var(--color-bg); }
+
+  /* ============== HERO（沿用 companies.html 浅橙品牌色） ============== */
+  .projects-hero {
+    background: linear-gradient(135deg, #FFF1E5 0%, #FFE4D2 100%);
+    border-radius: var(--radius-lg);
+    padding: 56px 48px;
+    margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .projects-hero::before {
+    content: ''; position: absolute; right: -60px; top: -60px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,93,4,0.10) 0%, transparent 70%);
+  }
+  .projects-hero::after {
+    content: '💖'; position: absolute; right: 48px; top: 24px;
+    font-size: 160px; opacity: 0.10;
+  }
+  .projects-hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.65); border: 1px solid rgba(232,93,4,0.18);
+    padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;
+    color: var(--color-primary); margin-bottom: 14px; position: relative; z-index: 1;
+  }
+  .projects-hero h1 {
+    font-size: 42px; line-height: 1.15; margin-bottom: 14px;
+    max-width: 760px; position: relative; z-index: 1;
+    background: linear-gradient(135deg, #E85D04 0%, #C44569 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .projects-hero .lead {
+    font-size: 15px; color: var(--color-text-2);
+    line-height: 1.7; max-width: 680px; margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .projects-hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    max-width: 760px; position: relative; z-index: 1;
+  }
+  .projects-hero .stat .num {
+    font-size: 32px; font-weight: 800; line-height: 1.1;
+    background: linear-gradient(135deg, #E85D04 0%, #C44569 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .projects-hero .stat .lbl {
+    font-size: 12px; color: var(--color-text-3); margin-top: 4px;
+  }
+
+  /* ============== 6 类目 Tab（沿用 filter-bar 风格） ============== */
+  .cat-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .cat-tabs .filter-tag {
+    padding: 8px 16px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--color-border);
+    font-size: 13px; font-weight: 600; color: var(--color-text-2);
+    cursor: pointer; transition: all 0.2s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .cat-tabs .filter-tag:hover {
+    background: var(--color-primary-soft); color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .cat-tabs .filter-tag.active {
+    background: var(--color-primary); color: #fff; border-color: var(--color-primary);
+  }
+  .cat-tabs .filter-tag .cnt {
+    font-size: 10px; padding: 1px 6px; border-radius: 999px;
+    background: var(--color-bg); color: var(--color-text-3);
+  }
+  .cat-tabs .filter-tag.active .cnt {
+    background: rgba(255,255,255,0.25); color: #fff;
+  }
+  .cat-tabs .filter-tag.em .ic { color: #DC2626; }
+  .cat-tabs .filter-tag.em.active .ic { color: #FBBF24; }
+
+  /* ============== 应急红条（应急专属，激活时显示，1 行高度不抢主调） ============== */
+  .em-subbar {
+    background: linear-gradient(135deg, #FEF2F2 0%, #FFF 100%);
+    border: 1px solid #FCA5A5; border-left: 4px solid #DC2626;
+    border-radius: var(--radius-md);
+    padding: 12px 18px; margin-bottom: 16px;
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+  }
+  .em-subbar .left { display: flex; gap: 10px; align-items: center; flex: 1; min-width: 0; }
+  .em-subbar .pulse { width: 10px; height: 10px; background: #DC2626; border-radius: 50%; animation: em-pulse 1.6s infinite; }
+  @keyframes em-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.6); }
+    70% { box-shadow: 0 0 0 12px rgba(220,38,38,0); }
+    100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+  }
+  .em-subbar .txt { font-size: 13px; font-weight: 700; color: #991B1B; }
+  .em-subbar .meta { font-size: 12px; color: var(--color-text-3); }
+  .em-subbar a {
+    padding: 6px 14px; background: #DC2626; color: #fff;
+    border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none;
+    transition: all .2s;
+  }
+  .em-subbar a:hover { background: #B91C1C; }
+
+  /* ============== 排序工具栏 ============== */
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar .sort-btn {
+    padding: 6px 12px; background: #fff; border: 1px solid var(--color-border);
+    border-radius: 6px; font-size: 12px; color: var(--color-text-2); cursor: pointer;
+    transition: all .2s;
+  }
+  .toolbar .sort-btn:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .toolbar .sort-btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+  .toolbar .result-count { margin-left: auto; font-size: 12px; color: var(--color-text-3); }
+
+  /* ============== 项目卡片网格（沿用 company-detail-card 视觉语言） ============== */
+  .pj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 992px) { .pj-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .pj-grid { grid-template-columns: 1fr; } }
+
+  .pj-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 24px;
+    position: relative; overflow: hidden;
+    transition: all 0.25s ease;
+    display: flex; flex-direction: column;
+  }
+  .pj-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--c1, var(--color-primary));
+  }
+  .pj-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: rgba(232,93,4,0.25);
+  }
+  .pj-card .head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+  .pj-card .ic {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: var(--c1-soft, var(--color-primary-soft));
+  }
+  .pj-card .meta { flex: 1; min-width: 0; }
+  .pj-card .meta .cat-badge {
+    display: inline-block;
+    background: var(--c1-soft, var(--color-primary-soft));
+    color: var(--c1, var(--color-primary));
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; margin-bottom: 4px;
+  }
+  .pj-card.urgent .meta .cat-badge { background: #FEE2E2; color: #991B1B; }
+  .pj-card.urgent .ic { background: #FEE2E2; }
+  .pj-card .meta .live {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #FEF3C7; color: #92400E;
+    padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800;
+    margin-left: 4px;
+  }
+  .pj-card .meta .live .dot { width: 5px; height: 5px; background: #DC2626; border-radius: 50%; }
+  .pj-card .meta .name { font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 4px; }
+  .pj-card .meta .org { font-size: 11px; color: var(--color-text-3); }
+  .pj-card .desc {
+    font-size: 12px; color: var(--color-text-2); line-height: 1.55;
+    margin-bottom: 14px; flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .pj-card .stats {
+    display: flex; gap: 16px; padding: 10px 12px;
+    background: var(--color-bg); border-radius: 8px; margin-bottom: 12px;
+  }
+  .pj-card .stats .s { flex: 1; }
+  .pj-card .stats .s .v { font-size: 13px; font-weight: 800; color: var(--color-primary); }
+  .pj-card .stats .s .l { font-size: 10px; color: var(--color-text-3); }
+  .pj-card .progress-wrap { margin-bottom: 14px; }
+  .pj-card .progress-wrap .pbar {
+    height: 6px; background: var(--color-bg); border-radius: 3px; overflow: hidden;
+  }
+  .pj-card .progress-wrap .pfill {
+    height: 100%; background: linear-gradient(90deg, var(--c1, var(--color-primary)), var(--color-trust));
+    transition: width .6s;
+  }
+  .pj-card .progress-wrap .pct {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--color-text-3); margin-top: 4px;
+  }
+  .pj-card .progress-wrap .pct .pct-v { color: var(--color-primary); font-weight: 700; }
+  .pj-card .actions { display: flex; gap: 6px; }
+  .pj-card .actions .btn {
+    flex: 1; padding: 8px 12px; font-size: 12px; text-align: center;
+    border-radius: 8px;
+  }
+  .pj-card .actions .btn-primary {
+    background: var(--color-primary); color: #fff; border: 0;
+  }
+  .pj-card .actions .btn-primary:hover { background: var(--color-primary-dark); }
+  .pj-card .actions .btn-ghost {
+    background: #fff; border: 1px solid var(--color-border); color: var(--color-text-2);
+  }
+  .pj-card .actions .btn-ghost:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  /* 空状态 */
+  .empty {
+    text-align: center; padding: 80px 24px; color: var(--color-text-3);
+    grid-column: 1 / -1;
+    background: #fff; border-radius: var(--radius-md);
+    border: 1px dashed var(--color-border);
+  }
+  .empty .ic { font-size: 48px; margin-bottom: 12px; opacity: 0.6; }
+  .empty .t { font-size: 14px; }
+
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .projects-hero { padding: 36px 24px; }
+    .projects-hero h1 { font-size: 28px; }
+    .projects-hero .stats { grid-template-columns: repeat(2, 1fr); }
+    .projects-hero::after { font-size: 100px; right: 16px; top: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="container" style="padding: 24px 0 60px;">
+
+  <!-- 面包屑 -->
+  <div style="font-size:12px;color:var(--color-text-3);margin-bottom:14px;">
+    <a href="../index.html" style="color:var(--color-text-3);">首页</a> /
+    <span>慈善项目</span>
+  </div>
+
+  <!-- ============== HERO ============== -->
+  <div class="projects-hero">
+    <span class="eyebrow">💖 6 大类目 · 142 个进行中</span>
+    <h1>让每一份善意都有归处</h1>
+    <div class="lead">汇聚 <strong>6 大类公益项目</strong>——从突发应急到长期陪伴，从儿童助学到乡村建设。所有项目 <strong>100% 公开透明</strong>，物资 6 节点全追溯，捐赠者可在项目页查看资金流向、物资去向、受益人反馈。</div>
+    <div class="stats">
+      <div class="stat"><div class="num" data-target="6" data-suffix="">0</div><div class="lbl">项目类目</div></div>
+      <div class="stat"><div class="num" data-target="142" data-suffix="">0</div><div class="lbl">进行中项目</div></div>
+      <div class="stat"><div class="num" data-target="1.2" data-suffix=" 亿" data-prefix="¥ ">0</div><div class="lbl">累计筹款</div></div>
+      <div class="stat"><div class="num" data-target="98.6" data-suffix=" %">0</div><div class="lbl">物资到位率</div></div>
+    </div>
+  </div>
+
+  <!-- ============== 6 类目 Tab ============== -->
+  <div class="cat-tabs" id="catTabs">
+    <button class="filter-tag active" data-cat="all">
+      🌐 全部项目 <span class="cnt" id="cntAll">—</span>
+    </button>
+    <button class="filter-tag em" data-cat="urgent">
+      🚨 应急救援 <span class="cnt" id="cntUrgent">—</span>
+    </button>
+    <button class="filter-tag" data-cat="longterm">
+      🌱 长线陪伴 <span class="cnt" id="cntLongterm">—</span>
+    </button>
+    <button class="filter-tag" data-cat="children">
+      📚 儿童助学 <span class="cnt" id="cntChildren">—</span>
+    </button>
+    <button class="filter-tag" data-cat="elderly">
+      👵 老人关怀 <span class="cnt" id="cntElderly">—</span>
+    </button>
+    <button class="filter-tag" data-cat="rural">
+      🏘️ 乡村建设 <span class="cnt" id="cntRural">—</span>
+    </button>
+    <button class="filter-tag" data-cat="health">
+      💊 医疗健康 <span class="cnt" id="cntHealth">—</span>
+    </button>
+  </div>
+
+  <!-- 应急红条（应急类目专用） -->
+  <div class="em-subbar" id="emSubbar" style="display:none;">
+    <div class="left">
+      <div class="pulse"></div>
+      <div>
+        <div class="txt">🔴 应急救援 · 当前 3 个灾害项目紧急中</div>
+        <div class="meta">地震 / 台风 / 火灾 / 公共卫生 — 2 小时内启动，24 小时物资直达</div>
+      </div>
+    </div>
+    <a href="emergency.html">🚨 进入应急救援指挥台 →</a>
+  </div>
+
+  <!-- 排序工具栏 -->
+  <div class="toolbar">
+    <span style="font-size:12px;color:var(--color-text-3);margin-right:4px;">排序：</span>
+    <button class="sort-btn active" data-sort="urgent">🚨 紧急优先</button>
+    <button class="sort-btn" data-sort="latest">⏱️ 最新发布</button>
+    <button class="sort-btn" data-sort="progress">📈 进度最快</button>
+    <button class="sort-btn" data-sort="amount">💰 筹款最多</button>
+    <span class="result-count" id="resultCount">— 个项目</span>
+  </div>
+
+  <!-- 项目卡片网格 -->
+  <div class="pj-grid" id="pjGrid"></div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../public/js/common.js?v=4"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="../public/js/projects.js"></script>
+<script>CS.renderHeader('projects'); CS.renderFooter();</script>
+</body>
+</html>
