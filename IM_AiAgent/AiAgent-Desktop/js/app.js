@@ -316,9 +316,6 @@ function renderMessageDetail(id) {
             <input type="text" class="msg-detail-reply-input" placeholder="回复 ${m.name}…" />
             <button class="msg-detail-reply-send">发送</button>
           </div>
-          <div class="msg-detail-quick mono">
-            建议接管：${AGENTS.slice(0,3).map(a => `<span class="msg-quick-agent" style="--c:${a.color}">${a.icon} ${a.name.replace('AI ','')}</span>`).join(' / ')}
-          </div>
         </div>
       </main>
     </div>
@@ -333,11 +330,6 @@ function renderMessageDetail(id) {
   document.getElementById('msgDetailBack')?.addEventListener('click', closeMessageDetail);
   detail.querySelectorAll('.msg-detail-btn').forEach(btn => {
     btn.addEventListener('click', () => handleDetailAction(m, btn.dataset.action));
-  });
-  detail.querySelectorAll('.msg-quick-agent').forEach(qa => {
-    qa.addEventListener('click', () => {
-      showToast('已切到 ' + qa.textContent.trim() + ' 接管', 'info');
-    });
   });
   detail.querySelector('.msg-detail-reply-send')?.addEventListener('click', () => handleDetailReply(m.id));
   detail.querySelector('.msg-detail-reply-input')?.addEventListener('keydown', (e) => {

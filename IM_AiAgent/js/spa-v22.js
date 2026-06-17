@@ -211,11 +211,46 @@ function bindGlobalClicks() {
       case 'quick-prompt':
         sendAgentText(agentId || target.closest('[data-view="agent-chat"]').dataset.agent, text);
         break;
+      case 'mark-all-read':
+        // 全部已读：清空所有未读数并 toast 提示
+        CHATS.forEach(c => c.unread = 0);
+        renderCurrentView();
+        showToast('✅ 已全部标为已读', 'success');
+        break;
+      case 'ai-continue':
+        // AI 继续托管：toast 提示完成
+        showToast('✅ AI 已继续托管所有客户，将自动跟进下一步', 'success');
+        break;
       case 'add-kb-item':
         addKbItem();
         break;
       case 'edit-kb-item':
         editKbItem(target);
+        break;
+      case 'meeting-export-pdf':
+        // 导出PDF：原型做 toast 提示
+        showToast('✅ 会议纪要已导出为 PDF，准备下载', 'success');
+        break;
+      case 'meeting-share':
+        // 分享到微信/飞书：原型做 toast 提示
+        showToast('✅ 会议纪要链接已复制，可粘贴到微信/飞书分享', 'success');
+        break;
+      case 'open-global-ai':
+        // 全局 AI 问答悬浮球：弹出输入框提问（原型）
+        const question = prompt('请输入你的问题，AI 将为你解答：');
+        if (question && question.trim()) {
+          showToast('✅ 已收到问题，AI 正在处理中（原型演示）', 'success');
+        }
+        break;
+      case 'open-notification-center':
+        // 通知中心：原型演示列出最近通知
+        const notifications = [
+          '✅ AI 销售助手跟进了 5 个客户',
+          '⚠️ 1 个售后问题待人工复核',
+          '📝 客户会议纪要已自动生成',
+          '📈 昨日营销战报已更新'
+        ];
+        alert('通知中心（原型）\\n\\n' + notifications.join('\\n'));
         break;
       case 'save-kb-edit':
         saveKbEdit(target);
@@ -287,13 +322,13 @@ function sendAgentText(agentId, text) {
   const body = document.getElementById(`agentChatBody-${agentId}`);
   appendBubble(body, text, 'me');
 
-  // 显示 typing
+  // 显示 "对方正在输入..." 动效
   const agent = getContact(agentId);
   const typing = document.createElement('div');
   typing.className = 'msg-row them agent-msg-row typing-row';
   typing.innerHTML = `
     <div class="msg-avatar agent">${agent?.avatar || 'AI'}</div>
-    <div class="bubble them typing-bubble"><span></span><span></span><span></span></div>
+    <div class="typing-indicator"><span></span><span></span><span></span></div>
   `;
   body.appendChild(typing);
   body.scrollTop = body.scrollHeight;
@@ -764,3 +799,70 @@ function startAiScenarioAutoplay(sid) {
    启动
    ============================================ */
 document.addEventListener('DOMContentLoaded', initSPA);
+
+
+// === 通讯录自然语言搜索过滤 ===
+function filterContactList(query) {
+  query = (query || '').toLowerCase().trim();
+  const container = document.getElementById('contactProfileList');
+  if (!container) return;
+  const all = container.querySelectorAll('.contact-profile-row');
+  let visibleCount = 0;
+  all.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const show = !query || text.includes(query);
+    row.style.display = show ? '' : 'none';
+    if (show) visibleCount++;
+  });
+  // 更新标题里的计数
+  const titleEl = document.querySelector('.contact-mkt-title em');
+  if (titleEl) {
+    const total = CONTACTS.filter(c => !c.isAgent && !c.isOfficial).length;
+    titleEl.textContent = `${visibleCount} / ${total} 份画像`;
+  }
+}
+
+
+// === 10. Agent 压力测试：一句话分工演示 ===
+function runAgentPressureTest() {
+  const input = document.getElementById('pressureTestInput');
+  const resultBox = document.getElementById('pressureTestResult');
+  const text = (input.value || '').trim().toLowerCase();
+  if (!text) {
+    showToast('❌ 请输入客户原话', 'error');
+    return;
+  }
+
+  // 简单规则：关键词判断分工
+  const rules = [
+    { key: ['价格', '套餐', '买', '下单', '佣金', '体验装', '升级', '推荐', '购买'], agent: 'sales', name: 'AI 销售助手', desc: '售前咨询、报价、商品推荐和下单转化，由销售助手负责跟进。' },
+    { key: ['退', '售后', '赠品少', '补发', '投诉', '差评', '客服', '发票', '物流'], agent: 'cust', name: 'AI 客服助手', desc: '售后问题、投诉处理、发票物流查询、情绪安抚，由客服助手负责。' },
+    { key: ['会议', '总结', '纪要', '录音', '转写', '待办', '今天几点会'], agent: 'meet', name: 'AI 会议助手', desc: '会议录音转写、纪要总结、待办提取，由会议助手负责处理。' }
+  ];
+
+  let results = [];
+  for (const rule of rules) {
+    if (rule.key.some(k => text.includes(k))) {
+      results.push(rule);
+    }
+  }
+  if (results.length === 0) {
+    // 兜底：默认销售
+    results = [rules[0]];
+  }
+
+  // 渲染结果
+  resultBox.innerHTML = results.map(r => `
+    <div class="ac-pressure-result-item ${r.agent}">
+      <h5>${r.name}</h5>
+      <p>${r.desc}</p>
+    </div>
+  `).join('');
+}
+
+// 全局切换后重新渲染 Agent Center（开关切换后刷新状态）
+function renderAgentCenter() {
+  viewStack.pop();
+  viewStack.push('agent-center');
+  renderCurrentView();
+}

@@ -68,7 +68,7 @@
   /* 布局尺寸 */
   --topbar-h:       60px;
   --sidebar-w:      280px;
-  --chat-panel-w:   420px;
+  --chat-panel-w:   min(35vw, calc(100vw - var(--sidebar-w)));
 
   /* 动效曲线 */
   --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);

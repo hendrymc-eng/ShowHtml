@@ -9,7 +9,7 @@
   <title>UmakeX IM · AI Agent 原型</title>
   <link rel="stylesheet" href="css/base.css?v=17">
   <link rel="stylesheet" href="css/im.css?v=17">
-  <link rel="stylesheet" href="css/spa-v40.css">
+  <link rel="stylesheet" href="css/spa-v42.css?v=42">
   <style>
     /* hero：压缩为原型抬头，不再做营销大屏 */
     .hero {
@@ -136,7 +136,12 @@
           <div class="phone-header" id="phoneHeader">
             <div class="ph-back" id="phoneBack" style="display:none;">‹</div>
             <div class="ph-title" id="phoneTitle">消息</div>
-            <div class="ph-action" id="phoneAction"></div>
+            <div class="ph-action" id="phoneAction">
+              <div class="bell" data-action="open-notification-center">
+                🔔
+                <div class="dot"></div>
+              </div>
+            </div>
           </div>
 
           <!-- 内容区（视图注入点） -->
@@ -165,10 +170,193 @@
     </div>
   </main>
 
+  <!-- 14. 全局 AI 问答悬浮球 -->
+  <div class="global-ai-ball" data-action="open-global-ai" title="问 AI 任何问题">💬</div>
+
   <!-- JS (defer + cache buster: 避免脚本阻塞解析 / 浏览器强缓存) -->
   <script defer src="js/mock-data-v2.js?v=18"></script>
   <script defer src="js/mock-ai.js?v=18"></script>
   <script defer src="js/views-v33.js"></script>
   <script defer src="js/spa-v22.js"></script>
+  </script>
+  <style>
+/* === Hallmark 重新设计：AI Agent Center 紧凑卡片风格 === */
+/* Hallmark · macrostructure: Workbench · tone: editorial · anchor hue: red (c8102e) */
+.ac-hallmark-list {
+  padding: 0 12px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ac-hallmark-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-left: 4px solid var(--ac-color, #c8102e) !important;
+  border-radius: 6px;
+  padding: 10px 12px;
+  overflow: hidden;
+}
+.ac-hallmark-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.ac-hallmark-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--ac-soft, #fee2e2);
+  color: var(--ac-color, #c8102e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.ac-hallmark-title {
+  flex: 1;
+  min-width: 0;
+}
+.ac-hallmark-kicker {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ac-color, #c8102e);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.ac-hallmark-title strong {
+  display: block;
+  font-size: 16px;
+  color: #111111;
+  font-weight: 600;
+}
+/* 开关 */
+.ac-hallmark-toggle {
+  flex-shrink: 0;
+}
+.ac-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.ac-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.ac-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #cccccc;
+  transition: .2s;
+  border-radius: 24px;
+}
+.ac-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+}
+input:checked + .ac-slider {
+  background-color: var(--ac-color, #c8102e);
+}
+input:checked + .ac-slider:before {
+  transform: translateX(20px);
+}
+/* 描述 */
+.ac-hallmark-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+  margin: 0 0 8px;
+}
+/* 能力场景标签 */
+.ac-hallmark-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.ac-hallmark-scenes span {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ac-soft, #fee2e2);
+  color: var(--ac-color, #c8102e);
+}
+/* 进入配置按钮 */
+.ac-hallmark-btn {
+  width: 100%;
+  padding: 6px 0;
+  border-radius: 6px;
+  border: 1px solid var(--ac-color, #c8102e);
+  background: #ffffff;
+  color: var(--ac-color, #c8102e);
+  font-size: 13px;
+  font-weight: 500;
+}
+.ac-hallmark-btn:active {
+  background: var(--ac-soft, #fee2e2);
+}
+/* 合并 stats 到头部数字 */
+.ac-mag-number small {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 400;
+  margin-left: 2px;
+}
+/* 通讯录搜索栏背景修改 */
+.contact-mkt-search {
+  background: #ffffff !important;
+}
+.contact-mkt-search .search-input,
+.contact-mkt-search .contact-search-input {
+  background: #ffffff !important;
+}
+/* contact-mkt-stats 去掉边框 */
+.contact-mkt-stats {
+  border: none !important;
+}
+/* 消息页面气泡改成圆角，去掉直角 */
+.ai-demo-chat .msg-row .msg-content {
+  border-radius: 12px !important;
+}
+.ai-demo-chat .msg-row.me .msg-content {
+  border-bottom-right-radius: 4px !important;
+}
+.ai-demo-chat .msg-row.other .msg-content {
+  border-bottom-left-radius: 4px !important;
+}
+/* 列表页消息卡片也改成圆角 */
+.item-msg {
+  border-radius: 12px !important;
+}
+/* 会话详情气泡 */
+.bubble {
+  border-radius: 12px !important;
+}
+.bubble.me {
+  border-bottom-right-radius: 4px !important;
+}
+.bubble.them {
+  border-bottom-left-radius: 4px !important;
+}
+/* 营销案例条目 */
+.list-item.marketing-case-item,
+.list-item.marketing-case-item.hot {
+  border-radius: 12px !important;
+}
+  </style>
 </body>
 </html>

@@ -7,8 +7,10 @@ const WORKFLOW_ITEMS = [
     icon: '💬',
     title: '夏日提问：产品怎么卖？',
     time: '14:32',
+    priority: 'HOT',
     meta: 'Agent 自动匹配 Q&A #3',
     status: '已回复',
+
     type: '自动回复',
     customer: '夏日',
     intent: '咨询 VIC 月卡适合人群与购买方式',
@@ -24,6 +26,7 @@ const WORKFLOW_ITEMS = [
     icon: '🛒',
     title: '王总询问 VIC 套餐价格',
     time: '14:18',
+    priority: 'HOT',
     meta: '自动发送商品卡片',
     status: '跟进中',
     type: '商品推荐',
@@ -41,6 +44,7 @@ const WORKFLOW_ITEMS = [
     icon: '🏦',
     title: '李女士要求对公账户',
     time: '13:55',
+    priority: 'WARM',
     meta: '命中付款方式话术',
     status: '已回复',
     type: '付款说明',
@@ -58,6 +62,7 @@ const WORKFLOW_ITEMS = [
     icon: '🙋',
     title: '退款争议转人工',
     time: '12:42',
+    priority: 'HOT',
     meta: '超出售后边界',
     status: '已转人工',
     type: '转人工',
@@ -75,6 +80,7 @@ const WORKFLOW_ITEMS = [
     icon: '🏷',
     title: '陈先生升级为复购机会',
     time: '11:10',
+    priority: 'CARE',
     meta: '客户标签自动更新',
     status: '已打标',
     type: '标签更新',
@@ -155,7 +161,13 @@ const VIEWS = {
           <input class="search-input" placeholder="🔍  搜客户 / 标签 / 商品 / 意图">
           <div class="add-btn">+</div>
         </div>
+        <div class="chat-list-top-actions">
+          <button class="chat-action-btn primary" data-action="mark-all-read">全部已读</button>
+          <button class="chat-action-btn primary-green" data-action="ai-continue">AI 继续托管</button>
+          <button class="chat-action-btn ghost" data-action="open" data-target="profile">📊 昨日战报</button>
+        </div>
         ${renderCompanyChannelPinned()}
+
         <div class="msg-section-head">
           <span>PINNED CASES</span>
           <em>优先跟进</em>
@@ -322,7 +334,7 @@ const VIEWS = {
           <b>${users.length}</b>
         </div>
         <div class="contact-mkt-search">
-          <input class="search-input" placeholder="🔍 搜客户 / 标签 / 意图 / 商品 / Agent">
+          <input class="search-input contact-search-input" placeholder="🔍 搜客户 / 标签 / 意图 / 商品 / Agent · 支持自然语言" oninput="filterContactList(this.value)">
         </div>
         ${officialService ? renderOfficialServicePinned(officialService) : ''}
         <div class="contact-mkt-stats">
@@ -339,7 +351,7 @@ const VIEWS = {
           <span>CUSTOMER PROFILES</span>
           <em>${users.length} 份画像</em>
         </div>
-        <div class="contact-profile-list">
+        <div class="contact-profile-list" id="contactProfileList">
           ${users.map(c => renderMarketingContactItem(c)).join('')}
         </div>
         <div class="sub-safe-space"></div>
@@ -498,6 +510,8 @@ const VIEWS = {
         </div>
         <div class="meeting-detail-actions">
           <button data-action="open-meeting-summary" data-mid="${m.id}">查看完整纪要</button>
+          <button data-action="meeting-export-pdf" data-mid="${m.id}">导出 PDF</button>
+          <button data-action="meeting-share" data-mid="${m.id}" class="share-alt">分享微信</button>
           <button data-action="open-agent-config" data-agent="meet">配置会议助手</button>
         </div>
         <div class="meeting-ops-safe"></div>
@@ -604,9 +618,9 @@ const VIEWS = {
             <div class="profile-ai-report-badge">查看</div>
           </div>
           <div class="mr-stats">
-            <div><b>27</b><em>自动触达</em></div>
-            <div><b>5</b><em>重点客户</em></div>
-            <div><b>3</b><em>建议成交</em></div>
+            <div><b>27</b><span class="stat-delta up">+8 ⬆</span><em>自动触达</em></div>
+            <div><b>5</b><span class="stat-delta up">+2 ⬆</span><em>重点客户</em></div>
+            <div><b>3</b><span class="stat-delta down">-1 ⬇</span><em>建议成交</em></div>
           </div>
         </div>
 
@@ -662,7 +676,7 @@ const VIEWS = {
     `;
   },
 
-  /* ============ AI Agent 中心：6 Agent 库 + 已开通区（方案 C）============ */
+  /* ============ AI Agent 中心：Hallmark 重新设计 ============ */
   'agent-center': () => {
     // 新版：AI 智能对话营销 IM，只保留 3 个核心 Agent
     const AGENTS = [
@@ -673,103 +687,61 @@ const VIEWS = {
 
     const state = (() => { try { return JSON.parse(localStorage.getItem('umakex_agent_state') || '{}'); } catch(e){ return {}; } })();
     const onCount = AGENTS.filter(a => state[a.id]).length;
-    const core = AGENTS[0];
-    const opened = AGENTS.filter(a => state[a.id]);
 
-    const openRail = opened.length
-      ? opened.map((a, i) => `
-        <div class="ac-open-row" data-action="open" data-target="agent-config:${a.id}">
-          <span>${String(i + 1).padStart(2, '0')}</span>
-          <strong>${a.name}</strong>
-          <em>${a.en}</em>
-        </div>`).join('')
-      : `<div class="ac-open-empty"><strong>还没有开通 Agent</strong><span>建议先开通「AI 销售助手」，再补充客服和会议能力。</span></div>`;
-
-    const libraryRows = AGENTS.map((a, i) => {
+    // 单个 Agent 卡片紧凑布局
+    const agentCards = AGENTS.map((a, i) => {
       const on = !!state[a.id];
-      const isCore = a.id === 'sales';
+      const actionText = on ? '进入配置' : (on ? '已开通 · 进入' : '开通');
       return `
-        <div class="ac-library-row ${isCore ? 'is-core' : ''} ${on ? 'is-on' : ''}" data-action="${on ? 'open' : ''}" data-target="${on ? `agent-config:${a.id}` : ''}" style="--agent-color:${a.color};--agent-soft:${a.colorSoft};">
-          <div class="ac-library-no">${String(i + 1).padStart(2, '0')}</div>
-          <div class="ac-library-mark">${a.icon}</div>
-          <div class="ac-library-copy">
-            <span>${a.kicker}</span>
-            <strong>${a.name}</strong>
-            <p>${a.desc}</p>
+        <div class="ac-hallmark-card" style="--ac-color:${a.color};--ac-soft:${a.colorSoft};">
+          <div class="ac-hallmark-head">
+            <div class="ac-hallmark-icon">${a.icon}</div>
+            <div class="ac-hallmark-title">
+              <span class="ac-hallmark-kicker">${a.kicker}</span>
+              <strong>${a.name}</strong>
+            </div>
+            <div class="ac-hallmark-toggle">
+              <label class="ac-switch">
+                <input type="checkbox" ${on ? 'checked' : ''} onchange="event.stopPropagation(); window.__toggleAgent('${a.id}'); renderAgentCenter();">
+                <span class="ac-slider"></span>
+              </label>
+            </div>
           </div>
-          <div class="ac-library-meta">
-            <em>${a.stat}</em>
-            <button class="ac-library-btn ${on ? 'on' : 'off'}" onclick="event.stopPropagation(); window.__toggleAgent('${a.id}')">${on ? '已开通' : '开通'}</button>
+          <p class="ac-hallmark-desc">${a.desc}</p>
+          <div class="ac-hallmark-scenes">
+            ${a.lead.split(' / ').map(s => `<span>${s}</span>`).join('')}
           </div>
-        </div>`;
-    }).join('');
-
-    const sceneRows = AGENTS.map(a => `
-      <div class="ac-scene-row" style="--agent-color:${a.color};">
-        <span>${a.icon}</span>
-        <div><strong>${a.lead}</strong><em>${a.module}</em></div>
-      </div>`).join('');
-
-    const configCards = AGENTS.map((a, i) => {
-      const on = !!state[a.id];
-      const actionText = on ? '进入配置中心' : '先配置再开通';
-      return `
-        <button class="ac-config-entry ${on ? 'is-on' : 'is-ready'}" type="button" data-action="open" data-target="agent-config:${a.id}" style="--agent-color:${a.color};--agent-soft:${a.colorSoft};">
-          <div class="ac-config-entry-icon">${a.icon}</div>
-          <div class="ac-config-entry-copy">
-            <span>${String(i + 1).padStart(2, '0')} · ${a.kicker.replace('P0 · ', '').replace('P1 · ', '')}</span>
-            <strong>${a.name}</strong>
-            <em>${a.module}</em>
-          </div>
-          <b>${actionText}</b>
-        </button>`;
+          ${on ? `<button class="ac-hallmark-btn" data-action="open" data-target="agent-config:${a.id}">进入配置</button>` : ''}
+        </div>
+      `;
     }).join('');
 
     return `
-      <div class="phone-view ac-editorial ac-v3" data-view="agent-center" id="phoneAgentCenter">
+      <div class="phone-view ac-editorial ac-v3 ac-hallmark" data-view="agent-center" id="phoneAgentCenter">
         <section class="ac-mag-hero">
           <div class="ac-mag-kicker">AGENT CENTER · 3 AGENTS</div>
           <div class="ac-mag-titleline">
             <h2>AI 智能<br>对话营销</h2>
-            <div class="ac-mag-number">03</div>
+            <div class="ac-mag-number">${onCount}<small>/3</small></div>
           </div>
           <p>Agent Center 作为底部一级入口，只保留销售、客服、会议三个 AI Agent。它不是泛工具库，而是私域 IM 里的对话营销工作台。</p>
-          <div class="ac-mag-stats">
-            <span><strong>${onCount}</strong><em>已开通</em></span>
-            <span><strong>3</strong><em>核心 Agent</em></span>
-            <span><strong>5</strong><em>底部入口</em></span>
+        </section>
+
+        <!-- 今日工作日志入口置顶 -->
+        <section class="ac-agent-worklog-pin">
+          <div class="ac-worklog-card" data-action="open" data-target="agent-worklog">
+            <div>
+              <strong>今日 Agent 工作日志</strong>
+              <em>8 条自动记录，1 条待人工确认</em>
+            </div>
+            <button>查看</button>
           </div>
         </section>
 
-        <section class="ac-core-card ${state.sales ? 'is-on' : ''}" style="--agent-color:${core.color};--agent-soft:${core.colorSoft};" ${state.sales ? 'data-action="open" data-target="agent-config:sales"' : ''}>
-          <div class="ac-core-index">P0</div>
-          <div class="ac-core-main">
-            <span>${core.en}</span>
-            <strong>${core.name}</strong>
-            <p>${core.desc}</p>
-          </div>
-          <button class="ac-core-btn" ${state.sales ? 'data-action="open" data-target="agent-config:sales"' : ''} onclick="event.stopPropagation(); ${state.sales ? "viewStack.push('agent-config:sales'); renderCurrentView();" : "window.__toggleAgent('sales')"}">${state.sales ? '已开通 · 进入配置' : '开通销售助手'}</button>
-        </section>
-
-        <section class="ac-section ac-config-section">
-          <div class="ac-section-label"><span>配置中心</span><em>SALES · SERVICE · MEETING</em></div>
-          <div class="ac-config-entry-grid">${configCards}</div>
-        </section>
-
-        <section class="ac-section ac-scene-section">
-          <div class="ac-section-label"><span>三大能力</span><em>SALES · SERVICE · MEETING</em></div>
-          <div class="ac-scene-grid">${sceneRows}</div>
-        </section>
-
-        <section class="ac-section ac-open-section">
-          <div class="ac-section-label"><span>已开通</span><em>${onCount} 个</em></div>
-          <div class="ac-open-rail">${openRail}</div>
-        </section>
-
-        <section class="ac-section ac-library-section">
-          <div class="ac-section-label"><span>Agent 库</span><em>只保留 3 个核心角色</em></div>
-          <div class="ac-library-list">${libraryRows}</div>
-        </section>
+        <!-- 紧凑 Agent 卡片列表：Hallmark 风格 -->
+        <div class="ac-hallmark-list">
+          ${agentCards}
+        </div>
 
         <div class="sub-safe-space"></div>
       </div>
@@ -3063,6 +3035,10 @@ function renderChatItem(chat) {
   if (!c) return '';
   const isAgent = c.isAgent;
   const isGroup = c.isGroup;
+  const priority = chat.priority || (chat.score >= 90 ? 'HOT' : chat.score >= 80 ? 'WARM' : 'CARE');
+  const priorityLabel = priority === 'HOT' ? '<span class="priority-tag priority-hot">HOT</span>' :
+                    priority === 'WARM' ? '<span class="priority-tag priority-warm">WARM</span>' :
+                    '<span class="priority-tag priority-care">CARE</span>';
   const tagHtml = isAgent
     ? `<span class="tag ${c.tagColor}">${c.tag}</span>`
     : isGroup
@@ -3077,7 +3053,7 @@ function renderChatItem(chat) {
       <div class="avatar ${c.isVip ? 'vip' : ''}">${c.avatar}</div>
       <div class="item-body">
         <div class="item-top">
-          <div class="item-name">${c.name} ${tagHtml}</div>
+          <div class="item-name">${c.name} ${tagHtml} ${priorityLabel}</div>
           <div class="item-time">${chat.time}</div>
         </div>
         <div class="item-msg">${chat.lastMsg}</div>
@@ -3108,13 +3084,22 @@ function renderMarketingContactItem(c) {
   const score = c.score || 60;
   const scoreClass = score >= 90 ? 'hot' : score >= 80 ? 'warm' : score >= 70 ? 'care' : 'cold';
   const agentClass = c.agent === 'AI 客服助手' ? 'service' : c.agent === 'AI 会议助手' ? 'meet' : 'sales';
+  const groupTag = c.groupTag || '未分组';
+  const groupColor = {
+    'VIP': '#c8102e',
+    '高意向': '#f59e0b',
+    '已成交': '#10b981',
+    '待激活': '#6b7280'
+  }[groupTag] || '#6b7280';
+  const nextTime = c.nextContact ? `AI 建议 · ${c.nextContact}` : 'AI 待安排下次时间';
   return `
     <a class="contact-profile-row ${scoreClass}" data-action="open" data-target="contact-profile:${c.id}">
-      <div class="contact-row-avatar ${c.isVip ? 'vip' : ''}">${c.avatar}</div>
+      <div class="contact-row-avatar ${c.isVip ? 'vip' : ''}" style="border-left: 3px solid ${groupColor}">${c.avatar}</div>
       <div class="contact-row-main">
         <div class="contact-row-top"><strong>${c.name}</strong><span>${c.intent || c.type}</span></div>
         <p>${c.dept || c.lastMsg || '客户资料待补充'}</p>
-        <div class="contact-row-tags"><em>${c.stage || '未分层'}</em><em>${c.source || '未知来源'}</em><em class="${agentClass}">${c.agent || 'AI 待分配'}</em></div>
+        <div class="contact-row-ai-next"><i></i>${nextTime}</div>
+        <div class="contact-row-tags"><em>${c.stage || '未分层'}</em><em>${c.source || '未知来源'}</em><em class="${agentClass}">${c.agent || 'AI 待分配'}</em><em class="group-tag" style="background:${groupColor}15; color:${groupColor}; border-color:${groupColor}33">${groupTag}</em></div>
       </div>
       <div class="contact-row-score"><b>${score}</b><span>SCORE</span></div>
     </a>
