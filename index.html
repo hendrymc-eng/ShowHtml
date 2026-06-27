@@ -152,9 +152,12 @@ body{
 
 /* ===== GRID ===== */
 .grid-wrap{
-  flex:1;overflow:hidden;
+  flex:1;overflow-y:auto;overflow-x:hidden;
   padding:16px 40px 28px;
+  scrollbar-gutter:stable;
 }
+.grid-wrap::-webkit-scrollbar{width:8px}
+.grid-wrap::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
 .grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
