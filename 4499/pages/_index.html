@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4499 原型 · 总目录</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .index-hero {
+      background: linear-gradient(180deg, var(--color-accent-softer) 0%, var(--color-paper) 100%);
+      border-bottom: 1px solid var(--color-line);
+      padding: var(--space-12) 0 var(--space-10);
+    }
+    .index-hero-inner { max-width: var(--container-content); margin: 0 auto; padding: 0 var(--space-6); }
+    .index-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+    @media (max-width: 1024px) { .index-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .index-grid { grid-template-columns: 1fr; } }
+    .page-tile {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; gap: var(--space-2);
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .page-tile:hover { border-color: var(--color-accent); background: var(--color-accent-softer); transform: translateY(-2px); }
+    .page-tile-name { font-size: var(--text-md); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .page-tile-desc { font-size: var(--text-sm); color: var(--color-ink-3); }
+    .page-tile-meta { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
+    .tier-banner {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+      display: flex; align-items: center; gap: var(--space-4);
+    }
+    .tier-banner-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: var(--weight-semibold);
+    }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="_index.html" class="topbar-brand" style="text-decoration:none;"><div class="topbar-brand-mark">4</div><span>4499 原型</span></a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".page-tile" placeholder="搜索页面名称..." /></div>
+    <div class="topbar-actions">
+      <a href="_design-system.html" class="btn btn-ghost btn-sm">设计系统</a>
+      <a href="index.html" class="btn btn-secondary btn-sm">官网</a>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="index-hero">
+      <div class="index-hero-inner">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="badge badge-accent">Member Success & Ecosystem Operating Platform</span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: var(--text-4xl); font-weight: var(--weight-semibold); letter-spacing: -0.02em; color: var(--color-ink); margin: 0;">4499 平台 · 高保真原型</h1>
+        <p style="font-size: var(--text-md); color: var(--color-ink-2); margin-top: var(--space-2);">全球商业关系与信任匹配引擎 · 会员成功与生态运营平台 · 共 50+ HTML 页面</p>
+        <div class="flex gap-3 mt-4">
+          <div class="kpi-card" style="min-width: 120px; padding: var(--space-3) var(--space-4);"><div class="kpi-label" style="font-size: var(--text-xs);">P0 高保真</div><div class="kpi-value" style="font-size: var(--text-2xl);"><span class="js-counter" data-target="8">8</span> <span class="kpi-value-unit">页</span></div></div>
+          <div class="kpi-card" style="min-width: 120px; padding: var(--space-3) var(--space-4);"><div class="kpi-label" style="font-size: var(--text-xs);">P1 中保真</div><div class="kpi-value" style="font-size: var(--text-2xl);"><span class="js-counter" data-target="18">18</span> <span class="kpi-value-unit">页</span></div></div>
+          <div class="kpi-card" style="min-width: 120px; padding: var(--space-3) var(--space-4);"><div class="kpi-label" style="font-size: var(--text-xs);">P2 骨架</div><div class="kpi-value" style="font-size: var(--text-2xl);"><span class="js-counter" data-target="18">18</span> <span class="kpi-value-unit">页</span></div></div>
+          <div class="kpi-card" style="min-width: 120px; padding: var(--space-3) var(--space-4);"><div class="kpi-label" style="font-size: var(--text-xs);">品牌官网</div><div class="kpi-value" style="font-size: var(--text-2xl);"><span class="js-counter" data-target="4">4</span> <span class="kpi-value-unit">页</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="app-content">
+      <!-- P0 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">Tier P0 · 高保真</span><h2 class="section-title">核心 8 页 · 完整数据和交互</h2></div>
+        <div class="index-grid">
+          <a href="workbench-recommender.html" class="page-tile" data-search="工作台 推荐人 AI 建议 客户">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">我的工作台</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">推荐人首页 · KPI + AI 建议 + 客户经营 + 待办 + 信任资产 + 趋势</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">7 section</span><span class="badge badge-outline badge-sm">72KB</span></div>
+          </a>
+          <a href="crm-list.html" class="page-tile" data-search="CRM 客户列表 跟进 状态">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">客户 CRM 列表</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">8 业务兴趣 tab + 10 行客户 + 选中侧栏 + AI 实时建议</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">10 行</span><span class="badge badge-outline badge-sm">8 tab</span></div>
+          </a>
+          <a href="crm-detail.html" class="page-tile" data-search="客户详情 基础 关系 服务 信任">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">客户详情</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">9 大区域 + 4-stage lifecycle + AI 建议</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">9 区域</span><span class="badge badge-outline badge-sm">4 stage</span></div>
+          </a>
+          <a href="dual-fork-network.html" class="page-tile" data-search="双叉网络 推荐关系 长期">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">双叉网络</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">4 层网络图 + 节点侧栏 + 网络洞察</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">4 层</span><span class="badge badge-outline badge-sm">312 人</span></div>
+          </a>
+          <a href="pro-support-apply.html" class="page-tile" data-search="申请专业支持 服务 授权 30天">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">申请专业支持</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">4-step 表单 + 6 类服务 + 授权 check-box + AI 预匹配</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">4 step</span><span class="badge badge-outline badge-sm">6 类</span></div>
+          </a>
+          <a href="ai-match.html" class="page-tile" data-search="AI 匹配 专家 推荐">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">AI 专家匹配</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">4 候选专家 + 匹配度 + 原因/风险</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">4 候选</span></div>
+          </a>
+          <a href="trust-passport.html" class="page-tile" data-search="Trust Passport 信誉 PB 徽章 鸿驫榜">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">Trust Passport</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">PB orb + 8 维度 + 10 徽章 + 鸿驫榜</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">8 维度</span><span class="badge badge-outline badge-sm">10 徽章</span></div>
+          </a>
+          <a href="beneficiary.html" class="page-tile" data-search="受益人 传承 数字资产 保险">
+            <div class="flex items-center justify-between">
+              <div class="page-tile-name">受益人管理</div>
+              <span class="badge badge-accent badge-sm">P0</span>
+            </div>
+            <div class="page-tile-desc">资产总览 + 受益人 + 传承公式 + 生前流程</div>
+            <div class="page-tile-meta"><span class="badge badge-outline badge-sm">2 受益人</span></div>
+          </a>
+        </div>
+      </section>
+
+      <!-- P1 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">Tier P1 · 中保真</span><h2 class="section-title">18 页 · 完整结构 + 真实字段</h2></div>
+        <div class="index-grid">
+          <a href="business-profile-people.html" class="page-tile" data-search="People 商业画像 个人"><div class="page-tile-name">商业画像 · People</div><div class="page-tile-desc">5 大字段 + 8 维度 + 标签 + 时间线</div></a>
+          <a href="business-profile-enterprise.html" class="page-tile" data-search="Enterprise 商业画像 企业"><div class="page-tile-name">商业画像 · Enterprise</div><div class="page-tile-desc">企业基础 + 业务画像 + 联系人</div></a>
+          <a href="business-profile-organization.html" class="page-tile" data-search="Organization 商业画像 组织"><div class="page-tile-name">商业画像 · Organization</div><div class="page-tile-desc">组织定位 + 公益方向 + 成员</div></a>
+          <a href="business-profile-project.html" class="page-tile" data-search="Project 商业画像 项目"><div class="page-tile-name">商业画像 · Project</div><div class="page-tile-desc">项目目标 + 周期 + 里程碑 + 成果</div></a>
+          <a href="business-profile-product.html" class="page-tile" data-search="Product 商业画像 产品"><div class="page-tile-name">商业画像 · Product</div><div class="page-tile-desc">产品类型 + 适合用户 + 销售模式</div></a>
+          <a href="business-activities-list.html" class="page-tile" data-search="Activities 商业实践 列表"><div class="page-tile-name">商业实践 · 列表</div><div class="page-tile-desc">6 类活动 Tab + 卡片网格</div></a>
+          <a href="business-activities-learning.html" class="page-tile" data-search="Learning 学习 课程"><div class="page-tile-name">商业实践 · Learning</div><div class="page-tile-desc">课程 + 报名 + 考试 + 认证</div></a>
+          <a href="business-activities-events.html" class="page-tile" data-search="Events 活动 报名 签到"><div class="page-tile-name">商业实践 · Events</div><div class="page-tile-desc">活动 + 报名 + 签到 + 复盘</div></a>
+          <a href="business-activities-projects.html" class="page-tile" data-search="Projects 项目 协作 里程碑"><div class="page-tile-name">商业实践 · Projects</div><div class="page-tile-desc">项目中心 + 协作角色</div></a>
+          <a href="business-activities-services.html" class="page-tile" data-search="Services 服务 订单 交付"><div class="page-tile-name">商业实践 · Services</div><div class="page-tile-desc">服务订单 + 交付 + 评价 + 结算</div></a>
+          <a href="business-activities-products.html" class="page-tile" data-search="Products 产品 购买 支付"><div class="page-tile-name">商业实践 · Products</div><div class="page-tile-desc">产品 + 购买 + 支付 + 核销</div></a>
+          <a href="business-activities-charity.html" class="page-tile" data-search="Charity 公益 鸿驫榜"><div class="page-tile-name">商业实践 · Charity</div><div class="page-tile-desc">公益行动 + 鸿驫榜 + 公益时数</div></a>
+          <a href="business-activities-detail.html" class="page-tile" data-search="Activity Detail 详情 7阶段"><div class="page-tile-name">活动详情（通用）</div><div class="page-tile-desc">7 阶段生命周期</div></a>
+          <a href="business-network-contacts.html" class="page-tile" data-search="Contacts 联系人 4分类"><div class="page-tile-name">商业网络 · 联系人</div><div class="page-tile-desc">个人/企业/政府/海外 + 录入邀请</div></a>
+          <a href="business-network-resources.html" class="page-tile" data-search="Resources 资源 评价"><div class="page-tile-name">商业网络 · 资源</div><div class="page-tile-desc">资源目录 + 上架 + 评价</div></a>
+          <a href="ai-matching.html" class="page-tile" data-search="AI Matching 搜索 筛选"><div class="page-tile-name">AI 匹配</div><div class="page-tile-desc">多条件 + 结果 + 解释</div></a>
+          <a href="personal-data.html" class="page-tile" data-search="Personal Data 个人资料 证件"><div class="page-tile-name">个人资料</div><div class="page-tile-desc">基础资料 + 证件 + 紧急联系人</div></a>
+          <a href="insurance-policies.html" class="page-tile" data-search="Insurance 保单 提醒"><div class="page-tile-name">保险保单库</div><div class="page-tile-desc">保单列表 + 状态 + 提醒 + 文件</div></a>
+        </div>
+      </section>
+
+      <!-- P2 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">Tier P2 · 低保真</span><h2 class="section-title">18 页 · 全部骨架</h2></div>
+        <div class="index-grid">
+          <a href="course-detail.html" class="page-tile"><div class="page-tile-name">课程详情</div></a>
+          <a href="event-detail.html" class="page-tile"><div class="page-tile-name">活动详情</div></a>
+          <a href="project-detail.html" class="page-tile"><div class="page-tile-name">项目详情</div></a>
+          <a href="service-detail.html" class="page-tile"><div class="page-tile-name">服务详情</div></a>
+          <a href="product-detail.html" class="page-tile"><div class="page-tile-name">产品详情</div></a>
+          <a href="charity-detail.html" class="page-tile"><div class="page-tile-name">公益详情</div></a>
+          <a href="task-center.html" class="page-tile"><div class="page-tile-name">任务中心</div></a>
+          <a href="notifications.html" class="page-tile"><div class="page-tile-name">通知中心</div></a>
+          <a href="settings.html" class="page-tile"><div class="page-tile-name">设置</div></a>
+          <a href="profile-edit.html" class="page-tile"><div class="page-tile-name">编辑资料</div></a>
+          <a href="login.html" class="page-tile"><div class="page-tile-name">登录 / 准入</div></a>
+          <a href="workbench-switch.html" class="page-tile"><div class="page-tile-name">工作台切换</div></a>
+          <a href="privacy.html" class="page-tile"><div class="page-tile-name">隐私设置</div></a>
+          <a href="help-center.html" class="page-tile"><div class="page-tile-name">帮助中心</div></a>
+          <a href="feedback.html" class="page-tile"><div class="page-tile-name">反馈</div></a>
+          <a href="admin-dashboard.html" class="page-tile"><div class="page-tile-name">平台运营 · 概览</div></a>
+          <a href="admin-users.html" class="page-tile"><div class="page-tile-name">平台运营 · 用户</div></a>
+          <a href="search-results.html" class="page-tile"><div class="page-tile-name">搜索结果</div></a>
+        </div>
+      </section>
+
+      <!-- Brand -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">品牌官网</span><h2 class="section-title">4 页 · 对外营销</h2></div>
+        <div class="index-grid">
+          <a href="index.html" class="page-tile"><div class="page-tile-name">官网首页</div><div class="page-tile-desc">Hero + 数据 + 价值主张 + 信任 + CTA</div></a>
+          <a href="about.html" class="page-tile"><div class="page-tile-name">关于我们</div><div class="page-tile-desc">使命 / 故事 / 原则 / 边界</div></a>
+          <a href="resources.html" class="page-tile"><div class="page-tile-name">资源中心</div><div class="page-tile-desc">白皮书 / 案例 / 课程 / 活动</div></a>
+          <a href="contact.html" class="page-tile"><div class="page-tile-name">联系我们</div><div class="page-tile-desc">联系信息 / 表单 / 办公地点</div></a>
+        </div>
+      </section>
+
+      <!-- Other -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">辅助</span><h2 class="section-title">设计系统 & 文档</h2></div>
+        <div class="index-grid">
+          <a href="_design-system.html" class="page-tile" style="border-color: var(--color-accent); background: var(--color-accent-softer);">
+            <div class="page-tile-name">设计系统展示</div>
+            <div class="page-tile-desc">色板 / 字体 / 组件 / 状态</div>
+          </a>
+          <a href="../design.md" class="page-tile">
+            <div class="page-tile-name">design.md</div>
+            <div class="page-tile-desc">完整设计系统文档</div>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    var map = { user: 'workbench-user.html', member: 'workbench-recommender.html', enterprise: 'workbench-enterprise.html', organization: 'workbench-organization.html' };
+    var cur = location.pathname.split('/').pop() || 'index.html';
+    // 跳到对应 workbench
+    window.location.href = map[t] || 'workbench-recommender.html';
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

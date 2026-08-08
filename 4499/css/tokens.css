@@ -1,0 +1,217 @@
+/* ============================================
+ * 4499 平台 · Design Tokens
+ * design-system v1.0 · 2026-08-06
+ * 现代 B2B 信任平台 · Cobalt-inspired 调色
+ * ============================================ */
+
+:root {
+  /* === 基础色 === */
+  --color-paper: oklch(98.5% 0.005 250);
+  --color-paper-warm: oklch(98% 0.01 80);
+  --color-surface: oklch(100% 0 0);
+  --color-surface-2: oklch(96.5% 0.005 250);
+  --color-surface-3: oklch(93% 0.006 250);
+
+  --color-ink: oklch(15% 0.01 250);
+  --color-ink-2: oklch(35% 0.01 250);
+  --color-ink-3: oklch(55% 0.01 250);
+  --color-ink-4: oklch(72% 0.008 250);
+  --color-ink-inv: oklch(100% 0 0);
+
+  --color-line: oklch(91% 0.005 250);
+  --color-line-2: oklch(85% 0.005 250);
+  --color-line-3: oklch(75% 0.005 250);
+
+  /* === 品牌强调色（Cobalt 蓝） === */
+  --color-accent: oklch(48% 0.18 255);
+  --color-accent-2: oklch(60% 0.16 255);
+  --color-accent-3: oklch(72% 0.12 255);
+  --color-accent-soft: oklch(95% 0.04 255);
+  --color-accent-softer: oklch(97.5% 0.02 255);
+  --color-accent-ink: oklch(100% 0 0);
+
+  /* === 语义色 === */
+  --color-success: oklch(58% 0.15 152);
+  --color-success-2: oklch(50% 0.15 152);
+  --color-success-soft: oklch(95% 0.05 152);
+  --color-success-softer: oklch(97.5% 0.025 152);
+
+  --color-warn: oklch(72% 0.15 70);
+  --color-warn-2: oklch(60% 0.15 65);
+  --color-warn-soft: oklch(95% 0.05 70);
+  --color-warn-softer: oklch(97.5% 0.025 70);
+
+  --color-danger: oklch(58% 0.20 28);
+  --color-danger-2: oklch(48% 0.20 28);
+  --color-danger-soft: oklch(95% 0.05 28);
+  --color-danger-softer: oklch(97.5% 0.025 28);
+
+  --color-info: oklch(70% 0.12 230);
+  --color-info-soft: oklch(95% 0.04 230);
+
+  /* === 业务色 === */
+  --color-role-recommender: oklch(48% 0.18 255);
+  --color-role-recommender-soft: oklch(95% 0.04 255);
+
+  --color-role-consultant: oklch(58% 0.15 295);
+  --color-role-consultant-soft: oklch(95% 0.04 295);
+
+  --color-role-ai: oklch(58% 0.15 195);
+  --color-role-ai-soft: oklch(95% 0.04 195);
+
+  --color-role-center: oklch(58% 0.15 152);
+  --color-role-center-soft: oklch(95% 0.05 152);
+
+  --color-role-platform: oklch(45% 0.05 250);
+  --color-role-platform-soft: oklch(95% 0.005 250);
+
+  --color-trust: oklch(60% 0.20 50);
+  --color-trust-soft: oklch(95% 0.05 50);
+  --color-charity: oklch(55% 0.15 0);
+  --color-charity-soft: oklch(95% 0.05 0);
+
+  /* === 业务状态色（业务兴趣 tab 等用） === */
+  --color-biz-poif: oklch(60% 0.18 50);
+  --color-biz-mcs: oklch(60% 0.18 295);
+  --color-biz-game: oklch(60% 0.18 195);
+  --color-biz-ai: oklch(60% 0.18 230);
+  --color-biz-rwa: oklch(60% 0.18 110);
+  --color-biz-gold: oklch(70% 0.18 80);
+  --color-biz-enterprise: oklch(50% 0.10 250);
+
+  /* === 字体 === */
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* === 字号 === */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 22px;
+  --text-3xl: 28px;
+  --text-4xl: 36px;
+  --text-5xl: 48px;
+  --text-display: 64px;
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
+  --leading-relaxed: 1.6;
+
+  /* === 字重 === */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* === 间距（4pt 基准） === */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* === 圆角 === */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+
+  /* === 边线 === */
+  --line-thin: 1px solid var(--color-line);
+  --line-base: 1px solid var(--color-line-2);
+  --line-accent: 2px solid var(--color-accent);
+  --line-trust: 2px solid var(--color-trust);
+
+  /* === 阴影（克制使用） === */
+  --shadow-xs: 0 1px 2px rgba(15, 22, 32, 0.04);
+  --shadow-sm: 0 2px 4px rgba(15, 22, 32, 0.06), 0 1px 2px rgba(15, 22, 32, 0.04);
+  --shadow-md: 0 8px 16px rgba(15, 22, 32, 0.08), 0 2px 4px rgba(15, 22, 32, 0.04);
+  --shadow-lg: 0 16px 40px rgba(15, 22, 32, 0.10), 0 4px 8px rgba(15, 22, 32, 0.06);
+
+  /* === 动效 === */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --dur-page: 480ms;
+
+  /* === 栅格 === */
+  --container-max: 1440px;
+  --container-content: 1280px;
+  --sidebar-width: 240px;
+  --topbar-height: 56px;
+
+  /* === 焦点环 === */
+  --focus-ring: 0 0 0 3px var(--color-accent-soft);
+  --focus-ring-color: var(--color-accent);
+}
+
+/* 基础重置 */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { overflow-x: clip; }
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  margin: 0;
+  font-style: normal; /* hallmark rule: no italic headers */
+}
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
+button { cursor: pointer; border: none; background: none; padding: 0; color: inherit; }
+a { color: var(--color-accent); text-decoration: none; }
+a:hover { color: var(--color-accent-2); }
+
+::selection { background: var(--color-accent-soft); color: var(--color-accent); }
+
+/* Focus visible 全局 */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-line-2); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-line-3); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

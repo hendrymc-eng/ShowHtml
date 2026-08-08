@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 专家匹配 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .ai-match-layout { display: grid; grid-template-columns: 280px 1fr; gap: var(--space-6); align-items: start; }
+    @media (max-width: 1024px) { .ai-match-layout { grid-template-columns: 1fr; } .demand-side { display: none; } }
+    .expert-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .expert-card:hover { border-color: var(--color-line-2); }
+    .expert-card.is-top { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .expert-rank {
+      display: inline-flex; align-items: center; gap: var(--space-1);
+      padding: 2px 8px;
+      background: var(--color-surface-2);
+      color: var(--color-ink-2);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-xs); font-weight: var(--weight-medium);
+      font-family: var(--font-mono);
+    }
+    .expert-rank.is-top { background: var(--color-accent); color: var(--color-accent-ink); }
+    .reason-list { display: flex; flex-direction: column; gap: var(--space-1); }
+    .reason-item { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-ink-2); }
+    .reason-check { width: 16px; height: 16px; border-radius: 50%; background: var(--color-success-soft); color: var(--color-success); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+    .reason-cross { width: 16px; height: 16px; border-radius: 50%; background: var(--color-danger-soft); color: var(--color-danger); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+    .reason-warn { width: 16px; height: 16px; border-radius: 50%; background: var(--color-warn-soft); color: var(--color-warn-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+    .expert-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--color-line); }
+    .expert-stat { text-align: center; }
+    .expert-stat-value { font-family: var(--font-mono); font-size: var(--text-md); font-weight: var(--weight-medium); color: var(--color-ink); }
+    .expert-stat-label { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+
+    /* B1 增强：hover 抬升 + 选定高亮 */
+    .expert-card { cursor: pointer; position: relative; }
+    .expert-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--color-line-2); }
+    .expert-card.is-selected { border-color: var(--color-accent); border-width: 2px; background: var(--color-accent-softer); }
+    .expert-card.is-selected::before {
+      content: '✓ 已选定';
+      position: absolute; top: 12px; right: 12px;
+      padding: 2px 10px; border-radius: var(--radius-pill);
+      background: var(--color-accent); color: var(--color-accent-ink);
+      font-size: var(--text-xs); font-weight: var(--weight-medium);
+    }
+    @keyframes grow-bar { from { width: 0 !important; } }
+    .progress-bar.animate-in { animation: grow-bar 900ms var(--ease-out) forwards; }
+
+    /* B2 新增：评分圆环 + 雷达 + 案例 + 备选 */
+    .score-ring { width: 80px; height: 80px; position: relative; }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring-bg { fill: none; stroke: var(--color-surface-2); stroke-width: 6; }
+    .score-ring-fg { fill: none; stroke: var(--color-accent); stroke-width: 6; stroke-linecap: round; }
+    .score-ring.is-top .score-ring-fg { stroke: var(--color-trust); }
+    .score-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: var(--weight-semibold); }
+    .score-num-val { font-size: var(--text-2xl); line-height: 1; color: var(--color-ink); }
+    .score-num-lbl { font-size: 10px; color: var(--color-ink-3); margin-top: 2px; }
+    .match-factor { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--color-surface-2); border-radius: var(--radius-pill); font-size: var(--text-xs); color: var(--color-ink-2); }
+    .match-factor.is-pos { background: var(--color-success-soft); color: var(--color-success-2); }
+    .match-factor.is-neg { background: var(--color-warn-soft); color: var(--color-warn-2); }
+
+    .radar-wrap { display: flex; align-items: center; gap: var(--space-6); }
+    .radar { width: 200px; height: 200px; position: relative; flex-shrink: 0; }
+    .radar-axis { position: absolute; inset: 0; }
+    .radar-axis::before, .radar-axis::after { content: ''; position: absolute; background: var(--color-line-2); }
+    .radar-axis::before { left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%); }
+    .radar-axis::after { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%); }
+    .radar-grid { position: absolute; inset: 0; border: 1px solid var(--color-line); border-radius: 50%; }
+    .radar-grid.r2 { inset: 25%; opacity: 0.5; }
+    .radar-grid.r3 { inset: 50%; opacity: 0.3; }
+    .radar-label { position: absolute; font-size: var(--text-xs); color: var(--color-ink-2); font-weight: var(--weight-medium); }
+    .radar-label.t { top: -2px; left: 50%; transform: translateX(-50%); }
+    .radar-label.r { right: -2px; top: 50%; transform: translateY(-50%); }
+    .radar-label.b { bottom: -2px; left: 50%; transform: translateX(-50%); }
+    .radar-label.l { left: -2px; top: 50%; transform: translateY(-50%); }
+    .radar-shape { position: absolute; inset: 0; }
+    .radar-shape svg { width: 100%; height: 100%; }
+    .radar-legend { flex: 1; display: flex; flex-direction: column; gap: var(--space-2); }
+    .radar-row { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); }
+    .radar-row-name { width: 80px; color: var(--color-ink-2); }
+    .radar-row-bar { flex: 1; height: 6px; background: var(--color-surface-2); border-radius: var(--radius-pill); overflow: hidden; }
+    .radar-row-fill { height: 100%; background: var(--color-accent); border-radius: var(--radius-pill); }
+    .radar-row-num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink); min-width: 32px; text-align: right; }
+
+    .sim-case { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); }
+    .sim-case-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-1); }
+    .sim-case-name { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-ink); }
+    .sim-case-time { font-size: var(--text-xs); color: var(--color-ink-3); font-family: var(--font-mono); }
+    .sim-case-meta { font-size: var(--text-xs); color: var(--color-ink-3); line-height: var(--leading-snug); }
+
+    .reason-card { padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); }
+    .reason-card-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--color-accent); color: var(--color-accent-ink); font-size: var(--text-xs); font-weight: var(--weight-semibold); flex-shrink: 0; }
+    .reason-card-title { font-size: var(--text-md); font-weight: var(--weight-medium); color: var(--color-ink); margin-bottom: var(--space-1); }
+    .reason-card-desc { font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
+
+    .filter-dim { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); }
+    .filter-dim-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+    .filter-dim-name { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-ink); }
+    .filter-weight { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
+    .filter-weight input[type="range"] { flex: 1; }
+    .filter-weight-val { font-family: var(--font-mono); font-size: var(--text-xs); min-width: 32px; text-align: right; color: var(--color-accent); font-weight: var(--weight-medium); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;"><div class="topbar-brand-mark">4</div><span>4499</span></a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+            <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+      <a href="ai-match.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="pro-support-apply.html">申请专业支持</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>AI 专家匹配</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">AI 专家匹配</h1>
+          <p class="page-subtitle">基于客户需求、专家资质、可用时间和历史服务记录 · 共匹配 6 位候选专家</p>
+        </div>
+
+        <div class="ai-match-layout">
+          <!-- Left: 需求摘要 -->
+          <aside class="demand-side">
+            <div class="card mb-4">
+              <div class="card-header"><div><div class="card-title">需求摘要</div></div></div>
+              <div class="card card-pad-sm mt-3" style="background: var(--color-surface-2);">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="avatar avatar-md avatar-role-recommender">林</div>
+                  <div><div class="text-sm fw-medium">林秀华</div><div class="text-xs text-ink-3 text-mono">M-2024-0381</div></div>
+                </div>
+                <div class="flex flex-col gap-2 text-sm">
+                  <div><span class="text-ink-3">服务类型：</span><span class="fw-medium">企业诊断</span></div>
+                  <div><span class="text-ink-3">服务模块：</span><span class="fw-medium">企业战略咨询</span></div>
+                  <div><span class="text-ink-3">期望结果：</span><span class="fw-medium">完成续费 + 介绍企业服务 + 评估升级</span></div>
+                  <div><span class="text-ink-3">紧急程度：</span><span class="fw-medium">普通</span></div>
+                  <div><span class="text-ink-3">期限：</span><span class="fw-medium">30 天</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-header"><div><div class="card-title">AI 匹配因素</div></div></div>
+              <div class="text-sm text-ink-2 mt-3" style="line-height: var(--leading-relaxed);">
+                <p>· 客户需求与业务兴趣</p>
+                <p>· 客户地区 / 语言 / 时区</p>
+                <p>· 专家资质与专业领域</p>
+                <p>· 历史服务评分与完成率</p>
+                <p>· 专家当前任务量</p>
+                <p>· 利益冲突检查</p>
+                <p>· 合规状态</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">调整筛选</div></div></div>
+              <div class="flex flex-col gap-3 mt-3">
+                <div class="input-group">
+                  <label class="input-label">地区</label>
+                  <select class="select select-sm"><option>不限</option><option>广东</option><option>北京</option><option>上海</option></select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">语言</label>
+                  <select class="select select-sm"><option>不限</option><option>中文</option><option>英文</option><option>双语</option></select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">最低评分</label>
+                  <select class="select select-sm"><option>不限</option><option>4.5 星以上</option><option>4.0 星以上</option></select>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right: 候选专家 -->
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-sm text-ink-3">按匹配度排序 · 共 6 位</div>
+              <div class="segmented js-segmented"><div class="segmented-item is-active">推荐排序</div><div class="segmented-item">评分</div><div class="segmented-item">可用时间</div></div>
+            </div>
+
+            <!-- Top match -->
+            <div class="expert-card is-top mb-4">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-consultant">张</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">张明</div>
+                      <span class="expert-rank is-top">★ 最佳匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">EMP 导师 · 企业服务中心</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3">
+                      <span>广东 · 深圳</span><span>·</span><span>中文 / English</span><span>·</span><span>9 年经验</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-accent); line-height: 1;">92</div>
+                </div>
+              </div>
+
+              <div class="grid-2x mb-4" style="gap: var(--space-4);">
+                <div>
+                  <div class="text-xs text-ink-3 mb-2 fw-medium">匹配原因</div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-check">✓</div><span>专长 <strong>企业战略咨询</strong>，与客户需求完全匹配</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>客户在 <strong>广东深圳</strong>，与张明同区域</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>近 12 个月 <strong>完成率 96%</strong>，满意度 4.8/5</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>有 18 个企业诊断成功案例</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>无利益冲突 · 合规状态正常</span></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3 mb-2 fw-medium">潜在风险</div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-warn">!</div><span>当前任务量较多（5 单在服），首次响应可能延迟 6-12h</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="expert-stats">
+                <div class="expert-stat"><div class="expert-stat-value">96%</div><div class="expert-stat-label">完成率</div></div>
+                <div class="expert-stat"><div class="expert-stat-value">4.8</div><div class="expert-stat-label">满意度</div></div>
+                <div class="expert-stat"><div class="expert-stat-value">142</div><div class="expert-stat-label">累计服务</div></div>
+                <div class="expert-stat"><div class="expert-stat-value">18</div><div class="expert-stat-label">企业案例</div></div>
+              </div>
+
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-primary">选定此专家</button>
+                <button class="btn btn-secondary">查看完整档案</button>
+                <button class="btn btn-ghost">联系张明预沟通</button>
+              </div>
+            </div>
+
+            <!-- Other matches -->
+            <div class="expert-card mb-4">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-ai">李</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">李文华</div>
+                      <span class="expert-rank">#2 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">企业顾问 · 北京</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>北京</span><span>·</span><span>中文</span><span>·</span><span>12 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-accent); line-height: 1;">87</div>
+                </div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-4);">
+                <div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-check">✓</div><span>专长企业战略咨询（15 年）</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>完成率 94% · 满意度 4.7</span></div>
+                    <div class="reason-item"><div class="reason-cross">×</div><span style="color: var(--color-ink-3);">地区为 <strong>北京</strong>，需远程沟通</span></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-warn">!</div><span>近 30 天有 1 次客户投诉记录</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-secondary btn-sm">选定</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+
+            <div class="expert-card mb-4">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-center">王</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">王志远</div>
+                      <span class="expert-rank">#3 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">企业服务中心 · 自动分配</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>上海</span><span>·</span><span>中文 / English</span><span>·</span><span>7 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-accent); line-height: 1;">82</div>
+                </div>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>由企业服务中心根据当前负载智能分配</span></div>
+                <div class="reason-item"><div class="reason-check">✓</div><span>完成率 92% · 满意度 4.6</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>分配后专家会另行通知</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-secondary btn-sm">由中心分配</button>
+                <button class="btn btn-ghost btn-sm">了解流程</button>
+              </div>
+            </div>
+
+            <div class="expert-card">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl" style="background: var(--color-info-soft); color: var(--color-info);">陈</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">陈雪</div>
+                      <span class="expert-rank">#4 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">企业顾问 · 广东</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>广东 · 广州</span><span>·</span><span>中文</span><span>·</span><span>5 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink-3); line-height: 1;">76</div>
+                </div>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>广东地区，沟通成本低</span></div>
+                <div class="reason-item"><div class="reason-cross">×</div><span style="color: var(--color-ink-3);">经验相对较少，主要服务小微企业</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>本周任务已满，最早 8/12 后可接单</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-secondary btn-sm" disabled>当前不可用</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+
+            <!-- B2 新增 #5 专家 -->
+            <div class="expert-card mb-4">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-consultant">刘</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">刘建国</div>
+                      <span class="expert-rank">#5 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">EMP 导师 · 上海</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>上海</span><span>·</span><span>中文 / English</span><span>·</span><span>11 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink-3); line-height: 1;">73</div>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="match-factor is-pos">✓ 专长匹配</span>
+                <span class="match-factor is-pos">✓ 行业匹配</span>
+                <span class="match-factor">资质优</span>
+                <span class="match-factor">8 年企业战略</span>
+                <span class="match-factor is-neg">! 时区差异</span>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>专长企业战略 + 数字化转型</span></div>
+                <div class="reason-item"><div class="reason-check">✓</div><span>完成率 89% · 满意度 4.5</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>常驻上海，与客户时区无差异</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>近 3 个月档期较满，最早 8/18 可接</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-secondary btn-sm">选定</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+
+            <!-- B2 新增 #6 专家 -->
+            <div class="expert-card">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-ai">徐</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">徐丽</div>
+                      <span class="expert-rank">#6 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">企业顾问 · AI 服务方向</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>深圳</span><span>·</span><span>中文 / English</span><span>·</span><span>6 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink-3); line-height: 1;">69</div>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="match-factor is-pos">✓ 行业匹配</span>
+                <span class="match-factor">AI 服务专长</span>
+                <span class="match-factor">5 年 AI 落地</span>
+                <span class="match-factor is-neg">× 经验略低</span>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>AI 服务方向，跨领域优势</span></div>
+                <div class="reason-item"><div class="reason-check">✓</div><span>完成率 91% · 满意度 4.6</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>战略咨询经验以中后期为主</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <button class="btn btn-secondary btn-sm">选定</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- B2 新增：本次匹配说明 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">AI 解读</span>
+            <h2 class="section-title">本次匹配说明</h2>
+            <p class="section-subtitle">AI 综合 7 个维度生成 · 可根据权重调整后重排</p>
+          </div>
+          <div class="grid-2x" style="gap: var(--space-3);">
+            <div class="reason-card">
+              <div class="flex items-start gap-3">
+                <div class="reason-card-num">1</div>
+                <div>
+                  <div class="reason-card-title">需求与专长高度匹配</div>
+                  <div class="reason-card-desc">客户「企业战略咨询」与张明 9 年企业服务经验高度吻合，过去 18 个企业诊断案例中 12 个为成长期企业，与林秀华当前阶段契合。</div>
+                </div>
+              </div>
+            </div>
+            <div class="reason-card">
+              <div class="flex items-start gap-3">
+                <div class="reason-card-num">2</div>
+                <div>
+                  <div class="reason-card-title">地区协同降低沟通成本</div>
+                  <div class="reason-card-desc">客户位于广东深圳，张明常驻同区，可支持面谈/陪同拜访，显著降低跨地区沟通成本与时间错位风险。</div>
+                </div>
+              </div>
+            </div>
+            <div class="reason-card">
+              <div class="flex items-start gap-3">
+                <div class="reason-card-num">3</div>
+                <div>
+                  <div class="reason-card-title">履约能力验证充分</div>
+                  <div class="reason-card-desc">近 12 个月完成率 96% · 满意度 4.8/5 · 0 投诉 · 与本申请 30 天窗口高度匹配，可在窗口内完成诊断 + 1 次复盘。</div>
+                </div>
+              </div>
+            </div>
+            <div class="reason-card">
+              <div class="flex items-start gap-3">
+                <div class="reason-card-num">4</div>
+                <div>
+                  <div class="reason-card-title">无利益冲突 · 合规通过</div>
+                  <div class="reason-card-desc">已校验张明与林秀华及其所属企业无现有合作关系 · 无在服冲突 · KYC + EMP 认证 · 行业限制检查通过。</div>
+                </div>
+              </div>
+            </div>
+            <div class="reason-card">
+              <div class="flex items-start gap-3">
+                <div class="reason-card-num">5</div>
+                <div>
+                  <div class="reason-card-title">负载提示 · 仍可优先</div>
+                  <div class="reason-card-desc">张明当前 5 单在服，处于建议上限。AI 已与中心确认其本周可优先承接 1 单（紧急度由申请方决定），首响应可能延迟 6-12h。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- B2 新增：多维评估 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">多维度</span>
+            <h2 class="section-title">Top 1 候选 · 4 维评估</h2>
+            <p class="section-subtitle">张明在 4 个评估维度的具体得分 · 综合匹配度 92</p>
+          </div>
+          <div class="card card-pad-lg">
+            <div class="radar-wrap">
+              <div class="radar">
+                <div class="radar-axis"></div>
+                <div class="radar-grid"></div>
+                <div class="radar-grid r2"></div>
+                <div class="radar-grid r3"></div>
+                <div class="radar-label t">专长</div>
+                <div class="radar-label r">行业</div>
+                <div class="radar-label b">档期</div>
+                <div class="radar-label l">价格</div>
+                <div class="radar-shape">
+                  <svg viewBox="-100 -100 200 200">
+                    <polygon points="0,-88 72,28 -28,84 -78,40" fill="var(--color-accent-soft)" stroke="var(--color-accent)" stroke-width="2" />
+                    <circle cx="0" cy="-88" r="3" fill="var(--color-accent)" />
+                    <circle cx="72" cy="28" r="3" fill="var(--color-accent)" />
+                    <circle cx="-28" cy="84" r="3" fill="var(--color-accent)" />
+                    <circle cx="-78" cy="40" r="3" fill="var(--color-accent)" />
+                  </svg>
+                </div>
+              </div>
+              <div class="radar-legend">
+                <div class="radar-row">
+                  <div class="radar-row-name">专长匹配</div>
+                  <div class="radar-row-bar"><div class="radar-row-fill" style="width: 95%;"></div></div>
+                  <div class="radar-row-num">95</div>
+                </div>
+                <div class="radar-row">
+                  <div class="radar-row-name">行业匹配</div>
+                  <div class="radar-row-bar"><div class="radar-row-fill" style="width: 88%; background: var(--color-trust);"></div></div>
+                  <div class="radar-row-num">88</div>
+                </div>
+                <div class="radar-row">
+                  <div class="radar-row-name">档期可用</div>
+                  <div class="radar-row-bar"><div class="radar-row-fill" style="width: 82%; background: var(--color-warn-2);"></div></div>
+                  <div class="radar-row-num">82</div>
+                </div>
+                <div class="radar-row">
+                  <div class="radar-row-name">价格区间</div>
+                  <div class="radar-row-bar"><div class="radar-row-fill" style="width: 90%; background: var(--color-success);"></div></div>
+                  <div class="radar-row-num">90</div>
+                </div>
+                <div class="help-box" style="margin-top: var(--space-2);"><div class="help-box-text">4 维权重：专长 40% · 行业 30% · 档期 20% · 价格 10% · 综合 = 加权平均</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- B2 新增：相似案例 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">参考</span>
+            <h2 class="section-title">相似成功匹配案例</h2>
+            <p class="section-subtitle">需求画像与本次申请相近的历史成功匹配 · 已脱敏</p>
+          </div>
+          <div class="grid-2x" style="gap: var(--space-3);">
+            <div class="sim-case">
+              <div class="sim-case-head">
+                <div class="sim-case-name">广东 · 制造业老板</div>
+                <div class="sim-case-time">2026-07-22</div>
+              </div>
+              <div class="sim-case-meta">匹配到 王明远（企业战略 12 年） · 14 天完成 · 满意度 4.9 · 已续约 2 次</div>
+            </div>
+            <div class="sim-case">
+              <div class="sim-case-head">
+                <div class="sim-case-name">深圳 · SaaS 创始人</div>
+                <div class="sim-case-time">2026-08-01</div>
+              </div>
+              <div class="sim-case-meta">匹配到 张伟杰（数字化转型 8 年） · 10 天完成 · 满意度 4.8 · 升级企业会员</div>
+            </div>
+            <div class="sim-case">
+              <div class="sim-case-head">
+                <div class="sim-case-name">广州 · 教育公司 CEO</div>
+                <div class="sim-case-time">2026-08-15</div>
+              </div>
+              <div class="sim-case-meta">匹配到 李志远（企业战略 9 年） · 7 天完成 · 满意度 4.7 · 介绍 1 位资本方</div>
+            </div>
+            <div class="sim-case">
+              <div class="sim-case-head">
+                <div class="sim-case-name">广东 · 智能硬件创始人</div>
+                <div class="sim-case-time">2026-08-18</div>
+              </div>
+              <div class="sim-case-meta">匹配到 张明（EMP 导师 9 年） · 18 天完成 · 满意度 4.9 · 完成 ToB 渠道开拓</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- B2 新增：备选方案 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">备选</span>
+            <h2 class="section-title">如果 Top 1 不合适</h2>
+            <p class="section-subtitle">若张明时间冲突 / 客户不匹配，AI 推荐以下 3 个备选方案</p>
+          </div>
+          <div class="grid-3x" style="gap: var(--space-3);">
+            <div class="card card-pad-md" style="border-color: var(--color-line-2);">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-ai">李</div>
+                <div class="text-sm fw-medium">备选 1 · 李文华</div>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">匹配度 87 · 北京 · 12 年企业战略</div>
+              <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">理由：与 Top 1 同级别 · 可远程 · 近 1 月有 1 次投诉记录需关注</div>
+            </div>
+            <div class="card card-pad-md" style="border-color: var(--color-line-2);">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-center">王</div>
+                <div class="text-sm fw-medium">备选 2 · 王志远</div>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">匹配度 82 · 上海 · 7 年企业服务</div>
+              <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">理由：由中心分配负载更低 · 经验略低但任务完成稳定 · 适合标准化需求</div>
+            </div>
+            <div class="card card-pad-md" style="border-color: var(--color-line-2);">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">陈</div>
+                <div class="text-sm fw-medium">备选 3 · 陈雪</div>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">匹配度 76 · 广东 · 5 年企业服务</div>
+              <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">理由：地区最佳 · 8/12 后可接 · 适合预算较低、需求较轻的申请</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- B2 新增：筛选维度（可调整权重） -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">高级</span>
+            <h2 class="section-title">筛选维度 · 可调整权重</h2>
+            <p class="section-subtitle">调整下方权重后 AI 重新计算匹配 · 当前权重基于「企业诊断 · 战略咨询」类目默认</p>
+          </div>
+          <div class="grid-3x" style="gap: var(--space-3);">
+            <div class="filter-dim">
+              <div class="filter-dim-head">
+                <div class="filter-dim-name">专长领域</div>
+                <span class="badge badge-accent badge-sm">40%</span>
+              </div>
+              <div class="text-xs text-ink-3">企业战略 · 数字化 · 资本 · AI 落地</div>
+              <div class="filter-weight">
+                <input type="range" min="0" max="100" value="40" data-target-display="w1" />
+                <div class="filter-weight-val" id="w1">40%</div>
+              </div>
+            </div>
+            <div class="filter-dim">
+              <div class="filter-dim-head">
+                <div class="filter-dim-name">行业经验</div>
+                <span class="badge badge-accent badge-sm">30%</span>
+              </div>
+              <div class="text-xs text-ink-3">智能硬件 · SaaS · 制造业 · 教育 · 跨境</div>
+              <div class="filter-weight">
+                <input type="range" min="0" max="100" value="30" data-target-display="w2" />
+                <div class="filter-weight-val" id="w2">30%</div>
+              </div>
+            </div>
+            <div class="filter-dim">
+              <div class="filter-dim-head">
+                <div class="filter-dim-name">经验年限</div>
+                <span class="badge badge-accent badge-sm">15%</span>
+              </div>
+              <div class="text-xs text-ink-3">3-5 年 · 5-10 年 · 10 年以上</div>
+              <div class="filter-weight">
+                <input type="range" min="0" max="100" value="15" data-target-display="w3" />
+                <div class="filter-weight-val" id="w3">15%</div>
+              </div>
+            </div>
+            <div class="filter-dim">
+              <div class="filter-dim-head">
+                <div class="filter-dim-name">价位区间</div>
+                <span class="badge badge-accent badge-sm">10%</span>
+              </div>
+              <div class="text-xs text-ink-3">顾问级 · 专家级 · 资深级</div>
+              <div class="filter-weight">
+                <input type="range" min="0" max="100" value="10" data-target-display="w4" />
+                <div class="filter-weight-val" id="w4">10%</div>
+              </div>
+            </div>
+            <div class="filter-dim">
+              <div class="filter-dim-head">
+                <div class="filter-dim-name">可用性</div>
+                <span class="badge badge-accent badge-sm">5%</span>
+              </div>
+              <div class="text-xs text-ink-3">本周 / 下周 / 1 月内</div>
+              <div class="filter-weight">
+                <input type="range" min="0" max="100" value="5" data-target-display="w5" />
+                <div class="filter-weight-val" id="w5">5%</div>
+              </div>
+            </div>
+            <div class="filter-dim" style="background: var(--color-surface-2); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+              <div class="text-sm fw-medium">调整后重排</div>
+              <div class="text-xs text-ink-3 mt-1">AI 将基于新权重重新计算</div>
+              <button class="btn btn-primary btn-sm mt-3" data-action="rematch">应用权重 · 重新匹配</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    
+        <!-- Section: 候选召回 + 排序解释 (AIM-002/004/005) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">AI Matching · 召回 / 排序 / 解释</span>
+            <h2 class="section-title">每个候选都可追溯</h2>
+            <p class="section-subtitle">召回路径 + 6 维度排序理由 + 证据链 + 风险点 · 禁止"AI 认为很合适"</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">召回路径 · AIM-002</div>
+            <div class="aim-recall-grid">
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">固定标签</div>
+                  <div class="aim-recall-item-count">38</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">跨境投资</span>
+                  <span class="aim-recall-tag">日本市场</span>
+                  <span class="aim-recall-tag">RWA</span>
+                  <span class="aim-recall-tag">医院资源</span>
+                </div>
+              </div>
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">动态标签</div>
+                  <div class="aim-recall-item-count">12</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">近 30 天有交易</span>
+                  <span class="aim-recall-tag">无投诉</span>
+                  <span class="aim-recall-tag">在日时长 ≥ 2 年</span>
+                </div>
+              </div>
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">关系 / 信誉</div>
+                  <div class="aim-recall-item-count">6</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">2 度关系</span>
+                  <span class="aim-recall-tag">信誉 ≥ 95</span>
+                  <span class="aim-recall-tag">无冻结</span>
+                </div>
+              </div>
+            </div>
+            <div class="aim-filter-row mt-3">
+              <strong>过滤：</strong>已剔除 7 个对象（无权限 × 3、已过期合作 × 2、地区限制 × 1、未通过 KYC × 1）
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">排序理由 · AIM-004</div>
+            <table class="aim-rank-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>候选</th>
+                  <th>适配度</th>
+                  <th>可信度</th>
+                  <th>关系距离</th>
+                  <th>可用性</th>
+                  <th>负载</th>
+                  <th>多样性</th>
+                  <th>综合</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="aim-rank-num">1</span></td>
+                  <td>田中 健一 · 日本东京</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">96</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 96%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">98</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 98%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">2度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">62%</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><strong>92</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="aim-rank-num">2</span></td>
+                  <td>佐藤 雅子 · 日本大阪</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">88</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 88%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">95</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 95%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">3度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">中</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">38%</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><strong>85</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="aim-rank-num">3</span></td>
+                  <td>山田 大地 · 日本福冈</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">82</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 82%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">96</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 96%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">2度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">75%</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">中</span></div></td>
+                  <td><strong>81</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="text-sm fw-semibold mb-2">Top 1 证据链 · 田中 健一</div>
+            <div class="aim-evidence">
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">动态标签</div>
+                <div>近 30 天有 2 笔 RWA 交易记录，资产规模 ¥ 1.2 亿，符合您的"懂 RWA"需求</div>
+                <div class="aim-evidence-time">2026-08-12 更新</div>
+              </div>
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">关系图</div>
+                <div>由 王建国 推荐关系链 2 度连接 · 4 个月前同场 P2026-04 私董会</div>
+                <div class="aim-evidence-time">关系事件 P2026-04</div>
+              </div>
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">信誉事件</div>
+                <div>PB 信誉 98（PB-2026-073）· 履约 100% · 近 12 个月无投诉</div>
+                <div class="aim-evidence-time">2026-08-01 计算</div>
+              </div>
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">缺口</div>
+                <div style="color: var(--color-warn-2);">医院资源未在 Profile 显式登记 · 但 EMP 注释"有 3 年医院数字化咨询背景"</div>
+                <div class="aim-evidence-time">建议：联系前先确认</div>
+              </div>
+              <div class="aim-evidence-row" style="background: var(--color-warn-soft);">
+                <div class="aim-evidence-source">风险点</div>
+                <div>田中 健一 当前负载 62%，本月已接 4 个项目（上限 6 个）· 5 月有过 1 次延期交付</div>
+                <div class="aim-evidence-time">负载来源：EMP 任务表</div>
+              </div>
+            </div>
+            <div class="aim-no-hallucination mt-3">
+              <strong>禁止"AI 认为很合适"：</strong>以上所有结论都附带事件来源、时间和证据 ID。如有字段不实可点击【反馈】上报，反馈仅用于训练检索权重，不覆盖事实数据本身。
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: 反馈学习 (AIM-007) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">反馈学习 · FEEDBACK</span>
+            <h2 class="section-title">您的反馈驱动排序权重</h2>
+            <p class="section-subtitle">反馈不直接覆盖事实数据 · 仅优化未来检索 / 排序 / SOP</p>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">近 30 天反馈统计 · 5 类行为</div>
+            <div class="aim-feedback-grid">
+              <div class="aim-feedback-cell">
+                <div class="aim-feedback-cell-count">14</div>
+                <div class="aim-feedback-cell-label">标记有用</div>
+              </div>
+              <div class="aim-feedback-cell">
+                <div class="aim-feedback-cell-count">3</div>
+                <div class="aim-feedback-cell-label">标记无用</div>
+              </div>
+              <div class="aim-feedback-cell">
+                <div class="aim-feedback-cell-count">6</div>
+                <div class="aim-feedback-cell-label">已联系</div>
+              </div>
+              <div class="aim-feedback-cell">
+                <div class="aim-feedback-cell-count">2</div>
+                <div class="aim-feedback-cell-label">已合作</div>
+              </div>
+              <div class="aim-feedback-cell">
+                <div class="aim-feedback-cell-count">1</div>
+                <div class="aim-feedback-cell-label">已完成</div>
+              </div>
+            </div>
+            <div class="text-sm fw-semibold mb-2 mt-4">本会话反馈 · 8 个候选中您已选 1 位</div>
+            <div class="aim-feedback-tag-list">
+              <span class="aim-feedback-tag">+ 田中 健一</span>
+              <span class="aim-feedback-tag">+ 田中 健一</span>
+              <span class="aim-feedback-tag">− 佐藤 雅子</span>
+              <span class="aim-feedback-tag">原因：地区不符</span>
+              <span class="aim-feedback-tag">+ 山田 大地</span>
+              <span class="aim-feedback-tag">原因：信誉好</span>
+              <span class="aim-feedback-tag">已联系 田中 健一</span>
+              <span class="aim-feedback-tag">已合作 山田 大地</span>
+            </div>
+            <div class="aim-feedback-warning mt-4">
+              <strong>反馈边界：</strong>您的反馈只用于优化未来的"排序权重"和"SOP 检索" · 不会直接修改田中 健一 / 佐藤 雅子 / 山田 大地 的任何事实档案（Profile / 信誉 / 交易历史）。事实数据只能由他们本人或管理员依据规则更新。
+            </div>
+          </div>
+        </section>
+</main>
+  </div>
+
+  <!-- ========== B1 增强：确认选定 Modal ========== -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-confirm-select"></div>
+  <div class="modal" id="modal-confirm-select" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">确认选定专家</div>
+          <div class="text-xs text-ink-3 mt-1">提交后将开启 30 天服务窗口</div>
+        </div>
+        <div class="modal-close" data-modal-close="modal-confirm-select">✕</div>
+      </div>
+      <div class="modal-body">
+        <div class="card card-pad-sm" style="background: var(--color-accent-softer); border-color: var(--color-accent);">
+          <div class="flex items-center gap-3">
+            <div class="avatar avatar-lg avatar-role-consultant" id="modal-expert-avatar">张</div>
+            <div class="flex-1">
+              <div class="text-md fw-semibold" id="modal-expert-name">张明</div>
+              <div class="text-sm text-ink-2" id="modal-expert-role">EMP 导师 · 企业服务中心</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs text-ink-3">匹配度</div>
+              <div style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-semibold); color: var(--color-accent);" id="modal-expert-score">92</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2x mt-4" style="gap: var(--space-3);">
+          <div class="stat-mini"><div class="stat-mini-label">完成率</div><div class="stat-mini-value">96%</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">满意度</div><div class="stat-mini-value">4.8</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">累计服务</div><div class="stat-mini-value">142</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">企业案例</div><div class="stat-mini-value">18</div></div>
+        </div>
+
+        <div class="warn-box mt-4"><div class="warn-box-text">⚠ <strong>选定后</strong>：① 张明会在 4 小时内收到通知 ② 客户林秀华将收到服务启动邮件 ③ 30 天服务窗口自动开启，到期未续展自动关闭权限</div></div>
+
+        <div class="text-sm fw-medium mt-4 mb-2">附加备注（可选）</div>
+        <textarea class="textarea" rows="2" placeholder="给专家的额外说明...">林秀华近期浏览过企业服务内容，建议从续费 + 企业服务介绍切入。</textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-confirm-select">再看看</button>
+        <button class="btn btn-primary" data-action="final-select">确认选定</button>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/app.js"></script>
+<script>
+  // B1 增强：进度条入场动画
+  (function () {
+    var bars = document.querySelectorAll('.progress-bar');
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('animate-in'); obs.unobserve(e.target); } });
+      }, { threshold: 0.3 });
+      bars.forEach(function (b) { obs.observe(b); });
+    }
+  })();
+
+  // B1 增强：候选卡 hover 效果 + 选定流程
+  (function () {
+    var cards = document.querySelectorAll('.expert-card');
+    var expertData = {
+      'zhangming': { name: '张明', avatar: '张', role: 'EMP 导师 · 企业服务中心', score: 92 },
+      'liwenhua': { name: '李文华', avatar: '李', role: '企业顾问 · 北京', score: 87 },
+      'wangzhiyuan': { name: '王志远', avatar: '王', role: '企业服务中心 · 自动分配', score: 82 },
+      'chenxue': { name: '陈雪', avatar: '陈', role: '企业顾问 · 广东', score: 76 }
+    };
+
+    cards.forEach(function (card) {
+      // hover 效果由 CSS 处理
+      card.addEventListener('click', function (e) {
+        // 按钮不触发卡片选择
+        if (e.target.closest('button')) return;
+        // 已选定的不可点击切换
+        if (card.classList.contains('is-selected')) {
+          toast('已选定此专家，请到「我的任务」查看', 'info');
+          return;
+        }
+        // 全部取消
+        cards.forEach(function (c) { c.classList.remove('is-selected'); });
+        card.classList.add('is-selected');
+        // 判断是哪位专家
+        var name = card.querySelector('.text-xl.fw-semibold');
+        if (name) {
+          var key = '';
+          var t = name.textContent.trim();
+          if (t.indexOf('张明') >= 0) key = 'zhangming';
+          else if (t.indexOf('李文华') >= 0) key = 'liwenhua';
+          else if (t.indexOf('王志远') >= 0) key = 'wangzhiyuan';
+          else if (t.indexOf('陈雪') >= 0) key = 'chenxue';
+          var d = expertData[key];
+          if (d) {
+            document.getElementById('modal-expert-avatar').textContent = d.avatar;
+            document.getElementById('modal-expert-name').textContent = d.name;
+            document.getElementById('modal-expert-role').textContent = d.role;
+            document.getElementById('modal-expert-score').textContent = d.score;
+          }
+        }
+        var m = document.getElementById('modal-confirm-select');
+        if (m) {
+          m.classList.add('is-open');
+          var bd = document.querySelector('[data-modal-backdrop="modal-confirm-select"]');
+          if (bd) bd.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+  })();
+
+  // B1 增强：选定按钮 → 直接打开 modal
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var t = btn.textContent.trim();
+    if (t === '选定此专家' || t === '选定') {
+      e.stopPropagation();
+      var card = btn.closest('.expert-card');
+      if (card) {
+        document.querySelectorAll('.expert-card').forEach(function (c) { c.classList.remove('is-selected'); });
+        card.classList.add('is-selected');
+      }
+      var m = document.getElementById('modal-confirm-select');
+      if (m) {
+        m.classList.add('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-confirm-select"]');
+        if (bd) bd.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    } else if (t === '查看完整档案' || t === '查看档案') {
+      e.stopPropagation();
+      toast('正在加载专家完整档案...', 'info');
+    } else if (t === '联系张明预沟通' || t === '了解流程') {
+      e.stopPropagation();
+      toast('已发起预沟通消息', 'success');
+    } else if (t === '由中心分配') {
+      e.stopPropagation();
+      toast('已请求中心分配', 'info');
+    } else if (t === '当前不可用') {
+      e.stopPropagation();
+      toast('该专家当前不可用，请选择其他', 'warn');
+    } else if (t === '查看全部任务') {
+      toast('已生成最佳匹配推荐', 'info');
+    } else if (t === '重新匹配') {
+      toast('AI 重新计算匹配中...', 'info');
+    }
+  });
+
+  // B1 增强：确认选定 → 提交
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-action]');
+    if (!a) return;
+    if (a.getAttribute('data-action') === 'final-select') {
+      var name = document.getElementById('modal-expert-name').textContent;
+      toast('已选定 ' + name + ' · 30 天服务窗口已开启', 'success');
+      setTimeout(function () {
+        var m = document.getElementById('modal-confirm-select');
+        if (m) m.classList.remove('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-confirm-select"]');
+        if (bd) bd.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }, 700);
+    }
+  });
+
+  // B1 增强：左侧筛选变化
+  document.querySelectorAll('.demand-side select').forEach(function (sel) {
+    sel.addEventListener('change', function () {
+      toast('已更新筛选：' + sel.options[sel.selectedIndex].text, 'info');
+    });
+  });
+
+  // B2 新增：权重滑块同步显示
+  document.querySelectorAll('input[type="range"][data-target-display]').forEach(function (rng) {
+    rng.addEventListener('input', function () {
+      var t = rng.getAttribute('data-target-display');
+      var el = document.getElementById(t);
+      if (el) el.textContent = rng.value + '%';
+    });
+  });
+
+  // B2 新增：重新匹配按钮
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-action="rematch"]');
+    if (!a) return;
+    toast('AI 正在基于新权重重算...', 'info');
+  });
+
+  // B1 增强：segmented 切换
+  document.querySelectorAll('.segmented.js-segmented .segmented-item').forEach(function (it) {
+    it.addEventListener('click', function () {
+      toast('排序方式：' + it.textContent.trim(), 'info');
+    });
+  });
+</script>
+</body>
+</html>

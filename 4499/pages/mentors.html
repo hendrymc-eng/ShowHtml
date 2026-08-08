@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>导师与专家 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    /* 专长领域矩阵 */
+    .skill-matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
+    .skill-matrix th, .skill-matrix td { padding: var(--space-3); text-align: center; border-bottom: 1px solid var(--color-line); }
+    .skill-matrix th { font-weight: var(--weight-medium); color: var(--color-ink-3); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; background: var(--color-surface-2); }
+    .skill-matrix th:first-child, .skill-matrix td:first-child { text-align: left; color: var(--color-ink-2); font-weight: var(--weight-medium); }
+    .skill-cell { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 24px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .skill-cell-l4 { background: var(--color-accent); color: white; }
+    .skill-cell-l3 { background: var(--color-accent-soft); color: var(--color-accent); }
+    .skill-cell-l2 { background: var(--color-surface-2); color: var(--color-ink-2); border: 1px solid var(--color-line-2); }
+    .skill-cell-l1 { background: var(--color-surface); color: var(--color-ink-3); border: 1px dashed var(--color-line-2); }
+
+    /* 预约日历 · 周视图 */
+    .schedule-grid { display: grid; grid-template-columns: 60px repeat(7, 1fr); gap: 1px; background: var(--color-line); border: 1px solid var(--color-line); border-radius: var(--radius-md); overflow: hidden; }
+    .schedule-cell { background: var(--color-surface); padding: var(--space-2); min-height: 48px; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); color: var(--color-ink-3); cursor: pointer; transition: background var(--dur-fast) var(--ease-out); }
+    .schedule-cell:hover { background: var(--color-accent-softer); }
+    .schedule-cell-head { background: var(--color-surface-2); font-weight: var(--weight-medium); color: var(--color-ink-2); font-size: var(--text-sm); }
+    .schedule-cell-time { background: var(--color-surface-2); color: var(--color-ink-3); font-family: var(--font-mono); font-size: var(--text-xs); }
+    .schedule-cell-available { background: var(--color-accent-softer); color: var(--color-accent); font-weight: var(--weight-medium); }
+    .schedule-cell-booked { background: var(--color-warn-softer); color: var(--color-warn-2); }
+    .schedule-cell-today { background: var(--color-accent); color: white; font-weight: var(--weight-semibold); }
+
+    /* 评价卡 */
+    .review-card { padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); }
+    .review-quote { font-size: var(--text-md); color: var(--color-ink-2); line-height: var(--leading-relaxed); position: relative; padding-left: var(--space-4); border-left: 2px solid var(--color-accent-soft); }
+    .review-rating { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-3); }
+    .review-stars { color: var(--color-warn-2); letter-spacing: 1px; }
+    .review-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: var(--space-2); }
+
+    /* AI 匹配推荐 */
+    .match-card { padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-md); display: flex; gap: var(--space-3); align-items: flex-start; }
+    .match-card-rank { width: 28px; height: 28px; border-radius: 50%; background: var(--color-accent-soft); color: var(--color-accent); display: flex; align-items: center; justify-content: center; font-size: var(--text-sm); font-weight: var(--weight-semibold); flex-shrink: 0; }
+    .match-card-main { flex: 1; min-width: 0; }
+    .match-card-title { font-size: var(--text-md); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .match-card-reason { font-size: var(--text-sm); color: var(--color-ink-2); margin-top: var(--space-1); line-height: var(--leading-relaxed); }
+    .match-card-score { text-align: right; flex-shrink: 0; }
+
+    /* 合作历史 timeline */
+    .collab-timeline { display: flex; flex-direction: column; }
+    .collab-timeline-item { display: flex; gap: var(--space-3); padding-bottom: var(--space-4); position: relative; }
+    .collab-timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 7px; top: 20px; bottom: 0; width: 1px; background: var(--color-line); }
+    .collab-timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--color-surface); border: 2px solid var(--color-accent); flex-shrink: 0; margin-top: 4px; }
+    .collab-timeline-main { flex: 1; min-width: 0; }
+    .collab-timeline-title { font-size: var(--text-md); color: var(--color-ink); font-weight: var(--weight-medium); }
+    .collab-timeline-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .collab-timeline-desc { font-size: var(--text-sm); color: var(--color-ink-2); margin-top: var(--space-1); }
+    /* 身份卡 (9 种运营身份) */
+    .identity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+    .identity-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); transition: all var(--dur-fast) var(--ease-out); cursor: pointer; }
+    .identity-card:hover { border-color: var(--color-line-2); background: var(--color-surface-2); }
+    .identity-card.is-current { border-color: var(--color-accent); background: var(--color-accent-softer); box-shadow: 0 0 0 1px var(--color-accent); }
+    .identity-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--color-accent-soft); color: var(--color-accent); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-2); }
+    .identity-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .identity-duty { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .identity-limit { font-size: 11px; color: var(--color-warn-2); margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
+
+    /* 客户授权视角 - 只能在 Active 窗口内看到 */
+    .auth-customer-list { display: flex; flex-direction: column; }
+    .auth-customer-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); }
+    .auth-customer-row:last-child { border-bottom: none; }
+    .auth-customer-row:hover { background: var(--color-surface-2); }
+    .auth-customer-row.is-locked { opacity: 0.5; background: var(--color-surface-2); }
+    .lock-icon { color: var(--color-ink-4); }
+
+    /* 数据边界 - 可见/不可见 */
+    .data-boundary { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-4); align-items: start; }
+    .data-boundary-list { padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); }
+    .data-boundary-allow { background: var(--color-success-soft); border: 1px solid var(--color-success-soft); }
+    .data-boundary-deny { background: var(--color-danger-soft); border: 1px solid var(--color-danger-soft); }
+    .data-boundary-list ul { list-style: none; padding: 0; margin: 0; }
+    .data-boundary-list li { padding: 4px 0; color: var(--color-ink-2); }
+    .data-boundary-arrow { color: var(--color-ink-3); align-self: center; }
+
+    /* 资质状态 */
+    .qual-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: var(--weight-medium); }
+    .qual-active { background: var(--color-success-soft); color: var(--color-success); }
+    .qual-warning { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .qual-expired { background: var(--color-danger-soft); color: var(--color-danger); }
+    /* 身份卡 (9 种运营身份) */
+    .identity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+    .identity-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); transition: all var(--dur-fast) var(--ease-out); cursor: pointer; }
+    .identity-card:hover { border-color: var(--color-line-2); background: var(--color-surface-2); }
+    .identity-card.is-current { border-color: var(--color-accent); background: var(--color-accent-softer); box-shadow: 0 0 0 1px var(--color-accent); }
+    .identity-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--color-accent-soft); color: var(--color-accent); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-2); }
+    .identity-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .identity-duty { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .identity-limit { font-size: 11px; color: var(--color-warn-2); margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
+
+    /* 客户授权视角 - 只能在 Active 窗口内看到 */
+    .auth-customer-list { display: flex; flex-direction: column; }
+    .auth-customer-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); }
+    .auth-customer-row:last-child { border-bottom: none; }
+    .auth-customer-row:hover { background: var(--color-surface-2); }
+    .auth-customer-row.is-locked { opacity: 0.5; background: var(--color-surface-2); }
+    .lock-icon { color: var(--color-ink-4); }
+
+    /* 数据边界 - 可见/不可见 */
+    .data-boundary { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-4); align-items: start; }
+    .data-boundary-list { padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); }
+    .data-boundary-allow { background: var(--color-success-soft); border: 1px solid var(--color-success-soft); }
+    .data-boundary-deny { background: var(--color-danger-soft); border: 1px solid var(--color-danger-soft); }
+    .data-boundary-list ul { list-style: none; padding: 0; margin: 0; }
+    .data-boundary-list li { padding: 4px 0; color: var(--color-ink-2); }
+    .data-boundary-arrow { color: var(--color-ink-3); align-self: center; }
+
+    /* 资质状态 */
+    .qual-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: var(--weight-medium); }
+    .qual-active { background: var(--color-success-soft); color: var(--color-success); }
+    .qual-warning { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .qual-expired { background: var(--color-danger-soft); color: var(--color-danger); }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content-wide">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>专业协作 · 身份与服务</span>
+        </div>
+
+        <div class="page-head">
+          <div class="eyebrow">专业协作 · §3.2 / §9</div>
+          <h1 class="page-title">我的专业身份</h1>
+          <p class="page-subtitle">9 种运营身份可叠加 · 导师只拿服务权，不拿客户组织权 / 永久归属权 / 推荐关系</p>
+        </div>
+
+        <!-- Section 1 · 9 种运营身份 (我的身份 + 可申请) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">身份切换 · §3.2</span>
+            <h2 class="section-title">9 种运营身份 · 我有 2 种</h2>
+            <p class="section-subtitle">身份可叠加 · 切换后菜单 / 数据 / 权限同步刷新 (IAM-003)</p>
+          </div>
+          <div class="identity-grid">
+            <div class="identity-card is-current">
+              <div class="identity-icon">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="identity-name">推荐人 / 会员经营者</div>
+              <div class="identity-duty">管理本人推荐客户、跟进续费与业务参与</div>
+              <div class="identity-limit">限制：不得改变网络归属 · 仅见本人范围</div>
+            </div>
+            <div class="identity-card is-current">
+              <div class="identity-icon" style="background: var(--color-success-soft); color: var(--color-success);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="identity-name">EMP / GMP 导师</div>
+              <div class="identity-duty">承接专业服务、课程和辅导</div>
+              <div class="identity-limit">限制：必须基于授权与服务窗口 (SRV-006)</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-info-soft); color: var(--color-info);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="identity-name">企业顾问</div>
+              <div class="identity-duty">服务企业需求和项目</div>
+              <div class="identity-limit">限制：只见被分配企业与任务</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-warn-soft); color: var(--color-warn-2);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="identity-name">游戏顾问</div>
+              <div class="identity-duty">提供游戏成长说明和服务</div>
+              <div class="identity-limit">限制：不见无关资产或金融信息</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-accent-soft); color: var(--color-accent);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="identity-name">AI 顾问</div>
+              <div class="identity-duty">提供 AI Agent 应用服务</div>
+              <div class="identity-limit">限制：仅访问必要业务上下文</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-trust-soft); color: var(--color-trust);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="identity-name">RWA / 黄金等专业顾问</div>
+              <div class="identity-duty">承接专项业务说明</div>
+              <div class="identity-limit">限制：专业平台准入 + 合规状态有效</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-surface-2); color: var(--color-ink-2);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg>
+              </div>
+              <div class="identity-name">项目方 / 中心运营者</div>
+              <div class="identity-duty">运营课程、项目、活动或专业中心</div>
+              <div class="identity-limit">限制：按项目 + 组织范围授权</div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-warn-soft); color: var(--color-warn-2);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="identity-name">平台运营</div>
+              <div class="identity-duty">配置、审核、异常处理</div>
+              <div class="identity-limit">限制：<strong>不得直接修改信誉结果</strong></div>
+            </div>
+            <div class="identity-card">
+              <div class="identity-icon" style="background: var(--color-danger-soft); color: var(--color-danger);">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="identity-name">数据 / 审计 / 超级管理员</div>
+              <div class="identity-duty">查询规则、事件和访问日志 / 账户权限</div>
+              <div class="identity-limit">限制：默认只读 / 双人审批 / 紧急权限到期</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2 · 资质状态 (IAM-004) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">资质状态 · IAM-004</span>
+            <h2 class="section-title">导师 / 顾问采用资格记录 · 到期自动停止接单</h2>
+          </div>
+          <div class="card">
+            <div class="grid-3x">
+              <div>
+                <div class="kpi-label">EMP 导师</div>
+                <div class="text-md fw-medium">李志远 · 陈静华 · 王建国</div>
+                <span class="qual-pill qual-active mt-2">✓ 资质有效</span>
+                <div class="text-xs text-ink-3 mt-2">下次年审：2027-03-15</div>
+              </div>
+              <div>
+                <div class="kpi-label">AI 顾问</div>
+                <div class="text-md fw-medium">张明</div>
+                <span class="qual-pill qual-warning mt-2">⚠ 60 天内到期</span>
+                <div class="text-xs text-ink-3 mt-2">续审截止：2026-10-04</div>
+              </div>
+              <div>
+                <div class="kpi-label">游戏顾问</div>
+                <div class="text-md fw-medium">未申请</div>
+                <span class="qual-pill qual-expired mt-2">— 未获得</span>
+                <div class="text-xs text-ink-3 mt-2">需会员有效 + 资质 + 中心启用 + 风控未限制</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3 · 我作为 EMP 导师看到的客户 (核心:基于服务窗口) -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">服务窗口视角 · §9.1 + ACL-01</span>
+              <h2 class="section-title">我能看到的客户 · 5 位 (仅 Active 窗口)</h2>
+              <p class="section-subtitle">只显示本人被授权服务的客户 · <strong>其他经营者的私有客户不可见</strong> (CRM-001 / ACL-01)</p>
+            </div>
+            <span class="badge badge-accent">EMP 导师身份</span>
+          </div>
+          <div class="card">
+            <div class="auth-customer-row" style="background: var(--color-surface-2); font-weight: var(--weight-medium); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-ink-3);">
+              <div>客户</div>
+              <div>服务窗口</div>
+              <div>授权模块</div>
+              <div>数据范围</div>
+              <div>动作</div>
+            </div>
+            <div class="auth-customer-row">
+              <div>
+                <div class="text-sm fw-medium">赵东升</div>
+                <div class="text-xs text-ink-3">跨境合规咨询</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-active">剩 4 天</span>
+                <div class="text-xs text-ink-3 mt-1">26/30 · UMAX 联系</div>
+              </div>
+              <div class="text-xs text-ink-2">跨境合规 · 风险评估</div>
+              <div class="text-xs text-ink-2">姓名 / 电话 / 服务需求 / 历史联系</div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-customer-row">
+              <div>
+                <div class="text-sm fw-medium">周慧敏</div>
+                <div class="text-xs text-ink-3">健康排毒营复盘</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-active">剩 11 天</span>
+                <div class="text-xs text-ink-3 mt-1">19/30 · 服务中</div>
+              </div>
+              <div class="text-xs text-ink-2">课程辅导 · 复盘</div>
+              <div class="text-xs text-ink-2">姓名 / 课程记录 / 推荐人备注</div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-customer-row">
+              <div>
+                <div class="text-sm fw-medium">徐丽</div>
+                <div class="text-xs text-ink-3">企业服务介绍</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-active">剩 18 天</span>
+                <div class="text-xs text-ink-3 mt-1">12/30 · 服务中</div>
+              </div>
+              <div class="text-xs text-ink-2">企业服务 · 升级</div>
+              <div class="text-xs text-ink-2">姓名 / 浏览行为 / 企业需求</div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-customer-row">
+              <div>
+                <div class="text-sm fw-medium">方建国</div>
+                <div class="text-xs text-ink-3">续费协调</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-active">剩 22 天</span>
+                <div class="text-xs text-ink-3 mt-1">8/30 · 服务中</div>
+              </div>
+              <div class="text-xs text-ink-2">续费协调</div>
+              <div class="text-xs text-ink-2">会员等级 / 到期 / 续费状态</div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-customer-row">
+              <div>
+                <div class="text-sm fw-medium">梁文博</div>
+                <div class="text-xs text-ink-3">跨境并购咨询</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-active">剩 25 天</span>
+                <div class="text-xs text-ink-3 mt-1">5/30 · 服务中</div>
+              </div>
+              <div class="text-xs text-ink-2">跨境并购 · 法律</div>
+              <div class="text-xs text-ink-2">UMAX 账号 / 历史联系</div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-customer-row is-locked">
+              <div>
+                <div class="text-sm fw-medium lock-icon">🔒 林秀华</div>
+                <div class="text-xs text-ink-3">高净值服务</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-expired">无 Active 窗口</span>
+                <div class="text-xs text-ink-3 mt-1">姓名 / 概览脱敏</div>
+              </div>
+              <div class="text-xs text-ink-3">— 无授权 —</div>
+              <div class="text-xs text-ink-3">无授权字段不返回</div>
+              <div><button class="btn btn-ghost btn-sm" disabled>需申请授权</button></div>
+            </div>
+            <div class="auth-customer-row is-locked">
+              <div>
+                <div class="text-sm fw-medium lock-icon">🔒 王明远</div>
+                <div class="text-xs text-ink-3">企业诊断</div>
+              </div>
+              <div>
+                <span class="qual-pill qual-expired">无 Active 窗口</span>
+                <div class="text-xs text-ink-3 mt-1">原窗口 7/1-7/31 已结束</div>
+              </div>
+              <div class="text-xs text-ink-3">— 无授权 —</div>
+              <div class="text-xs text-ink-3">仅可看自己的历史服务记录</div>
+              <div><button class="btn btn-ghost btn-sm" disabled>申请新窗口</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4 · 数据边界 (§9.4 + ACL-01) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">数据可见范围 · §9.4</span>
+            <h2 class="section-title">作为 EMP 导师 · 能看 vs 不能看</h2>
+            <p class="section-subtitle">默认白名单 · 默认黑名单 · 授权方在申请时勾选</p>
+          </div>
+          <div class="data-boundary">
+            <div class="data-boundary-list data-boundary-allow">
+              <div class="text-sm fw-medium" style="color: var(--color-success); margin-bottom: var(--space-2);">✓ Active 窗口内可见</div>
+              <ul>
+                <li>客户姓名</li>
+                <li>已验证电话</li>
+                <li>UMAX 账号</li>
+                <li>会员等级 / 到期 / 续费状态</li>
+                <li>相关课程 / 服务需求</li>
+                <li>推荐人备注 / AI 服务建议</li>
+                <li>相关历史联系记录</li>
+                <li>自己历史服务记录 (即使窗口到期)</li>
+              </ul>
+            </div>
+            <div class="data-boundary-arrow">→</div>
+            <div class="data-boundary-list data-boundary-deny">
+              <div class="text-sm fw-medium" style="color: var(--color-danger); margin-bottom: var(--space-2);">✗ 任何状态下均不可见</div>
+              <ul>
+                <li>完整资产 / 全部平台数据</li>
+                <li>无关金融持仓 / 无关保单</li>
+                <li>受益人信息</li>
+                <li>其他中心私密记录</li>
+                <li>其他专家的非共享备注</li>
+                <li>其他经营者的私有客户</li>
+                <li>无授权字段 · 任何场景</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5 · 关键操作 (基于服务窗口) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">关键操作</span>
+            <h2 class="section-title">3 个常用动作</h2>
+          </div>
+          <div class="grid-3x">
+            <a href="pro-support-apply.html" class="card" style="text-decoration: none; color: inherit;">
+              <div class="card-header">
+                <div class="card-title">申请专业支持</div>
+                <span class="badge badge-accent">推荐</span>
+              </div>
+              <p class="card-desc">由推荐人发起 · 选模块 / 目标 / 期望时间 / 允许共享数据 · 提交后 24h 内匹配</p>
+            </a>
+            <a href="ai-match.html" class="card" style="text-decoration: none; color: inherit;">
+              <div class="card-header">
+                <div class="card-title">AI 匹配专家</div>
+                <span class="badge badge-info">3 项理由</span>
+              </div>
+              <p class="card-desc">按资格 / 地区 / 语言 / 信誉 / 负载 / 效果推荐 · 展示至少 3 项匹配理由</p>
+            </a>
+            <a href="service-authorization.html" class="card" style="text-decoration: none; color: inherit;">
+              <div class="card-header">
+                <div class="card-title">服务授权与续期</div>
+                <span class="badge badge-warn">5 个当前</span>
+              </div>
+              <p class="card-desc">查看 Active 授权 · 调整数据范围 · 续期 / 暂停 / 换专家</p>
+            </a>
+          </div>
+        </section>
+
+        <!-- Section 6 · 关键原则 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">核心原则</span>
+            <h2 class="section-title">5 条硬性原则</h2>
+          </div>
+          <div class="grid-2x">
+            <div class="rule-box"><strong>只拿服务权</strong>：不拿客户组织权 / 永久归属权 / 推荐关系（§9.1 / BR-003）。</div>
+            <div class="rule-box"><strong>基于服务窗口</strong>：所有客户列表都基于 Active 授权过滤，<strong>无授权不返回任何客户数据</strong>（ACL-01）。</div>
+            <div class="rule-box"><strong>到期立即失效</strong>：30 天到期后联系方式和业务明细立即失效，但自己的历史服务记录仍可查（ACL-02）。</div>
+            <div class="rule-box"><strong>推荐关系不变</strong>：推荐人申请导师协助，原推荐关系和双叉节点不变，仅新增服务关系（ACL-03）。</div>
+            <div class="rule-box"><strong>资质到期自动停接单</strong>：导师/顾问采用资格记录，到期自动停止新接单（IAM-004）。</div>
+            <div class="rule-box"><strong>不能直接修改信誉</strong>：平台运营处理异常和审核，但<strong>不得直接修改信誉结果</strong>（§3.2）。</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

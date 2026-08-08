@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人资料 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .profile-hero { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-6); display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-6); align-items: center; }
+    @media (max-width: 768px) { .profile-hero { grid-template-columns: 1fr; } }
+    .field-row { display: grid; grid-template-columns: 140px 1fr auto; gap: var(--space-3); padding: var(--space-3) 0; align-items: center; border-bottom: 1px solid var(--color-line); }
+    .field-row:last-child { border-bottom: none; }
+    .field-label { font-size: var(--text-sm); color: var(--color-ink-3); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".field-row" placeholder="搜索字段…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+            <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+</div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>个人</span>
+          <span class="breadcrumb-sep">/</span>
+          <span>个人资料</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">个人资料</h1>
+          <p class="page-subtitle">基础信息 + <span class="js-counter" data-target="5">5</span> 项证件 + <span class="js-counter" data-target="3">3</span> 位紧急联系人 · 资料完整度 <span class="js-counter" data-target="96">96</span>%</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">导出资料</button>
+            <button class="btn btn-secondary">隐私设置</button>
+            <button class="btn btn-primary">编辑资料</button>
+          </div>
+        </div>
+
+        <div class="profile-hero mb-8">
+          <div class="avatar avatar-2xl avatar-role-recommender">林</div>
+          <div>
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+              <h2 class="text-2xl fw-semibold">林秀华</h2>
+              <span class="badge badge-accent">高级会员</span>
+              <span class="badge badge-success">已认证</span>
+              <span class="badge badge-trust">4499 优选</span>
+            </div>
+            <div class="text-sm text-ink-2">M-2024-0381 · 1988-08-12 · 女 · 中国国籍 · 广东深圳</div>
+            <div class="flex items-center gap-2 mt-3 flex-wrap">
+              <span class="badge badge-outline">推荐人</span>
+              <span class="badge badge-outline">企业主</span>
+              <span class="badge badge-outline">公益参与者</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-3 mb-1">资料完整度</div>
+            <div style="font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 600; color: var(--color-success); line-height: 1;"><span class="js-counter" data-target="96">96</span>%</div>
+            <div class="text-xs text-ink-3 mt-1">建议补充 1 项</div>
+          </div>
+        </div>
+
+        <!-- Section 1: 个人基础资料 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">基础资料 · BASICS</span>
+            <h2 class="section-title">个人基础信息</h2>
+            <p class="section-subtitle">来自个人维护 + 公安系统交叉验证</p>
+          </div>
+          <div class="card">
+            <div class="field-row js-searchable" data-search="真实姓名 林秀华">
+              <div class="field-label">真实姓名</div>
+              <div class="text-md fw-medium">林秀华</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="英文名 Lin Xiuhua 护照">
+              <div class="field-label">英文名</div>
+              <div class="text-md fw-medium">Lin Xiuhua</div>
+              <span class="badge badge-outline">护照</span>
+            </div>
+            <div class="field-row js-searchable" data-search="性别 女">
+              <div class="field-label">性别</div>
+              <div class="text-md">女</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="出生日期 1988-08-12">
+              <div class="field-label">出生日期</div>
+              <div class="text-md">1988-08-12 <span class="text-ink-3 text-sm">（38 岁）</span></div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="国籍 中国">
+              <div class="field-label">国籍</div>
+              <div class="text-md">中国</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="民族 汉族">
+              <div class="field-label">民族</div>
+              <div class="text-md">汉族</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="婚姻状况 已婚">
+              <div class="field-label">婚姻状况</div>
+              <div class="text-md">已婚</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="手机号 138">
+              <div class="field-label">手机号</div>
+              <div class="text-md text-mono">+86 138 **** 8621</div>
+              <span class="badge badge-success">已验证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="邮箱 linxiuhua">
+              <div class="field-label">邮箱</div>
+              <div class="text-md text-mono">linxiuhua@****.com</div>
+              <span class="badge badge-success">已验证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="现居地 深圳">
+              <div class="field-label">现居地</div>
+              <div class="text-md">广东省深圳市前海深港合作区</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+            <div class="field-row js-searchable" data-search="户籍 福田">
+              <div class="field-label">户籍</div>
+              <div class="text-md">广东省深圳市福田区</div>
+              <span class="badge badge-success">已认证</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 证件 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">证件 · ID DOCUMENTS</span>
+            <h2 class="section-title">5 项证件</h2>
+            <p class="section-subtitle">由个人上传 + 公安 / 民政系统交叉验证</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm" style="background: var(--color-accent-soft); color: var(--color-accent);">身</div>
+                  <div class="text-md fw-semibold">身份证（正反面）</div>
+                </div>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">号码：4403 **** **** 0021</div>
+              <div class="text-xs text-ink-3">签发地：广东深圳 · 有效期：2034-08-12</div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-ghost btn-sm">查看</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">护</div>
+                  <div class="text-md fw-semibold">护照</div>
+                </div>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">号码：E5 **** 8621</div>
+              <div class="text-xs text-ink-3">签发地：广东深圳 · 有效期：2031-05-22</div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-ghost btn-sm">查看</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">驾</div>
+                  <div class="text-md fw-semibold">驾驶证</div>
+                </div>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">号码：4403 **** **** 8621</div>
+              <div class="text-xs text-ink-3">准驾车型：C1 · 有效期：2028-03-10</div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-ghost btn-sm">查看</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm" style="background: var(--color-trust-soft); color: var(--color-trust);">港</div>
+                  <div class="text-md fw-semibold">港澳通行证</div>
+                </div>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">号码：C5 **** 8621</div>
+              <div class="text-xs text-ink-3">签发地：广东深圳 · 有效期：2029-12-08</div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-ghost btn-sm">查看</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm" style="background: var(--color-warn-soft); color: var(--color-warn-2);">学</div>
+                  <div class="text-md fw-semibold">学历证书</div>
+                </div>
+                <span class="badge badge-warn">待补充</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">复旦大学 MBA · 香港大学金融博士在读</div>
+              <div class="text-xs text-ink-3">请补充毕业证书扫描件</div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-secondary btn-sm" onclick="toast('已打开上传窗口','info')">+ 上传</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: 紧急联系人 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">紧急联系人 · EMERGENCY</span>
+            <h2 class="section-title">3 位紧急联系人</h2>
+            <p class="section-subtitle">关键场景自动通知 · 含 1 位主联系人 + 2 位备选</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-accent">主联系人</span>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="avatar avatar-md avatar-role-recommender">林</div>
+                <div>
+                  <div class="text-md fw-semibold">林建华</div>
+                  <div class="text-xs text-ink-3 text-mono">+86 139 **** 1234</div>
+                </div>
+              </div>
+              <div class="text-sm text-ink-2 mb-1">关系：配偶</div>
+              <div class="text-sm text-ink-2 mb-3">接收通知：所有紧急场景</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-ghost btn-sm">编辑</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('测试通知已发送','success')">测试通知</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-outline">备选 1</span>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="avatar avatar-md avatar-role-consultant">王</div>
+                <div>
+                  <div class="text-md fw-semibold">王志强</div>
+                  <div class="text-xs text-ink-3 text-mono">+86 136 **** 5678</div>
+                </div>
+              </div>
+              <div class="text-sm text-ink-2 mb-1">关系：兄长</div>
+              <div class="text-sm text-ink-2 mb-3">接收通知：健康 / 资产异常</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-ghost btn-sm">编辑</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('测试通知已发送','success')">测试通知</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-outline">备选 2</span>
+                <span class="badge badge-success">已验证</span>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="avatar avatar-md avatar-role-center">张</div>
+                <div>
+                  <div class="text-md fw-semibold">张明</div>
+                  <div class="text-xs text-ink-3 text-mono">+86 135 **** 9012</div>
+                </div>
+              </div>
+              <div class="text-sm text-ink-2 mb-1">关系：EMP 导师</div>
+              <div class="text-sm text-ink-2 mb-3">接收通知：仅商业紧急</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-ghost btn-sm">编辑</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('测试通知已发送','success')">测试通知</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: 验证状态 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">验证状态 · VERIFICATION</span>
+            <h2 class="section-title">4 类验证</h2>
+            <p class="section-subtitle">身份 / 资产 / 信用 / 公益 · 由 4499 平台 + 第三方机构联合验证</p>
+          </div>
+          <div class="grid-4x">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">✓</div>
+                <span class="badge badge-success">已通过</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">身份验证</div>
+              <div class="text-xs text-ink-3">公安系统比对 · 2024-03-12</div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">✓</div>
+                <span class="badge badge-success">已通过</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">资产验证</div>
+              <div class="text-xs text-ink-3">私行对账单 · 2024-09-15</div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">✓</div>
+                <span class="badge badge-success">优秀</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">信用验证</div>
+              <div class="text-xs text-ink-3">人民银行征信 · 2026-03</div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">★</div>
+                <span class="badge badge-info">已记录</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">公益记录</div>
+              <div class="text-xs text-ink-3">清禾基金会 · 2026-08</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: 修改历史 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">修改历史 · HISTORY</span>
+            <h2 class="section-title">最近 5 次重要变更</h2>
+            <p class="section-subtitle">敏感字段变更需二次验证 · 完整记录可查</p>
+          </div>
+          <div class="card">
+            <div class="task-row">
+              <div class="task-check js-task-check is-done"></div>
+              <div class="task-main">
+                <div class="task-title">更新手机号</div>
+                <div class="task-meta">2026-08-15 14:30 · +86 138 **** 8621 · 通过短信验证</div>
+              </div>
+              <div class="task-time text-success">已生效</div>
+            </div>
+            <div class="task-row">
+              <div class="task-check js-task-check is-done"></div>
+              <div class="task-main">
+                <div class="task-title">更新邮箱</div>
+                <div class="task-meta">2026-07-22 09:15 · linxiuhua@****.com · 通过邮件验证</div>
+              </div>
+              <div class="task-time text-success">已生效</div>
+            </div>
+            <div class="task-row">
+              <div class="task-check js-task-check is-done"></div>
+              <div class="task-main">
+                <div class="task-title">更新紧急联系人 2</div>
+                <div class="task-meta">2026-05-08 16:00 · 添加张明为备选 EMP 联系人</div>
+              </div>
+              <div class="task-time text-success">已生效</div>
+            </div>
+            <div class="task-row">
+              <div class="task-check js-task-check is-done"></div>
+              <div class="task-main">
+                <div class="task-title">上传港澳通行证</div>
+                <div class="task-meta">2026-03-15 10:00 · 通过 OCR 识别 + 人工审核</div>
+              </div>
+              <div class="task-time text-success">已生效</div>
+            </div>
+            <div class="task-row">
+              <div class="task-check js-task-check is-done"></div>
+              <div class="task-main">
+                <div class="task-title">提交资料完整度审核</div>
+                <div class="task-meta">2024-03-12 11:00 · 初始提交 · 通过认证</div>
+              </div>
+              <div class="task-time text-success">已生效</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">建议补充"学历证书"以提升 PB 信誉</div>
+            <div class="ai-suggestion-reason">您当前 96% 资料完整度 · 唯一缺失"学历证书"。上传复旦大学 MBA 毕业证书后，PB 信誉预计 +6，并解锁"教育公益"标签 + 2 张免费公益证书申请资格。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">立即上传</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入今日待办','info')">稍后处理</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: IAM-006 二次验证 + 敏感字段 4 级控制 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">IAM-006 · 二次验证 + 敏感字段 4 级控制</span>
+            <h2 class="section-title">敏感操作自动触发二次验证</h2>
+            <p class="section-subtitle">敏感字段支持完全隐藏 / 脱敏 / 临时明文 / 禁止导出 4 级</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">二次验证触发场景 · 7 类</div>
+            <div class="verify-step-grid">
+              <div class="verify-step-cell is-required">
+                <div class="verify-step-num">①</div>
+                <div class="verify-step-name">敏感字段查看</div>
+                <div class="verify-step-condition">查看身份证 / 银行卡 / 资产 / 家庭隐私 → 二次验证（手机 + 邮箱）</div>
+              </div>
+              <div class="verify-step-cell is-required">
+                <div class="verify-step-num">②</div>
+                <div class="verify-step-name">敏感字段导出</div>
+                <div class="verify-step-condition">导出 5 张以上保单 / 受益人清单 / 资产清单 → 二次验证 + 留痕</div>
+              </div>
+              <div class="verify-step-cell is-required">
+                <div class="verify-step-num">③</div>
+                <div class="verify-step-name">受益人修改</div>
+                <div class="verify-step-condition">新增 / 删除 / 调整比例 / 改授权范围 → 二次验证 + 7 天冷静期</div>
+              </div>
+              <div class="verify-step-cell is-required">
+                <div class="verify-step-num">④</div>
+                <div class="verify-step-name">传承申请提交</div>
+                <div class="verify-step-condition">S6 阶段提交传承案件材料 → 二次验证 + 双签</div>
+              </div>
+              <div class="verify-step-cell is-required">
+                <div class="verify-step-num">⑤</div>
+                <div class="verify-step-name">大批量数据操作</div>
+                <div class="verify-step-condition">批量导出 > 100 条 / 批量修改 > 50 条 → 二次验证 + 主管审批</div>
+              </div>
+              <div class="verify-step-cell is-optional">
+                <div class="verify-step-num">⑥</div>
+                <div class="verify-step-name">账户密码修改</div>
+                <div class="verify-step-condition">登录密码 / 支付密码 / UMAX 密码 → 二次验证（旧密码 + 手机）</div>
+              </div>
+              <div class="verify-step-cell is-trigger">
+                <div class="verify-step-num">⑦</div>
+                <div class="verify-step-name">异常登录检测</div>
+                <div class="verify-step-condition">异地 IP / 异设备 / 短时间内多次失败 → 自动触发二次验证</div>
+              </div>
+            </div>
+            <div class="ai-feedback-warning mt-3">
+              <strong>验证失败：</strong>不执行任何操作 + 记录风险日志 + 24h 内同类型操作自动加严（短信+人脸+邮箱 三重）。
+            </div>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">敏感字段 4 级控制 · 您的资料</div>
+            <div class="sensitive-grid">
+              <div class="sensitive-row">
+                <div class="sensitive-field">身份证号</div>
+                <div class="sensitive-desc">明文查看需二次验证 · 导出默认脱敏（保留前 6 后 4）</div>
+                <div><span class="sensitive-level sensitive-level-l2">L2 · 脱敏</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">银行卡号</div>
+                <div class="sensitive-desc">完全隐藏（仅显示尾 4 位）· 任何导出都禁止明文</div>
+                <div><span class="sensitive-level sensitive-level-l4">L4 · 隐藏</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">资产余额</div>
+                <div class="sensitive-desc">明文需二次验证 + 30s 临时明文 · 导出完全禁止</div>
+                <div><span class="sensitive-level sensitive-level-l3">L3 · 临时明文</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">家庭住址</div>
+                <div class="sensitive-desc">明文查看需二次验证 · 导出需双签（您 + 平台复核员）</div>
+                <div><span class="sensitive-level sensitive-level-l2">L2 · 脱敏</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">家庭成员</div>
+                <div class="sensitive-desc">默认脱敏（仅关系 + 姓氏）· 完整列表需二次验证</div>
+                <div><span class="sensitive-level sensitive-level-l2">L2 · 脱敏</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">八字 / 命理偏好</div>
+                <div class="sensitive-desc">完全隐藏 · 不得用于金融 / 风控 / 信誉 · 仅本人自愿填写</div>
+                <div><span class="sensitive-level sensitive-level-l4">L4 · 隐藏</span></div>
+              </div>
+              <div class="sensitive-row">
+                <div class="sensitive-field">基础资料（姓名 / 邮箱 / UMAX）</div>
+                <div class="sensitive-desc">明文 + 可导出 · 改邮箱需二次验证</div>
+                <div><span class="sensitive-level sensitive-level-l1">L1 · 公开</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+</main>
+  </div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

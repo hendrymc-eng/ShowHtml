@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>受益人管理 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .bene-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-6); align-items: start; }
+    @media (max-width: 1280px) { .bene-layout { grid-template-columns: 1fr; } .bene-side { display: none; } }
+    .asset-overview {
+      background: linear-gradient(135deg, var(--color-accent-softer) 0%, var(--color-surface) 100%);
+      border: 1px solid var(--color-accent-soft);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .asset-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4); }
+    @media (max-width: 768px) { .asset-row { grid-template-columns: repeat(2, 1fr); } }
+    .asset-tile { padding: var(--space-3); background: var(--color-surface); border-radius: var(--radius-sm); border: 1px solid var(--color-line); }
+    .asset-name { font-size: var(--text-sm); color: var(--color-ink-2); }
+    .asset-value { font-family: var(--font-mono); font-size: var(--text-xl); font-weight: var(--weight-semibold); margin-top: var(--space-1); }
+    .asset-tile.is-inheritable .asset-name::after { content: '可传承'; font-size: var(--text-xs); color: var(--color-success); margin-left: var(--space-1); padding: 1px 4px; background: var(--color-success-soft); border-radius: var(--radius-xs); }
+    .ratio-ring { width: 64px; height: 64px; position: relative; flex-shrink: 0; }
+    .ratio-ring svg { transform: rotate(-90deg); }
+    .ratio-ring-bg { fill: none; stroke: var(--color-surface-2); stroke-width: 6; }
+    .ratio-ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; }
+    .ratio-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: var(--text-md); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .bene-card { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: var(--space-3); transition: all var(--dur-fast) var(--ease-out); }
+    .bene-card:hover { border-color: var(--color-line-2); }
+    .bene-card.is-primary { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .bene-info { flex: 1; min-width: 0; }
+    .bene-name { font-size: var(--text-md); font-weight: var(--weight-semibold); color: var(--color-ink); display: flex; align-items: center; gap: var(--space-2); }
+    .bene-detail { font-size: var(--text-sm); color: var(--color-ink-3); margin-top: 2px; }
+    .warn-strip { background: var(--color-warn-softer); border-left: 3px solid var(--color-warn); padding: var(--space-3); border-radius: var(--radius-sm); margin-bottom: var(--space-4); }
+    .warn-strip-text { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+    /* B1 增强：内联编辑 + 比例拖动 */
+    .bene-card.is-editing { border-color: var(--color-accent); border-width: 2px; background: var(--color-accent-softer); }
+    .bene-edit-form { display: none; padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-accent-soft); border-radius: var(--radius-sm); margin-top: var(--space-3); }
+    .bene-edit-form.is-open { display: block; }
+    .ratio-input { display: flex; align-items: center; gap: var(--space-3); }
+    .ratio-input input[type="range"] { flex: 1; }
+    .ratio-input .ratio-display { font-family: var(--font-mono); font-weight: var(--weight-semibold); min-width: 48px; text-align: right; }
+    .required-mark { color: var(--color-danger); margin-left: 2px; }
+    .form-error-hint { color: var(--color-danger); font-size: var(--text-xs); margin-top: var(--space-1); min-height: 14px; }
+    @keyframes grow-bar { from { width: 0 !important; } }
+    .progress-bar.animate-in { animation: grow-bar 900ms var(--ease-out) forwards; }
+
+    /* B2 新增：分配可视化 / 触发条件 / 验证记录 / 注意事项 */
+    .alloc-donut { position: relative; width: 200px; height: 200px; flex-shrink: 0; }
+    .alloc-donut svg { transform: rotate(-90deg); }
+    .alloc-donut-bg { fill: none; stroke: var(--color-surface-2); stroke-width: 24; }
+    .alloc-donut-fg { fill: none; stroke-width: 24; transition: stroke-dashoffset 600ms var(--ease-out); }
+    .alloc-donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .alloc-donut-num { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .alloc-donut-lbl { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .alloc-legend { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .alloc-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px dashed var(--color-line); }
+    .alloc-row:last-child { border-bottom: none; }
+    .alloc-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .alloc-name { flex: 1; font-size: var(--text-sm); color: var(--color-ink); }
+    .alloc-pct { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-ink); font-weight: var(--weight-medium); }
+    .alloc-status { font-size: var(--text-xs); color: var(--color-ink-3); margin-left: var(--space-2); }
+
+    .trigger-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); }
+    .trigger-card-head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+    .trigger-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--color-accent-soft); color: var(--color-accent); display: flex; align-items: center; justify-content: center; font-size: var(--text-md); flex-shrink: 0; }
+    .trigger-name { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-ink); }
+    .trigger-desc { font-size: var(--text-xs); color: var(--color-ink-3); line-height: var(--leading-snug); }
+    .trigger-source { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: var(--space-1); }
+
+    .verify-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); }
+    .verify-row + .verify-row { margin-top: var(--space-2); }
+    .verify-status-badge { padding: 2px 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .verify-status-badge.is-pass { background: var(--color-success-soft); color: var(--color-success-2); }
+    .verify-status-badge.is-pending { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .verify-status-badge.is-fail { background: var(--color-danger-soft); color: var(--color-danger-2); }
+    .verify-row-main { flex: 1; min-width: 0; }
+    .verify-row-name { font-size: var(--text-sm); color: var(--color-ink); font-weight: var(--weight-medium); }
+    .verify-row-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .verify-row-time { font-size: var(--text-xs); color: var(--color-ink-3); font-family: var(--font-mono); }
+
+    .caution-item { display: flex; gap: var(--space-3); padding: var(--space-3); border-left: 3px solid var(--color-warn); background: var(--color-warn-softer); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .caution-item + .caution-item { margin-top: var(--space-2); }
+    .caution-icon { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--color-warn); color: var(--color-ink-inv); display: flex; align-items: center; justify-content: center; font-size: var(--text-sm); }
+    .caution-title { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-ink); margin-bottom: 2px; }
+    .caution-desc { font-size: var(--text-xs); color: var(--color-ink-2); line-height: var(--leading-snug); }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;"><div class="topbar-brand-mark">4</div><span>4499</span></a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>个人中心</span>
+          <span class="breadcrumb-sep">/</span>
+          <span>受益人</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">数字资产受益人</h1>
+          <p class="page-subtitle">管理 OpulnX 全平台账户中可传承的数字资产与权益 · 简化定位：仅处理支持传承的资产</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">查看传承记录</button>
+            <button class="btn btn-primary">+ 新增受益人</button>
+          </div>
+        </div>
+
+        <!-- Warn -->
+        <div class="warn-strip">
+          <div class="warn-strip-text">⚠ <strong>保险受益人 vs 数字资产受益人</strong>：4499 中保险受益人展示以保险公司正式保单为准；数字资产预设受益人以你在此处的最后有效设置为准。两者可以不同。修改保险受益人需向保险机构发起正式变更。</div>
+        </div>
+
+        <!-- Asset overview -->
+        <div class="asset-overview">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="eyebrow">可传承资产总览</span>
+              <h2 class="section-title">资产 · 负债 · 可传承净额</h2>
+            </div>
+            <span class="badge badge-success">已配置受益人</span>
+          </div>
+          <div class="asset-row">
+            <div class="asset-tile is-inheritable">
+              <div class="asset-name">总资产</div>
+              <div class="asset-value">¥ 286,420</div>
+              <div class="text-xs text-ink-3 mt-1">POE + UMDT + 钱包 + RWA</div>
+            </div>
+            <div class="asset-tile">
+              <div class="asset-name">未结算负债</div>
+              <div class="asset-value" style="color: var(--color-danger);">-¥ 12,800</div>
+              <div class="text-xs text-ink-3 mt-1">未结算借款 + 应付费用</div>
+            </div>
+            <div class="asset-tile">
+              <div class="asset-name">冻结 / 不支持</div>
+              <div class="asset-value" style="color: var(--color-ink-3);">-¥ 8,400</div>
+              <div class="text-xs text-ink-3 mt-1">RWA 锁定期 + 不支持</div>
+            </div>
+            <div class="asset-tile is-inheritable" style="background: var(--color-accent-softer); border-color: var(--color-accent);">
+              <div class="asset-name">可传承净额</div>
+              <div class="asset-value" style="color: var(--color-accent);">¥ 265,220</div>
+              <div class="text-xs text-ink-3 mt-1">公式：总 - 负债 - 冻结 - 不支持</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bene-layout">
+          <!-- Beneficiaries list -->
+          <div>
+            <div class="section-head-row">
+              <div>
+                <span class="eyebrow">预设受益人</span>
+                <h2 class="section-title">6 位受益人</h2>
+                <p class="section-subtitle">生前可随时修改 · 每次修改留痕 · 受益人账户需在 OpulnX 注册并完成 KYC</p>
+              </div>
+            </div>
+
+            <div class="bene-card is-primary" data-bene-id="zihan">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-accent)" stroke-dasharray="163.36" stroke-dashoffset="98.02"/></svg>
+                <div class="ratio-num">40%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  陈子涵（长子）
+                  <span class="badge badge-accent badge-sm">主要</span>
+                  <span class="badge badge-success badge-sm">已验证</span>
+                </div>
+                <div class="bene-detail">身份证 **** 1988 · 中国 / 北京 · 关系：父子</div>
+                <div class="bene-detail mt-1">联系方式：138 **** 9901 · 邮箱：zihan.chen@opulnx.com</div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 / POE 金融产品结算后权益 / RWA 持仓 / 可传承项目代币</div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+              <div class="bene-edit-form" id="edit-zihan">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3);">
+                  <div class="input-group">
+                    <label class="input-label">姓名<span class="required-mark">*</span></label>
+                    <input class="input input-sm" name="name" value="陈子涵" />
+                    <div class="form-error-hint" data-error-for="b-zihan-name"></div>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">关系</label>
+                    <select class="select select-sm" name="rel">
+                      <option>父子</option><option>父女</option><option>母子</option><option>母女</option><option>配偶</option><option>其他</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">手机号</label>
+                    <input class="input input-sm" name="phone" value="138****9901" />
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">邮箱</label>
+                    <input class="input input-sm" name="email" value="zihan.chen@opulnx.com" />
+                  </div>
+                  <div class="input-group" style="grid-column: 1 / -1;">
+                    <label class="input-label">受益比例 <span id="ratio-zihan-val" class="text-mono fw-medium" style="color: var(--color-accent);">40%</span></label>
+                    <div class="ratio-input">
+                      <input type="range" name="ratio" min="0" max="100" value="40" data-target-display="ratio-zihan-val" />
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                  <button class="btn btn-primary btn-sm" data-action="save-bene">保存</button>
+                  <button class="btn btn-ghost btn-sm" data-action="cancel-bene">取消</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="bene-card" data-bene-id="yutong">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-info)" stroke-dasharray="163.36" stroke-dashoffset="138.86"/></svg>
+                <div class="ratio-num">15%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  陈雨桐（女儿）
+                  <span class="badge badge-info badge-sm">次要</span>
+                  <span class="badge badge-success badge-sm">已验证</span>
+                </div>
+                <div class="bene-detail">身份证 **** 2018 · 中国 / 北京 · 关系：父女</div>
+                <div class="bene-detail mt-1">联系方式：138 **** 0098 · 由母亲（配偶）代管</div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 · <span style="color: var(--color-warn-2);">注：因未满 18 岁，部分 RWA 暂不适用</span></div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+              <div class="bene-edit-form" id="edit-yutong">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3);">
+                  <div class="input-group">
+                    <label class="input-label">姓名<span class="required-mark">*</span></label>
+                    <input class="input input-sm" name="name" value="陈雨桐" />
+                    <div class="form-error-hint" data-error-for="b-yutong-name"></div>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">关系</label>
+                    <select class="select select-sm" name="rel">
+                      <option>父女</option><option>父子</option><option>母子</option><option>母女</option><option>配偶</option><option>其他</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">手机号</label>
+                    <input class="input input-sm" name="phone" value="138****0098" />
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">邮箱</label>
+                    <input class="input input-sm" name="email" value="" placeholder="由母亲代管" />
+                  </div>
+                  <div class="input-group" style="grid-column: 1 / -1;">
+                    <label class="input-label">受益比例 <span id="ratio-yutong-val" class="text-mono fw-medium" style="color: var(--color-info);">15%</span></label>
+                    <div class="ratio-input">
+                      <input type="range" name="ratio" min="0" max="100" value="15" data-target-display="ratio-yutong-val" />
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                  <button class="btn btn-primary btn-sm" data-action="save-bene">保存</button>
+                  <button class="btn btn-ghost btn-sm" data-action="cancel-bene">取消</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- B2 新增 #3 受益人 · 配偶 -->
+            <div class="bene-card" data-bene-id="spouse">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-trust)" stroke-dasharray="163.36" stroke-dashoffset="130.69"/></svg>
+                <div class="ratio-num">20%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  林秀华（配偶）
+                  <span class="badge badge-trust badge-sm">紧急</span>
+                  <span class="badge badge-success badge-sm">已验证</span>
+                </div>
+                <div class="bene-detail">身份证 **** 1986 · 中国 / 北京 · 关系：夫妻</div>
+                <div class="bene-detail mt-1">联系方式：138 **** 8821 · 邮箱：xiuhua.lin@opulnx.com</div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 · 作为陈子涵 / 陈雨桐的法定监护人代管</div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+            </div>
+
+            <!-- B2 新增 #4 受益人 · 母亲 -->
+            <div class="bene-card" data-bene-id="mother">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-success)" stroke-dasharray="163.36" stroke-dashoffset="147.02"/></svg>
+                <div class="ratio-num">10%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  陈静华（母亲）
+                  <span class="badge badge-success badge-sm">赡养</span>
+                  <span class="badge badge-success badge-sm">已验证</span>
+                </div>
+                <div class="bene-detail">身份证 **** 1960 · 中国 / 杭州 · 关系：母子</div>
+                <div class="bene-detail mt-1">联系方式：138 **** 5502 · 邮箱：jinghua.chen@opulnx.com</div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 · 用于生活赡养</div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+            </div>
+
+            <!-- B2 新增 #5 受益人 · 弟弟 -->
+            <div class="bene-card" data-bene-id="brother">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-warn-2)" stroke-dasharray="163.36" stroke-dashoffset="147.02"/></svg>
+                <div class="ratio-num">10%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  陈志鹏（弟弟）
+                  <span class="badge badge-warn badge-sm">待补</span>
+                  <span class="badge badge-warn badge-sm">KYC 待补</span>
+                </div>
+                <div class="bene-detail">身份证 **** 1990 · 中国 / 上海 · 关系：兄弟</div>
+                <div class="bene-detail mt-1">联系方式：138 **** 7710 · <span style="color: var(--color-warn-2);">邮箱未登记</span></div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 · 需提醒其完成 KYC 验证</div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+            </div>
+
+            <!-- B2 新增 #6 受益人 · 公益 -->
+            <div class="bene-card" data-bene-id="charity">
+              <div class="ratio-ring">
+                <svg width="64" height="64"><circle cx="32" cy="32" r="26" class="ratio-ring-bg"/><circle cx="32" cy="32" r="26" class="ratio-ring-fg" stroke="var(--color-charity)" stroke-dasharray="163.36" stroke-dashoffset="155.19"/></svg>
+                <div class="ratio-num">5%</div>
+              </div>
+              <div class="bene-info">
+                <div class="bene-name">
+                  海南亚洲公益研究院
+                  <span class="badge badge-charity badge-sm">公益</span>
+                  <span class="badge badge-success badge-sm">已验证</span>
+                </div>
+                <div class="bene-detail">统一社会信用代码 **** · 公益组织 · 已签订捐赠协议</div>
+                <div class="bene-detail mt-1">联系人：周建强 · 邮箱：jiqiang.zhou@hpafr.org</div>
+                <div class="text-xs text-ink-3 mt-2">资产范围：POE / UMDT / 钱包 · 用于公益捐赠 · 已签订独立捐赠协议</div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm" data-action="edit-bene">修改</button>
+              </div>
+            </div>
+
+            <!-- Pending -->
+            <div class="card card-pad-sm mt-4" style="background: var(--color-surface-2); border-style: dashed;" data-action="open-add-bene" role="button">
+              <div class="flex items-center gap-3">
+                <div class="avatar avatar-md" style="background: var(--color-surface); color: var(--color-ink-4);">+</div>
+                <div class="flex-1">
+                  <div class="text-sm fw-medium">添加新受益人</div>
+                  <div class="text-xs text-ink-3">填写姓名、身份证件、关系、联系方式、受益比例</div>
+                </div>
+                <button class="btn btn-primary btn-sm" data-action="open-add-bene">添加</button>
+              </div>
+            </div>
+
+            <!-- Inheritance formula reminder -->
+            <section class="card mt-4">
+              <div class="card-header"><div><div class="card-title">可传承资产公式</div><div class="card-subtitle">由 OpulnX 清算系统计算 · 4499 不自行计算最终余额</div></div></div>
+              <div class="card card-pad-sm mt-3" style="background: var(--color-surface-2); font-family: var(--font-mono); font-size: var(--text-sm); text-align: center; padding: var(--space-4);">
+                <span style="color: var(--color-ink-2);">账户总资产</span> <span style="color: var(--color-danger);">− 未结算负债 − 待支付费用 − 冻结资产 − 不支持传承资产</span> = <strong style="color: var(--color-accent);">可传承资产</strong>
+              </div>
+              <div class="text-xs text-ink-3 mt-3" style="line-height: var(--leading-relaxed);">
+                传承前账户检查 9 项：未完成订单 · 未结算借款 · 保证金 · 被冻结资产 · RWA 锁定期 · Provider 待结算 · 争议订单 · 司法或监管冻结 · 不支持传承资产
+              </div>
+            </section>
+
+            <!-- B2 新增：当前分配可视化 -->
+            <section class="card mt-4">
+              <div class="card-header">
+                <div><div class="card-title">当前分配</div><div class="card-subtitle">6 位受益人 · 总和 100% · 按可传承资产 ¥ 265,220 计算</div></div>
+                <span class="badge badge-success">已配置完成</span>
+              </div>
+              <div class="flex items-center gap-6 mt-4">
+                <div class="alloc-donut">
+                  <svg width="200" height="200" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-bg"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-accent)" stroke-dasharray="201.06 502.65" stroke-dashoffset="0"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-trust)" stroke-dasharray="100.53 502.65" stroke-dashoffset="-201.06"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-info)" stroke-dasharray="75.40 502.65" stroke-dashoffset="-301.59"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-success)" stroke-dasharray="50.27 502.65" stroke-dashoffset="-376.99"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-warn-2)" stroke-dasharray="50.27 502.65" stroke-dashoffset="-427.26"/>
+                    <circle cx="100" cy="100" r="80" class="alloc-donut-fg" stroke="var(--color-charity)" stroke-dasharray="25.13 502.65" stroke-dashoffset="-477.53"/>
+                  </svg>
+                  <div class="alloc-donut-center">
+                    <div class="alloc-donut-num">¥ 265,220</div>
+                    <div class="alloc-donut-lbl">可传承净额</div>
+                  </div>
+                </div>
+                <div class="alloc-legend">
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-accent);"></div>
+                    <div class="alloc-name">陈子涵 <span class="text-xs text-ink-3">· 长子</span></div>
+                    <div class="alloc-pct">40%</div>
+                    <div class="alloc-status text-mono">¥ 106,088</div>
+                  </div>
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-trust);"></div>
+                    <div class="alloc-name">林秀华 <span class="text-xs text-ink-3">· 配偶</span></div>
+                    <div class="alloc-pct">20%</div>
+                    <div class="alloc-status text-mono">¥ 53,044</div>
+                  </div>
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-info);"></div>
+                    <div class="alloc-name">陈雨桐 <span class="text-xs text-ink-3">· 女儿</span></div>
+                    <div class="alloc-pct">15%</div>
+                    <div class="alloc-status text-mono">¥ 39,783</div>
+                  </div>
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-success);"></div>
+                    <div class="alloc-name">陈静华 <span class="text-xs text-ink-3">· 母亲</span></div>
+                    <div class="alloc-pct">10%</div>
+                    <div class="alloc-status text-mono">¥ 26,522</div>
+                  </div>
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-warn-2);"></div>
+                    <div class="alloc-name">陈志鹏 <span class="text-xs text-ink-3">· 弟弟</span></div>
+                    <div class="alloc-pct">10%</div>
+                    <div class="alloc-status text-mono">¥ 26,522</div>
+                  </div>
+                  <div class="alloc-row">
+                    <div class="alloc-color" style="background: var(--color-charity);"></div>
+                    <div class="alloc-name">公益研究院 <span class="text-xs text-ink-3">· 公益</span></div>
+                    <div class="alloc-pct">5%</div>
+                    <div class="alloc-status text-mono">¥ 13,261</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- B2 新增：触发条件 -->
+            <section class="card mt-4">
+              <div class="card-header"><div><div class="card-title">传承触发条件</div><div class="card-subtitle">满足任意一项时，4499 启动受益人通知与资产清算流程</div></div></div>
+              <div class="grid-2x mt-3" style="gap: var(--space-2);">
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">⚰</div>
+                    <div class="trigger-name">死亡证明</div>
+                  </div>
+                  <div class="trigger-desc">由医院或公安机关出具死亡证明 · 受益人凭死亡证明 + 关系证明向 4499 提交</div>
+                  <div class="trigger-source">主要触发 · 法律效力最高</div>
+                </div>
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">📜</div>
+                    <div class="trigger-name">法院失踪宣告</div>
+                  </div>
+                  <div class="trigger-desc">法院宣告失踪 2 年后或意外事故 1 年后 · 受益人凭法院判决书申请</div>
+                  <div class="trigger-source">次要触发 · 适用于长期失联</div>
+                </div>
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">⏸</div>
+                    <div class="trigger-name">长期未登录</div>
+                  </div>
+                  <div class="trigger-desc">账户连续 36 个月无任何活动 + 风控审核无异常 · 触发受益人通知</div>
+                  <div class="trigger-source">辅助触发 · 风控复核后生效</div>
+                </div>
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">🛡</div>
+                    <div class="trigger-name">不可逆医疗事件</div>
+                  </div>
+                  <div class="trigger-desc">3 家以上三甲医院出具不可逆意识丧失证明 · 由法定代理人申请</div>
+                  <div class="trigger-source">特殊触发 · 需双重医学鉴定</div>
+                </div>
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">⚖</div>
+                    <div class="trigger-name">司法裁定</div>
+                  </div>
+                  <div class="trigger-desc">法院判决认定财产需按受益人方案处置 · 4499 仅协助执行法院裁定</div>
+                  <div class="trigger-source">外部触发 · 不受本设置约束</div>
+                </div>
+                <div class="trigger-card">
+                  <div class="trigger-card-head">
+                    <div class="trigger-icon">🔄</div>
+                    <div class="trigger-name">自主提前分配</div>
+                  </div>
+                  <div class="trigger-desc">陈志远先生可主动发起「部分提前分配」· 需人脸 + 短信 + 视频核验</div>
+                  <div class="trigger-source">生前主动 · 高安全等级</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- B2 新增：受益人验证记录 -->
+            <section class="card mt-4">
+              <div class="card-header"><div><div class="card-title">受益人验证记录</div><div class="card-subtitle">每位受益人需在 OpulnX 注册并完成 KYC · 由系统核验</div></div></div>
+              <div class="mt-3">
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pass">✓ 通过</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">陈子涵 · KYC L2 + 身份证核验</div>
+                    <div class="verify-row-meta">身份证 **** · 人脸识别匹配 · 与申请人关系：父子 · 长期未更新</div>
+                  </div>
+                  <div class="verify-row-time">2024-08-15</div>
+                </div>
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pass">✓ 通过</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">陈雨桐 · KYC L1 + 母亲代管</div>
+                    <div class="verify-row-meta">由林秀华（配偶）作为法定监护人代为管理 · 待陈雨桐 18 岁后重新核验</div>
+                  </div>
+                  <div class="verify-row-time">2026-04-12</div>
+                </div>
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pass">✓ 通过</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">林秀华 · KYC L3 + 身份证 + 活体</div>
+                    <div class="verify-row-meta">配偶关系已通过民政数据核验 · 24 个月内有效</div>
+                  </div>
+                  <div class="verify-row-time">2026-07-20</div>
+                </div>
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pass">✓ 通过</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">陈静华 · KYC L2 + 远程视频核验</div>
+                    <div class="verify-row-meta">母子关系证明已上传 · 因陈静华居住杭州通过视频核验完成</div>
+                  </div>
+                  <div class="verify-row-time">2025-11-08</div>
+                </div>
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pending">! 待补</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">陈志鹏 · KYC 待补 · 邮箱未登记</div>
+                    <div class="verify-row-meta">陈志鹏未在 OpulnX 注册邮箱 · 已发送 3 次提醒 · 建议 30 天内补齐否则按规则暂停传承资格</div>
+                  </div>
+                  <div class="verify-row-time">提醒于 2026-08-01</div>
+                </div>
+                <div class="verify-row">
+                  <div class="verify-status-badge is-pass">✓ 通过</div>
+                  <div class="verify-row-main">
+                    <div class="verify-row-name">公益研究院 · 公益资质核验</div>
+                    <div class="verify-row-meta">已核验统一社会信用代码 + 公益组织资格 + 独立捐赠协议 · 协议编号 PA-2024-1108</div>
+                  </div>
+                  <div class="verify-row-time">2024-11-08</div>
+                </div>
+              </div>
+              <div class="warn-box mt-3"><div class="warn-box-text">⚠ <strong>验证时效</strong>：KYC 等级 L1 长期有效 · L2 每 24 个月需重新核验 · L3 每 12 个月核验 · 超期触发提醒</div></div>
+            </section>
+
+            <!-- B2 新增：变更历史 -->
+            <section class="card mt-4">
+              <div class="card-header"><div><div class="card-title">完整变更历史</div><div class="card-subtitle">所有修改留痕 · 含修改人、修改内容、设备、验证方式</div></div></div>
+              <div class="tl-item tl-item-done mt-4" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2026-08-15 16:30</div>
+                <div class="tl-title">新增受益人 · 海南亚洲公益研究院（5%）</div>
+                <div class="tl-desc">公益捐赠 · 设备：MacBook Pro · 验证：人脸 + 短信 + 视频</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2026-07-20 11:42</div>
+                <div class="tl-title">新增受益人 · 林秀华（配偶，20%）</div>
+                <div class="tl-desc">设备：iPhone 15 · 验证：人脸 + 短信 · 配偶关系证明已上传</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2026-04-12 14:30</div>
+                <div class="tl-title">增加次要受益人 · 陈雨桐（女儿，15%）</div>
+                <div class="tl-desc">设备：iPhone 15 · 验证：人脸 + 短信 · 由母亲（配偶）代管</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2025-11-08 09:15</div>
+                <div class="tl-title">新增受益人 · 陈静华（母亲，10%）</div>
+                <div class="tl-desc">设备：MacBook Pro · 验证：人脸 + 短信 · 母子关系证明已上传</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2025-08-20 10:15</div>
+                <div class="tl-title">调整陈子涵比例 70% → 40%</div>
+                <div class="tl-desc">原因：增加其他受益人权益 · 设备：iPad · 验证：人脸 + 短信</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2025-05-10 13:22</div>
+                <div class="tl-title">新增受益人 · 陈志鹏（弟弟，10%）</div>
+                <div class="tl-desc">兄弟关系证明已上传 · 提醒其完成 KYC</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative;">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2024-12-05 16:00</div>
+                <div class="tl-title">首次设置受益人 · 陈子涵（100%）</div>
+                <div class="tl-desc">设备：iPhone 14 · 验证：人脸 + 短信</div>
+              </div>
+            </section>
+
+            <!-- B2 新增：注意事项 -->
+            <section class="card mt-4">
+              <div class="card-header"><div><div class="card-title">注意事项</div><div class="card-subtitle">合规与法律提示 · 非律师意见</div></div></div>
+              <div class="mt-3">
+                <div class="caution-item">
+                  <div class="caution-icon">1</div>
+                  <div>
+                    <div class="caution-title">数字资产传承 ≠ 遗产继承</div>
+                    <div class="caution-desc">此处仅处理 4499 / OpulnX 平台内的可传承数字资产权益。个人名下银行账户、房产、股权、车辆等不在本设置范围内 · 需通过公证遗嘱或法院裁定处理。</div>
+                  </div>
+                </div>
+                <div class="caution-item">
+                  <div class="caution-icon">2</div>
+                  <div>
+                    <div class="caution-title">保险受益人以保险公司保单为准</div>
+                    <div class="caution-desc">若在 4499 同时持有保险（已并入保单管理），保险类受益人变更需向保险机构提交正式申请，本页保险受益人设置不替代保单变更。</div>
+                  </div>
+                </div>
+                <div class="caution-item">
+                  <div class="caution-icon">3</div>
+                  <div>
+                    <div class="caution-title">未成年人 / 限制行为能力人</div>
+                    <div class="caution-desc">陈雨桐（女儿）未满 18 岁，部分 RWA / 金融产品无法直接持有，由其母亲（配偶）作为法定监护人代管 · 待年满 18 岁后系统将提示重新核验。</div>
+                  </div>
+                </div>
+                <div class="caution-item">
+                  <div class="caution-icon">4</div>
+                  <div>
+                    <div class="caution-title">公益受益人需独立协议</div>
+                    <div class="caution-desc">将公益组织列为受益人需另行签订独立捐赠协议（已签订 · 编号 PA-2024-1108）。该协议规定了资金使用方向、披露频次与退出机制，不受本页设置单方修改。</div>
+                  </div>
+                </div>
+                <div class="caution-item">
+                  <div class="caution-icon">5</div>
+                  <div>
+                    <div class="caution-title">专业服务（律师 / 公证 / 信托 / 税务）</div>
+                    <div class="caution-desc">此类服务<strong>不属于</strong>数字资产传承标准流程 · 4499 不对外部服务质量、法律结果或收费负责 · 可通过 Business Activities 自行发布需求。</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Side -->
+          <aside class="bene-side">
+            <div class="card mb-4">
+              <div class="card-header"><div><div class="card-title">生前设置流程</div></div></div>
+              <div class="text-sm text-ink-2 mt-3" style="line-height: var(--leading-relaxed);">
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">1. 进入 4499 受益人管理</div>
+                </div>
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">2. 填写受益人信息</div>
+                  <div class="tl-desc">姓名、证件、关系、联系方式</div>
+                </div>
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">3. 上传关系证明</div>
+                </div>
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">4. 设置受益比例</div>
+                </div>
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">5. 选择适用资产范围</div>
+                </div>
+                <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                  <div class="tl-dot" style="left: 0;"></div>
+                  <div class="tl-title">6. 高等级安全验证</div>
+                </div>
+                <div class="tl-item" style="padding-left: 18px; position: relative;">
+                  <div class="tl-dot" style="left: 0; border-color: var(--color-accent); background: var(--color-accent);"></div>
+                  <div class="tl-title fw-medium">7. 加密保存并登记</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-header"><div><div class="card-title">生前修改记录</div><div class="card-subtitle">每次修改完整留痕</div></div></div>
+              <div class="tl-item tl-item-done mt-4" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2026-04-12 14:30</div>
+                <div class="tl-title">增加次要受益人 陈雨桐</div>
+                <div class="tl-desc">设备：iPhone 15 · 验证：人脸 + 短信</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative; padding-bottom: var(--space-3);">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2025-08-20 10:15</div>
+                <div class="tl-title">调整陈子涵比例 70% → 80%</div>
+                <div class="tl-desc">原因：增加女儿权益</div>
+              </div>
+              <div class="tl-item tl-item-done" style="padding-left: 18px; position: relative;">
+                <div class="tl-dot" style="left: 0;"></div>
+                <div class="tl-time">2024-12-05 16:00</div>
+                <div class="tl-title">首次设置受益人 陈子涵</div>
+              </div>
+            </div>
+
+            <div class="card" style="background: var(--color-warn-softer); border-color: var(--color-warn);">
+              <div class="card-header"><div><div class="card-title" style="color: var(--color-warn-2);">需要专业服务？</div><div class="card-subtitle">律师 / 公证 / 信托 / 税务</div></div></div>
+              <div class="text-sm text-ink-2 mt-3" style="line-height: var(--leading-relaxed);">
+                此类服务<strong>不属于</strong>数字资产传承标准流程，4499 不对外部服务质量、法律结果或收费负责。可以通过 <strong>Business Activities</strong> 自行发布需求。
+              </div>
+              <button class="btn btn-secondary btn-sm w-full mt-3">了解外部服务</button>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Section: 10 步传承状态机 (LEG-001~011) -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">10 步传承状态机 · INHERITANCE FLOW</span>
+            <h2 class="section-title">从登记到 OpulnX 执行的全链路</h2>
+            <p class="section-subtitle">您当前在 S3 · 预演中 · 需 3 个受益人完成 KYC 才推进 S4</p>
+          </div>
+          <div class="card">
+            <div class="legacy-state-machine">
+              <div class="legacy-state-row" style="background: var(--color-surface-2);">
+                <div class="legacy-state-num is-pending">0</div>
+                <div>
+                  <div class="legacy-state-name">S0 · 草稿（Draft）</div>
+                  <div class="legacy-state-meta">LEG-001 准备 · 尚未提交 · 比例 / 范围可自由编辑</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">初始态</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-done">✓</div>
+                <div>
+                  <div class="legacy-state-name">S1 · 受益人登记</div>
+                  <div class="legacy-state-meta">LEG-001 · 6 位受益人 · 比例 100% 校验通过</div>
+                </div>
+                <div class="legacy-state-time">2026-06-15</div>
+                <div class="legacy-state-action"><span class="badge badge-success">已完成</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-done">✓</div>
+                <div>
+                  <div class="legacy-state-name">S2 · 受益人审核</div>
+                  <div class="legacy-state-meta">6/6 通过 · 全部完成 KYC + OpulnX 账户绑定</div>
+                </div>
+                <div class="legacy-state-time">2026-06-22</div>
+                <div class="legacy-state-action"><span class="badge badge-success">已完成</span></div>
+              </div>
+              <div class="legacy-state-row is-current">
+                <div class="legacy-state-num is-current">3</div>
+                <div>
+                  <div class="legacy-state-name">S3 · 预演 · 资产清单</div>
+                  <div class="legacy-state-meta">LEG-007 · OpulnX 试算可传承净额 ¥ 8,420 万（已扣负债 ¥ 240 万）· 待您确认</div>
+                </div>
+                <div class="legacy-state-time">2026-08-10</div>
+                <div class="legacy-state-action"><span class="badge badge-accent">当前</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">4</div>
+                <div>
+                  <div class="legacy-state-name">S4 · 受益人准入复核</div>
+                  <div class="legacy-state-meta">LEG-008 · 地区限制 + 安全设置复核（90 天内）</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">5</div>
+                <div>
+                  <div class="legacy-state-name">S5 · 专业服务入口</div>
+                  <div class="legacy-state-meta">LEG-011 · 律师 / 公证 / 税务 · 第三方责任明确</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">6</div>
+                <div>
+                  <div class="legacy-state-name">S6 · 受益人提交材料</div>
+                  <div class="legacy-state-meta">LEG-004 · 受控入口 · 不公开会员资产明细</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">7</div>
+                <div>
+                  <div class="legacy-state-name">S7 · 二次验证</div>
+                  <div class="legacy-state-meta">IAM-006 · 敏感字段必须二次验证（手机 + 邮箱）</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">8</div>
+                <div>
+                  <div class="legacy-state-name">S8 · 双签审批</div>
+                  <div class="legacy-state-meta">ADM-002 · 您 + 平台复核员 · 双人审批 · 职责分离</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">9</div>
+                <div>
+                  <div class="legacy-state-name">S9 · OpulnX 执行转移</div>
+                  <div class="legacy-state-meta">BR-014 · 资产先扣负债 / 费用 / 冻结 / 不支持项 · OpulnX 权威执行</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row">
+                <div class="legacy-state-num is-pending">10</div>
+                <div>
+                  <div class="legacy-state-name">S10 · 凭证归档</div>
+                  <div class="legacy-state-meta">法律文书 + OpulnX 凭证 + 4499 事件账本 · 永久可追溯</div>
+                </div>
+                <div class="legacy-state-time">—</div>
+                <div class="legacy-state-action"><span class="badge badge-outline">待启动</span></div>
+              </div>
+              <div class="legacy-state-row is-anomaly">
+                <div class="legacy-state-num is-anomaly">⚠</div>
+                <div>
+                  <div class="legacy-state-name">异常分支 · On Hold / Disputed / Regulatory Hold</div>
+                  <div class="legacy-state-meta">高风险状态不得由单一人员跨级推进 · 可由任一当前 S 进入 · 进入后冻结新增高风险操作 · 解除需双签审批 + 留痕</div>
+                </div>
+                <div class="legacy-state-time">按事件</div>
+                <div class="legacy-state-action"><span class="badge badge-warn">分支</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 受益人差异提醒 (POL-005) -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">受益人差异提醒 · POL-005</span>
+            <h2 class="section-title">保险受益人 vs 数字资产受益人</h2>
+            <p class="section-subtitle">只提醒，不自动改 · 4499 预设受益人仅适用于支持的数字资产/权益</p>
+          </div>
+          <div class="card">
+            <table class="benef-diff-table">
+              <thead>
+                <tr>
+                  <th>受益人</th>
+                  <th>保险受益人（正式保单为准）</th>
+                  <th>数字资产受益人（4499 预设）</th>
+                  <th>比例一致性</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="benef-diff-name">配偶 · 林 XX</td>
+                  <td class="benef-diff-pct">50%</td>
+                  <td class="benef-diff-pct">50%</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-equal">一致</span></td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">长子 · 林子 X</td>
+                  <td class="benef-diff-pct">25%</td>
+                  <td class="benef-diff-pct">30%</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-warn">差异 5%</span></td>
+                </tr>
+                <tr class="is-diff">
+                  <td class="benef-diff-name">次子 · 林子 X</td>
+                  <td class="benef-diff-pct">25%</td>
+                  <td class="benef-diff-pct">20%</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-warn">差异 5%</td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">父亲 · 林 X</td>
+                  <td>— 未指定 —</td>
+                  <td class="benef-diff-pct">0% （已登记但比例为 0）</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-equal">一致</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="benef-diff-notice">
+              <strong>差异说明：</strong>保险 50/25/25 vs 数字资产 50/30/20 —— 长子/次子 5% 比例倒置 · 保险以正式保单为准，4499 数字资产按您最新登记。建议：(a) 联系保险公司修改保险比例 · (b) 或修改 4499 数字资产比例对齐保险意向。4499 <strong>不会自动修改</strong>您的保险受益人。
+            </div>
+            <div class="aim-feedback-warning mt-3">
+              <strong>BR-013 边界：</strong>保险受益人以正式保单为准，4499 预设受益人仅适用于支持的数字资产 / 权益 · 不影响保险理赔归属。
+            </div>
+          </div>
+        </div>
+</main>
+  </div>
+  </div>
+
+  <!-- ========== B1 增强：添加受益人 Modal ========== -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-add-bene"></div>
+  <div class="modal" id="modal-add-bene" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">添加受益人</div>
+          <div class="text-xs text-ink-3 mt-1">需在 OpulnX 注册并完成 KYC 后可激活</div>
+        </div>
+        <div class="modal-close" data-modal-close="modal-add-bene">✕</div>
+      </div>
+      <form class="modal-body" novalidate>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3);">
+          <div class="input-group">
+            <label class="input-label">姓名<span class="required-mark">*</span></label>
+            <input class="input" name="name" placeholder="受益人姓名" />
+            <div class="form-error-hint" data-error-for="add-name"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">关系<span class="required-mark">*</span></label>
+            <select class="select" name="rel">
+              <option value="">请选择</option>
+              <option>父子</option><option>父女</option><option>母子</option><option>母女</option><option>配偶</option><option>其他</option>
+            </select>
+            <div class="form-error-hint" data-error-for="add-rel"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">身份证号<span class="required-mark">*</span></label>
+            <input class="input" name="idcard" placeholder="18 位身份证号" maxlength="18" />
+            <div class="form-error-hint" data-error-for="add-idcard"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">手机号<span class="required-mark">*</span></label>
+            <input class="input" name="phone" placeholder="11 位手机号" maxlength="11" />
+            <div class="form-error-hint" data-error-for="add-phone"></div>
+          </div>
+        </div>
+        <div class="input-group" style="margin-top: var(--space-3);">
+          <label class="input-label">邮箱</label>
+          <input class="input" name="email" placeholder="可选 · 用于通知" />
+        </div>
+        <div class="input-group" style="margin-top: var(--space-3);">
+          <label class="input-label">受益比例 <span id="add-ratio-val" class="text-mono fw-medium" style="color: var(--color-accent);">0%</span><span class="required-mark">*</span></label>
+          <div class="ratio-input">
+            <input type="range" name="ratio" min="0" max="100" value="0" id="add-ratio" data-target-display="add-ratio-val" />
+          </div>
+          <div class="input-hint">剩余比例：<span id="add-ratio-remain" class="fw-medium">100%</span>（建议不与现有受益人冲突）</div>
+        </div>
+        <div class="input-group" style="margin-top: var(--space-3);">
+          <label class="input-label">适用资产范围</label>
+          <div style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+            <label class="check-pill is-active js-check-pill"><input type="checkbox" checked>POE</label>
+            <label class="check-pill is-active js-check-pill"><input type="checkbox" checked>UMDT</label>
+            <label class="check-pill is-active js-check-pill"><input type="checkbox" checked>钱包</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">RWA 持仓</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">可传承项目代币</label>
+          </div>
+        </div>
+        <div class="warn-box" style="margin-top: var(--space-4);">
+          <div class="warn-box-text">⚠ <strong>高等级验证</strong>：修改受益人为高敏感操作，提交后将要求人脸识别 + 短信验证。所有修改会留痕，可在「修改记录」中查看。</div>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-add-bene">取消</button>
+        <button class="btn btn-primary" data-action="submit-bene">+ 添加受益人</button>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // B1 增强：进度条入场动画
+  (function () {
+    var bars = document.querySelectorAll('.progress-bar');
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('animate-in'); obs.unobserve(e.target); } });
+      }, { threshold: 0.3 });
+      bars.forEach(function (b) { obs.observe(b); });
+    }
+  })();
+
+  // B1 增强：内联编辑（修改按钮）
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-action]');
+    if (!a) return;
+    var action = a.getAttribute('data-action');
+    if (action === 'edit-bene') {
+      var card = a.closest('.bene-card');
+      if (!card) return;
+      var id = card.getAttribute('data-bene-id');
+      var form = document.getElementById('edit-' + id);
+      if (!form) return;
+      // 关闭其他
+      document.querySelectorAll('.bene-edit-form.is-open').forEach(function (f) { f.classList.remove('is-open'); });
+      document.querySelectorAll('.bene-card.is-editing').forEach(function (c) { c.classList.remove('is-editing'); });
+      form.classList.add('is-open');
+      card.classList.add('is-editing');
+      toast('编辑模式已开启', 'info');
+    } else if (action === 'cancel-bene') {
+      var form = a.closest('.bene-edit-form');
+      if (form) form.classList.remove('is-open');
+      var card = a.closest('.bene-card');
+      if (card) card.classList.remove('is-editing');
+    } else if (action === 'save-bene') {
+      var form = a.closest('.bene-edit-form');
+      if (!form) return;
+      var card = form.closest('.bene-card');
+      var id = card ? card.getAttribute('data-bene-id') : '';
+      var nameInput = form.querySelector('[name="name"]');
+      var name = nameInput ? nameInput.value.trim() : '';
+      var errEl = form.querySelector('[data-error-for="b-' + id + '-name"]');
+      if (!name) {
+        if (errEl) errEl.textContent = '姓名不能为空';
+        if (nameInput) nameInput.setAttribute('data-state', 'error');
+        toast('请填写姓名', 'error');
+        return;
+      } else {
+        if (errEl) errEl.textContent = '';
+        if (nameInput) nameInput.removeAttribute('data-state');
+      }
+      // 同步到卡片视图
+      var nameEl = card.querySelector('.bene-name');
+      if (nameEl) {
+        var firstChild = nameEl.firstChild;
+        if (firstChild) firstChild.textContent = name;
+      }
+      // 同步比例到 ratio-ring + 数字
+      var ratio = form.querySelector('[name="ratio"]').value;
+      var numEl = card.querySelector('.ratio-num');
+      if (numEl) numEl.textContent = ratio + '%';
+      var fg = card.querySelector('.ratio-ring-fg');
+      if (fg) {
+        fg.setAttribute('stroke-dasharray', '163.36');
+        fg.setAttribute('stroke-dashoffset', 163.36 - (163.36 * ratio / 100));
+      }
+      form.classList.remove('is-open');
+      card.classList.remove('is-editing');
+      toast('受益人信息已更新', 'success');
+    } else if (action === 'open-add-bene') {
+      e.preventDefault();
+      e.stopPropagation();
+      var m = document.getElementById('modal-add-bene');
+      if (m) {
+        m.classList.add('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-add-bene"]');
+        if (bd) bd.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    } else if (action === 'submit-bene') {
+      var modal = document.getElementById('modal-add-bene');
+      if (!modal) return;
+      var name = modal.querySelector('[name="name"]').value.trim();
+      var rel = modal.querySelector('[name="rel"]').value;
+      var idcard = modal.querySelector('[name="idcard"]').value.trim();
+      var phone = modal.querySelector('[name="phone"]').value.trim();
+      var ok = true;
+      function setErr(field, msg) {
+        var el = modal.querySelector('[data-error-for="' + field + '"]');
+        if (el) el.textContent = msg || '';
+        var input = modal.querySelector('[name="' + field.replace('add-', '') + '"]');
+        if (input) { if (msg) input.setAttribute('data-state', 'error'); else input.removeAttribute('data-state'); }
+      }
+      if (!name) { setErr('add-name', '请填写姓名'); ok = false; } else setErr('add-name', '');
+      if (!rel) { setErr('add-rel', '请选择关系'); ok = false; } else setErr('add-rel', '');
+      if (!idcard) { setErr('add-idcard', '请填写身份证号'); ok = false; }
+      else if (!/^\d{17}[\dXx]$/.test(idcard)) { setErr('add-idcard', '身份证号格式不正确'); ok = false; }
+      else setErr('add-idcard', '');
+      if (!phone) { setErr('add-phone', '请填写手机号'); ok = false; }
+      else if (!/^1[3-9]\d{9}$/.test(phone)) { setErr('add-phone', '手机号格式不正确'); ok = false; }
+      else setErr('add-phone', '');
+      if (!ok) { toast('请填写所有必填项', 'error'); return; }
+      toast('受益人已添加 · 请等待其完成 KYC 验证', 'success');
+      // 关闭
+      setTimeout(function () {
+        m.classList.remove('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-add-bene"]');
+        if (bd) bd.classList.remove('is-open');
+        document.body.style.overflow = '';
+        // 清空表单
+        modal.querySelectorAll('input, select').forEach(function (i) { if (i.type !== 'range' && i.type !== 'checkbox') i.value = ''; });
+      }, 600);
+    }
+  });
+
+  // B1 增强：比例滑块实时显示
+  document.querySelectorAll('input[type="range"][data-target-display]').forEach(function (rng) {
+    rng.addEventListener('input', function () {
+      var target = rng.getAttribute('data-target-display');
+      var el = document.getElementById(target);
+      if (el) el.textContent = rng.value + '%';
+      // 同步滑块所在 card 的 ratio-ring
+      var card = rng.closest('.bene-card');
+      if (card) {
+        var numEl = card.querySelector('.ratio-num');
+        if (numEl) numEl.textContent = rng.value + '%';
+        var fg = card.querySelector('.ratio-ring-fg');
+        if (fg) {
+          fg.setAttribute('stroke-dasharray', '163.36');
+          fg.setAttribute('stroke-dashoffset', 163.36 - (163.36 * rng.value / 100));
+        }
+      }
+    });
+  });
+
+  // B1 增强：page actions
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var t = btn.textContent.trim();
+    if (t === '+ 新增受益人' || t === '添加') {
+      var m = document.getElementById('modal-add-bene');
+      if (m) {
+        m.classList.add('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-add-bene"]');
+        if (bd) bd.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    } else if (t === '查看传承记录') {
+      toast('正在加载传承记录', 'info');
+    } else if (t === '查看详情') {
+      toast('打开受益人详情', 'info');
+    } else if (t === '了解外部服务') {
+      toast('外部服务需在 Business Activities 自行发布需求', 'info');
+    }
+  });
+</script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>30 天服务窗口 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    /* 30 天周期日历 */
+    .cycle-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cycle-day { aspect-ratio: 1 / 1; padding: var(--space-2); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); display: flex; flex-direction: column; gap: 2px; min-height: 70px; }
+    .cycle-day-num { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-3); }
+    .cycle-day-tag { display: inline-block; padding: 1px 4px; border-radius: 2px; font-size: 10px; line-height: 1.4; }
+    .cycle-day-tag-commit { background: var(--color-accent-soft); color: var(--color-accent); }
+    .cycle-day-tag-actual { background: var(--color-success-soft); color: var(--color-success); }
+    .cycle-day-tag-warn { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .cycle-day.is-today { border-color: var(--color-accent); background: var(--color-accent-softer); box-shadow: 0 0 0 2px var(--color-accent-soft); }
+    .cycle-day.is-future { opacity: 0.45; }
+    .cycle-day.is-past { background: var(--color-surface-2); }
+
+    /* 服务深度评分 · 4 维圆环 */
+    .score-rings { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+    .score-ring { text-align: center; }
+    .score-ring svg { width: 88px; height: 88px; }
+    .score-ring-bg { fill: none; stroke: var(--color-surface-2); stroke-width: 6; }
+    .score-ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; }
+    .score-ring-val { font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--weight-semibold); fill: var(--color-ink); }
+    .score-ring-label { font-size: var(--text-sm); color: var(--color-ink-2); margin-top: var(--space-2); }
+    .score-ring-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+
+    /* 同期对比 · 双柱状 */
+    .compare-bars { display: flex; flex-direction: column; gap: var(--space-4); }
+    .compare-bar-row { display: grid; grid-template-columns: 100px 1fr 1fr 60px; gap: var(--space-3); align-items: center; }
+    .compare-bar-label { font-size: var(--text-sm); color: var(--color-ink-2); }
+    .compare-bar-pair { display: flex; flex-direction: column; gap: 2px; }
+    .compare-bar-track { height: 8px; background: var(--color-surface-2); border-radius: var(--radius-pill); overflow: hidden; position: relative; }
+    .compare-bar-fill { height: 100%; border-radius: var(--radius-pill); }
+    .compare-bar-fill.is-current { background: var(--color-accent); }
+    .compare-bar-fill.is-prev { background: var(--color-ink-3); }
+    .compare-bar-val { font-size: var(--text-xs); color: var(--color-ink-3); font-family: var(--font-mono); text-align: right; }
+
+    /* 历史服务窗口卡片 */
+    .history-card { padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); }
+    .history-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+    .history-period { font-size: var(--text-sm); color: var(--color-ink-2); font-weight: var(--weight-medium); }
+    .history-score { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-semibold); color: var(--color-accent); }
+    /* 授权行（active/draft/expired/...） */
+    .auth-row { display: grid; grid-template-columns: 120px 1fr 1fr 120px 100px; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); transition: background var(--dur-fast) var(--ease-out); }
+    .auth-row:last-child { border-bottom: none; }
+    .auth-row:hover { background: var(--color-surface-2); }
+    .auth-row-warn { background: var(--color-warn-softer); }
+    .auth-row-warn:hover { background: var(--color-warn-soft); }
+    .auth-row-expired { opacity: 0.65; }
+    .auth-status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .auth-status-pill .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .auth-status-draft { background: var(--color-surface-2); color: var(--color-ink-3); }
+    .auth-status-submitted { background: var(--color-info-soft); color: var(--color-info); }
+    .auth-status-matching { background: var(--color-accent-soft); color: var(--color-accent); }
+    .auth-status-pending { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-active { background: var(--color-success-soft); color: var(--color-success); }
+    .auth-status-completed { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .auth-status-expired { background: var(--color-line); color: var(--color-ink-3); }
+    .auth-status-cancelled { background: var(--color-danger-soft); color: var(--color-danger); }
+    .auth-status-suspended { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-rejected { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 数据范围白名单/黑名单 */
+    .data-scope { display: flex; gap: 4px; flex-wrap: wrap; }
+    .data-scope-tag { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 11px; line-height: 1.4; }
+    .data-scope-allow { background: var(--color-success-soft); color: var(--color-success); }
+    .data-scope-deny { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 倒计时 */
+    .auth-countdown { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); text-align: center; }
+    .auth-row-warn .auth-countdown { color: var(--color-warn-2); }
+    .auth-row-expired .auth-countdown { color: var(--color-ink-3); }
+
+    /* 状态机（9 态时间线） */
+    .status-machine { display: flex; align-items: center; gap: 0; padding: var(--space-4) 0; overflow-x: auto; }
+    .sm-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 88px; }
+    .sm-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--color-surface-2); color: var(--color-ink-3); display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: var(--weight-semibold); border: 2px solid var(--color-line-2); }
+    .sm-step.is-done .sm-circle { background: var(--color-success); color: white; border-color: var(--color-success); }
+    .sm-step.is-current .sm-circle { background: var(--color-accent); color: var(--color-accent); border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .sm-label { font-size: 11px; color: var(--color-ink-2); }
+    .sm-line { height: 2px; width: 24px; background: var(--color-line-2); flex-shrink: 0; margin: 0 -4px 18px -4px; }
+    .sm-line.is-done { background: var(--color-success); }
+
+    /* 关键规则信息盒 */
+    .rule-box { padding: var(--space-3) var(--space-4); background: var(--color-surface-2); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
+    .rule-box strong { color: var(--color-ink); }
+
+    /* ACL 场景卡 */
+    .acl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .acl-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+    .acl-id { font-family: var(--font-mono); font-size: 11px; color: var(--color-accent); font-weight: var(--weight-semibold); }
+    .acl-scene { font-size: var(--text-sm); color: var(--color-ink); margin-top: 2px; }
+    .acl-result { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: var(--space-1); }
+    /* 授权行（active/draft/expired/...） */
+    .auth-row { display: grid; grid-template-columns: 120px 1fr 1fr 120px 100px; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); transition: background var(--dur-fast) var(--ease-out); }
+    .auth-row:last-child { border-bottom: none; }
+    .auth-row:hover { background: var(--color-surface-2); }
+    .auth-row-warn { background: var(--color-warn-softer); }
+    .auth-row-warn:hover { background: var(--color-warn-soft); }
+    .auth-row-expired { opacity: 0.65; }
+    .auth-status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .auth-status-pill .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .auth-status-draft { background: var(--color-surface-2); color: var(--color-ink-3); }
+    .auth-status-submitted { background: var(--color-info-soft); color: var(--color-info); }
+    .auth-status-matching { background: var(--color-accent-soft); color: var(--color-accent); }
+    .auth-status-pending { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-active { background: var(--color-success-soft); color: var(--color-success); }
+    .auth-status-completed { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .auth-status-expired { background: var(--color-line); color: var(--color-ink-3); }
+    .auth-status-cancelled { background: var(--color-danger-soft); color: var(--color-danger); }
+    .auth-status-suspended { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-rejected { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 数据范围白名单/黑名单 */
+    .data-scope { display: flex; gap: 4px; flex-wrap: wrap; }
+    .data-scope-tag { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 11px; line-height: 1.4; }
+    .data-scope-allow { background: var(--color-success-soft); color: var(--color-success); }
+    .data-scope-deny { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 倒计时 */
+    .auth-countdown { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); text-align: center; }
+    .auth-row-warn .auth-countdown { color: var(--color-warn-2); }
+    .auth-row-expired .auth-countdown { color: var(--color-ink-3); }
+
+    /* 状态机（9 态时间线） */
+    .status-machine { display: flex; align-items: center; gap: 0; padding: var(--space-4) 0; overflow-x: auto; }
+    .sm-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 88px; }
+    .sm-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--color-surface-2); color: var(--color-ink-3); display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: var(--weight-semibold); border: 2px solid var(--color-line-2); }
+    .sm-step.is-done .sm-circle { background: var(--color-success); color: white; border-color: var(--color-success); }
+    .sm-step.is-current .sm-circle { background: var(--color-accent); color: var(--color-accent); border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .sm-label { font-size: 11px; color: var(--color-ink-2); }
+    .sm-line { height: 2px; width: 24px; background: var(--color-line-2); flex-shrink: 0; margin: 0 -4px 18px -4px; }
+    .sm-line.is-done { background: var(--color-success); }
+
+    /* 关键规则信息盒 */
+    .rule-box { padding: var(--space-3) var(--space-4); background: var(--color-surface-2); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
+    .rule-box strong { color: var(--color-ink); }
+
+    /* ACL 场景卡 */
+    .acl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .acl-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+    .acl-id { font-family: var(--font-mono); font-size: 11px; color: var(--color-accent); font-weight: var(--weight-semibold); }
+    .acl-scene { font-size: var(--text-sm); color: var(--color-ink); margin-top: 2px; }
+    .acl-result { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: var(--space-1); }
+    /* 授权行（active/draft/expired/...） */
+    .auth-row { display: grid; grid-template-columns: 120px 1fr 1fr 120px 100px; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); transition: background var(--dur-fast) var(--ease-out); }
+    .auth-row:last-child { border-bottom: none; }
+    .auth-row:hover { background: var(--color-surface-2); }
+    .auth-row-warn { background: var(--color-warn-softer); }
+    .auth-row-warn:hover { background: var(--color-warn-soft); }
+    .auth-row-expired { opacity: 0.65; }
+    .auth-status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .auth-status-pill .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .auth-status-draft { background: var(--color-surface-2); color: var(--color-ink-3); }
+    .auth-status-submitted { background: var(--color-info-soft); color: var(--color-info); }
+    .auth-status-matching { background: var(--color-accent-soft); color: var(--color-accent); }
+    .auth-status-pending { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-active { background: var(--color-success-soft); color: var(--color-success); }
+    .auth-status-completed { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .auth-status-expired { background: var(--color-line); color: var(--color-ink-3); }
+    .auth-status-cancelled { background: var(--color-danger-soft); color: var(--color-danger); }
+    .auth-status-suspended { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .auth-status-rejected { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 数据范围白名单/黑名单 */
+    .data-scope { display: flex; gap: 4px; flex-wrap: wrap; }
+    .data-scope-tag { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 11px; line-height: 1.4; }
+    .data-scope-allow { background: var(--color-success-soft); color: var(--color-success); }
+    .data-scope-deny { background: var(--color-danger-soft); color: var(--color-danger); }
+
+    /* 倒计时 */
+    .auth-countdown { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); text-align: center; }
+    .auth-row-warn .auth-countdown { color: var(--color-warn-2); }
+    .auth-row-expired .auth-countdown { color: var(--color-ink-3); }
+
+    /* 状态机（9 态时间线） */
+    .status-machine { display: flex; align-items: center; gap: 0; padding: var(--space-4) 0; overflow-x: auto; }
+    .sm-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 88px; }
+    .sm-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--color-surface-2); color: var(--color-ink-3); display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: var(--weight-semibold); border: 2px solid var(--color-line-2); }
+    .sm-step.is-done .sm-circle { background: var(--color-success); color: white; border-color: var(--color-success); }
+    .sm-step.is-current .sm-circle { background: var(--color-accent); color: var(--color-accent); border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .sm-label { font-size: 11px; color: var(--color-ink-2); }
+    .sm-line { height: 2px; width: 24px; background: var(--color-line-2); flex-shrink: 0; margin: 0 -4px 18px -4px; }
+    .sm-line.is-done { background: var(--color-success); }
+
+    /* 关键规则信息盒 */
+    .rule-box { padding: var(--space-3) var(--space-4); background: var(--color-surface-2); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
+    .rule-box strong { color: var(--color-ink); }
+
+    /* ACL 场景卡 */
+    .acl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .acl-card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+    .acl-id { font-family: var(--font-mono); font-size: 11px; color: var(--color-accent); font-weight: var(--weight-semibold); }
+    .acl-scene { font-size: var(--text-sm); color: var(--color-ink); margin-top: 2px; }
+    .acl-result { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: var(--space-1); }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content-wide">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>服务授权</span>
+        </div>
+
+        <div class="page-head">
+          <div class="eyebrow">专业协作 · §9 / D.9</div>
+          <h1 class="page-title">服务授权工作台</h1>
+          <p class="page-subtitle">客户与专家的临时服务授权 · 默认 30 天 · 到期自动撤销权限和通讯入口 · 不改变原推荐关系</p>
+        </div>
+
+        <!-- 4 维状态 KPI (per PRD §9.3 + WB-005) -->
+        <div class="grid-4x mb-6">
+          <div class="kpi-card">
+            <div class="kpi-label">进行中</div>
+            <div class="kpi-value" style="color: var(--color-success);"><span class="js-counter" data-target="5">0</span><span class="kpi-value-unit">个</span></div>
+            <div class="kpi-delta text-ink-3">Active 状态 · 允许 UMAX 联系</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">待接单</div>
+            <div class="kpi-value" style="color: var(--color-warn-2);"><span class="js-counter" data-target="2">0</span><span class="kpi-value-unit">个</span></div>
+            <div class="kpi-delta text-ink-3">Pending Acceptance · 等专家</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">即将到期</div>
+            <div class="kpi-value" style="color: var(--color-warn-2);"><span class="js-counter" data-target="1">0</span><span class="kpi-value-unit">个</span></div>
+            <div class="kpi-delta kpi-delta-up">7/3/1 天前自动提醒</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">异常 / 已到期</div>
+            <div class="kpi-value text-ink-3"><span class="js-counter" data-target="3">0</span><span class="kpi-value-unit">个</span></div>
+            <div class="kpi-delta text-ink-3">Suspended / Expired</div>
+          </div>
+        </div>
+
+        <!-- Section 1: 9 态状态机说明 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">服务窗口状态机 · §9.5</span>
+            <h2 class="section-title">9 态生命周期</h2>
+            <p class="section-subtitle">只有 <strong>Active</strong> 状态允许使用临时联系方式 · Completed / Expired / Cancelled / Rejected / Suspended 均不可继续发起新联系</p>
+          </div>
+          <div class="card">
+            <div class="status-machine">
+              <div class="sm-step is-done"><div class="sm-circle">1</div><div class="sm-label">Draft</div></div><div class="sm-line is-done"></div>
+              <div class="sm-step is-done"><div class="sm-circle">2</div><div class="sm-label">Submitted</div></div><div class="sm-line is-done"></div>
+              <div class="sm-step is-done"><div class="sm-circle">3</div><div class="sm-label">Matching</div></div><div class="sm-line is-done"></div>
+              <div class="sm-step is-done"><div class="sm-circle">4</div><div class="sm-label">Pending Accept</div></div><div class="sm-line is-done"></div>
+              <div class="sm-step is-current"><div class="sm-circle">5</div><div class="sm-label">Active</div></div><div class="sm-line"></div>
+              <div class="sm-step"><div class="sm-circle">6</div><div class="sm-label">Completed</div></div><div class="sm-line"></div>
+              <div class="sm-step"><div class="sm-circle">7</div><div class="sm-label">Expired</div></div><div class="sm-line"></div>
+              <div class="sm-step"><div class="sm-circle">8</div><div class="sm-label">Cancelled</div></div><div class="sm-line"></div>
+              <div class="sm-step"><div class="sm-circle">9</div><div class="sm-label">Suspended</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: 进行中窗口 (Active) -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">Active 授权</span>
+              <h2 class="section-title">进行中 5 个 · 1 个 4 天内到期</h2>
+            </div>
+            <a href="ai-match.html" class="btn btn-primary btn-sm">+ 申请新授权</a>
+          </div>
+          <div class="card">
+            <div class="auth-row auth-row-warn">
+              <div class="auth-countdown">剩 4 天</div>
+              <div>
+                <div class="text-sm fw-medium">赵东升 · 跨境合规咨询</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 王建国 · AI 顾问 · 已运行 26/30 天</div>
+              </div>
+              <div>
+                <div class="data-scope">
+                  <span class="data-scope-tag data-scope-allow">姓名</span>
+                  <span class="data-scope-tag data-scope-allow">已验证电话</span>
+                  <span class="data-scope-tag data-scope-allow">服务需求</span>
+                  <span class="data-scope-tag data-scope-deny">资产</span>
+                  <span class="data-scope-tag data-scope-deny">受益人</span>
+                </div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-primary btn-sm">处理总结</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">剩 11 天</div>
+              <div>
+                <div class="text-sm fw-medium">周慧敏 · 健康排毒营复盘</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 李雪 · 已运行 19/30 天</div>
+              </div>
+              <div>
+                <div class="data-scope">
+                  <span class="data-scope-tag data-scope-allow">姓名</span>
+                  <span class="data-scope-tag data-scope-allow">课程记录</span>
+                  <span class="data-scope-tag data-scope-allow">推荐人备注</span>
+                </div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">剩 18 天</div>
+              <div>
+                <div class="text-sm fw-medium">徐丽 · 企业服务介绍</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 林秀华 · 已运行 12/30 天</div>
+              </div>
+              <div>
+                <div class="data-scope">
+                  <span class="data-scope-tag data-scope-allow">姓名</span>
+                  <span class="data-scope-tag data-scope-allow">浏览行为</span>
+                  <span class="data-scope-tag data-scope-allow">企业需求</span>
+                </div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">剩 22 天</div>
+              <div>
+                <div class="text-sm fw-medium">方建国 · 续费协调</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 陈静华 · 已运行 8/30 天</div>
+              </div>
+              <div>
+                <div class="data-scope">
+                  <span class="data-scope-tag data-scope-allow">会员等级</span>
+                  <span class="data-scope-tag data-scope-allow">到期日</span>
+                  <span class="data-scope-tag data-scope-allow">续费状态</span>
+                </div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">剩 25 天</div>
+              <div>
+                <div class="text-sm fw-medium">梁文博 · 跨境并购咨询</div>
+                <div class="text-xs text-ink-3 mt-1">AI 顾问张明 · 已运行 5/30 天</div>
+              </div>
+              <div>
+                <div class="data-scope">
+                  <span class="data-scope-tag data-scope-allow">UMAX 账号</span>
+                  <span class="data-scope-tag data-scope-allow">历史联系</span>
+                  <span class="data-scope-tag data-scope-deny">金融持仓</span>
+                </div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: 待接单 / 已到期 / Suspended -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">其他状态</span>
+              <h2 class="section-title">待接单 / 异常 · 5 个</h2>
+            </div>
+          </div>
+          <div class="card">
+            <div class="auth-row">
+              <div class="auth-countdown">—</div>
+              <div>
+                <div class="text-sm fw-medium">王明远 · 企业诊断申请</div>
+                <div class="text-xs text-ink-3 mt-1">AI 顾问张明已可接单 · 等待你审批</div>
+              </div>
+              <div><span class="text-xs text-ink-3">企业诊断 · 3 天前提交</span></div>
+              <div><span class="auth-status-pill auth-status-pending"><span class="status-dot"></span>Pending Accept</span></div>
+              <div><button class="btn btn-secondary btn-sm">审批</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">—</div>
+              <div>
+                <div class="text-sm fw-medium">王雪 · 法律咨询</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 陈静华收到 · 24h 内回复</div>
+              </div>
+              <div><span class="text-xs text-ink-3">合同审查 · 1 天前提交</span></div>
+              <div><span class="auth-status-pill auth-status-matching"><span class="status-dot"></span>Matching</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-row auth-row-expired">
+              <div class="auth-countdown">已到期</div>
+              <div>
+                <div class="text-sm fw-medium">刘晓东 · 财务规划</div>
+                <div class="text-xs text-ink-3 mt-1">原授权 6/15-7/15 · 30 天前到期</div>
+              </div>
+              <div><span class="text-xs text-ink-3">已撤销所有权限 · 通讯入口关闭</span></div>
+              <div><span class="auth-status-pill auth-status-expired"><span class="status-dot"></span>Expired</span></div>
+              <div><button class="btn btn-ghost btn-sm">申请延期</button></div>
+            </div>
+            <div class="auth-row auth-row-expired">
+              <div class="auth-countdown">已到期</div>
+              <div>
+                <div class="text-sm fw-medium">何静 · 投诉处理</div>
+                <div class="text-xs text-ink-3 mt-1">原窗口 7/3-8/2 · 因服务异常暂停</div>
+              </div>
+              <div><span class="text-xs text-ink-3">客服主管介入处理中</span></div>
+              <div><span class="auth-status-pill auth-status-suspended"><span class="status-dot"></span>Suspended</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+            <div class="auth-row auth-row-expired">
+              <div class="auth-countdown">已完成</div>
+              <div>
+                <div class="text-sm fw-medium">蔡文卿 · 课程咨询</div>
+                <div class="text-xs text-ink-3 mt-1">原窗口 7/1-7/31 · 已提交总结 · 客户评价 5★</div>
+              </div>
+              <div><span class="text-xs text-ink-3">导师可查看自己的历史服务记录</span></div>
+              <div><span class="auth-status-pill auth-status-completed"><span class="status-dot"></span>Completed</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: D.9 导师-业务绑定 (第二种 30 天) -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">导师-业务绑定 · D.9</span>
+              <h2 class="section-title">第二种 30 天 · 业务归属 / 激励</h2>
+            </div>
+            <span class="badge badge-info">与客户-专家授权统一在 Service Window 对象上</span>
+          </div>
+          <div class="rule-box mb-4">
+            <strong>区分要点：</strong>客户-专家的 30 天 = 临时服务授权；导师-业务绑定的 30 天 = 业务收益归属 / 会议辅导 / 持续产出激励。<strong>业务含义必须分开标注</strong>，不能混。
+          </div>
+          <div class="card">
+            <div class="auth-row">
+              <div class="auth-countdown">剩 12 天</div>
+              <div>
+                <div class="text-sm fw-medium">跨境并购孵化项目 M6 阶段</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 导师张明绑定 · 8 位成员 · 进度 56%</div>
+              </div>
+              <div>
+                <div class="text-xs text-ink-3">绑定目的：业务收益归属 / 会议辅导 / 产出激励</div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看产出</button></div>
+            </div>
+            <div class="auth-row">
+              <div class="auth-countdown">剩 21 天</div>
+              <div>
+                <div class="text-sm fw-medium">家族办公室 1.0 咨询包季度辅导</div>
+                <div class="text-xs text-ink-3 mt-1">EMP 导师陈静华绑定 · 林秀华 · W7 阶段</div>
+              </div>
+              <div>
+                <div class="text-xs text-ink-3">绑定目的：业务收益归属 / W7-W9 辅导</div>
+              </div>
+              <div><span class="auth-status-pill auth-status-active"><span class="status-dot"></span>Active</span></div>
+              <div><button class="btn btn-ghost btn-sm">查看产出</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: 数据可见范围规则 (§9.4) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">数据可见范围 · §9.4</span>
+            <h2 class="section-title">授权期内可见 · 不可见</h2>
+            <p class="section-subtitle">授权方在授权时勾选字段 · 不可见字段不返回前端 · 到期后立即失效</p>
+          </div>
+          <div class="grid-2x">
+            <div class="card">
+              <div class="card-header"><div class="card-title" style="color: var(--color-success);">默认可见</div><div class="card-subtitle">授权期内可查看</div></div>
+              <ul class="text-sm text-ink-2" style="line-height: 1.8; padding-left: var(--space-4);">
+                <li>客户姓名</li>
+                <li>已验证电话</li>
+                <li>UMAX 账号</li>
+                <li>会员等级 / 到期 / 续费状态</li>
+                <li>相关课程 / 服务需求</li>
+                <li>推荐人备注 / AI 服务建议</li>
+                <li>相关历史联系记录</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title" style="color: var(--color-danger);">默认不可见</div><div class="card-subtitle">即使授权也不可查看</div></div>
+              <ul class="text-sm text-ink-2" style="line-height: 1.8; padding-left: var(--space-4);">
+                <li>完整资产 / 全部平台数据</li>
+                <li>无关金融持仓 / 无关保单</li>
+                <li>受益人信息</li>
+                <li>其他中心私密记录</li>
+                <li>其他专家的非共享备注</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: ACL 验收场景 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">权限验收 · §3.5</span>
+            <h2 class="section-title">5 个 ACL 场景</h2>
+          </div>
+          <div class="acl-grid">
+            <div class="acl-card">
+              <div class="acl-id">ACL-01</div>
+              <div class="acl-scene">导师未获授权打开客户详情</div>
+              <div class="acl-result">→ 返回无权限，不泄露姓名、电话或行为摘要</div>
+            </div>
+            <div class="acl-card">
+              <div class="acl-id">ACL-02</div>
+              <div class="acl-scene">30 天窗口到期后再次访问</div>
+              <div class="acl-result">→ 联系方式和业务明细立即失效，历史本人服务记录仍可查</div>
+            </div>
+            <div class="acl-card">
+              <div class="acl-id">ACL-03</div>
+              <div class="acl-scene">推荐人申请导师协助</div>
+              <div class="acl-result">→ 原推荐关系和双叉节点不变，仅新增服务关系</div>
+            </div>
+            <div class="acl-card">
+              <div class="acl-id">ACL-04</div>
+              <div class="acl-scene">组织成员切换到企业上下文</div>
+              <div class="acl-result">→ 查询和新增数据均落在新 subject_id，旧上下文缓存被清除</div>
+            </div>
+            <div class="acl-card">
+              <div class="acl-id">ACL-05</div>
+              <div class="acl-scene">超级管理员查看敏感资料</div>
+              <div class="acl-result">→ 必须说明目的、二次验证并写入不可篡改审计日志</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: 关键操作规则 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">关键规则</span>
+            <h2 class="section-title">5 条硬性规则</h2>
+          </div>
+          <div class="grid-2x">
+            <div class="rule-box"><strong>30 天默认值</strong>：默认 30 天，可由规则限定更短；<strong>延期需重新确认</strong>，不自动永久开放。</div>
+            <div class="rule-box"><strong>到期自动撤权</strong>：30 天到期自动撤销数据权限和 UMAX 通讯入口（MSG-005）。</div>
+            <div class="rule-box"><strong>推荐关系不变</strong>：导师/专家服务是阶段性协作，<strong>不改变客户组织权、永久归属权或推荐关系</strong>（BR-003）。</div>
+            <div class="rule-box"><strong>拒绝不泄露</strong>：专家拒绝不泄露不必要客户资料（SRV-005）。</div>
+            <div class="rule-box"><strong>结果影响信誉需规则和申诉期</strong>：业务结果须有外部凭证或权威事件，结果影响信誉前必须满足规则和申诉期（SRV-010 / SRV-014）。</div>
+            <div class="rule-box"><strong>取消立即停止新访问</strong>：授权方可撤销；异常可暂停并更换；撤销后立即停止新访问（SRV-011）。</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

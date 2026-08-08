@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会员与客户 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .crm-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-6); align-items: start; }
+    @media (max-width: 1280px) { .crm-layout { grid-template-columns: 1fr; } .crm-side { display: none; } }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+    @media (max-width: 1024px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-mini { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-4); }
+    .stat-mini-label { font-size: var(--text-sm); color: var(--color-ink-3); }
+    .stat-mini-value { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-semibold); margin-top: var(--space-1); }
+    .stat-mini-delta { font-size: var(--text-xs); margin-top: 2px; }
+    .row-avatar { display: flex; align-items: center; gap: var(--space-3); }
+    .row-name { font-weight: var(--weight-medium); color: var(--color-ink); }
+    .row-id { font-size: var(--text-xs); color: var(--color-ink-3); font-family: var(--font-mono); }
+    .tag-stack { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+    .crm-side { position: sticky; top: calc(var(--topbar-height) + var(--space-4)); }
+    .ai-mini { background: linear-gradient(135deg, var(--color-accent-softer) 0%, var(--color-surface) 100%); border: 1px solid var(--color-accent-soft); border-radius: var(--radius-md); padding: var(--space-4); }
+    .ai-mini-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); margin-bottom: var(--space-2); }
+    .ai-mini-item { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-2) 0; border-top: 1px solid var(--color-accent-soft); font-size: var(--text-sm); color: var(--color-ink-2); }
+    .ai-mini-item:first-of-type { border-top: none; }
+
+    /* B1 增强 */
+    @keyframes grow-bar { from { width: 0 !important; } }
+    .progress-bar.animate-in { animation: grow-bar 900ms var(--ease-out) forwards; }
+    .table tbody tr { transition: background var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+    .table tbody tr.js-row-select:hover { cursor: pointer; background: var(--color-surface-2); }
+    .filter-bar .filter-chip { user-select: none; }
+    .filter-bar .filter-chip.is-active { background: var(--color-accent-soft); color: var(--color-accent); border-color: var(--color-accent-soft); }
+    .export-option { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--dur-fast) var(--ease-out); }
+    .export-option:hover { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .export-option.is-active { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .export-option input { display: none; }
+    .export-option-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--color-surface-2); display: flex; align-items: center; justify-content: center; }
+    .export-option.is-active .export-option-icon { background: var(--color-accent); color: var(--color-accent); }
+    .form-error-hint { color: var(--color-danger); font-size: var(--text-xs); margin-top: var(--space-1); min-height: 14px; }
+    .required-mark { color: var(--color-danger); margin-left: 2px; }
+
+    /* B1 增强（数据密度） */
+    .row-tier { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+    .row-tier-vip { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .row-tier-std { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .row-tier-ent { background: var(--color-accent-soft); color: var(--color-accent); }
+    .row-tier-free { background: var(--color-surface-2); color: var(--color-ink-3); }
+    .row-tag { display: inline-block; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-medium); margin-right: 2px; }
+    .row-tag-high-value { background: var(--color-biz-poif); color: var(--color-ink-inv); }
+    .row-tag-renew-risk { background: var(--color-danger-soft); color: var(--color-danger); }
+    .row-tag-upgrade-signal { background: var(--color-success-soft); color: var(--color-success); }
+    .row-tag-inactive { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .row-tag-active { background: var(--color-info-soft); color: var(--color-info); }
+
+    .row-meta { display: flex; align-items: center; gap: 4px; font-size: var(--text-xs); color: var(--color-ink-3); }
+
+    /* 区域分布柱状图 */
+    .region-bar-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+    .region-bar-label { width: 64px; font-size: var(--text-sm); color: var(--color-ink-2); flex-shrink: 0; display: flex; align-items: center; gap: 4px; }
+    .region-bar-track { flex: 1; height: 18px; background: var(--color-surface-2); border-radius: var(--radius-xs); overflow: hidden; }
+    .region-bar-fill { height: 100%; background: var(--color-accent); border-radius: var(--radius-xs); transition: width var(--dur-slow) var(--ease-out); }
+    .region-bar-fill.top1 { background: var(--color-accent); }
+    .region-bar-fill.top2 { background: var(--color-info); }
+    .region-bar-fill.top3 { background: var(--color-success); }
+    .region-bar-val { width: 80px; text-align: right; font-size: var(--text-sm); font-family: var(--font-mono); font-weight: var(--weight-medium); }
+    .region-bar-pct { color: var(--color-ink-3); font-size: 11px; margin-left: 4px; }
+
+    /* 活跃度趋势（折线图） */
+    .trend-line-svg { width: 100%; height: 180px; }
+    .trend-legend { display: flex; gap: var(--space-4); align-items: center; }
+    .trend-legend-item { display: flex; align-items: center; gap: 4px; font-size: var(--text-xs); color: var(--color-ink-2); }
+    .trend-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索会员、客户、企业、活动、资源…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender" title="陈志远（推荐人）">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content-wide">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>会员与客户</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">会员与客户</h1>
+          <p class="page-subtitle">管理 86 位会员与客户，包括跟进状态、生命周期、业务兴趣和服务记录</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">导入</button>
+            <button class="btn btn-secondary">批量操作</button>
+            <button class="btn btn-primary">+ 新建客户</button>
+          </div>
+        </div>
+
+        <!-- Stat Row -->
+        <div class="stat-row mb-6">
+          <div class="stat-mini"><div class="stat-mini-label">付费会员</div><div class="stat-mini-value">62</div><div class="stat-mini-delta text-success">+4 本周 · 续费率 81%</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">免费会员</div><div class="stat-mini-value">24</div><div class="stat-mini-delta text-ink-3">+2 本月 · 转化 5</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">即将到期 (30d)</div><div class="stat-mini-value" style="color: var(--color-warn-2);">11</div><div class="stat-mini-delta" style="color: var(--color-warn-2);">7d 内 3 人</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">流失风险</div><div class="stat-mini-value" style="color: var(--color-danger);">5</div><div class="stat-mini-delta text-danger">+2 本周 · 高风险 3</div></div>
+        </div>
+
+        <!-- Layout -->
+        <div class="crm-layout">
+          <!-- Main list -->
+          <div>
+            <!-- Filter bar -->
+            <div class="filter-bar mb-4">
+              <div class="filter-chip is-active js-filter" data-filter="all">全部 <span class="filter-chip-count">86</span></div>
+              <div class="filter-chip js-filter" data-filter="prospect">线索 <span class="filter-chip-count">8</span></div>
+              <div class="filter-chip js-filter" data-filter="paid">付费有效 <span class="filter-chip-count">56</span></div>
+              <div class="filter-chip js-filter" data-filter="free">免费有效 <span class="filter-chip-count">12</span></div>
+              <div class="filter-chip js-filter" data-filter="expiring">即将到期 <span class="filter-chip-count">11</span></div>
+              <div class="filter-chip js-filter" data-filter="renewed">已续费 <span class="filter-chip-count">5</span></div>
+              <div class="filter-chip js-filter" data-filter="expired">已过期 <span class="filter-chip-count">4</span></div>
+              <div class="filter-chip js-filter" data-filter="reactivated">重新激活 <span class="filter-chip-count">2</span></div>
+              <div class="filter-divider"></div>
+              <div class="filter-chip js-filter" data-filter="risk">流失风险 <span class="filter-chip-count">5</span></div>
+              <div class="filter-chip js-filter" data-filter="applied">已申请支持 <span class="filter-chip-count">3</span></div>
+              <div class="filter-chip js-filter" data-filter="servicing">服务中 <span class="filter-chip-count">5</span></div>
+              <div class="filter-search"><input type="text" class="input input-sm js-row-search" data-target-rows="tr.js-searchable" placeholder="搜索姓名 / 编号 / 电话…" /></div>
+            </div>
+
+            <!-- Tabs for 业务兴趣 -->
+            <div class="tabs js-tabs">
+              <div class="tab is-active">全部业务 <span class="tab-count">86</span></div>
+              <div class="tab">POIF <span class="tab-count">38</span></div>
+              <div class="tab">MCS <span class="tab-count">26</span></div>
+              <div class="tab">企业 <span class="tab-count">22</span></div>
+              <div class="tab">AI <span class="tab-count">19</span></div>
+              <div class="tab">RWA <span class="tab-count">11</span></div>
+              <div class="tab">黄金 <span class="tab-count">7</span></div>
+              <div class="tab">再生营 <span class="tab-count">8</span></div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 32px;"><input type="checkbox" /></th>
+                    <th>客户</th>
+                    <th>等级 / 状态</th>
+                    <th>到期时间</th>
+                    <th>业务兴趣</th>
+                    <th>当前服务</th>
+                    <th>AI 建议</th>
+                    <th>最近联系</th>
+                    <th style="width: 80px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="js-row-select js-searchable is-selected" data-id="linxh" data-search="林秀华 M-2024-0381 138 高级 即将到期 POIF AI" data-cat="paid expiring applied" style="cursor: pointer;">
+                    <td><input type="checkbox" checked /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md avatar-role-recommender">林</div>
+                        <div>
+                          <div class="row-name">林秀华</div>
+                          <div class="row-id">M-2024-0381</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">高级</span><span class="row-tier row-tier-vip">VIP</span><span class="row-tag row-tag-high-value">高价值</span></div></td>
+                    <td><div class="text-mono text-sm" style="color: var(--color-warn-2);">7 天后</div><div class="text-xs text-ink-3">2026-08-13</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">POIF</span><span class="badge badge-outline">AI</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-accent">立即联系</span></td>
+                    <td><div class="text-sm">2 天前</div><div class="text-xs text-ink-3">UMAX 消息</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="wangmy" data-search="王明远 M-2025-1102 139 企业 142天 POIF AI" data-cat="paid applied" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md avatar-role-ai">王</div>
+                        <div>
+                          <div class="row-name">王明远</div>
+                          <div class="row-id">M-2025-1102</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-info">企业</span><span class="row-tier row-tier-ent">企业</span><span class="row-tag row-tag-upgrade-signal">升级信号</span></div></td>
+                    <td><div class="text-mono text-sm">142 天后</div><div class="text-xs text-ink-3">2026-12-26</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">企业</span><span class="badge badge-outline">AI</span></div></td>
+                    <td><div class="text-sm text-accent">AI 顾问 · 张明</div><div class="text-xs text-ink-3">服务剩 4 天</div></td>
+                    <td><span class="badge badge-accent">查看申请</span></td>
+                    <td><div class="text-sm">3 天前</div><div class="text-xs text-ink-3">企业诊断</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="zhouhm" data-search="周慧敏 M-2024-0729 136 高级 68天 POIF 健康" data-cat="paid" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md avatar-role-consultant">周</div>
+                        <div>
+                          <div class="row-name">周慧敏</div>
+                          <div class="row-id">M-2024-0729</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">高级</span><span class="row-tier row-tier-vip">VIP</span><span class="row-tag row-tag-active">活跃</span></div></td>
+                    <td><div class="text-mono text-sm">68 天后</div><div class="text-xs text-ink-3">2026-10-13</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">POIF</span><span class="badge badge-outline">健康</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-success">发起回访</span></td>
+                    <td><div class="text-sm">5 天前</div><div class="text-xs text-ink-3">课程反馈</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="zhangwj" data-search="张伟杰 M-2023-0902 137 免费 28天 MCS 流失风险" data-cat="free risk" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-warn-soft); color: var(--color-warn-2);">张</div>
+                        <div>
+                          <div class="row-name">张伟杰</div>
+                          <div class="row-id">M-2023-0902</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-info">免费</span><span class="row-tier row-tier-free">入门</span><span class="row-tag row-tag-renew-risk">续约风险</span></div></td>
+                    <td><div class="text-mono text-sm text-ink-3">—</div><div class="text-xs text-ink-3">免费观察期</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">MCS</span></div></td>
+                    <td><div class="text-sm text-danger">28 天未联系</div></td>
+                    <td><span class="badge badge-danger">流失风险</span></td>
+                    <td><div class="text-sm text-danger">28 天前</div><div class="text-xs text-ink-3">电话</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="xuli" data-search="徐丽 M-2024-1203 135 标准 98天 企业 RWA 升级" data-cat="paid" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-success-soft); color: var(--color-success);">徐</div>
+                        <div>
+                          <div class="row-name">徐丽</div>
+                          <div class="row-id">M-2024-1203</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-upgrade-signal">升级信号</span></div></td>
+                    <td><div class="text-mono text-sm">98 天后</div><div class="text-xs text-ink-3">2026-11-12</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">企业</span><span class="badge badge-outline">RWA</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-accent">申请支持</span></td>
+                    <td><div class="text-sm">1 天前</div><div class="text-xs text-ink-3">浏览定价</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="zhaods" data-search="赵东升 M-2024-0512 134 标准 34天 AI 黄金 30天窗口" data-cat="paid servicing" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-info-soft); color: var(--color-info);">赵</div>
+                        <div>
+                          <div class="row-name">赵东升</div>
+                          <div class="row-id">M-2024-0512</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-active">服务中</span></div></td>
+                    <td><div class="text-mono text-sm">34 天后</div><div class="text-xs text-ink-3">2026-09-09</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">AI</span><span class="badge badge-outline">黄金</span></div></td>
+                    <td><div class="text-sm text-warn" style="color: var(--color-warn-2);">30 天窗口剩 4 天</div></td>
+                    <td><span class="badge badge-warn">提交总结</span></td>
+                    <td><div class="text-sm">1 天前</div><div class="text-xs text-ink-3">UMAX 消息</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="chenxm" data-search="陈雪梅 M-2023-0211 130 高级 5天 POIF 企业" data-cat="paid expiring" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-warn-soft); color: var(--color-warn-2);">陈</div>
+                        <div>
+                          <div class="row-name">陈雪梅</div>
+                          <div class="row-id">M-2023-0211</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">高级</span><span class="row-tier row-tier-vip">VIP</span><span class="row-tag row-tag-high-value">高价值</span></div></td>
+                    <td><div class="text-mono text-sm" style="color: var(--color-warn-2);">5 天后</div><div class="text-xs text-ink-3">2026-08-11</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">POIF</span><span class="badge badge-outline">企业</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-accent">立即联系</span></td>
+                    <td><div class="text-sm">12 天前</div><div class="text-xs text-ink-3">微信</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="fangjg" data-search="方建国 M-2024-0618 156 标准 6天 再生营 EMP" data-cat="paid expiring servicing" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md avatar-role-consultant">方</div>
+                        <div>
+                          <div class="row-name">方建国</div>
+                          <div class="row-id">M-2024-0618</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-active">服务中</span></div></td>
+                    <td><div class="text-mono text-sm" style="color: var(--color-warn-2);">6 天后</div><div class="text-xs text-ink-3">2026-08-12</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">再生营</span></div></td>
+                    <td><div class="text-sm text-ink-2">EMP 导师 · 刘强</div></td>
+                    <td><span class="badge badge-accent">立即联系</span></td>
+                    <td><div class="text-sm">7 天前</div><div class="text-xs text-ink-3">电话</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="hejing" data-search="何静 M-2023-1109 152 标准 21天 MCS 投诉" data-cat="paid risk" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-danger-soft); color: var(--color-danger);">何</div>
+                        <div>
+                          <div class="row-name">何静</div>
+                          <div class="row-id">M-2023-1109</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-renew-risk">续约风险</span></div></td>
+                    <td><div class="text-mono text-sm">21 天后</div><div class="text-xs text-ink-3">2026-08-27</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">MCS</span></div></td>
+                    <td><div class="text-sm text-danger">投诉未处理</div></td>
+                    <td><span class="badge badge-danger">处理投诉</span></td>
+                    <td><div class="text-sm">3 天前</div><div class="text-xs text-ink-3">投诉</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="liangwb" data-search="梁文博 M-2024-0321 158 免费 POIF 待联系" data-cat="free" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-success-soft); color: var(--color-success);">梁</div>
+                        <div>
+                          <div class="row-name">梁文博</div>
+                          <div class="row-id">M-2024-0321</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-info">免费</span><span class="row-tier row-tier-free">入门</span><span class="row-tag row-tag-active">新会员</span></div></td>
+                    <td><div class="text-mono text-sm text-ink-3">—</div><div class="text-xs text-ink-3">3 天免费</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">POIF</span></div></td>
+                    <td><div class="text-sm text-ink-2">未联系</div></td>
+                    <td><span class="badge badge-info">24h 内首联</span></td>
+                    <td><div class="text-sm text-ink-3">未联系</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="caiwq" data-search="蔡文卿 M-2024-0503 139 标准 145天 POIF 活跃" data-cat="paid" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-info-soft); color: var(--color-info);">蔡</div>
+                        <div>
+                          <div class="row-name">蔡文卿</div>
+                          <div class="row-id">M-2024-0503</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-active">活跃</span></div></td>
+                    <td><div class="text-mono text-sm">145 天后</div><div class="text-xs text-ink-3">2026-12-29</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">POIF</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-outline">维护关系</span></td>
+                    <td><div class="text-sm">2 天前</div><div class="text-xs text-ink-3">UMAX 消息</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                  <tr class="js-row-select js-searchable" data-id="hanxs" data-search="韩雪松 M-2025-0301 156 标准 213天 RWA 活跃" data-cat="paid" style="cursor: pointer;">
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <div class="row-avatar">
+                        <div class="avatar avatar-md" style="background: var(--color-biz-rwa); color: var(--color-ink-inv);">韩</div>
+                        <div>
+                          <div class="row-name">韩雪松</div>
+                          <div class="row-id">M-2025-0301</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><div class="tag-stack"><span class="badge badge-success">标准</span><span class="row-tier row-tier-std">标准</span><span class="row-tag row-tag-active">活跃</span></div></td>
+                    <td><div class="text-mono text-sm">213 天后</div><div class="text-xs text-ink-3">2027-03-05</div></td>
+                    <td><div class="tag-stack"><span class="badge badge-outline">RWA</span></div></td>
+                    <td><div class="text-sm text-ink-2">自行跟进</div></td>
+                    <td><span class="badge badge-outline">维护关系</span></td>
+                    <td><div class="text-sm">4 天前</div><div class="text-xs text-ink-3">UMAX 消息</div></td>
+                    <td><button class="btn btn-ghost btn-sm">详情</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-4">
+              <div class="text-sm text-ink-3">显示 1-10 / 86 条</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-ghost btn-sm" disabled>上一页</button>
+                <button class="btn btn-primary btn-sm">1</button>
+                <button class="btn btn-ghost btn-sm">2</button>
+                <button class="btn btn-ghost btn-sm">3</button>
+                <button class="btn btn-ghost btn-sm">…</button>
+                <button class="btn btn-ghost btn-sm">9</button>
+                <button class="btn btn-ghost btn-sm">下一页</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side panel: selected client quick view -->
+          <aside class="crm-side">
+            <div class="card mb-4">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="avatar avatar-xl avatar-role-recommender">林</div>
+                <div class="flex-1">
+                  <div class="card-title">林秀华</div>
+                  <div class="card-subtitle text-mono">M-2024-0381</div>
+                </div>
+                <span class="badge badge-success">高级</span>
+              </div>
+              <div class="grid-2x mb-4" style="gap: var(--space-3);">
+                <div><div class="kpi-label">到期</div><div class="kpi-value" style="font-size: var(--text-xl); color: var(--color-warn-2);">7 天</div></div>
+                <div><div class="kpi-label">PB 信誉</div><div class="kpi-value" style="font-size: var(--text-xl); color: var(--color-trust);">1,240</div></div>
+              </div>
+              <div class="card-divider"></div>
+              <div class="flex flex-col gap-2 mt-4">
+                <div class="flex items-center justify-between"><span class="text-sm text-ink-3">会员时长</span><span class="text-sm fw-medium">2 年 4 个月</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm text-ink-3">累计续费</span><span class="text-sm fw-medium">5 次</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm text-ink-3">业务兴趣</span><div class="tag-stack"><span class="badge badge-outline">POIF</span><span class="badge badge-outline">AI</span></div></div>
+                <div class="flex items-center justify-between"><span class="text-sm text-ink-3">来源</span><span class="text-sm">直接推荐</span></div>
+              </div>
+              <div class="flex gap-2 mt-4">
+                <button class="btn btn-primary btn-sm flex-1">电话联系</button>
+                <button class="btn btn-secondary btn-sm flex-1">UMAX</button>
+                <a href="crm-detail.html" class="btn btn-ghost btn-sm flex-1">详情</a>
+              </div>
+            </div>
+
+            <div class="ai-mini">
+              <div class="flex items-center gap-2 mb-2">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v3M7 10v3M1 7h3M10 7h3M3 3l2 2M9 9l2 2M11 3l-2 2M3 11l2-2" stroke="var(--color-accent)" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="7" r="2" stroke="var(--color-accent)" stroke-width="1.4"/></svg>
+                <span class="ai-mini-title">AI 建议</span>
+              </div>
+              <div class="ai-mini-item"><span>·</span><span>7 天后到期，建议先确认续费意向</span></div>
+              <div class="ai-mini-item"><span>·</span><span>近 30 天完成 2 门 AI 课程 + 3 次浏览 POIF，可推荐企业服务介绍</span></div>
+              <div class="ai-mini-item"><span>·</span><span>续费概率 <strong>76%</strong>，建议先准备续费话术</span></div>
+              <button class="btn btn-primary btn-sm w-full mt-3">执行建议</button>
+            </div>
+          </aside>
+        </div>
+
+        <!-- ========== Section: 客户分布 (按区域) ========== -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">客户分布</span>
+              <h2 class="section-title">客户区域分布 · 6 大地区</h2>
+              <p class="section-subtitle">按会员地区统计 · 共 86 人</p>
+            </div>
+            <div class="flex gap-2">
+              <div class="segmented js-segmented">
+                <div class="segmented-item is-active">地区</div>
+                <div class="segmented-item">业务兴趣</div>
+                <div class="segmented-item">分层</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2x">
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">区域分布柱状图</div>
+                  <div class="card-subtitle">按会员注册地区</div>
+                </div>
+                <span class="badge badge-outline">86 人</span>
+              </div>
+
+              <div class="flex-col gap-2 mt-4">
+                <div class="region-bar-row">
+                  <div class="region-bar-label">广东</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill top1" style="width: 80%;"></div>
+                  </div>
+                  <div class="region-bar-val">28 人<span class="region-bar-pct">32.6%</span></div>
+                </div>
+                <div class="region-bar-row">
+                  <div class="region-bar-label">上海</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill top2" style="width: 55%;"></div>
+                  </div>
+                  <div class="region-bar-val">19 人<span class="region-bar-pct">22.1%</span></div>
+                </div>
+                <div class="region-bar-row">
+                  <div class="region-bar-label">北京</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill top3" style="width: 38%;"></div>
+                  </div>
+                  <div class="region-bar-val">14 人<span class="region-bar-pct">16.3%</span></div>
+                </div>
+                <div class="region-bar-row">
+                  <div class="region-bar-label">浙江</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill" style="width: 26%;"></div>
+                  </div>
+                  <div class="region-bar-val">10 人<span class="region-bar-pct">11.6%</span></div>
+                </div>
+                <div class="region-bar-row">
+                  <div class="region-bar-label">江苏</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill" style="width: 18%;"></div>
+                  </div>
+                  <div class="region-bar-val">8 人<span class="region-bar-pct">9.3%</span></div>
+                </div>
+                <div class="region-bar-row">
+                  <div class="region-bar-label">其他</div>
+                  <div class="region-bar-track">
+                    <div class="region-bar-fill" style="width: 16%; background: var(--color-ink-3);"></div>
+                  </div>
+                  <div class="region-bar-val">7 人<span class="region-bar-pct">8.1%</span></div>
+                </div>
+              </div>
+
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-xs text-ink-3 mt-3">粤港澳大湾区合计 38 人 (44.2%) · 长三角合计 23 人 (26.7%)</div>
+            </div>
+
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">区域关键指标</div>
+                  <div class="card-subtitle">按地区看续费、流失、活跃度</div>
+                </div>
+              </div>
+
+              <div class="flex-col gap-3 mt-4">
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line);">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">广东</div>
+                    <div class="text-xs text-ink-3">续费率 84% · 流失 1</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-success);">82% 活跃</div>
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line);">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">上海</div>
+                    <div class="text-xs text-ink-3">续费率 78% · 流失 1</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-success);">85% 活跃</div>
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line);">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">北京</div>
+                    <div class="text-xs text-ink-3">续费率 86% · 流失 0</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-success);">88% 活跃</div>
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line);">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">浙江</div>
+                    <div class="text-xs text-ink-3">续费率 80% · 流失 1</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-success);">78% 活跃</div>
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line);">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">江苏</div>
+                    <div class="text-xs text-ink-3">续费率 75% · 流失 1</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-warn-2);">62% 活跃</div>
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-2) 0;">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm fw-medium" style="min-width: 56px;">其他</div>
+                    <div class="text-xs text-ink-3">续费率 71% · 流失 1</div>
+                  </div>
+                  <div class="text-mono text-sm fw-medium" style="color: var(--color-warn-2);">68% 活跃</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section: 活跃度趋势 (4 周折线) ========== -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">活跃度趋势</span>
+              <h2 class="section-title">近 4 周活跃度趋势</h2>
+              <p class="section-subtitle">客户互动频次变化 · 含联系、UMAX、课程、活动参与</p>
+            </div>
+            <div class="flex gap-2">
+              <div class="segmented js-segmented">
+                <div class="segmented-item is-active">4 周</div>
+                <div class="segmented-item">12 周</div>
+                <div class="segmented-item">季度</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">导出数据</button>
+            </div>
+          </div>
+
+          <div class="grid-2x">
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">互动频次趋势</div>
+                  <div class="card-subtitle">每周总互动次数</div>
+                </div>
+                <span class="badge badge-success">↗ 周均 +8%</span>
+              </div>
+              <svg class="trend-line-svg mt-4" viewBox="0 0 480 180" preserveAspectRatio="none" style="display: block;">
+                <!-- 网格线 -->
+                <line x1="40" y1="20" x2="460" y2="20" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="60" x2="460" y2="60" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="100" x2="460" y2="100" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="140" x2="460" y2="140" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="160" x2="460" y2="160" stroke="var(--color-line-2)" stroke-width="1"/>
+                <!-- Y 轴标签 -->
+                <text x="34" y="24" text-anchor="end" font-size="9" fill="var(--color-ink-3)">120</text>
+                <text x="34" y="64" text-anchor="end" font-size="9" fill="var(--color-ink-3)">90</text>
+                <text x="34" y="104" text-anchor="end" font-size="9" fill="var(--color-ink-3)">60</text>
+                <text x="34" y="144" text-anchor="end" font-size="9" fill="var(--color-ink-3)">30</text>
+                <!-- 区域填充 -->
+                <path d="M 80 130 L 180 105 L 280 90 L 380 70 L 380 160 L 80 160 Z" fill="var(--color-accent-soft)" opacity="0.3"/>
+                <!-- 折线 -->
+                <polyline points="80,130 180,105 280,90 380,70" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- 第二条线 (UMAX) -->
+                <polyline points="80,140 180,120 280,115 380,95" fill="none" stroke="var(--color-info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+                <!-- 节点 -->
+                <circle cx="80" cy="130" r="4" fill="var(--color-accent)"/>
+                <circle cx="180" cy="105" r="4" fill="var(--color-accent)"/>
+                <circle cx="280" cy="90" r="4" fill="var(--color-accent)"/>
+                <circle cx="380" cy="70" r="4" fill="var(--color-accent)"/>
+                <circle cx="80" cy="140" r="3" fill="var(--color-info)"/>
+                <circle cx="180" cy="120" r="3" fill="var(--color-info)"/>
+                <circle cx="280" cy="115" r="3" fill="var(--color-info)"/>
+                <circle cx="380" cy="95" r="3" fill="var(--color-info)"/>
+                <!-- X 轴标签 -->
+                <text x="80" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-4</text>
+                <text x="180" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-3</text>
+                <text x="280" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-2</text>
+                <text x="380" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">本周</text>
+              </svg>
+              <div class="trend-legend mt-3">
+                <div class="trend-legend-item"><div class="trend-legend-dot" style="background: var(--color-accent);"></div>总互动次数</div>
+                <div class="trend-legend-item"><div class="trend-legend-dot" style="background: var(--color-info);"></div>UMAX 消息</div>
+              </div>
+            </div>
+
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">活跃度关键数字</div>
+                  <div class="card-subtitle">基于近 4 周数据</div>
+                </div>
+              </div>
+
+              <div class="grid-2x mt-4" style="gap: var(--space-3);">
+                <div class="stat-mini">
+                  <div class="stat-mini-label">本周互动</div>
+                  <div class="stat-mini-value" style="color: var(--color-accent);">108</div>
+                  <div class="stat-mini-delta text-success">较上周 +18</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">活跃客户</div>
+                  <div class="stat-mini-value">62</div>
+                  <div class="stat-mini-delta text-ink-3">72% 占比</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">UMAX 消息</div>
+                  <div class="stat-mini-value" style="color: var(--color-info);">46</div>
+                  <div class="stat-mini-delta text-success">较上周 +8</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">休眠客户</div>
+                  <div class="stat-mini-value" style="color: var(--color-warn-2);">12</div>
+                  <div class="stat-mini-delta text-ink-3">14% 占比</div>
+                </div>
+              </div>
+
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-sm fw-medium mb-2 mt-4">趋势解读</div>
+              <div class="flex-col gap-2 text-sm">
+                <div class="flex items-start gap-2"><span style="color: var(--color-success);">↗</span><span>总互动 4 周连续上升 · 由 78 增至 108</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-info);">+</span><span>UMAX 消息使用频率提升 · 协作者贡献 38%</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-warn-2);">!</span><span>12 位客户进入休眠 · 建议本周唤醒</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: CRM-002 客户生命周期 8 状态分组 -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">CRM-002 · 客户生命周期</span>
+              <h2 class="section-title">8 状态分组 · 总计 86 位</h2>
+              <p class="section-subtitle">状态变更带来源事件 + 时间 · 全部留痕可追溯</p>
+            </div>
+            <div class="flex gap-2">
+              <div class="segmented js-segmented">
+                <div class="segmented-item is-active">8 状态</div>
+                <div class="segmented-item">趋势</div>
+                <div class="segmented-item">来源</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">导出明细</button>
+            </div>
+          </div>
+          <div class="grid-2x">
+            <!-- 左：流转趋势 -->
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">8 状态流转趋势 · 近 4 周</div>
+                  <div class="card-subtitle">每周各状态人数变化 · 含线索 / 有效 / 到期 / 续费</div>
+                </div>
+                <span class="badge badge-success">↗ 活跃占比 +8%</span>
+              </div>
+              <svg class="trend-line-svg mt-4" viewBox="0 0 480 180" preserveAspectRatio="none" style="display: block;">
+                <line x1="40" y1="20" x2="460" y2="20" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="60" x2="460" y2="60" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="100" x2="460" y2="100" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="140" x2="460" y2="140" stroke="var(--color-line)" stroke-width="1" stroke-dasharray="2 4"/>
+                <line x1="40" y1="160" x2="460" y2="160" stroke="var(--color-line-2)" stroke-width="1"/>
+                <text x="34" y="24" text-anchor="end" font-size="9" fill="var(--color-ink-3)">30</text>
+                <text x="34" y="64" text-anchor="end" font-size="9" fill="var(--color-ink-3)">25</text>
+                <text x="34" y="104" text-anchor="end" font-size="9" fill="var(--color-ink-3)">15</text>
+                <text x="34" y="144" text-anchor="end" font-size="9" fill="var(--color-ink-3)">5</text>
+                <polyline points="80,130 180,125 280,120 380,115" fill="none" stroke="var(--color-info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+                <polyline points="80,90 180,85 280,75 380,65" fill="none" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="80,140 180,135 280,130 380,125" fill="none" stroke="var(--color-warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="80" cy="130" r="3" fill="var(--color-info)"/>
+                <circle cx="180" cy="125" r="3" fill="var(--color-info)"/>
+                <circle cx="280" cy="120" r="3" fill="var(--color-info)"/>
+                <circle cx="380" cy="115" r="3" fill="var(--color-info)"/>
+                <circle cx="80" cy="90" r="4" fill="var(--color-success)"/>
+                <circle cx="180" cy="85" r="4" fill="var(--color-success)"/>
+                <circle cx="280" cy="75" r="4" fill="var(--color-success)"/>
+                <circle cx="380" cy="65" r="4" fill="var(--color-success)"/>
+                <text x="80" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-4</text>
+                <text x="180" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-3</text>
+                <text x="280" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">W-2</text>
+                <text x="380" y="175" text-anchor="middle" font-size="9" fill="var(--color-ink-3)">本周</text>
+              </svg>
+              <div class="trend-legend mt-3">
+                <div class="trend-legend-item"><div class="trend-legend-dot" style="background: var(--color-success);"></div>免费+付费有效</div>
+                <div class="trend-legend-item"><div class="trend-legend-dot" style="background: var(--color-warn);"></div>即将到期</div>
+                <div class="trend-legend-item"><div class="trend-legend-dot" style="background: var(--color-info);"></div>沉默</div>
+              </div>
+            </div>
+
+            <!-- 右：关键数字 + 8 状态明细 + 状态来源 -->
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">活跃度关键数字</div>
+                  <div class="card-subtitle">基于近 4 周数据</div>
+                </div>
+              </div>
+              <div class="grid-2x mt-4" style="gap: var(--space-3);">
+                <div class="stat-mini">
+                  <div class="stat-mini-label">活跃有效</div>
+                  <div class="stat-mini-value" style="color: var(--color-success);">52</div>
+                  <div class="stat-mini-delta text-success">60% 占比 · 较 W-4 +6</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">即将到期</div>
+                  <div class="stat-mini-value" style="color: var(--color-warn-2);">8</div>
+                  <div class="stat-mini-delta text-warn-2">7 天内 5 位</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">已续费</div>
+                  <div class="stat-mini-value" style="color: var(--color-accent);">6</div>
+                  <div class="stat-mini-delta text-success">本月 +6</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">沉默</div>
+                  <div class="stat-mini-value" style="color: var(--color-ink-3);">4</div>
+                  <div class="stat-mini-delta text-ink-3">90+ 天无互动</div>
+                </div>
+              </div>
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-sm fw-medium mb-2 mt-4">8 状态明细</div>
+              <div class="grid-2x" style="gap: var(--space-2); font-size: var(--text-sm);">
+                <div class="flex items-center justify-between"><span class="text-ink-3">线索 · LEADS</span><span class="text-mono fw-medium">12</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">免费有效 · FREE ACTIVE</span><span class="text-mono fw-medium">28</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">付费有效 · PAID ACTIVE</span><span class="text-mono fw-medium">24</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">即将到期 · EXPIRING</span><span class="text-mono fw-medium" style="color: var(--color-warn-2);">8</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">已过期 · EXPIRED</span><span class="text-mono fw-medium" style="color: var(--color-danger);">3</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">已续费 · RENEWED</span><span class="text-mono fw-medium" style="color: var(--color-success);">6</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">沉默 · SILENT</span><span class="text-mono fw-medium" style="color: var(--color-ink-3);">4</span></div>
+                <div class="flex items-center justify-between"><span class="text-ink-3">服务中 · IN-SERVICE</span><span class="text-mono fw-medium">1</span></div>
+              </div>
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-sm fw-medium mb-2 mt-4">状态来源</div>
+              <div class="flex-col gap-2 text-sm">
+                <div class="flex items-start gap-2"><span style="color: var(--color-success);">↗</span><span>活跃有效 4 周连续上升 · 由 46 增至 52 · 主要来自续费回流</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-warn-2);">!</span><span>即将到期 5 位在 7 天内 · 建议本周优先跟进</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-info);">+</span><span>状态变更有来源事件（订单/支付/课程/活动/联系）+ 时间戳 + 操作人 · 可悬停查看</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: CRM-005/010 联系方式审计 + 导出水印 -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">CRM-005 · 联系方式审计 + CRM-010 · 导出水印</span>
+              <h2 class="section-title">最近 7 天 · 联系方式访问 + 导出行为</h2>
+              <p class="section-subtitle">明文查看 / 导出 / 通话分别审计 · 导出文件带水印 + 有效期 + 下载日志</p>
+            </div>
+            <div class="flex gap-2">
+              <div class="segmented js-segmented">
+                <div class="segmented-item is-active">7 天</div>
+                <div class="segmented-item">30 天</div>
+                <div class="segmented-item">全部</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2x">
+            <!-- 左：访问行为概览 + 导出水印机制 -->
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">访问行为概览</div>
+                  <div class="card-subtitle">明文查看 / 通话 / 导出 各类次数</div>
+                </div>
+                <span class="badge badge-warn">! 1 异常</span>
+              </div>
+              <div class="grid-2x mt-4" style="gap: var(--space-3);">
+                <div class="stat-mini">
+                  <div class="stat-mini-label">明文查看</div>
+                  <div class="stat-mini-value" style="color: var(--color-info);">28</div>
+                  <div class="stat-mini-delta text-ink-3">含电话 18 + UMAX 10</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">通话</div>
+                  <div class="stat-mini-value" style="color: var(--color-success);">42</div>
+                  <div class="stat-mini-delta text-success">总时长 6h 18m</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">导出</div>
+                  <div class="stat-mini-value" style="color: var(--color-warn-2);">3</div>
+                  <div class="stat-mini-delta text-warn-2">1 待双签 · 2 已下载</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">异常告警</div>
+                  <div class="stat-mini-value" style="color: var(--color-danger);">1</div>
+                  <div class="stat-mini-delta text-danger">异设备异 IP</div>
+                </div>
+              </div>
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-sm fw-medium mb-2 mt-4">导出水印 + 有效期机制 (CRM-010)</div>
+              <div class="flex-col gap-2 text-sm">
+                <div class="flex items-start gap-2"><span style="color: var(--color-success);">✓</span><span>每次导出自动嵌入您的姓名 + 客户编号 + 导出时间 · 文件 7 天后自动失效 · 留痕 7 年</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-success);">✓</span><span>导出行数 ≤ 1000 / 单次（防误操作）</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-warn-2);">!</span><span>批量导出 86 位客户需双签（部门主管 + 平台主理人）</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-warn-2);">!</span><span>敏感字段（电话 / 身份证 / 资产）默认脱敏 · 需特殊授权明文</span></div>
+              </div>
+            </div>
+
+            <!-- 右：访问日志（紧凑 5 列版以适配窄列） -->
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">联系方式访问日志 · 12 条</div>
+                  <div class="card-subtitle">明文查看 / 通话 / 导出 各自审计 · 含访问者 + 设备 + IP</div>
+                </div>
+              </div>
+              <table class="crm-audit-table mt-4">
+                <thead>
+                  <tr>
+                    <th>时间</th>
+                    <th>客户</th>
+                    <th>操作</th>
+                    <th>访问者 · IP / 设备</th>
+                    <th>结果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="is-sensitive">
+                    <td class="crm-audit-time">08-12 14:32:08</td>
+                    <td>林秀华</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-view">明文查看电话</span><div class="text-xs text-ink-3 mt-1">CRM 详情</div></td>
+                    <td>您 · 陈雪<div class="crm-audit-time">iPhone · 192.168.1.8</div></td>
+                    <td>✓ 通过</td>
+                  </tr>
+                  <tr>
+                    <td class="crm-audit-time">08-12 14:25:12</td>
+                    <td>王建国</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-call">通话</span><div class="text-xs text-ink-3 mt-1">UMAX 拨号</div></td>
+                    <td>您 · 陈雪<div class="crm-audit-time">Mac · 192.168.1.2</div></td>
+                    <td>通话 8m 24s</td>
+                  </tr>
+                  <tr class="is-sensitive">
+                    <td class="crm-audit-time">08-12 11:18:46</td>
+                    <td>陈雪等 86 位</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-export">批量导出</span><div class="text-xs text-ink-3 mt-1">全部联系方式</div></td>
+                    <td>您 · 陈雪<div class="crm-audit-time">Mac · 192.168.1.2</div></td>
+                    <td style="color: var(--color-warn-2);">需双签 · 待审</td>
+                  </tr>
+                  <tr>
+                    <td class="crm-audit-time">08-12 10:45:22</td>
+                    <td>郑伟</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-view">明文查看 UMAX</span><div class="text-xs text-ink-3 mt-1">CRM 详情</div></td>
+                    <td>王建国<div class="crm-audit-time">iPad · 192.168.1.15</div></td>
+                    <td>✓ 通过</td>
+                  </tr>
+                  <tr>
+                    <td class="crm-audit-time">08-11 16:30:11</td>
+                    <td>孙建华</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-view">明文查看电话</span><div class="text-xs text-ink-3 mt-1">客户列表</div></td>
+                    <td>张明<div class="crm-audit-time">Huawei · 192.168.1.22</div></td>
+                    <td>✓ 通过</td>
+                  </tr>
+                  <tr class="is-sensitive">
+                    <td class="crm-audit-time">08-11 09:12:08</td>
+                    <td>李雪</td>
+                    <td><span class="crm-audit-tag crm-audit-tag-export">导出通话记录</span><div class="text-xs text-ink-3 mt-1">通话模块</div></td>
+                    <td>您 · 陈雪<div class="crm-audit-time">Mac · 192.168.1.2</div></td>
+                    <td>✓ 已下载 1 次</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+</main>
+  </div>
+
+  <!-- ========== B1 增强：新建客户 Modal ========== -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-new-client"></div>
+  <div class="modal" id="modal-new-client" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">+ 新建客户</div>
+          <div class="text-xs text-ink-3 mt-1">填写后客户会进入"会员与客户"列表</div>
+        </div>
+        <div class="modal-close" data-modal-close="modal-new-client">✕</div>
+      </div>
+      <form id="form-new-client" class="modal-body" novalidate>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-4);">
+          <div class="input-group">
+            <label class="input-label">姓名<span class="required-mark">*</span></label>
+            <input type="text" class="input" name="name" placeholder="客户姓名" required />
+            <div class="form-error-hint" data-error-for="name"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">手机号<span class="required-mark">*</span></label>
+            <input type="tel" class="input" name="phone" placeholder="11 位手机号" maxlength="11" required />
+            <div class="form-error-hint" data-error-for="phone"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">客户来源<span class="required-mark">*</span></label>
+            <select class="select" name="source" required>
+              <option value="">请选择</option>
+              <option>直接推荐</option><option>协作者推荐</option><option>活动获取</option><option>资源目录</option>
+            </select>
+            <div class="form-error-hint" data-error-for="source"></div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">会员类型</label>
+            <select class="select" name="level"><option>免费</option><option>标准</option><option>高级</option></select>
+          </div>
+        </div>
+        <div class="input-group" style="margin-top:var(--space-4);">
+          <label class="input-label">业务兴趣</label>
+          <div style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+            <label class="check-pill js-check-pill"><input type="checkbox">POIF 成长</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">MCS 数字</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">企业咨询</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">AI 服务</label>
+            <label class="check-pill js-check-pill"><input type="checkbox">RWA</label>
+          </div>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-new-client">取消</button>
+        <button class="btn btn-primary" data-action="submit-new-client">创建客户</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== B1 增强：导出报表 Modal ========== -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-export"></div>
+  <div class="modal" id="modal-export" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">导出客户报表</div>
+          <div class="text-xs text-ink-3 mt-1">选择导出格式与字段范围</div>
+        </div>
+        <div class="modal-close" data-modal-close="modal-export">✕</div>
+      </div>
+      <div class="modal-body">
+        <div class="text-sm fw-medium mb-3">导出格式</div>
+        <div class="grid-2x" style="gap:var(--space-2); margin-bottom: var(--space-5);">
+          <label class="export-option is-active">
+            <input type="radio" name="export-fmt" value="xlsx" checked />
+            <div class="export-option-icon"><strong style="font-family:var(--font-mono);">XLSX</strong></div>
+            <div><div class="text-sm fw-medium">Excel 表格</div><div class="text-xs text-ink-3">适合二次分析</div></div>
+          </label>
+          <label class="export-option">
+            <input type="radio" name="export-fmt" value="csv" />
+            <div class="export-option-icon"><strong style="font-family:var(--font-mono);">CSV</strong></div>
+            <div><div class="text-sm fw-medium">CSV 文件</div><div class="text-xs text-ink-3">通用数据交换</div></div>
+          </label>
+        </div>
+
+        <div class="text-sm fw-medium mb-3">导出范围</div>
+        <div class="flex flex-col gap-2" style="margin-bottom: var(--space-5);">
+          <label class="check-pill is-active js-check-pill" style="display:inline-flex; align-self:flex-start;"><input type="radio" name="export-range" value="current" checked>当前筛选结果 (10 人)</label>
+          <label class="check-pill js-check-pill" style="display:inline-flex; align-self:flex-start;"><input type="radio" name="export-range" value="all">全部 86 位客户</label>
+          <label class="check-pill js-check-pill" style="display:inline-flex; align-self:flex-start;"><input type="radio" name="export-range" value="selected">已勾选 (0 人)</label>
+        </div>
+
+        <div class="text-sm fw-medium mb-3">包含字段</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2);">
+          <label class="check-box is-active js-check-box"><input type="checkbox" checked><div class="check-box-icon">✓</div><div><div class="check-box-title">基础信息</div><div class="check-box-desc">姓名 / 手机 / 编号</div></div></label>
+          <label class="check-box is-active js-check-box"><input type="checkbox" checked><div class="check-box-icon">✓</div><div><div class="check-box-title">会员状态</div><div class="check-box-desc">等级 / 到期 / 续费</div></div></label>
+          <label class="check-box is-active js-check-box"><input type="checkbox" checked><div class="check-box-icon">✓</div><div><div class="check-box-title">业务兴趣</div><div class="check-box-desc">关注方向 / 浏览历史</div></div></label>
+          <label class="check-box js-check-box"><input type="checkbox"><div class="check-box-icon">+</div><div><div class="check-box-title">PB 信誉值</div><div class="check-box-desc">信任评分</div></div></label>
+          <label class="check-box js-check-box"><input type="checkbox"><div class="check-box-icon">+</div><div><div class="check-box-title">服务记录</div><div class="check-box-desc">历史服务明细</div></div></label>
+          <label class="check-box js-check-box"><input type="checkbox"><div class="check-box-icon">+</div><div><div class="check-box-title">推荐人备注</div><div class="check-box-desc">私人备注</div></div></label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-export">取消</button>
+        <button class="btn btn-primary" data-action="confirm-export">导出报表</button>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // B1 增强：进度条入场动画
+  (function () {
+    var bars = document.querySelectorAll('.progress-bar');
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('animate-in'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.3 });
+      bars.forEach(function (b) { obs.observe(b); });
+    } else {
+      bars.forEach(function (b) { b.classList.add('animate-in'); });
+    }
+  })();
+
+  // B1 增强：filter chip 联动（互斥：付费/免费/即将到期/流失风险 + 申请支持/服务中叠加）
+  (function () {
+    var chips = document.querySelectorAll('.filter-bar .filter-chip[data-filter]');
+    var rows = document.querySelectorAll('tr.js-searchable');
+    function applyFilter() {
+      var active = [];
+      chips.forEach(function (c) { if (c.classList.contains('is-active')) active.push(c.getAttribute('data-filter')); });
+      var isAll = active.indexOf('all') >= 0;
+      var q = document.querySelector('.js-row-search').value.trim().toLowerCase();
+      var visibleCount = 0;
+      rows.forEach(function (row) {
+        var cat = (row.getAttribute('data-cat') || '').toLowerCase();
+        var key = (row.getAttribute('data-search') || '').toLowerCase();
+        var passFilter = isAll;
+        if (!passFilter) {
+          passFilter = active.every(function (f) { return cat.indexOf(f) >= 0; });
+        }
+        var passSearch = !q || key.indexOf(q) >= 0;
+        var show = passFilter && passSearch;
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+      // 更新分页显示
+      var pagination = document.querySelector('.text-sm.text-ink-3');
+      if (pagination && pagination.textContent.indexOf('条') >= 0) {
+        pagination.textContent = '显示 1-' + visibleCount + ' / 86 条';
+      }
+    }
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var f = chip.getAttribute('data-filter');
+        if (f === 'all') {
+          chips.forEach(function (c) { c.classList.remove('is-active'); });
+          chip.classList.add('is-active');
+        } else {
+          // 点击非全部时，取消"全部"，可与其他非全部 chip 共存
+          var allChip = document.querySelector('.filter-chip[data-filter="all"]');
+          if (allChip) allChip.classList.remove('is-active');
+          chip.classList.toggle('is-active');
+          // 检查是否还有非全部激活
+          var anyActive = Array.from(chips).some(function (c) { return c.getAttribute('data-filter') !== 'all' && c.classList.contains('is-active'); });
+          if (!anyActive && allChip) allChip.classList.add('is-active');
+        }
+        applyFilter();
+      });
+    });
+    // 搜索时也走同一逻辑
+    var search = document.querySelector('.js-row-search');
+    if (search) {
+      search.addEventListener('input', applyFilter);
+    }
+  })();
+
+  // B1 增强：行选中 → 更新右侧侧栏
+  (function () {
+    var side = document.querySelector('.crm-side');
+    if (!side) return;
+    var sample = {
+      linxh: { name: '林秀华', id: 'M-2024-0381', avatar: '林', level: '高级', color: 'avatar-role-recommender', days: '7', pb: '1,240', tenure: '2 年 4 个月', renewals: '5 次', biz: ['POIF', 'AI'], source: '直接推荐' },
+      wangmy: { name: '王明远', id: 'M-2025-1102', avatar: '王', level: '企业', color: 'avatar-role-ai', days: '142', pb: '1,860', tenure: '1 年 4 个月', renewals: '2 次', biz: ['企业', 'AI'], source: '直接推荐' },
+      zhouhm: { name: '周慧敏', id: 'M-2024-0729', avatar: '周', level: '高级', color: 'avatar-role-consultant', days: '68', pb: '986', tenure: '2 年 1 个月', renewals: '3 次', biz: ['POIF', '健康'], source: '协作者推荐' },
+      zhangwj: { name: '张伟杰', id: 'M-2023-0902', avatar: '张', level: '免费', color: '', days: '—', pb: '420', tenure: '2 年 11 个月', renewals: '0 次', biz: ['MCS'], source: '活动获取' },
+      xuli: { name: '徐丽', id: 'M-2024-1203', avatar: '徐', level: '标准', color: '', days: '98', pb: '1,420', tenure: '1 年 8 个月', renewals: '2 次', biz: ['企业', 'RWA'], source: '直接推荐' },
+      zhaods: { name: '赵东升', id: 'M-2024-0512', avatar: '赵', level: '标准', color: '', days: '34', pb: '886', tenure: '2 年 3 个月', renewals: '1 次', biz: ['AI', '黄金'], source: '直接推荐' },
+      chenxm: { name: '陈雪梅', id: 'M-2023-0211', avatar: '陈', level: '高级', color: '', days: '5', pb: '1,680', tenure: '3 年 6 个月', renewals: '6 次', biz: ['POIF', '企业'], source: '直接推荐' },
+      fangjg: { name: '方建国', id: 'M-2024-0618', avatar: '方', level: '标准', color: 'avatar-role-consultant', days: '6', pb: '720', tenure: '2 年 2 个月', renewals: '1 次', biz: ['再生营'], source: '协作者推荐' },
+      hejing: { name: '何静', id: 'M-2023-1109', avatar: '何', level: '标准', color: '', days: '21', pb: '580', tenure: '2 年 10 个月', renewals: '2 次', biz: ['MCS'], source: '活动获取' },
+      liangwb: { name: '梁文博', id: 'M-2024-0321', avatar: '梁', level: '免费', color: '', days: '—', pb: '180', tenure: '4 天', renewals: '0 次', biz: ['POIF'], source: '资源目录' }
+    };
+    document.querySelectorAll('tr.js-row-select').forEach(function (row) {
+      row.addEventListener('click', function (e) {
+        if (e.target.closest('input,button,a')) return;
+        var id = row.getAttribute('data-id');
+        var d = sample[id];
+        if (!d) return;
+        // 更新侧栏
+        var av = side.querySelector('.avatar-xl');
+        if (av) { av.className = 'avatar avatar-xl ' + d.color; av.textContent = d.avatar; }
+        var nameEl = side.querySelector('.card-title');
+        if (nameEl) nameEl.textContent = d.name;
+        var sub = side.querySelectorAll('.card-subtitle');
+        if (sub[0]) sub[0].textContent = d.id;
+        var badges = side.querySelectorAll('.badge-success');
+        if (badges[0]) badges[0].textContent = d.level;
+        // 数值
+        var grids = side.querySelectorAll('.kpi-value');
+        if (grids[0]) {
+          grids[0].textContent = d.days + ' 天';
+          if (d.days !== '—' && parseInt(d.days) <= 30) grids[0].style.color = 'var(--color-warn-2)';
+          else grids[0].style.color = '';
+        }
+        if (grids[1]) {
+          grids[1].textContent = d.pb;
+          grids[1].style.color = 'var(--color-trust)';
+        }
+        // 详情
+        var meta = side.querySelectorAll('.fw-medium');
+        meta.forEach(function (m) {
+          var label = m.previousElementSibling;
+          if (label && label.classList.contains('text-ink-3')) {
+            var t = label.textContent.trim();
+            if (t === '会员时长') m.textContent = d.tenure;
+            if (t === '累计续费') m.textContent = d.renewals;
+            if (t === '来源') m.textContent = d.source;
+          }
+        });
+        // 业务兴趣
+        var tagStack = side.querySelector('.tag-stack');
+        if (tagStack) {
+          tagStack.innerHTML = d.biz.map(function (b) { return '<span class="badge badge-outline">' + b + '</span>'; }).join('');
+        }
+      });
+    });
+  })();
+
+  // B1 增强：导出按钮 → 打开 modal；导出 modal 提交
+  (function () {
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('button');
+      if (!t) return;
+      var txt = t.textContent.trim();
+      if (txt === '导入') {
+        toast('已上传文件，正在解析...', 'info');
+      } else if (txt === '批量操作') {
+        toast('已勾选客户：0', 'warn');
+      } else if (txt === '+ 新建客户') {
+        // 打开本页面新增客户 modal
+        var m = document.getElementById('modal-new-client');
+        if (m) {
+          m.classList.add('is-open');
+          var bd = document.querySelector('[data-modal-backdrop="modal-new-client"]');
+          if (bd) bd.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+        } else {
+          toast('请在「我的工作台」新建客户', 'info');
+        }
+      } else if (txt === '导出') {
+        // 由 modal 处理
+      } else if (txt === '电话联系' || txt === 'UMAX') {
+        toast('已发起联系', 'success');
+      } else if (txt === '详情') {
+        toast('正在打开客户详情', 'info');
+      } else if (txt === '执行建议') {
+        toast('已执行 AI 建议', 'success');
+      }
+    });
+
+    // 确认导出
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('[data-action]');
+      if (a && a.getAttribute('data-action') === 'confirm-export') {
+        var fmt = document.querySelector('input[name="export-fmt"]:checked');
+        var range = document.querySelector('input[name="export-range"]:checked');
+        var rangeText = range ? range.parentElement.textContent.trim().split(' ')[0] : '当前';
+        toast('已生成 ' + rangeText + ' ' + (fmt ? fmt.value.toUpperCase() : 'XLSX') + ' 报表', 'success');
+        setTimeout(function () {
+          var m = document.getElementById('modal-export');
+          if (m) m.classList.remove('is-open');
+          var bd = document.querySelector('[data-modal-backdrop="modal-export"]');
+          if (bd) bd.classList.remove('is-open');
+          document.body.style.overflow = '';
+        }, 500);
+      }
+    });
+
+    // 单选互斥样式（export-option）
+    document.querySelectorAll('.export-option').forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        document.querySelectorAll('.export-option').forEach(function (o) { o.classList.remove('is-active'); });
+        opt.classList.add('is-active');
+        var input = opt.querySelector('input');
+        if (input) { input.checked = true; }
+      });
+    });
+  })();
+
+  // B1 增强：新建客户表单验证 + 提交
+  (function () {
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('[data-action]');
+      if (!a || a.getAttribute('data-action') !== 'submit-new-client') return;
+      var form = document.getElementById('form-new-client');
+      if (!form) return;
+      var name = form.querySelector('[name="name"]').value.trim();
+      var phone = form.querySelector('[name="phone"]').value.trim();
+      var source = form.querySelector('[name="source"]').value;
+      var ok = true;
+      function setErr(field, msg) {
+        var el = form.querySelector('[data-error-for="' + field + '"]');
+        if (el) el.textContent = msg || '';
+        var input = form.querySelector('[name="' + field + '"]');
+        if (input) { if (msg) input.setAttribute('data-state', 'error'); else input.removeAttribute('data-state'); }
+      }
+      if (!name) { setErr('name', '请填写姓名'); ok = false; } else setErr('name', '');
+      if (!phone) { setErr('phone', '请填写手机号'); ok = false; }
+      else if (!/^1[3-9]\d{9}$/.test(phone)) { setErr('phone', '手机号格式不正确'); ok = false; }
+      else setErr('phone', '');
+      if (!source) { setErr('source', '请选择客户来源'); ok = false; } else setErr('source', '');
+      if (!ok) { toast('请填写所有必填项', 'error'); return; }
+      toast('客户创建成功', 'success');
+      form.reset();
+      setTimeout(function () {
+        var m = document.getElementById('modal-new-client');
+        if (m) m.classList.remove('is-open');
+        var bd = document.querySelector('[data-modal-backdrop="modal-new-client"]');
+        if (bd) bd.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }, 400);
+    });
+
+    // 失焦验证
+    var form = document.getElementById('form-new-client');
+    if (form) {
+      form.querySelectorAll('[name]').forEach(function (el) {
+        el.addEventListener('blur', function () {
+          var n = el.getAttribute('name');
+          var v = el.value.trim();
+          var errEl = form.querySelector('[data-error-for="' + n + '"]');
+          if (n === 'name' && !v) { if (errEl) errEl.textContent = '请填写姓名'; el.setAttribute('data-state', 'error'); }
+          if (n === 'phone' && v && !/^1[3-9]\d{9}$/.test(v)) { if (errEl) errEl.textContent = '手机号格式不正确'; el.setAttribute('data-state', 'error'); }
+          if (n === 'source' && !v) { if (errEl) errEl.textContent = '请选择客户来源'; el.setAttribute('data-state', 'error'); }
+        });
+        el.addEventListener('input', function () {
+          if (el.getAttribute('data-state') === 'error' && el.value.trim()) {
+            el.removeAttribute('data-state');
+            var errEl = form.querySelector('[data-error-for="' + el.getAttribute('name') + '"]');
+            if (errEl) errEl.textContent = '';
+          }
+        });
+      });
+    }
+  })();
+</script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

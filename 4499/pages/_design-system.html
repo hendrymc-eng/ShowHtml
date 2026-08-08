@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>设计系统 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .swatch { width: 100%; height: 80px; border-radius: var(--radius-sm); border: 1px solid var(--color-line); margin-bottom: var(--space-2); position: relative; }
+    .swatch-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-ink-3); }
+    .swatch-name { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-ink); margin-bottom: var(--space-1); }
+    .type-row { display: flex; align-items: baseline; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); }
+    .type-name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-3); min-width: 140px; }
+    .space-bar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+    .space-visual { height: 12px; background: var(--color-accent); border-radius: 2px; }
+    .space-label { font-family: var(--font-mono); font-size: var(--text-sm); min-width: 100px; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="_index.html" class="topbar-brand" style="text-decoration:none;"><div class="topbar-brand-mark">4</div><span>4499 原型</span></a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索设计 token..." /></div>
+    <div class="topbar-actions">
+      <a href="_index.html" class="btn btn-ghost btn-sm">返回目录</a>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="app-content">
+      <div class="breadcrumb">
+        <a href="_index.html">总目录</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>设计系统</span>
+      </div>
+
+      <div class="page-head">
+        <h1 class="page-title">4499 设计系统</h1>
+        <p class="page-subtitle">Modern-Minimal · 专业 · 清晰 · enterprise 信任感 · hall-mark anti-slop</p>
+      </div>
+
+      <!-- 字体 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">字体系统</span><h2 class="section-title">字体配对</h2></div>
+        <div class="card card-pad-lg">
+          <div class="type-row"><div class="type-name">--font-display / Space Grotesk</div><div style="font-family: var(--font-display); font-size: var(--text-4xl); font-weight: var(--weight-semibold);">全球商业关系与信任匹配引擎</div></div>
+          <div class="type-row"><div class="type-name">--font-body / Inter</div><div style="font-family: var(--font-body); font-size: var(--text-md); color: var(--color-ink-2);">让资源主动找到最需要它的人 · 让需求主动找到最可信的资源。</div></div>
+          <div class="type-row"><div class="type-name">--font-mono / JetBrains Mono</div><div style="font-family: var(--font-mono); font-size: var(--text-sm);">M-2024-0381 · ¥2,486 · +18%</div></div>
+        </div>
+      </section>
+
+      <!-- 字号 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">字号尺度</span><h2 class="section-title">11 档</h2></div>
+        <div class="card card-pad-lg">
+          <div class="type-row"><div class="type-name">--text-xs · 11px</div><div style="font-size: var(--text-xs);">标签 · 角标 · 版权</div></div>
+          <div class="type-row"><div class="type-name">--text-sm · 12px</div><div style="font-size: var(--text-sm);">弱化文字 · 表格次列</div></div>
+          <div class="type-row"><div class="type-name">--text-base · 13px</div><div style="font-size: var(--text-base);">表格 · 数据 · 列表</div></div>
+          <div class="type-row"><div class="type-name">--text-md · 14px</div><div style="font-size: var(--text-md);">正文默认</div></div>
+          <div class="type-row"><div class="type-name">--text-lg · 16px</div><div style="font-size: var(--text-lg);">强调正文 · 表头</div></div>
+          <div class="type-row"><div class="type-name">--text-xl · 18px</div><div style="font-size: var(--text-xl);">卡片标题</div></div>
+          <div class="type-row"><div class="type-name">--text-2xl · 22px</div><div style="font-size: var(--text-2xl); font-weight: var(--weight-semibold);">Section 标题</div></div>
+          <div class="type-row"><div class="type-name">--text-3xl · 28px</div><div style="font-size: var(--text-3xl); font-weight: var(--weight-semibold);">大 Section 标题</div></div>
+          <div class="type-row"><div class="type-name">--text-4xl · 36px</div><div style="font-size: var(--text-4xl); font-weight: var(--weight-semibold); letter-spacing: -0.02em;">页面标题</div></div>
+          <div class="type-row"><div class="type-name">--text-5xl · 48px</div><div style="font-size: var(--text-5xl); font-weight: var(--weight-semibold); letter-spacing: -0.02em;">Hero / KPI</div></div>
+        </div>
+      </section>
+
+      <!-- 颜色 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">色板</span><h2 class="section-title">基础色 · 品牌色 · 语义色 · 业务色</h2></div>
+        <div class="grid-4x">
+          <div><div class="swatch" style="background: var(--color-paper);"></div><div class="swatch-name">Paper</div><div class="swatch-label">--color-paper · #FAFBFC</div></div>
+          <div><div class="swatch" style="background: var(--color-surface);"></div><div class="swatch-name">Surface</div><div class="swatch-label">--color-surface · #FFFFFF</div></div>
+          <div><div class="swatch" style="background: var(--color-surface-2);"></div><div class="swatch-name">Surface-2</div><div class="swatch-label">--color-surface-2 · #F4F6F8</div></div>
+          <div><div class="swatch" style="background: var(--color-ink);"></div><div class="swatch-name">Ink</div><div class="swatch-label">--color-ink · #0F1620</div></div>
+          <div><div class="swatch" style="background: var(--color-accent);"></div><div class="swatch-name">Accent (Cobalt)</div><div class="swatch-label">--color-accent · #1E3FAE</div></div>
+          <div><div class="swatch" style="background: var(--color-success);"></div><div class="swatch-name">Success</div><div class="swatch-label">--color-success · #0E9F6E</div></div>
+          <div><div class="swatch" style="background: var(--color-warn);"></div><div class="swatch-name">Warn</div><div class="swatch-label">--color-warn · #D08718</div></div>
+          <div><div class="swatch" style="background: var(--color-danger);"></div><div class="swatch-name">Danger</div><div class="swatch-label">--color-danger · #DC4B3D</div></div>
+          <div><div class="swatch" style="background: var(--color-info);"></div><div class="swatch-name">Info</div><div class="swatch-label">--color-info · #3DA0E8</div></div>
+          <div><div class="swatch" style="background: var(--color-trust);"></div><div class="swatch-name">Trust (PB)</div><div class="swatch-label">--color-trust · #E8901A</div></div>
+          <div><div class="swatch" style="background: var(--color-charity);"></div><div class="swatch-name">Charity</div><div class="swatch-label">--color-charity · #C8423F</div></div>
+          <div><div class="swatch" style="background: var(--color-accent-soft);"></div><div class="swatch-name">Accent-soft</div><div class="swatch-label">--color-accent-soft · #E6ECFA</div></div>
+        </div>
+      </section>
+
+      <!-- 按钮 8 状态 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">按钮 8 状态</span><h2 class="section-title">Primary · Secondary · Ghost · Danger</h2></div>
+        <div class="grid-2x">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Primary</div></div>
+            <div class="flex flex-col gap-3 mt-4">
+              <div class="flex items-center gap-3"><button class="btn btn-primary">Default</button><span class="text-sm text-ink-3">default</span></div>
+              <div class="flex items-center gap-3"><button class="btn btn-primary is-hover">Hover</button><span class="text-sm text-ink-3">hover</span></div>
+              <div class="flex items-center gap-3"><button class="btn btn-primary is-focus">Focus</button><span class="text-sm text-ink-3">focus-visible</span></div>
+              <div class="flex items-center gap-3"><button class="btn btn-primary is-active">Active</button><span class="text-sm text-ink-3">active</span></div>
+              <div class="flex items-center gap-3"><button class="btn btn-primary" disabled>Disabled</button><span class="text-sm text-ink-3">disabled</span></div>
+              <div class="flex items-center gap-3"><button class="btn btn-primary" data-state="loading">Loading</button><span class="text-sm text-ink-3">loading</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Secondary</div></div>
+            <div class="flex flex-col gap-3 mt-4">
+              <div class="flex items-center gap-3"><button class="btn btn-secondary">Default</button></div>
+              <div class="flex items-center gap-3"><button class="btn btn-secondary is-hover">Hover</button></div>
+              <div class="flex items-center gap-3"><button class="btn btn-secondary is-focus">Focus</button></div>
+              <div class="flex items-center gap-3"><button class="btn btn-secondary is-active">Active</button></div>
+              <div class="flex items-center gap-3"><button class="btn btn-secondary" disabled>Disabled</button></div>
+              <div class="flex items-center gap-3"><button class="btn btn-secondary" data-state="loading">Loading</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 徽章 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">徽章 / 标签</span><h2 class="section-title">8 状态 + 4 尺寸</h2></div>
+        <div class="card card-pad-lg">
+          <div class="flex items-center gap-2 mb-3" style="flex-wrap: wrap;">
+            <span class="badge">Default</span>
+            <span class="badge badge-accent">Accent</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warn">Warn</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-trust">Trust</span>
+            <span class="badge badge-charity">Charity</span>
+            <span class="badge badge-ink">Ink</span>
+            <span class="badge badge-outline">Outline</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3" style="flex-wrap: wrap;">
+            <span class="badge badge-sm">Small</span>
+            <span class="badge">Default</span>
+            <span class="badge badge-lg">Large</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 卡片 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">卡片</span><h2 class="section-title">4 变体</h2></div>
+        <div class="grid-2x2">
+          <div class="card"><div class="card-title">Default</div><div class="card-body mt-2">永远 bg: surface + 1px hairline + radius: 6px</div></div>
+          <div class="card card-clickable"><div class="card-title">Clickable</div><div class="card-body mt-2">hover 时 surface-2，无 transform 无 shadow</div></div>
+          <div class="card card-pad-lg"><div class="card-title">Large Padding</div><div class="card-body mt-2">空间更宽松 · 适合大内容</div></div>
+          <div class="card card-pad-sm"><div class="card-title">Small Padding</div><div class="card-body mt-2">紧凑 · 适合 list item / 嵌入</div></div>
+        </div>
+      </section>
+
+      <!-- 表单 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">表单</span><h2 class="section-title">Input / Select / Textarea / Checkbox</h2></div>
+        <div class="grid-2x">
+          <div class="card card-pad-lg">
+            <div class="input-group mb-4">
+              <label class="input-label">姓名 <span style="color: var(--color-danger);">*</span></label>
+              <input class="input" placeholder="请输入" />
+            </div>
+            <div class="input-group mb-4">
+              <label class="input-label">服务类型</label>
+              <select class="select"><option>企业诊断</option><option>成长服务</option><option>AI 服务</option></select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">备注</label>
+              <textarea class="textarea" placeholder="详细描述..."></textarea>
+            </div>
+          </div>
+          <div class="card card-pad-lg">
+            <div class="input-group mb-4">
+              <label class="input-label" data-state="error">错误状态</label>
+              <input class="input" data-state="error" value="无效输入" />
+              <div class="input-error">请输入有效内容</div>
+            </div>
+            <div class="input-group mb-4">
+              <label class="input-label">成功状态</label>
+              <input class="input" data-state="success" value="正确" />
+            </div>
+            <div class="input-group">
+              <label class="input-label">禁用</label>
+              <input class="input" disabled value="不可编辑" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI 建议卡 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">AI 建议卡</span><h2 class="section-title">对象 + 原因 + 建议动作 + 预计目标</h2></div>
+        <div class="ai-suggestion">
+          <div class="ai-suggestion-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v3M7 10v3M1 7h3M10 7h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.4"/></svg>
+            AI 建议
+          </div>
+          <div class="ai-suggestion-title">建议先联系林秀华</div>
+          <div class="ai-suggestion-reason">她将在 7 天后到期，AI 已分析其近 30 天行为：完成 2 门 AI 课程 + 3 次浏览 POIF 内容 + 收藏 1 篇企业服务案例。续费概率 <strong>76%</strong>。</div>
+          <div class="ai-suggestion-actions">
+            <button class="btn btn-primary btn-sm">电话联系</button>
+            <button class="btn btn-secondary btn-sm">UMAX 消息</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 进度条 / KPI -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">进度条 / KPI 卡</span><h2 class="section-title">2 组件</h2></div>
+        <div class="grid-2x">
+          <div class="card">
+            <div class="card-header"><div class="card-title">进度条</div></div>
+            <div class="flex flex-col gap-3 mt-4">
+              <div><div class="flex items-center justify-between mb-1"><span class="text-sm">Default</span><span class="text-mono text-sm">62%</span></div><div class="progress"><div class="progress-bar" style="width: 62%;"></div></div></div>
+              <div><div class="flex items-center justify-between mb-1"><span class="text-sm">Trust</span><span class="text-mono text-sm">76%</span></div><div class="progress progress-trust"><div class="progress-bar" style="width: 76%;"></div></div></div>
+              <div><div class="flex items-center justify-between mb-1"><span class="text-sm">Success</span><span class="text-mono text-sm">96%</span></div><div class="progress progress-success"><div class="progress-bar" style="width: 96%;"></div></div></div>
+              <div><div class="flex items-center justify-between mb-1"><span class="text-sm">Warn</span><span class="text-mono text-sm">50%</span></div><div class="progress progress-warn"><div class="progress-bar" style="width: 50%;"></div></div></div>
+              <div><div class="flex items-center justify-between mb-1"><span class="text-sm">Danger</span><span class="text-mono text-sm">20%</span></div><div class="progress progress-danger"><div class="progress-bar" style="width: 20%;"></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">KPI 卡</div></div>
+            <div class="grid-2x mt-4" style="gap: var(--space-3);">
+              <div class="kpi-card" style="padding: var(--space-4);"><div class="kpi-label">会员与客户</div><div class="kpi-value" style="font-size: var(--text-2xl);">86<span class="kpi-value-unit">人</span></div><div class="kpi-delta kpi-delta-up">+6</div></div>
+              <div class="kpi-card" style="padding: var(--space-4);"><div class="kpi-label">PB 信誉</div><div class="kpi-value" style="font-size: var(--text-2xl); color: var(--color-trust);">2,486</div><div class="kpi-delta kpi-delta-up">+38</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 间距 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">间距尺度</span><h2 class="section-title">4pt 基准</h2></div>
+        <div class="card card-pad-lg">
+          <div class="space-bar"><div class="space-label">--space-1 · 4px</div><div class="space-visual" style="width: 4px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-2 · 8px</div><div class="space-visual" style="width: 8px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-3 · 12px</div><div class="space-visual" style="width: 12px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-4 · 16px</div><div class="space-visual" style="width: 16px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-5 · 20px</div><div class="space-visual" style="width: 20px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-6 · 24px</div><div class="space-visual" style="width: 24px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-8 · 32px</div><div class="space-visual" style="width: 32px;"></div></div>
+          <div class="space-bar"><div class="space-label">--space-12 · 48px</div><div class="space-visual" style="width: 48px;"></div></div>
+        </div>
+      </section>
+
+      <!-- 圆角 -->
+      <section class="section">
+        <div class="section-head"><span class="eyebrow">圆角</span><h2 class="section-title">5 档</h2></div>
+        <div class="flex gap-4">
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-xs);"></div>
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-sm);"></div>
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-md);"></div>
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-lg);"></div>
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-xl);"></div>
+          <div class="card" style="width: 80px; height: 80px; padding: 0; border-radius: var(--radius-pill);"></div>
+        </div>
+        <div class="text-sm text-ink-3 mt-3">xs(2) / sm(4) / md(6) / lg(10) / xl(14) / pill(999)</div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    var map = { user: 'workbench-user.html', member: 'workbench-recommender.html', enterprise: 'workbench-enterprise.html', organization: 'workbench-organization.html' };
+    var cur = location.pathname.split('/').pop() || 'index.html';
+    // 跳到对应 workbench
+    window.location.href = map[t] || 'workbench-recommender.html';
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

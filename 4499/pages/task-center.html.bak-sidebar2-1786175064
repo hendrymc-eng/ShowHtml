@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>任务中心 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .task-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); transition: background var(--dur-fast) var(--ease-out); }
+    .task-row:hover { background: var(--color-surface-2); }
+    .task-row:last-child { border-bottom: none; }
+    .task-check { width: 18px; height: 18px; border-radius: var(--radius-xs); border: 1.5px solid var(--color-line-3); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--color-surface); }
+    .task-check.is-done { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
+    .task-main { flex: 1; min-width: 0; }
+    .task-title { font-size: var(--text-md); color: var(--color-ink); }
+    .task-row.is-done .task-title { color: var(--color-ink-3); text-decoration: line-through; }
+    .task-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .task-time { font-size: var(--text-xs); color: var(--color-ink-3); font-family: var(--font-mono); flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".js-task-row" placeholder="搜索任务、客户、项目…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content-wide">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>任务中心</span>
+        </div>
+        <div class="page-head">
+          <h1 class="page-title">任务中心</h1>
+          <p class="page-subtitle">所有待办、AI 建议、协作任务的统一入口 · 12 个待办 · 8 个已完成</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">+ 新建任务</button>
+            <button class="btn btn-primary">按时间排序</button>
+          </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">今日待办</div>
+            <div class="kpi-value">5</div>
+            <div class="text-xs text-warn">2 项紧急</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">本周已完成</div>
+            <div class="kpi-value"><span class="js-counter" data-target="17">0</span></div>
+            <div class="progress progress-success" style="height: 4px;"><div class="progress-bar" style="width: 68%;"></div></div>
+            <div class="text-xs text-ink-3">完成率 68%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">本月协作</div>
+            <div class="kpi-value"><span class="js-counter" data-target="38">0</span></div>
+            <div class="text-xs text-success">↑ 12 vs 上月</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">PB 增长</div>
+            <div class="kpi-value text-trust">+4</div>
+            <div class="text-xs text-ink-3">本月任务贡献</div>
+          </div>
+        </div>
+
+        <!-- 筛选条 -->
+        <div class="filter-bar mb-4">
+          <div class="filter-chip is-active js-filter">全部 <span class="filter-chip-count">20</span></div>
+          <div class="filter-chip js-filter">待办 <span class="filter-chip-count">12</span></div>
+          <div class="filter-chip js-filter">已完成 <span class="filter-chip-count">8</span></div>
+          <div class="filter-divider"></div>
+          <div class="filter-chip js-filter">客户跟进 <span class="filter-chip-count">6</span></div>
+          <div class="filter-chip js-filter">服务交付 <span class="filter-chip-count">3</span></div>
+          <div class="filter-chip js-filter">学习任务 <span class="filter-chip-count">3</span></div>
+          <div class="filter-chip js-filter">公益 <span class="filter-chip-count">2</span></div>
+          <div class="filter-chip js-filter">紧急 <span class="filter-chip-count">2</span></div>
+        </div>
+
+        <!-- 任务列表 + AI 建议 -->
+        <div class="grid-2x" style="grid-template-columns: 1.6fr 1fr;">
+          <div>
+            <section class="section">
+              <div class="section-head-row">
+                <div>
+                  <span class="eyebrow">今日优先</span>
+                  <h2 class="section-title">12 个待办</h2>
+                </div>
+                <span class="text-sm text-ink-3">按时间排序</span>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div class="task-row js-task-row" data-search="林秀华 7 天内到期 客户跟进 紧急">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">联系林秀华 · 7 天内到期</div>
+                    <div class="task-meta">客户跟进 · 高级会员 · 跨境资产方案 v2 即将到期</div>
+                  </div>
+                  <span class="badge badge-danger">紧急</span>
+                  <span class="task-time">今日 14:00</span>
+                </div>
+                <div class="task-row js-task-row" data-search="王明远 服务交付 AI 顾问 紧急">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">完成王明远企业资产方案 v2 复核</div>
+                    <div class="task-meta">服务交付 · SO-2026-0264 · AI 顾问李婧主导</div>
+                  </div>
+                  <span class="badge badge-warn">今日</span>
+                  <span class="task-time">今日 16:30</span>
+                </div>
+                <div class="task-row js-task-row" data-search="POIF 投资基础 学习 课程进度 33%">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">POIF 投资基础 · 完成模块 5-7</div>
+                    <div class="task-meta">学习任务 · 课程进度 33% · 8 月内目标完成</div>
+                  </div>
+                  <span class="badge badge-outline">明日</span>
+                  <span class="task-time">明日 20:00</span>
+                </div>
+                <div class="task-row js-task-row" data-search="POIF 2026 年会 活动报名 8 月 12 日">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">POIF 2026 年会报名确认</div>
+                    <div class="task-meta">活动 · 08-12 截止报名 · 已选 3 场圆桌</div>
+                  </div>
+                  <span class="badge badge-outline">本周</span>
+                  <span class="task-time">本周</span>
+                </div>
+                <div class="task-row js-task-row" data-search="清禾公益 走访 山区教育">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">清禾公益项目 · 9 月走访报名</div>
+                    <div class="task-meta">公益 · 9-15 至 9-18 · 云南怒江 4 校</div>
+                  </div>
+                  <span class="badge badge-charity">公益</span>
+                  <span class="task-time">本周</span>
+                </div>
+                <div class="task-row js-task-row" data-search="陈丽华 服务回访">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">陈丽华服务回访 · 战略 v1.0 验收</div>
+                    <div class="task-meta">服务交付 · 30 天后第一次回访</div>
+                  </div>
+                  <span class="badge badge-info">回访</span>
+                  <span class="task-time">下周一</span>
+                </div>
+                <div class="task-row js-task-row" data-search="张伟杰 跨境税务 客户跟进">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">张伟杰 · 跨境税务 1v1 答疑预约</div>
+                    <div class="task-meta">客户跟进 · 30 分钟 · EMP 王志远</div>
+                  </div>
+                  <span class="badge badge-accent">1v1</span>
+                  <span class="task-time">下周三</span>
+                </div>
+                <div class="task-row js-task-row" data-search="双叉网络 客户关系 维护">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">双叉网络 · 3 位客户关系维护</div>
+                    <div class="task-meta">客户跟进 · 30 天未联系 · 5 分钟问候</div>
+                  </div>
+                  <span class="badge badge-outline">本周</span>
+                  <span class="task-time">本周</span>
+                </div>
+                <div class="task-row js-task-row" data-search="EMP 顾问 张明 1v1 预约">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">EMP 张明 · 月度 1v1 咨询预约</div>
+                    <div class="task-meta">专业支持 · 月度例行 · 60 分钟</div>
+                  </div>
+                  <span class="badge badge-trust">EMP</span>
+                  <span class="task-time">下周五</span>
+                </div>
+                <div class="task-row js-task-row" data-search="保险保单 年度复核">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">3 张保单年度复核</div>
+                    <div class="task-meta">个人 · 含健康险 + 寿险 + 意外险</div>
+                  </div>
+                  <span class="badge badge-outline">月底</span>
+                  <span class="task-time">月底</span>
+                </div>
+                <div class="task-row js-task-row" data-search="Trust Passport 维度 8 维度 维护">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">更新 Trust Passport 8 维度资料</div>
+                    <div class="task-meta">个人 · 季度维护 · 含长期行为记录</div>
+                  </div>
+                  <span class="badge badge-outline">月底</span>
+                  <span class="task-time">月底</span>
+                </div>
+                <div class="task-row js-task-row" data-search="受益人 设置 传承">
+                  <div class="task-check js-task-check"></div>
+                  <div class="task-main">
+                    <div class="task-title">受益人设置 · 启动传承规划</div>
+                    <div class="task-meta">个人 · 长期 · 与 EMP 王建林 1v1</div>
+                  </div>
+                  <span class="badge badge-warn">长期</span>
+                  <span class="task-time">下月</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head-row">
+                <div>
+                  <span class="eyebrow">已完成</span>
+                  <h2 class="section-title">8 个已完成 · 最近 7 天</h2>
+                </div>
+                <div class="segmented js-segmented">
+                  <div class="segmented-item is-active">全部</div>
+                  <div class="segmented-item">客户</div>
+                  <div class="segmented-item">服务</div>
+                  <div class="segmented-item">其他</div>
+                </div>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div class="task-row is-done js-task-row" data-search="张伟杰 回访报告 客户跟进">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">提交张伟杰回访报告</div>
+                    <div class="task-meta">客户跟进 · 2 天前完成 · 评分 4.5</div>
+                  </div>
+                  <span class="task-time">2 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="清禾公益 资金复核 6 月">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">清禾公益项目 · 6 月资金复核</div>
+                    <div class="task-meta">公益 · 4 天前完成 · 100% 合规</div>
+                  </div>
+                  <span class="task-time">4 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="课程 模块 4 组合构建">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">POIF 投资基础 · 完成模块 4</div>
+                    <div class="task-meta">学习任务 · 5 天前完成 · 组合构建</div>
+                  </div>
+                  <span class="task-time">5 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="EMP 顾问 张明 答疑">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">EMP 张明 · 跨境并购答疑</div>
+                    <div class="task-meta">专业支持 · 5 天前完成 · 60 分钟</div>
+                  </div>
+                  <span class="task-time">5 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="林氏家族办公室 战略 v1.0">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">林氏家办 · 战略 v1.0 验收</div>
+                    <div class="task-meta">服务交付 · 6 天前完成 · 客户 5 星</div>
+                  </div>
+                  <span class="task-time">6 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="深圳湾 走访 公益">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">深圳湾走访 · 公益项目对接</div>
+                    <div class="task-meta">公益 · 6 天前完成 · 2 校实地</div>
+                  </div>
+                  <span class="task-time">6 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="跨境合规 课程 完成">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">跨境合规课程 · M01-M03 完成</div>
+                    <div class="task-meta">学习任务 · 7 天前完成 · 24 学时</div>
+                  </div>
+                  <span class="task-time">7 天前</span>
+                </div>
+                <div class="task-row is-done js-task-row" data-search="陈丽华 服务 启动">
+                  <div class="task-check is-done js-task-check">✓</div>
+                  <div class="task-main">
+                    <div class="task-title">陈丽华服务 · 启动会议</div>
+                    <div class="task-meta">服务交付 · 7 天前完成 · 30% 收款</div>
+                  </div>
+                  <span class="task-time">7 天前</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- 右侧：AI 建议 + 优先级分布 + 协作方 -->
+          <div>
+            <div class="ai-suggestion">
+              <div class="ai-suggestion-icon">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+                AI 任务建议
+              </div>
+              <div class="ai-suggestion-title">今天建议先处理 2 个紧急任务</div>
+              <div class="ai-suggestion-reason">林秀华 7 天内到期 + 王明远服务交付倒计时。这两项处理后，今日工作量降低 60%，可专注清禾公益走访准备。</div>
+              <div class="ai-suggestion-actions">
+                <button class="btn btn-primary btn-sm">开始处理</button>
+                <button class="btn btn-ghost btn-sm">稍后提醒</button>
+              </div>
+            </div>
+
+            <div class="card mt-4">
+              <div class="fw-semibold mb-3">本周完成率</div>
+              <div class="kpi-value" style="font-size: var(--text-3xl);"><span class="js-counter" data-target="68">0</span><span class="kpi-value-unit">%</span></div>
+              <div class="progress progress-trust mt-2"><div class="progress-bar" style="width: 68%;"></div></div>
+              <div class="text-xs text-ink-3 mt-2">本周已完成 17 / 25 · 含 4 项客户协作</div>
+            </div>
+
+            <div class="card mt-4">
+              <div class="fw-semibold mb-3">优先级分布</div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>紧急</span><span class="fw-medium text-danger">2</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>重要</span><span class="fw-medium text-warn">5</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>普通</span><span class="fw-medium">8</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span>长期</span><span class="fw-medium text-ink-3">5</span>
+              </div>
+            </div>
+
+            <div class="card mt-4">
+              <div class="fw-semibold mb-3">协作方 · 5 类</div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>客户</span><span class="fw-medium">6</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>EMP 顾问</span><span class="fw-medium">2</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>AI 顾问</span><span class="fw-medium">1</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span>平台运营</span><span class="fw-medium">2</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span>个人</span><span class="fw-medium">9</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 任务统计 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">任务统计</span>
+            <h2 class="section-title">过去 30 天</h2>
+            <p class="section-subtitle">含完成率、按时率、协作贡献</p>
+          </div>
+          <div class="grid-4x">
+            <div class="kpi-card">
+              <div class="kpi-label">总任务数</div>
+              <div class="kpi-value"><span class="js-counter" data-target="68">0</span></div>
+              <div class="text-xs text-ink-3">含待办 + 已完成</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">完成率</div>
+              <div class="kpi-value"><span class="js-counter" data-target="86">0</span><span class="kpi-value-unit">%</span></div>
+              <div class="progress progress-success" style="height: 4px;"><div class="progress-bar" style="width: 86%;"></div></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">按时率</div>
+              <div class="kpi-value"><span class="js-counter" data-target="92">0</span><span class="kpi-value-unit">%</span></div>
+              <div class="text-xs text-success">高于会员均值 12%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">紧急处理</div>
+              <div class="kpi-value"><span class="js-counter" data-target="8">0</span><span class="kpi-value-unit">项</span></div>
+              <div class="text-xs text-ink-3">平均 2.4 小时内</div>
+            </div>
+          </div>
+        </section>
+
+    
+        <!-- Section: 跨模块任务聚合 + AI 优先级 (CRM-007) -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">CRM-007 · 跨模块任务聚合</span>
+            <h2 class="section-title">5 大来源 · 12 件待办</h2>
+            <p class="section-subtitle">同一事件不会重复生成同类任务 · AI 已合并 3 件重叠</p>
+          </div>
+          <div class="task-source-grid mb-4">
+            <div class="task-source-cell is-crm">
+              <div class="task-source-num">5</div>
+              <div class="task-source-name">CRM 跟进</div>
+              <div class="task-source-trend">3 件来自续费提醒</div>
+            </div>
+            <div class="task-source-cell is-service">
+              <div class="task-source-num">3</div>
+              <div class="task-source-name">服务窗口</div>
+              <div class="task-source-trend">2 件 7 天内到期</div>
+            </div>
+            <div class="task-source-cell is-course">
+              <div class="task-source-num">2</div>
+              <div class="task-source-name">课程提醒</div>
+              <div class="task-source-trend">2 件即将开课</div>
+            </div>
+            <div class="task-source-cell is-activity">
+              <div class="task-source-num">1</div>
+              <div class="task-source-name">活动待办</div>
+              <div class="task-source-trend">1 场私董会案例提交</div>
+            </div>
+            <div class="task-source-cell is-compliance">
+              <div class="task-source-num">1</div>
+              <div class="task-source-name">合规</div>
+              <div class="task-source-trend">1 份传承文件待双签</div>
+            </div>
+          </div>
+
+          <div class="task-ai-priority">
+            <div class="task-ai-priority-icon">★</div>
+            <div class="task-ai-priority-content">
+              <strong>AI 已根据紧急度 + 关联度为您排好今日顺序</strong> · 优先级：高 1 件（合规双签）→ 中 3 件（CRM 续费）→ 低 8 件（常规跟进）· 您可拖动调整顺序
+            </div>
+            <button class="btn btn-ghost btn-sm">重新排序</button>
+          </div>
+
+          <div class="task-merged-row">
+            AI 已合并 3 件重叠任务：「联系林秀华确认续费意向」（来自 CRM 续费 + 服务窗口到期 + 课程购买建议）→「联系林秀华确认续费意向 + 介绍 2.0 升级包」1 条
+          </div>
+
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">今日推荐顺序 · 12 件</div>
+            <div>
+              <div class="task-row" style="background: var(--color-danger-soft);">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">林秀华传承文件双签审批 <span class="badge badge-danger" style="margin-left: 8px;">紧急</span></div>
+                  <div class="task-meta">合规 · 来自传承案件 S8 · 离超时 71h 28m · 需您 + 平台复核员</div>
+                </div>
+                <div class="task-time text-danger">立即</div>
+              </div>
+              <div class="task-row">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">联系林秀华确认续费意向 + 介绍 2.0 升级包 <span class="badge badge-info" style="margin-left: 8px;">AI 合并</span></div>
+                  <div class="task-meta">CRM + 服务 + 课程 · 3 个任务合并 · 7 天后到期</div>
+                </div>
+                <div class="task-time">今天</div>
+              </div>
+              <div class="task-row">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">联系陈雪续费确认</div>
+                  <div class="task-meta">CRM · 来自续费提醒 · 7 天后到期</div>
+                </div>
+                <div class="task-time">今天</div>
+              </div>
+              <div class="task-row">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">联系王建国复购评估</div>
+                  <div class="task-meta">CRM · 来自复购建议 · 14 天后到期</div>
+                </div>
+                <div class="task-time">今天</div>
+              </div>
+              <div class="task-row">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">完成 王建国 30 天服务总结</div>
+                  <div class="task-meta">服务窗口 · 7 天后到期</div>
+                </div>
+                <div class="task-time">2 天后</div>
+              </div>
+              <div class="task-row">
+                <div class="task-check"></div>
+                <div class="task-main">
+                  <div class="task-title">提交 P2026-09 私董会案例</div>
+                  <div class="task-meta">活动 · 来自活动待办 · 截止 09-05</div>
+                </div>
+                <div class="task-time">3 天后</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+</main>
+  </div>
+  <script src="../js/app.js"></script>
+</body>
+</html>

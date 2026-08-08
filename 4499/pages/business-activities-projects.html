@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>项目中心 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .project-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); transition: all var(--dur-fast) var(--ease-out); cursor: pointer; }
+    .project-card:hover { border-color: var(--color-line-2); }
+    .role-stack { display: flex; gap: 4px; }
+    .role-stack .avatar { border: 2px solid var(--color-surface); }
+    .role-stack .avatar + .avatar { margin-left: -8px; }
+    .milestone-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); }
+    .milestone-row:last-child { border-bottom: none; }
+    .milestone-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; flex-shrink: 0; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".project-card" placeholder="搜索项目…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="business-activities-list.html">商业活动</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>项目中心</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">项目中心</h1>
+          <p class="page-subtitle"><span class="js-counter" data-target="12">12</span> 个协作项目 · <span class="js-counter" data-target="3">3</span> 个您参与中 · 覆盖大湾区 / 跨境 / 公益 3 大方向</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">导出</button>
+            <button class="btn btn-secondary">协作日历</button>
+            <button class="btn btn-primary" data-modal-open="modal-create">+ 创建项目</button>
+          </div>
+        </div>
+
+        <!-- 项目 KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">参与中项目</div>
+            <div class="kpi-value"><span class="js-counter" data-target="3">3</span></div>
+            <div class="kpi-delta kpi-delta-up">2 个待启动</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">累计完成</div>
+            <div class="kpi-value"><span class="js-counter" data-target="8">8</span></div>
+            <div class="kpi-delta kpi-delta-up">全部达成目标</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">协作方</div>
+            <div class="kpi-value"><span class="js-counter" data-target="42">42</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ 6 本月</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">平均完成率</div>
+            <div class="kpi-value" style="color: var(--color-success);"><span class="js-counter" data-target="94">94</span><span class="kpi-value-unit">%</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ 4 百分点</div>
+          </div>
+        </div>
+
+        <!-- 状态筛选 -->
+        <div class="filter-bar mb-6">
+          <span class="filter-chip js-filter is-active" data-status="all">全部 <span class="filter-chip-count">12</span></span>
+          <span class="filter-chip js-filter" data-status="ongoing">参与中 <span class="filter-chip-count">3</span></span>
+          <span class="filter-chip js-filter" data-status="upcoming">待启动 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-status="done">已完成 <span class="filter-chip-count">6</span></span>
+          <span class="filter-chip js-filter" data-status="archived">已归档 <span class="filter-chip-count">1</span></span>
+          <span class="filter-divider"></span>
+          <span class="filter-chip js-filter" data-role="initiated">我发起的 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-role="joined">我协作的 <span class="filter-chip-count">1</span></span>
+          <div class="filter-search"><input type="text" class="input input-sm js-row-search" data-target-rows=".project-card" placeholder="搜索项目名 / 编号 / 协作方…" /></div>
+          <div class="segmented">
+            <div class="segmented-item is-active">最新</div>
+            <div class="segmented-item">进度</div>
+            <div class="segmented-item">规模</div>
+          </div>
+        </div>
+
+        <!-- Section 1: 进行中项目 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">参与中 · IN PROGRESS</span>
+            <h2 class="section-title">3 个项目进行中</h2>
+            <p class="section-subtitle">每个项目独立里程碑 · AI 团队按周同步进度</p>
+          </div>
+          <div class="flex flex-col gap-4">
+            <a href="business-profile-project.html" class="project-card js-searchable" data-search="大湾区跨境并购孵化计划 跨境并购 9 位 PRJ-2026-0142" style="text-decoration:none; color: inherit; border-color: var(--color-accent);">
+              <div class="flex items-start justify-between flex-wrap gap-3">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="badge badge-info">进行中</span>
+                    <span class="badge badge-outline">跨境并购</span>
+                    <span class="badge badge-accent">PRJ-2026-0142</span>
+                  </div>
+                  <div class="text-lg fw-semibold">大湾区跨境并购孵化计划</div>
+                  <div class="text-sm text-ink-2 mt-2">由 4499 平台 + 深圳湾慈善基金会 + 5 位 EMP 联合发起 · 9 个月 · 当前 M6 阶段</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3 mb-1">进度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-accent); line-height: 1;">56%</div>
+                </div>
+              </div>
+              <div class="progress"><div class="progress-bar" style="width: 56%;"></div></div>
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="role-stack">
+                    <div class="avatar avatar-sm avatar-role-recommender">周</div>
+                    <div class="avatar avatar-sm avatar-role-consultant">张</div>
+                    <div class="avatar avatar-sm avatar-role-ai">李</div>
+                    <div class="avatar avatar-sm avatar-role-center">王</div>
+                  </div>
+                  <span class="text-xs text-ink-3">9 位协作方</span>
+                </div>
+                <div class="text-xs text-ink-3">下次里程碑 M7 · 2026-10-16</div>
+              </div>
+            </a>
+            <div class="project-card js-searchable" data-search="大湾区教育公平 2026 计划 公益慈善 12 位 PRJ-2026-0118">
+              <div class="flex items-start justify-between flex-wrap gap-3">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="badge badge-info">进行中</span>
+                    <span class="badge badge-outline">公益慈善</span>
+                    <span class="badge badge-outline">PRJ-2026-0118</span>
+                  </div>
+                  <div class="text-lg fw-semibold">大湾区教育公平 2026 计划</div>
+                  <div class="text-sm text-ink-2 mt-2">由深圳湾慈善基金会发起 · 6 个月 · 联动 8 家企业 + 3 所高校</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3 mb-1">进度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-success); line-height: 1;">38%</div>
+                </div>
+              </div>
+              <div class="progress"><div class="progress-bar" style="width: 38%; background: var(--color-success);"></div></div>
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="role-stack">
+                    <div class="avatar avatar-sm avatar-role-platform">基</div>
+                    <div class="avatar avatar-sm avatar-role-recommender">林</div>
+                    <div class="avatar avatar-sm avatar-role-consultant">郑</div>
+                  </div>
+                  <span class="text-xs text-ink-3">12 位协作方</span>
+                </div>
+                <div class="text-xs text-ink-3">下次里程碑 M4 · 2026-09-30</div>
+              </div>
+            </div>
+            <div class="project-card js-searchable" data-search="林氏家族办公室 1.0 搭建 家族传承 2 位 PRJ-2026-0095">
+              <div class="flex items-start justify-between flex-wrap gap-3">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="badge badge-info">进行中</span>
+                    <span class="badge badge-outline">家族传承</span>
+                    <span class="badge badge-outline">PRJ-2026-0095</span>
+                  </div>
+                  <div class="text-lg fw-semibold">林氏家族办公室 1.0 搭建</div>
+                  <div class="text-sm text-ink-2 mt-2">由 EMP 张明 1v1 陪跑 · 9 个月 · 涉及信托 / 法律 / 税务 / 二代教育</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3 mb-1">进度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-accent); line-height: 1;">22%</div>
+                </div>
+              </div>
+              <div class="progress"><div class="progress-bar" style="width: 22%;"></div></div>
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="role-stack">
+                    <div class="avatar avatar-sm avatar-role-recommender">林</div>
+                    <div class="avatar avatar-sm avatar-role-consultant">张</div>
+                  </div>
+                  <span class="text-xs text-ink-3">2 位协作方</span>
+                </div>
+                <div class="text-xs text-ink-3">下次里程碑 M3 · 2026-10-08</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 待启动项目 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">待启动 · UPCOMING</span>
+            <h2 class="section-title">2 个项目待启动 · 可加入</h2>
+            <p class="section-subtitle">公开招募协作方 · 您可申请加入</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="project-card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-warn">待启动</span>
+                <span class="badge badge-outline">AI 应用</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">AI 家族办公室助手开发</div>
+              <div class="text-sm text-ink-2 mb-3">由 3 家 EMP + 2 家 AI 公司联合发起 · 6 个月 · 招募 2 位家族办公室主理人参与测试</div>
+              <div class="flex items-center gap-2 mt-3">
+                <div class="role-stack">
+                  <div class="avatar avatar-sm avatar-role-ai">AI</div>
+                  <div class="avatar avatar-sm avatar-role-consultant">王</div>
+                </div>
+                <span class="text-xs text-ink-3">3 位已加入</span>
+              </div>
+              <div class="flex items-center justify-between mt-3">
+                <span class="text-xs text-ink-3">计划 2026-10 启动</span>
+                <button class="btn btn-secondary btn-sm" onclick="toast('已申请加入，待发起方确认','info')">申请加入</button>
+              </div>
+            </div>
+            <div class="project-card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-warn">待启动</span>
+                <span class="badge badge-outline">公益慈善</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">清禾公益 2027 年度规划</div>
+              <div class="text-sm text-ink-2 mb-3">由 4499 平台 + 清禾公益基金联合发起 · 12 个月 · 招募 8 位长期捐赠人</div>
+              <div class="flex items-center gap-2 mt-3">
+                <div class="role-stack">
+                  <div class="avatar avatar-sm avatar-role-platform">清</div>
+                </div>
+                <span class="text-xs text-ink-3">5 位已加入</span>
+              </div>
+              <div class="flex items-center justify-between mt-3">
+                <span class="text-xs text-ink-3">计划 2026-11 启动</span>
+                <button class="btn btn-secondary btn-sm" onclick="toast('已申请加入，待发起方确认','info')">申请加入</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: 里程碑详情 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">里程碑 · MILESTONES</span>
+            <h2 class="section-title">"大湾区跨境并购孵化计划" M1-M9 全部里程碑</h2>
+            <p class="section-subtitle">9 个月 · 9 个阶段 · 当前 M6 · M7 计划 2026-10-16</p>
+          </div>
+          <div class="card">
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-success); color: white;">✓</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M1 · 项目立项</div>
+                <div class="text-xs text-ink-3">2026-04-08 · 项目章程 + 协作方签约</div>
+              </div>
+              <span class="badge badge-success badge-sm">已完成</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-success); color: white;">✓</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M2 · 8 家入组企业筛选</div>
+                <div class="text-xs text-ink-3">2026-05-12 · 完成 8 家企业签约</div>
+              </div>
+              <span class="badge badge-success badge-sm">已完成</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-success); color: white;">✓</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M3 · 跨境并购框架设计</div>
+                <div class="text-xs text-ink-3">2026-06-08 · 完成 4 个并购模板</div>
+              </div>
+              <span class="badge badge-success badge-sm">已完成</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-success); color: white;">✓</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M4 · 首次尽调</div>
+                <div class="text-xs text-ink-3">2026-07-15 · 完成 3 个标的初步尽调</div>
+              </div>
+              <span class="badge badge-success badge-sm">已完成</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-success); color: white;">✓</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M5 · 估值与谈判</div>
+                <div class="text-xs text-ink-3">2026-08-20 · 1 个标的进入排他谈判</div>
+              </div>
+              <span class="badge badge-success badge-sm">已完成</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-accent); color: white;">●</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M6 · 投委会审议 · 当前</div>
+                <div class="text-xs text-ink-3">2026-09-15 · 投委会将审议 1 个标的</div>
+              </div>
+              <span class="badge badge-accent badge-sm">进行中</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-surface-2); color: var(--color-ink-3);">7</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M7 · 法律文件与交割</div>
+                <div class="text-xs text-ink-3">计划 2026-10-16 · 跨境法律文件 + 资金交割</div>
+              </div>
+              <span class="badge badge-outline badge-sm">未开始</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-surface-2); color: var(--color-ink-3);">8</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M8 · 投后管理启动</div>
+                <div class="text-xs text-ink-3">计划 2026-11-30</div>
+              </div>
+              <span class="badge badge-outline badge-sm">未开始</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-dot" style="background: var(--color-surface-2); color: var(--color-ink-3);">9</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">M9 · 项目复盘 + 报告</div>
+                <div class="text-xs text-ink-3">计划 2026-12-31</div>
+              </div>
+              <span class="badge badge-outline badge-sm">未开始</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: 协作角色 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">协作角色图谱 · ROLES</span>
+            <h2 class="section-title">3 个项目协作方分布</h2>
+            <p class="section-subtitle">每项目 5 类角色 · 明确分工</p>
+          </div>
+          <div class="card">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="badge badge-accent">发起方</span>
+              <span class="text-sm text-ink-2">周国华 / 深圳湾慈善基金会</span>
+              <span class="text-xs text-ink-3">·</span>
+              <span class="badge badge-info">平台方</span>
+              <span class="text-sm text-ink-2">4499 平台</span>
+              <span class="text-xs text-ink-3">·</span>
+              <span class="badge badge-success">专家方</span>
+              <span class="text-sm text-ink-2">5 位 EMP</span>
+              <span class="text-xs text-ink-3">·</span>
+              <span class="badge badge-warn">企业方</span>
+              <span class="text-sm text-ink-2">8 家入组企业</span>
+              <span class="text-xs text-ink-3">·</span>
+              <span class="badge badge-trust">观察方</span>
+              <span class="text-sm text-ink-2">3 家投资机构</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: 项目文档 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">项目文档 · DOCS</span>
+            <h2 class="section-title">12 份文档 + 8 份报告</h2>
+            <p class="section-subtitle">所有文档关联 PB 信誉 · 协作方可见</p>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>文档</th><th>项目</th><th>上传方</th><th>日期</th><th>大小</th><th>操作</th></tr>
+              </thead>
+              <tbody>
+                <tr class="js-searchable" data-search="项目章程 PRJ-2026-0142">
+                  <td><div class="fw-medium">项目章程 V2.1</div><div class="text-xs text-ink-3">PDF · 12 页</div></td>
+                  <td>PRJ-2026-0142</td>
+                  <td>周国华</td>
+                  <td>2026-04-08</td>
+                  <td class="col-num">3.2 MB</td>
+                  <td><button class="btn btn-ghost btn-sm">下载</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="尽调报告 PRJ-2026-0142">
+                  <td><div class="fw-medium">3 个标的尽调报告</div><div class="text-xs text-ink-3">PDF · 68 页</div></td>
+                  <td>PRJ-2026-0142</td>
+                  <td>EMP 张明</td>
+                  <td>2026-07-15</td>
+                  <td class="col-num">12 MB</td>
+                  <td><button class="btn btn-ghost btn-sm">下载</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="教育公平报告 PRJ-2026-0118">
+                  <td><div class="fw-medium">教育公平中期报告</div><div class="text-xs text-ink-3">PDF · 24 页</div></td>
+                  <td>PRJ-2026-0118</td>
+                  <td>深圳湾基金会</td>
+                  <td>2026-08-20</td>
+                  <td class="col-num">5.6 MB</td>
+                  <td><button class="btn btn-ghost btn-sm">下载</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="林氏家族 PRJ-2026-0095">
+                  <td><div class="fw-medium">林氏家族办公室 1.0 蓝图</div><div class="text-xs text-ink-3">PDF · 18 页</div></td>
+                  <td>PRJ-2026-0095</td>
+                  <td>EMP 张明</td>
+                  <td>2026-07-08</td>
+                  <td class="col-num">2.4 MB</td>
+                  <td><button class="btn btn-ghost btn-sm">下载</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="谈判记录 PRJ-2026-0142">
+                  <td><div class="fw-medium">投委会审议纪要</div><div class="text-xs text-ink-3">DOCX · 8 页</div></td>
+                  <td>PRJ-2026-0142</td>
+                  <td>EMP 王志远</td>
+                  <td>2026-08-30</td>
+                  <td class="col-num">0.8 MB</td>
+                  <td><button class="btn btn-ghost btn-sm">下载</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 6: AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">M6 投委会建议补充 1 位行业观察员</div>
+            <div class="ai-suggestion-reason">本次投委会将审议"东南亚 1 个跨境并购标的"，除现有 5 位 EMP 外，AI 团队建议补充 1 位专注东南亚市场的 EMP 顾问参与审议。可显著提升对当地监管 + 行业惯例的判断质量。AI 已匹配 2 位候选 · 4.8+ 评分 · 可立即发起邀约。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">查看 2 位候选</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入 M6 议程','info')">加入议程</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 项目里程碑 + 协作角色 + 风险预警 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">项目里程碑 · MILESTONES + 协作角色</span>
+            <h2 class="section-title">5 个关键里程碑 · 1 个风险预警</h2>
+            <p class="section-subtitle">每个里程碑有责任人 + 时间 · 风险项目自动预警</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">项目里程碑 · P2026-Q3 跨境架构升级</div>
+            <div class="project-milestone is-done">
+              <div class="project-milestone-icon">✓</div>
+              <div class="project-milestone-content">
+                <div class="project-milestone-name">M1 · 需求确认</div>
+                <div class="project-milestone-meta">责任人：林秀华 · 完成 2026-07-15 · 客户已签字</div>
+              </div>
+              <div class="project-milestone-time">2026-07-15</div>
+            </div>
+            <div class="project-milestone is-done">
+              <div class="project-milestone-icon">✓</div>
+              <div class="project-milestone-content">
+                <div class="project-milestone-name">M2 · 架构设计</div>
+                <div class="project-milestone-meta">责任人：王建国 EMP · 完成 2026-08-01 · 已交付 12 页方案</div>
+              </div>
+              <div class="project-milestone-time">2026-08-01</div>
+            </div>
+            <div class="project-milestone is-current">
+              <div class="project-milestone-icon">3</div>
+              <div class="project-milestone-content">
+                <div class="project-milestone-name">M3 · 法律合规审查 · 当前阶段</div>
+                <div class="project-milestone-meta">责任人：律师事务所 + 您 · 截止 2026-08-25 · 进度 65%</div>
+              </div>
+              <div class="project-milestone-time">2026-08-25</div>
+            </div>
+            <div class="project-milestone is-risk">
+              <div class="project-milestone-icon">!</div>
+              <div class="project-milestone-content">
+                <div class="project-milestone-name">M4 · OpulnX 架构迁移（风险）</div>
+                <div class="project-milestone-meta">责任人：OpulnX + 银行 · 原计划 2026-09-15 · <strong>银行审批延迟 5 天</strong> · 风险等级：中</div>
+              </div>
+              <div class="project-milestone-time">预计 2026-09-20</div>
+            </div>
+            <div class="project-milestone">
+              <div class="project-milestone-icon">5</div>
+              <div class="project-milestone-content">
+                <div class="project-milestone-name">M5 · 复盘 + 成果沉淀</div>
+                <div class="project-milestone-meta">责任人：您 + EMP · 截止 2026-10-15 · 输出：Blueprint V1.0</div>
+              </div>
+              <div class="project-milestone-time">2026-10-15</div>
+            </div>
+            <div class="ai-feedback-warning mt-3">
+              <strong>风险预警：</strong>M4 OpulnX 架构迁移因银行审批延迟 5 天 · AI 已通知责任人 · 建议：① 联系银行加急 ② 启动应急方案（分 2 批迁移）· 项目整体仍在正常推进。
+            </div>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">协作角色 · 6 个角色 · 各司其职</div>
+            <div class="role-grid">
+              <div class="role-cell">
+                <div class="role-cell-name">林秀华 · 项目负责人</div>
+                <div class="role-cell-duty">需求确认 + 最终决策 + 资金安排 · 责任最大</div>
+              </div>
+              <div class="role-cell">
+                <div class="role-cell-name">王建国 · EMP 主持</div>
+                <div class="role-cell-duty">架构设计 + 方案交付 + 技术决策</div>
+              </div>
+              <div class="role-cell">
+                <div class="role-cell-name">律师事务所 · 合规</div>
+                <div class="role-cell-duty">CRS / 反洗钱 / 离岸合规审查</div>
+              </div>
+              <div class="role-cell">
+                <div class="role-cell-name">OpulnX · 平台执行</div>
+                <div class="role-cell-duty">架构迁移 + 银行对接 + 资产转移</div>
+              </div>
+              <div class="role-cell">
+                <div class="role-cell-name">陈雪 · 协作者</div>
+                <div class="role-cell-duty">新能源出海方案协同 · 提供新加坡经验</div>
+              </div>
+              <div class="role-cell">
+                <div class="role-cell-name">AI 销冠 · 复盘</div>
+                <div class="role-cell-duty">M5 阶段自动生成复盘报告 + Blueprint 草案</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+</main>
+  </div>
+
+  <!-- Modal: 创建项目 -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-create"></div>
+  <div class="modal" id="modal-create" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">创建新项目</div>
+        <div class="modal-close" data-modal-close="modal-create">×</div>
+      </div>
+      <div class="modal-body">
+        <div class="flex flex-col gap-3">
+          <div class="input-group">
+            <label class="input-label">项目名称</label>
+            <input class="input" placeholder="例：东南亚跨境投资系列 2027" />
+          </div>
+          <div class="input-group">
+            <label class="input-label">项目方向</label>
+            <select class="select">
+              <option>跨境投资</option>
+              <option>家族传承</option>
+              <option>企业战略</option>
+              <option>公益慈善</option>
+              <option>AI 应用</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">项目描述</label>
+            <textarea class="textarea" placeholder="项目目标 · 范围 · 期望成果"></textarea>
+          </div>
+          <div class="grid-2x" style="gap: var(--space-3);">
+            <div class="input-group">
+              <label class="input-label">周期</label>
+              <input class="input" value="9 个月" />
+            </div>
+            <div class="input-group">
+              <label class="input-label">里程碑数</label>
+              <input class="input" type="number" value="9" />
+            </div>
+          </div>
+          <div class="check-box js-check-box" style="padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm);">
+            <input type="checkbox" checked />
+            <span class="text-sm">公开招募协作方</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-create">取消</button>
+        <button class="btn btn-primary" onclick="toast('项目创建成功，等待发起方审核','success');">创建项目</button>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>激活码核销 · 4499</title>
+  <meta name="description" content="AI 服务包激活码输入与核销 · 一次性使用 · 支付与开通分离 · 渠道追踪" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <link rel="stylesheet" href="../css/utilities.css" />
+  <style>
+    body { background: var(--color-paper); }
+    .act-shell { max-width: 1100px; margin: 0 auto; padding: var(--space-6); }
+    .act-hero {
+      background: linear-gradient(135deg, var(--color-accent-soft) 0%, var(--color-paper) 100%);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8);
+      margin-bottom: var(--space-5);
+      text-align: center;
+    }
+    .act-input {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: var(--space-4);
+    }
+    .act-subscription-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+      display: flex; align-items: center; gap: var(--space-4);
+    }
+    .act-subscription-card.is-expired { opacity: 0.6; border-color: var(--color-warn-2); }
+    .progress-bar-act {
+      height: 6px; background: var(--color-line); border-radius: 3px; overflow: hidden;
+    }
+    .progress-bar-act-fill { height: 100%; background: var(--color-accent); }
+    .act-history-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line);
+    }
+    .act-history-row:last-child { border-bottom: none; }
+    .act-code {
+      font-family: var(--font-mono); font-size: var(--text-sm);
+      letter-spacing: 0.05em; background: var(--color-surface-2);
+      padding: 2px 8px; border-radius: var(--radius-sm);
+    }
+  
+    .tools-nav { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); }
+    .tools-nav-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+    .tools-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+    .tools-nav-card { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-paper); text-decoration: none; color: inherit; transition: all 200ms ease; }
+    .tools-nav-card:hover { border-color: var(--color-line-2); transform: translateY(-1px); }
+    .tools-nav-card.is-current { border-color: var(--color-accent); }
+    .tools-nav-icon { width: 18px; height: 18px; color: var(--color-accent); flex-shrink: 0; margin-top: 2px; }
+    .tools-nav-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .tools-nav-desc { font-size: var(--text-xs); color: var(--color-ink-3); line-height: 1.4; margin-top: 2px; }
+    .tools-nav-badge { display: inline-block; font-size: 10px; color: var(--color-ink-4); margin-top: 4px; }
+    @media (max-width: 1024px) { .tools-nav-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .tools-nav-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+
+  <div class="act-shell">
+    <!-- Hero -->
+    <div class="act-hero">
+      <div class="text-xs text-ink-3 mb-2">UMAX / 4499 / 激活码核销</div>
+      <h1 style="font-size: var(--text-3xl); margin: 0 0 var(--space-2);">输入激活码 · 开通 AI 服务</h1>
+      <a href="workbench-recommender.html" class="btn btn-ghost btn-sm" style="margin-top: var(--space-3); display: inline-block;">← 返回工作台</a>
+
+    <!-- 工具导航 -->
+    <div class="tools-nav">
+      <div class="tools-nav-head">
+        <div>
+          <span class="eyebrow">快速跳转</span>
+          <div class="text-sm fw-semibold">5 个新增管理工具</div>
+        </div>
+        <a href="workbench-recommender.html" class="text-xs text-accent">← 返回工作台</a>
+      </div>
+      <div class="tools-nav-grid">
+        <a href="umax-app-center.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h8M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">UMAX 应用中心</div>
+            <div class="tools-nav-desc">3 类 AI Agent 入口 + 跨平台</div>
+            <div class="tools-nav-badge">入口</div>
+          </div>
+        </a>
+        <a href="enterprise-ai-config.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">企业 AI 配置</div>
+            <div class="tools-nav-desc">6 配置域 · 多租户隔离</div>
+            <div class="tools-nav-badge">配置</div>
+          </div>
+        </a>
+        <a href="activation.html" class="tools-nav-card is-current">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 7h12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM5 7V5a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">激活码核销</div>
+            <div class="tools-nav-desc">8-10 位激活码 · 7 步流程</div>
+            <div class="tools-nav-badge">服务</div>
+          </div>
+        </a>
+        <a href="mentor-binding.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 16a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">导师业务绑定</div>
+            <div class="tools-nav-desc">30 天服务窗口 · 5 状态机</div>
+            <div class="tools-nav-badge">协作</div>
+          </div>
+        </a>
+        <a href="game-hub.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="6" width="14" height="8" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 10h2M7 9v2M11 10h.01M13 10h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">Game Hub</div>
+            <div class="tools-nav-desc">第一阶段 · 已识别会员对战</div>
+            <div class="tools-nav-badge">商户</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+      <p style="color: var(--color-ink-2); margin: 0 0 var(--space-5);">8-10 位一次性激活码 · 默认不可重复核销 · 支付与开通分离</p>
+      <input type="text" class="input act-input" placeholder="如：UMAX-XXXX-XXXX" maxlength="14" />
+      <div class="flex gap-2 justify-center mt-4" style="flex-wrap: wrap;">
+        <button class="btn btn-primary">核销激活码</button>
+        <a href="umax-app-center.html" class="btn btn-ghost">返回 UMAX</a>
+      </div>
+      <div class="text-xs text-ink-3 mt-3">
+        ⓘ 重复码 / 过期码 / 已使用码均被拒绝并显示明确原因（ACTV-001）
+      </div>
+    </div>
+
+    <!-- 当前服务订阅 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">当前服务订阅</span>
+        <h2 class="section-title">已开通 / 即将到期 / 已失效</h2>
+        <p class="section-subtitle">核销成功后生成 ServiceSubscription · 服务有效期按套餐计算（ACTV-003）</p>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="act-subscription-card">
+          <div class="avatar avatar-md" style="background: var(--color-accent); color: #fff; flex-shrink: 0;">销</div>
+          <div style="flex: 1; min-width: 200px;">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">AI 销冠 · 年度订阅</span>
+              <span class="badge badge-success">活跃</span>
+            </div>
+            <div class="text-xs text-ink-3 mb-2">激活码 UMAX-2026-0810 · 到期 2027-08-10 · 剩余 362 天</div>
+            <div class="progress-bar-act">
+              <div class="progress-bar-act-fill" style="width: 5%;"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-3">下次提醒</div>
+            <div class="text-sm fw-medium">2027-07-10</div>
+          </div>
+        </div>
+
+        <div class="act-subscription-card is-expired">
+          <div class="avatar avatar-md" style="background: var(--color-warn-2); color: #fff; flex-shrink: 0;">客</div>
+          <div style="flex: 1; min-width: 200px;">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">AI 客服中心 · 季度订阅</span>
+              <span class="badge badge-warn">已到期 · 30 天前</span>
+            </div>
+            <div class="text-xs text-ink-3">激活码 UMAX-2025-1001 · 已到期 · 历史服务记录保留</div>
+          </div>
+          <button class="btn btn-secondary btn-sm">重新激活</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 核销流程 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">核销流程 · 7 步</span>
+        <h2 class="section-title">从订单到开通的全链路</h2>
+      </div>
+      <div class="card card-pad-md">
+        <ol style="margin: 0; padding-left: 1.5em; line-height: 1.8; font-size: var(--text-sm); color: var(--color-ink-2);">
+          <li><strong>服务上架</strong> · AI 公司 / UMC 会员 / 合作企业在交易平台（OpenRich / Opulrich）上架 AI 服务包</li>
+          <li><strong>购买成交</strong> · 客户购买 3 个月 / 半年 / 1 年服务包</li>
+          <li><strong>生成激活码</strong> · 订单成功后生成 8-10 位一次性激活码（可绑定套餐 / 企业空间）</li>
+          <li><strong>UMAX 输入</strong> · 客户在 UMAX 后台 / 应用中心输入激活码</li>
+          <li><strong>4499 校验</strong> · 校验订单摘要 / 激活码状态 / 服务类型 / 主体权限 / 重复使用</li>
+          <li><strong>服务开通</strong> · 服务卡片点亮 · 生成订阅 / 授权 / 配置向导</li>
+          <li><strong>续费 / 失效</strong> · 到期前 30 / 7 / 1 天提醒 · 未续费入口降级 · 历史记录保留</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- 核销历史 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">核销历史</span>
+        <h2 class="section-title">最近 5 次激活记录</h2>
+        <p class="section-subtitle">渠道追踪 · 同一激活码不可重复核销（ACTV-002）</p>
+      </div>
+      <div class="card card-pad-md">
+        <div class="act-history-row">
+          <div class="act-code">UMAX-2026-0810</div>
+          <div class="text-sm flex-1">AI 销冠 · 年度订阅 · 365 天</div>
+          <div class="text-xs text-ink-3">2026-08-10</div>
+          <span class="badge badge-success">已开通</span>
+        </div>
+        <div class="act-history-row">
+          <div class="act-code">UMAX-2025-1001</div>
+          <div class="text-sm flex-1">AI 客服中心 · 季度订阅 · 90 天 · 已到期</div>
+          <div class="text-xs text-ink-3">2025-10-01</div>
+          <span class="badge badge-warn">已到期</span>
+        </div>
+        <div class="act-history-row">
+          <div class="act-code">UMAX-2025-0701</div>
+          <div class="text-sm flex-1">AI 销冠 · 半年订阅 · 180 天 · 已到期</div>
+          <div class="text-xs text-ink-3">2025-07-01</div>
+          <span class="badge badge-warn">已到期</span>
+        </div>
+        <div class="act-history-row">
+          <div class="act-code" style="background: var(--color-danger-soft); color: var(--color-danger-2);">REJECTED-0421</div>
+          <div class="text-sm flex-1">重复输入 UMAX-2025-0701 · 已被拒绝</div>
+          <div class="text-xs text-ink-3">2025-07-02</div>
+          <span class="badge badge-danger">拒绝</span>
+        </div>
+        <div class="act-history-row">
+          <div class="act-code" style="background: var(--color-danger-soft); color: var(--color-danger-2);">EXPIRED-0310</div>
+          <div class="text-sm flex-1">过期激活码 · 已超过 90 天有效期</div>
+          <div class="text-xs text-ink-3">2025-05-15</div>
+          <span class="badge badge-danger">过期</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 风险提示 -->
+    <div class="card" style="background: var(--color-warn-soft); border-left: 3px solid var(--color-warn-2); padding: var(--space-4) var(--space-5); margin-top: var(--space-5);">
+      <div class="flex items-start gap-3">
+        <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--color-warn-2); color: #fff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: var(--weight-semibold);">!</div>
+        <div>
+          <div class="fw-semibold mb-1">资金服务分离（BR-054）</div>
+          <div class="text-sm text-ink-2">激活码仅用于服务开通 · 不代表支付成功 · 支付 / 退款 / 分账以交易平台权威结果为准 · 支付失败不会开通服务 · 分账异常不会伪造成成功</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>公益行动 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .honor-podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); align-items: end; }
+    .podium-step { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-line); text-align: center; }
+    .podium-1 { padding-top: var(--space-8); border-color: var(--color-trust); background: linear-gradient(180deg, var(--color-trust-soft) 0%, var(--color-surface) 60%); }
+    .podium-2 { padding-top: var(--space-6); }
+    .podium-3 { padding-top: var(--space-4); }
+    .charity-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); }
+    .charity-row:last-child { border-bottom: none; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".charity-row" placeholder="搜索公益项目…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="business-activities-list.html">商业活动</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>公益行动</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">公益行动</h1>
+          <p class="page-subtitle"><span class="js-counter" data-target="4">4</span> 个进行中项目 · 累计 <span class="js-counter" data-target="220">220</span> 公益时数 · 清禾公益基金 · 鸿驫榜 #12</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">公益记录</button>
+            <button class="btn btn-secondary">我的证书</button>
+            <button class="btn btn-primary" data-modal-open="modal-donate">+ 申请公益支持</button>
+          </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">公益时数</div>
+            <div class="kpi-value" style="color: var(--color-charity);"><span class="js-counter" data-target="220">220</span><span class="kpi-value-unit">h</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ 36h 本季</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">累计捐赠</div>
+            <div class="kpi-value" style="color: var(--color-charity);">¥<span class="js-counter" data-target="36800">36800</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ ¥4,200</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">参与项目</div>
+            <div class="kpi-value"><span class="js-counter" data-target="4">4</span></div>
+            <div class="kpi-delta kpi-delta-up">2 个长期</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">鸿驫榜排名</div>
+            <div class="kpi-value" style="color: var(--color-trust);">#<span class="js-counter" data-target="12">12</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ 3 较上月</div>
+          </div>
+        </div>
+
+        <!-- 4 个进行中项目 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">进行中 · ACTIVE</span>
+            <h2 class="section-title">4 个公益项目</h2>
+            <p class="section-subtitle">由清禾公益基金 + 深圳湾慈善基金会等组织发起</p>
+          </div>
+          <div class="grid-2x">
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-charity">教育助学</span>
+                <span class="text-xs text-mono text-ink-3">CH-2026-0034</span>
+              </div>
+              <div class="text-lg fw-semibold mb-2">深圳湾山区助学 2026-Q3</div>
+              <div class="text-sm text-ink-2 mb-3">为粤北山区 12 所学校 320 名学生提供一学期助学金与远程辅导 · 您已承诺 1 年长期支持</div>
+              <div class="grid-3x mb-3" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">已募集</div>
+                  <div class="text-sm fw-semibold">¥186,000</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">已受益</div>
+                  <div class="text-sm fw-semibold">320 人</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">您的投入</div>
+                  <div class="text-sm fw-semibold text-charity">¥12,000</div>
+                </div>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar" style="width: 75%; background: var(--color-charity);"></div></div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-3">完成 75% · 目标 100%</span>
+                <button class="btn btn-ghost btn-sm">查看详情</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-charity">教育助学</span>
+                <span class="text-xs text-mono text-ink-3">CH-2026-0028</span>
+              </div>
+              <div class="text-lg fw-semibold mb-2">高校奖学金 · 复旦 EMBA</div>
+              <div class="text-sm text-ink-2 mb-3">为复旦 EMBA 校友推荐的寒门学子提供 2 年全额奖学金 · 您已参与评审 3 届</div>
+              <div class="grid-3x mb-3" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">已募集</div>
+                  <div class="text-sm fw-semibold">¥320,000</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">已受益</div>
+                  <div class="text-sm fw-semibold">8 人</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">您的投入</div>
+                  <div class="text-sm fw-semibold text-charity">¥8,000</div>
+                </div>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar" style="width: 92%; background: var(--color-charity);"></div></div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-3">完成 92% · 接近目标</span>
+                <button class="btn btn-ghost btn-sm">查看详情</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-warn">应急救援</span>
+                <span class="text-xs text-mono text-ink-3">CH-2026-0045</span>
+              </div>
+              <div class="text-lg fw-semibold mb-2">清禾应急救援 2026 储备</div>
+              <div class="text-sm text-ink-2 mb-3">为广东省台风 / 暴雨等自然灾害储备应急资金 · 您的承诺 1 年内有效</div>
+              <div class="grid-3x mb-3" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">已募集</div>
+                  <div class="text-sm fw-semibold">¥1,260,000</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">响应次数</div>
+                  <div class="text-sm fw-semibold">3 次</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">您的投入</div>
+                  <div class="text-sm fw-semibold text-charity">¥10,000</div>
+                </div>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar" style="width: 63%; background: var(--color-warn);"></div></div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-3">完成 63% · 持续募款</span>
+                <button class="btn btn-ghost btn-sm">查看详情</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-info">乡村振兴</span>
+                <span class="text-xs text-mono text-ink-3">CH-2026-0019</span>
+              </div>
+              <div class="text-lg fw-semibold mb-2">大湾区乡村教师赋能</div>
+              <div class="text-sm text-ink-2 mb-3">为 6 个结对县 200 名乡村教师提供 1 年远程培训与线下工作坊</div>
+              <div class="grid-3x mb-3" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">已募集</div>
+                  <div class="text-sm fw-semibold">¥98,000</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">已受益</div>
+                  <div class="text-sm fw-semibold">128 人</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">您的投入</div>
+                  <div class="text-sm fw-semibold text-charity">¥6,800</div>
+                </div>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar" style="width: 49%; background: var(--color-info);"></div></div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-ink-3">完成 49% · 招募中</span>
+                <button class="btn btn-ghost btn-sm">查看详情</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 鸿驫榜 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">鸿驫榜 · HONOR</span>
+            <h2 class="section-title">2026 Q3 公益榜前 3</h2>
+            <p class="section-subtitle">按公益时数 + 捐赠金额 + 长期承诺综合排名</p>
+          </div>
+          <div class="honor-podium">
+            <div class="podium-step podium-2">
+              <div class="avatar avatar-xl avatar-role-platform" style="margin: 0 auto var(--space-2);">郑</div>
+              <div class="text-md fw-semibold">郑伟</div>
+              <div class="text-xs text-ink-3">副理事长</div>
+              <div class="text-lg fw-semibold mt-2 text-mono">280 h</div>
+              <div class="text-xs text-ink-3">¥186,000</div>
+            </div>
+            <div class="podium-step podium-1">
+              <div class="avatar avatar-xl" style="background: var(--color-trust-soft); color: var(--color-trust); margin: 0 auto var(--space-2);">👑</div>
+              <div class="text-md fw-semibold">周国华</div>
+              <div class="text-xs text-ink-3">理事长</div>
+              <div class="text-lg fw-semibold mt-2 text-mono text-trust">320 h</div>
+              <div class="text-xs text-trust">¥420,000</div>
+            </div>
+            <div class="podium-step podium-3">
+              <div class="avatar avatar-xl avatar-role-recommender" style="margin: 0 auto var(--space-2);">林</div>
+              <div class="text-md fw-semibold">林秀华</div>
+              <div class="text-xs text-ink-3">推荐人</div>
+              <div class="text-lg fw-semibold mt-2 text-mono">220 h</div>
+              <div class="text-xs text-ink-3">¥36,800</div>
+            </div>
+          </div>
+          <div class="card mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm fw-semibold">我的公益时数 · 2026 累计</div>
+              <span class="text-xs text-ink-3">月 1 更新</span>
+            </div>
+            <div class="grid-4x">
+              <div><div class="text-xs text-ink-3">1 月</div><div class="text-sm fw-medium text-mono">28h</div></div>
+              <div><div class="text-xs text-ink-3">2 月</div><div class="text-sm fw-medium text-mono">22h</div></div>
+              <div><div class="text-xs text-ink-3">3 月</div><div class="text-sm fw-medium text-mono">30h</div></div>
+              <div><div class="text-xs text-ink-3">4 月</div><div class="text-sm fw-medium text-mono">18h</div></div>
+              <div><div class="text-xs text-ink-3">5 月</div><div class="text-sm fw-medium text-mono">24h</div></div>
+              <div><div class="text-xs text-ink-3">6 月</div><div class="text-sm fw-medium text-mono">32h</div></div>
+              <div><div class="text-xs text-ink-3">7 月</div><div class="text-sm fw-medium text-mono">26h</div></div>
+              <div><div class="text-xs text-ink-3">8 月</div><div class="text-sm fw-medium text-mono">40h</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 公益行动记录 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">公益行动记录 · ACTIONS</span>
+            <h2 class="section-title">最近 8 次行动</h2>
+            <p class="section-subtitle">含志愿活动 + 捐赠 + 评审等所有公益行为</p>
+          </div>
+          <div class="card">
+            <div class="charity-row js-searchable" data-search="清禾山区助学 志愿活动 8月">
+              <div class="avatar avatar-sm avatar-role-platform">清</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">清禾山区助学 · 8 月志愿活动</div>
+                <div class="text-xs text-ink-3">2026-08-25 · 1 天 · 河源连平县</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">8 h</div>
+              <span class="badge badge-charity badge-sm">志愿</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="清禾基金会月捐 长期">
+              <div class="avatar avatar-sm avatar-role-platform">清</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">清禾基金会月捐</div>
+                <div class="text-xs text-ink-3">2026-08-12 · 长期承诺</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥2,000</div>
+              <span class="badge badge-charity badge-sm">月捐</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="复旦 EMBA 奖学金 评审">
+              <div class="avatar avatar-sm">复</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">复旦 EMBA 奖学金 · 评审</div>
+                <div class="text-xs text-ink-3">2026-08-08 · 1 次评审会议</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">4 h</div>
+              <span class="badge badge-info badge-sm">评审</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="清禾应急救援 月捐">
+              <div class="avatar avatar-sm avatar-role-platform">清</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">清禾应急救援基金 · 月捐</div>
+                <div class="text-xs text-ink-3">2026-08-05 · 长期承诺</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥1,000</div>
+              <span class="badge badge-warn badge-sm">月捐</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="乡村教师赋能 工作坊">
+              <div class="avatar avatar-sm">教</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">大湾区乡村教师赋能 · 线下工作坊</div>
+                <div class="text-xs text-ink-3">2026-07-22 · 1 天 · 梅州</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">8 h</div>
+              <span class="badge badge-success badge-sm">志愿</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="企业 ESG 报告 公益章节 评审">
+              <div class="avatar avatar-sm">深</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">深圳湾企业 ESG 报告 · 公益章节评审</div>
+                <div class="text-xs text-ink-3">2026-07-15 · 评审会议</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">3 h</div>
+              <span class="badge badge-info badge-sm">评审</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="清禾基金会 一次捐">
+              <div class="avatar avatar-sm avatar-role-platform">清</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">清禾基金会 · 一次捐</div>
+                <div class="text-xs text-ink-3">2026-07-08 · 儿童节专项</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥5,000</div>
+              <span class="badge badge-charity badge-sm">一次捐</span>
+            </div>
+            <div class="charity-row js-searchable" data-search="深圳 EMBA 校友会 公益拍卖">
+              <div class="avatar avatar-sm">深</div>
+              <div class="flex-1">
+                <div class="text-sm fw-medium">深圳 EMBA 校友会 · 公益拍卖</div>
+                <div class="text-xs text-ink-3">2026-06-30 · 拍卖参与</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥3,000</div>
+              <span class="badge badge-trust badge-sm">拍卖</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 公益证书 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">公益证书 · CERTIFICATES</span>
+            <h2 class="section-title">3 张已获证书</h2>
+            <p class="section-subtitle">由清禾公益基金 / 深圳湾慈善基金会颁发</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-charity-soft); color: var(--color-charity);">❤</div>
+                <span class="badge badge-charity badge-sm">公益</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">清禾公益 · 年度捐赠人</div>
+              <div class="text-xs text-ink-3 mb-3">累计捐赠 ≥ 3 万 · 2025 年</div>
+              <button class="btn btn-ghost btn-sm w-full">下载证书</button>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-trust-soft); color: var(--color-trust);">★</div>
+                <span class="badge badge-trust badge-sm">志愿</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">清禾 · 100 小时志愿</div>
+              <div class="text-xs text-ink-3 mb-3">2025 年达成 · 现累计 220h</div>
+              <button class="btn btn-ghost btn-sm w-full">下载证书</button>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-accent-soft); color: var(--color-accent);">⚖</div>
+                <span class="badge badge-accent badge-sm">评审</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">复旦 EMBA · 公益评审员</div>
+              <div class="text-xs text-ink-3 mb-3">2024-2026 连续 3 届</div>
+              <button class="btn btn-ghost btn-sm w-full">下载证书</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">公益时数距离 #10 鸿驫榜差 24 小时</div>
+            <div class="ai-suggestion-reason">当前 220 小时 · 距离 #10 还差 24 小时。可参与"清禾山区助学 10 月志愿活动"（2 天·预计 16h）或"深圳湾应急救援志愿"（1 天·预计 8h）达成。#10 鸿驫榜将带来 PB 信誉 +12 + 平台推荐人优先权益。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">查看志愿机会</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入公益计划','info')">加入计划</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 0.5% 自动捐赠规则 + 公益 SOP + 受益人差异 (POL-005) -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">公益 · 0.5% 自动捐赠 + 受益人差异 (POL-005)</span>
+            <h2 class="section-title">每笔交易 0.5% 自动进入公益池</h2>
+            <p class="section-subtitle">非货币 · 非金融 · 仅支持平台指定公益项目 · 全程可审计</p>
+          </div>
+          <div class="charity-rule-grid mb-4">
+            <div class="charity-rule-cell">
+              <div class="charity-rule-num">0.5%</div>
+              <div class="charity-rule-name">自动捐赠比例</div>
+              <div class="charity-rule-desc">每笔商城 / 课程 / 服务订单结算后自动 0.5% 进入公益池 · 用户无需主动操作</div>
+            </div>
+            <div class="charity-rule-cell">
+              <div class="charity-rule-num">100%</div>
+              <div class="charity-rule-name">公示透明</div>
+              <div class="charity-rule-desc">每笔捐赠记录 + 受捐项目 + 受益人 + 影响评估全部公开 · 可在「公益行动记录」追溯</div>
+            </div>
+            <div class="charity-rule-cell">
+              <div class="charity-rule-num">0</div>
+              <div class="charity-rule-name">非金钱奖励</div>
+              <div class="charity-rule-desc">捐赠不返积分 / 不抵现金 / 不影响信誉评分 · 纯公益属性</div>
+            </div>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">公益 SOP · 4 步</div>
+            <div class="event-register-flow">
+              <div class="event-register-row">
+                <div class="event-register-num">1</div>
+                <div>
+                  <div class="event-register-name">交易结算</div>
+                  <div class="event-register-meta">商城 / 课程 / 服务订单结算后自动 0.5%</div>
+                </div>
+                <div><span class="event-register-state is-consistent">自动</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">2</div>
+                <div>
+                  <div class="event-register-name">进入公益池</div>
+                  <div class="event-register-meta">汇集到平台指定公益池 · 季度汇总公示</div>
+                </div>
+                <div><span class="event-register-state is-consistent">季度</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">3</div>
+                <div>
+                  <div class="event-register-name">定向 / 不定向</div>
+                  <div class="event-register-meta">您可选「指定项目」或「平台统一分配」· 默认平台统一</div>
+                </div>
+                <div><span class="event-register-state is-warn">可选</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">4</div>
+                <div>
+                  <div class="event-register-name">影响评估</div>
+                  <div class="event-register-meta">基金会提供受益人数 / 项目地点 / 周期 · 进入您的 Trust Passport</div>
+                </div>
+                <div><span class="event-register-state is-consistent">评估</span></div>
+              </div>
+            </div>
+            <div class="charity-flow-banner">
+              <div class="text-sm">
+                <strong>本季度您的公益贡献：¥ 2,840</strong> · 来源：商城 12 笔 / 课程 5 笔 / 服务订单 3 笔 · 平均 0.5% · 其中您指定「山区教师培训」¥ 600，其余平台统一分配。
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">公益受益人 vs 数字资产受益人 (POL-005)</div>
+            <table class="benef-diff-table">
+              <thead>
+                <tr>
+                  <th>受益人</th>
+                  <th>公益已分配 (本季度)</th>
+                  <th>数字资产已分配</th>
+                  <th>一致性</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="benef-diff-name">清禾基金会 · 山区教师</td>
+                  <td class="benef-diff-pct">¥ 1,200</td>
+                  <td>—</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-equal">不适用</span></td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">腾讯公益 · 儿童阅读</td>
+                  <td class="benef-diff-pct">¥ 800</td>
+                  <td>—</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-equal">不适用</span></td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">配偶 · 林 XX</td>
+                  <td>—</td>
+                  <td class="benef-diff-pct">50%</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-equal">数字资产</span></td>
+                </tr>
+                <tr class="is-diff">
+                  <td class="benef-diff-name">长子 · 林子 X</td>
+                  <td>—</td>
+                  <td class="benef-diff-pct">30%</td>
+                  <td><span class="benef-diff-pill benef-diff-pill-warn">与保险 5% 差异</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="benef-diff-notice">
+              <strong>POL-005 边界：</strong>公益捐赠不可指定个人受益人 · 只能选「公益项目」或「平台统一」 · 4499 不会自动修改个人数字资产或保险受益人 · 您可手动调整。
+            </div>
+          </div>
+        </div>
+
+      </div>
+</main>
+  </div>
+
+  <!-- Modal: 申请公益支持 -->
+  <div class="modal-backdrop" data-modal-backdrop="modal-donate"></div>
+  <div class="modal" id="modal-donate" data-modal>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">申请公益支持</div>
+        <div class="modal-close" data-modal-close="modal-donate">×</div>
+      </div>
+      <div class="modal-body">
+        <div class="flex flex-col gap-3">
+          <div class="input-group">
+            <label class="input-label">公益项目</label>
+            <select class="select">
+              <option>清禾山区助学</option>
+              <option>清禾应急救援</option>
+              <option>大湾区乡村教师赋能</option>
+              <option>复旦 EMBA 奖学金</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">参与方式</label>
+            <select class="select">
+              <option>资金捐赠</option>
+              <option>志愿服务</option>
+              <option>物资捐赠</option>
+              <option>专业评审</option>
+            </select>
+          </div>
+          <div class="grid-2x" style="gap: var(--space-3);">
+            <div class="input-group">
+              <label class="input-label">金额 / 时数</label>
+              <input class="input" placeholder="例：¥5,000 或 16h" />
+            </div>
+            <div class="input-group">
+              <label class="input-label">频率</label>
+              <select class="select">
+                <option>一次性</option>
+                <option>月度</option>
+                <option>季度</option>
+                <option>年度长期</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">备注</label>
+            <textarea class="textarea" placeholder="可填写对项目的具体期望或建议"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-modal-close="modal-donate">取消</button>
+        <button class="btn btn-primary" onclick="toast('已提交，公益基金会将联系您','success');">提交申请</button>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

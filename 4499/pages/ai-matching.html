@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 智能匹配 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .matching-layout { display: grid; grid-template-columns: 320px 1fr; gap: var(--space-6); align-items: start; }
+    @media (max-width: 1024px) { .matching-layout { grid-template-columns: 1fr; } .demand-side { display: none; } }
+    .match-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-5); transition: all var(--dur-fast) var(--ease-out); cursor: pointer; }
+    .match-card:hover { border-color: var(--color-line-2); }
+    .match-card.is-top { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .match-rank { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px 8px; background: var(--color-surface-2); color: var(--color-ink-2); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-medium); font-family: var(--font-mono); }
+    .match-rank.is-top { background: var(--color-accent); color: var(--color-accent); }
+    .reason-list { display: flex; flex-direction: column; gap: var(--space-1); }
+    .reason-item { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-ink-2); }
+    .reason-check { width: 16px; height: 16px; border-radius: 50%; background: var(--color-success-soft); color: var(--color-success); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+    .reason-warn { width: 16px; height: 16px; border-radius: 50%; background: var(--color-warn-soft); color: var(--color-warn-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".match-card" placeholder="搜索匹配…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>商业网络</span>
+          <span class="breadcrumb-sep">/</span>
+          <span>AI 智能匹配</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">AI 智能匹配</h1>
+          <p class="page-subtitle">多条件筛选 + AI 匹配因素 · 共匹配 <span class="js-counter" data-target="24">24</span> 位候选专家 / 资源 / 客户</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">保存为模板</button>
+            <button class="btn btn-secondary">导出结果</button>
+            <button class="btn btn-primary">+ 新建匹配</button>
+          </div>
+        </div>
+
+        <div class="matching-layout">
+          <!-- Left: 需求 + 筛选 -->
+          <aside class="demand-side">
+            <div class="card mb-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="badge badge-accent">需求描述</span>
+              </div>
+              <div class="text-sm fw-semibold mb-2">寻找跨境并购的东南亚法律专家</div>
+              <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">支持大湾区跨境并购孵化计划 M6-M7 阶段，涉及东南亚 3 个标的的尽调与谈判 · 需要双语能力 + 当地资源</div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="text-sm fw-semibold mb-3">多条件筛选</div>
+              <div class="flex flex-col gap-3">
+                <div class="input-group">
+                  <label class="input-label">类型</label>
+                  <select class="select select-sm">
+                    <option>全部</option>
+                    <option>EMP 专家</option>
+                    <option>服务商</option>
+                    <option>客户</option>
+                    <option>资源</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">专业领域</label>
+                  <select class="select select-sm">
+                    <option>跨境法律</option>
+                    <option>跨境并购</option>
+                    <option>东南亚业务</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">地区</label>
+                  <select class="select select-sm">
+                    <option>不限</option>
+                    <option>广东</option>
+                    <option>香港</option>
+                    <option>新加坡</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">语言</label>
+                  <select class="select select-sm">
+                    <option>不限</option>
+                    <option>中文</option>
+                    <option>英文</option>
+                    <option>双语</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">最低评分</label>
+                  <select class="select select-sm">
+                    <option>不限</option>
+                    <option>4.5 星以上</option>
+                    <option>4.0 星以上</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">最低 PB 值</label>
+                  <select class="select select-sm">
+                    <option>不限</option>
+                    <option>85+</option>
+                    <option>80+</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">可立即开始</label>
+                  <select class="select select-sm">
+                    <option>不限</option>
+                    <option>是</option>
+                    <option>否</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="text-sm fw-semibold mb-3">AI 匹配因素 (7)</div>
+              <div class="text-sm text-ink-2" style="line-height: var(--leading-relaxed);">
+                <p>· 客户需求与业务兴趣</p>
+                <p>· 客户地区 / 语言 / 时区</p>
+                <p>· 专家资质与专业领域</p>
+                <p>· 历史服务评分与完成率</p>
+                <p>· 专家当前任务量</p>
+                <p>· 利益冲突检查</p>
+                <p>· 合规状态</p>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right: 匹配结果 -->
+          <div>
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <div class="text-sm text-ink-3">按匹配度排序 · 共 <span class="js-counter" data-target="4">4</span> 位</div>
+              <div class="segmented">
+                <div class="segmented-item is-active">推荐排序</div>
+                <div class="segmented-item">评分</div>
+                <div class="segmented-item">可用时间</div>
+                <div class="segmented-item">PB 值</div>
+              </div>
+            </div>
+
+            <!-- Top match -->
+            <div class="match-card is-top mb-4 js-searchable" data-search="林志强 跨境律师 新加坡 94 最佳匹配">
+              <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-consultant">林</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">林志强</div>
+                      <span class="match-rank is-top">★ 最佳匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">跨境律师 · 新加坡 + 中国双牌照</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3">
+                      <span>新加坡</span><span>·</span><span>中文 / English</span><span>·</span><span>12 年经验</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 600; color: var(--color-accent); line-height: 1;"><span class="js-counter" data-target="94">94</span></div>
+                </div>
+              </div>
+
+              <div class="grid-2x mb-4" style="gap: var(--space-4);">
+                <div>
+                  <div class="text-xs text-ink-3 mb-2 fw-medium">匹配原因（5 项）</div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-check">✓</div><span><strong>双牌照</strong>：新加坡 + 中国 · 覆盖东南亚 + 大湾区</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>有 <strong>32 个</strong> 跨境并购经验 · 含 8 个东南亚项目</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>近 12 个月 <strong>完成率 98%</strong> · 满意度 4.9/5</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>可立即开始 · 本周任务量 1 单</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>无利益冲突 · 合规状态正常</span></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3 mb-2 fw-medium">关键数据</div>
+                  <div class="grid-2x" style="gap: var(--space-2);">
+                    <div><div class="text-xs text-ink-3">PB 值</div><div class="text-md fw-semibold text-mono">92</div></div>
+                    <div><div class="text-xs text-ink-3">累计服务</div><div class="text-md fw-semibold text-mono">186 单</div></div>
+                    <div><div class="text-xs text-ink-3">完成率</div><div class="text-md fw-semibold text-mono">98%</div></div>
+                    <div><div class="text-xs text-ink-3">客户评分</div><div class="text-md fw-semibold text-mono">4.9 / 5</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button class="btn btn-primary" onclick="toast('已选定林志强','success')">选定此专家</button>
+                <button class="btn btn-secondary">查看完整档案</button>
+                <button class="btn btn-ghost">联系预沟通</button>
+              </div>
+            </div>
+
+            <!-- 2nd match -->
+            <div class="match-card mb-4 js-searchable" data-search="陈雪 跨境律师 香港 88">
+              <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-ai">陈</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">陈雪</div>
+                      <span class="match-rank">#2 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">跨境律师 · 香港</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>香港</span><span>·</span><span>中文 / English</span><span>·</span><span>9 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-accent); line-height: 1;"><span class="js-counter" data-target="88">88</span></div>
+                </div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-4);">
+                <div>
+                  <div class="reason-list">
+                    <div class="reason-item"><div class="reason-check">✓</div><span>香港 + 大湾区 · 跨境经验丰富</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>22 个跨境并购案例 · 8 个东南亚项目</span></div>
+                    <div class="reason-item"><div class="reason-check">✓</div><span>完成率 96% · 满意度 4.8/5</span></div>
+                    <div class="reason-item"><div class="reason-warn">!</div><span>本周任务量 3 单 · 9/15 后可开始</span></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="grid-2x" style="gap: var(--space-2);">
+                    <div><div class="text-xs text-ink-3">PB 值</div><div class="text-md fw-semibold text-mono">89</div></div>
+                    <div><div class="text-xs text-ink-3">累计服务</div><div class="text-md fw-semibold text-mono">142 单</div></div>
+                    <div><div class="text-xs text-ink-3">完成率</div><div class="text-md fw-semibold text-mono">96%</div></div>
+                    <div><div class="text-xs text-ink-3">客户评分</div><div class="text-md fw-semibold text-mono">4.8 / 5</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-secondary btn-sm">选定</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+
+            <!-- 3rd match -->
+            <div class="match-card mb-4 js-searchable" data-search="王志远 企业服务中心 自动分配 82">
+              <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl avatar-role-center">王</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">王志远</div>
+                      <span class="match-rank">#3 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">企业服务中心 · 自动分配</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>广东</span><span>·</span><span>中文 / English</span><span>·</span><span>15 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-ink-3); line-height: 1;"><span class="js-counter" data-target="82">82</span></div>
+                </div>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>由企业服务中心根据当前负载智能分配</span></div>
+                <div class="reason-item"><div class="reason-check">✓</div><span>15 年跨境法律经验 · 含部分东南亚项目</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>分配后专家会另行通知 · 可能延后 1-2 天</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-secondary btn-sm" onclick="toast('已由中心分配','info')">由中心分配</button>
+                <button class="btn btn-ghost btn-sm">了解流程</button>
+              </div>
+            </div>
+
+            <!-- 4th match -->
+            <div class="match-card js-searchable" data-search="郑思远 跨境律师 印尼 78">
+              <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-xl" style="background: var(--color-info-soft); color: var(--color-info);">郑</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <div class="text-xl fw-semibold">郑思远</div>
+                      <span class="match-rank">#4 匹配</span>
+                    </div>
+                    <div class="text-sm text-ink-2">跨境律师 · 印尼资源</div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-ink-3"><span>上海</span><span>·</span><span>中文 / Indonesia</span><span>·</span><span>7 年经验</span></div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-ink-3">匹配度</div>
+                  <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-ink-3); line-height: 1;"><span class="js-counter" data-target="78">78</span></div>
+                </div>
+              </div>
+              <div class="reason-list">
+                <div class="reason-item"><div class="reason-check">✓</div><span>有 5 个印度尼西亚跨境项目</span></div>
+                <div class="reason-item"><div class="reason-check">✓</div><span>完成率 94% · 满意度 4.7/5</span></div>
+                <div class="reason-item"><div class="reason-warn">!</div><span>目前仅服务过印尼 · 其他东南亚国家资源有限</span></div>
+              </div>
+              <div class="flex items-center gap-2 mt-3">
+                <button class="btn btn-secondary btn-sm" disabled>暂无档期</button>
+                <button class="btn btn-ghost btn-sm">查看档案</button>
+              </div>
+            </div>
+
+            <!-- Section: 相似匹配历史 -->
+            <div class="section">
+              <div class="section-head">
+                <span class="eyebrow">相似推荐 · SIMILAR</span>
+                <h2 class="section-title">基于您历史匹配偏好的相似专家</h2>
+                <p class="section-subtitle">您过去 3 个月选了 4 位跨境法律专家 · 这些专家在专业 / 地区 / 评分维度最相似</p>
+              </div>
+              <div class="grid-2x">
+                <div class="card">
+                  <div class="flex items-center gap-2 mb-2">
+                    <div class="avatar avatar-md avatar-role-consultant">黄</div>
+                    <div>
+                      <div class="text-sm fw-semibold">黄思远</div>
+                      <div class="text-xs text-ink-3">新加坡 · 跨境法律 · 11 年</div>
+                    </div>
+                  </div>
+                  <div class="text-sm text-ink-2">东南亚 + 大湾区 · 双牌照 · 完成率 96%</div>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="badge badge-success badge-sm">PB 91</span>
+                    <span class="badge badge-outline badge-sm">4.8 星</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="flex items-center gap-2 mb-2">
+                    <div class="avatar avatar-md avatar-role-ai">吴</div>
+                    <div>
+                      <div class="text-sm fw-semibold">吴嘉敏</div>
+                      <div class="text-xs text-ink-3">香港 · 跨境法律 · 8 年</div>
+                    </div>
+                  </div>
+                  <div class="text-sm text-ink-2">东南亚 + 大湾区 · 双语 · 完成率 92%</div>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="badge badge-success badge-sm">PB 86</span>
+                    <span class="badge badge-outline badge-sm">4.6 星</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: AI 建议 -->
+            <div class="section">
+              <div class="ai-suggestion">
+                <div class="ai-suggestion-icon">
+                  <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <span>AI 团队建议</span>
+                </div>
+                <div class="ai-suggestion-title">建议优先选定"林志强"作为主对接专家</div>
+                <div class="ai-suggestion-reason">林志强是唯一同时具备新加坡 + 中国双牌照 + 12 年跨境经验 + 8 个东南亚项目 + 立即可开始的候选专家（匹配度 94）。建议作为主对接，黄思远（PB 91）为备选，形成"1 主 1 备"协作结构，避免档期冲突。</div>
+                <div class="ai-suggestion-actions">
+                  <button class="btn btn-primary btn-sm">立即选定</button>
+                  <button class="btn btn-ghost btn-sm" onclick="toast('已加入 Q3 议程','info')">稍后处理</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+        <!-- Section: AI 智能匹配 · 召回 + 排序 (AIM-002/004/005) -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">AI 智能匹配 · 召回 / 排序 / 解释</span>
+            <h2 class="section-title">每个推荐都带证据 + 风险</h2>
+            <p class="section-subtitle">客户摘要 → 候选召回 → 6 维排序 → 证据 + 缺口 + 风险点 · 禁止"AI 觉得很合适"</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">客户摘要 · 触发本次匹配</div>
+            <div class="grid-2x" style="gap: var(--space-3);">
+              <div>
+                <div class="text-xs text-ink-3">客户</div>
+                <div class="text-md fw-medium">林秀华 · M-2024-0381</div>
+              </div>
+              <div>
+                <div class="text-xs text-ink-3">状态</div>
+                <div class="text-md fw-medium">3 个月内未跟进 · 适合业务机会</div>
+              </div>
+              <div>
+                <div class="text-xs text-ink-3">历史</div>
+                <div class="text-md fw-medium">已购大湾区办公室 1.0 · 私董会参与 2 次</div>
+              </div>
+              <div>
+                <div class="text-xs text-ink-3">下一步</div>
+                <div class="text-md fw-medium">跨境架构升级需求（来自 P2026-09 案例）</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">候选召回 · AIM-002</div>
+            <div class="aim-recall-grid">
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">固定标签</div>
+                  <div class="aim-recall-item-count">22</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">跨境架构</span>
+                  <span class="aim-recall-tag">家族办公室</span>
+                  <span class="aim-recall-tag">离岸信托</span>
+                </div>
+              </div>
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">动态标签</div>
+                  <div class="aim-recall-item-count">8</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">近 90 天有 5+ 单成交</span>
+                  <span class="aim-recall-tag">客户复购率 ≥ 80%</span>
+                </div>
+              </div>
+              <div class="aim-recall-item">
+                <div class="aim-recall-item-head">
+                  <div class="aim-recall-item-name">关系 / 信誉</div>
+                  <div class="aim-recall-item-count">4</div>
+                </div>
+                <div class="aim-recall-tags">
+                  <span class="aim-recall-tag">2 度关系</span>
+                  <span class="aim-recall-tag">信誉 ≥ 92</span>
+                  <span class="aim-recall-tag">无投诉</span>
+                </div>
+              </div>
+            </div>
+            <div class="aim-filter-row mt-3">
+              <strong>过滤：</strong>已剔除 3 个对象（已停业 × 1、负载 100% × 1、未授权给当前客户 × 1）
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">排序 + 证据 · Top 3</div>
+            <table class="aim-rank-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>推荐业务</th>
+                  <th>适配度</th>
+                  <th>可信度</th>
+                  <th>关系距离</th>
+                  <th>可用性</th>
+                  <th>综合</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="aim-rank-num">1</span></td>
+                  <td>大湾区家族办公室 2.0（升级版）</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">94</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 94%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">96</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 96%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">2度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><strong>90</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="aim-rank-num">2</span></td>
+                  <td>跨境 VIE 架构咨询包</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">88</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 88%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">98</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 98%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">1度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">中</span></div></td>
+                  <td><strong>87</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="aim-rank-num">3</span></td>
+                  <td>离岸家族信托设立</td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">82</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 82%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">95</span><div class="aim-rank-bar-bg"><div class="aim-rank-bar-fill" style="width: 95%;"></div></div></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">3度</span></div></td>
+                  <td><div class="aim-rank-bar"><span class="aim-rank-num">高</span></div></td>
+                  <td><strong>82</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="aim-evidence">
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">Top 1 证据</div>
+                <div>林秀华 P2026-09 私董会案例"前海跨境投资架构" + Profile 登记"想升级家族办公室" → 业务画像 94% 匹配 2.0 升级包</div>
+                <div class="aim-evidence-time">2026-08-12 案例事件</div>
+              </div>
+              <div class="aim-evidence-row">
+                <div class="aim-evidence-source">缺口</div>
+                <div style="color: var(--color-warn-2);">2.0 包含新加坡架构，但林秀华无新加坡资产登记 · 建议：先确认是否在新加坡有投资意向</div>
+                <div class="aim-evidence-time">联系前先确认</div>
+              </div>
+            </div>
+            <div class="aim-no-hallucination mt-3">
+              <strong>禁止"AI 觉得很合适"：</strong>90 分综合分由 6 个维度的可追溯证据算得，所有标签、关系事件、信誉数据都来自具体事件 ID（不是 AI 自己觉得）。
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 反馈学习 (AIM-007) -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">反馈学习 · FEEDBACK</span>
+            <h2 class="section-title">您的反馈只优化排序权重</h2>
+            <p class="section-subtitle">不修改客户的 Profile / 信誉 / 交易历史 · 事实数据由规则决定</p>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">本次匹配反馈操作</div>
+            <div class="aim-feedback-tag-list">
+              <span class="aim-feedback-tag">+ 大湾区 2.0 升级包</span>
+              <span class="aim-feedback-tag">原因：客户画像匹配</span>
+              <span class="aim-feedback-tag">− 离岸家族信托</span>
+              <span class="aim-feedback-tag">原因：3 度关系太远</span>
+              <span class="aim-feedback-tag">稍后跟进 林秀华</span>
+              <span class="aim-feedback-tag">已发起 UMAX 通道</span>
+            </div>
+            <div class="aim-feedback-warning mt-4">
+              <strong>反馈边界：</strong>"+ 业务"只表示您认可推荐 · 不会自动下单或修改客户 Profile；"− 业务"只降低下次排序权重 · 不会删除该业务的下次召回。事实档案只能由客户本人或管理员修改。
+            </div>
+          </div>
+        </div>
+</main>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

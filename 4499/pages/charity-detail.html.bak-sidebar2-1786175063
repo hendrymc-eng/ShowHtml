@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>公益详情 · 清禾 · 山区教育基金 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .charity-hero { background: linear-gradient(180deg, var(--color-charity-soft) 0%, var(--color-paper) 100%); border-bottom: 1px solid var(--color-line); padding: var(--space-10) 0; }
+    .charity-hero-inner { max-width: var(--container-content); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); }
+    @media (max-width: 1024px) { .charity-hero-inner { grid-template-columns: 1fr; } }
+    .fund-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); }
+    .fund-item:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索公益项目、捐赠记录…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <section class="charity-hero">
+        <div class="charity-hero-inner">
+          <div>
+            <div class="breadcrumb">
+              <a href="workbench-recommender.html">我的工作台</a>
+              <span class="breadcrumb-sep">/</span>
+              <a href="#">公益行动</a>
+              <span class="breadcrumb-sep">/</span>
+              <span>清禾 · 山区教育基金</span>
+            </div>
+            <span class="eyebrow">公益项目 · 第 5 期 · 进行中</span>
+            <h1 class="page-title" style="margin-top: var(--space-2);">清禾 · 云南山区教育基金</h1>
+            <p class="page-subtitle">由 4499 平台 × 深圳湾慈善基金会联合发起 · 聚焦云南怒江、丽江山区 12 所学校 · 已持续 5 年。</p>
+            <div class="flex gap-2 mt-4">
+              <span class="badge badge-charity">公益</span>
+              <span class="badge badge-accent">教育</span>
+              <span class="badge badge-success">已认证</span>
+              <span class="badge badge-info">公开透明</span>
+              <span class="badge badge-warn">第 5 期</span>
+            </div>
+            <div class="grid-4x mt-6">
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">已筹集</div>
+                <div class="kpi-value"><span class="js-counter" data-target="486">0</span><span class="kpi-value-unit">万</span></div>
+                <div class="text-xs text-ink-3">目标 600 万 · 完成 81%</div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">参与会员</div>
+                <div class="kpi-value"><span class="js-counter" data-target="328">0</span><span class="kpi-value-unit">人</span></div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">受益学生</div>
+                <div class="kpi-value"><span class="js-counter" data-target="1842">0</span></div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">服务学校</div>
+                <div class="kpi-value">12<span class="kpi-value-unit">所</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="event-enroll-card">
+            <div style="aspect-ratio: 16/9; background: linear-gradient(135deg, var(--color-charity-soft) 0%, var(--color-warn-soft) 100%); border: 1px solid var(--color-line); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-charity); margin-bottom: var(--space-4);">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-7-11a4 4 0 017-2.6A4 4 0 0119 10c0 6.5-7 11-7 11z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="text-md fw-semibold">捐赠档位</div>
+            <div class="mt-3 space-y-2">
+              <label class="check-pill js-check-pill is-active" style="display:flex; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-accent); border-radius: var(--radius-sm); background: var(--color-accent-softer);">
+                <input type="radio" name="donate" checked style="margin-right: var(--space-2);" />
+                <div class="flex-1">
+                  <div class="fw-semibold">¥ 5,000</div>
+                  <div class="text-xs text-ink-3">1 名学生 1 年助学金</div>
+                </div>
+              </label>
+              <label class="check-pill js-check-pill" style="display:flex; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm);">
+                <input type="radio" name="donate" style="margin-right: var(--space-2);" />
+                <div class="flex-1">
+                  <div class="fw-semibold">¥ 30,000</div>
+                  <div class="text-xs text-ink-3">1 个班级 1 年教学包</div>
+                </div>
+              </label>
+              <label class="check-pill js-check-pill" style="display:flex; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm);">
+                <input type="radio" name="donate" style="margin-right: var(--space-2);" />
+                <div class="flex-1">
+                  <div class="fw-semibold">¥ 100,000</div>
+                  <div class="text-xs text-ink-3">1 所学校 1 年综合支持</div>
+                </div>
+              </label>
+              <label class="check-pill js-check-pill" style="display:flex; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm);">
+                <input type="radio" name="donate" style="margin-right: var(--space-2);" />
+                <div class="flex-1">
+                  <div class="fw-semibold">自定义金额</div>
+                  <div class="text-xs text-ink-3">¥ 1,000 起 · 由您决定用途</div>
+                </div>
+              </label>
+            </div>
+            <button class="btn btn-primary w-full mt-4" style="height: 44px; background: var(--color-charity);">立即捐赠 ¥ 5,000</button>
+            <div class="text-xs text-ink-3 mt-3 text-center">已累计服务 1,842 名学生 · 100% 公开透明</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="app-content">
+        <!-- 项目介绍 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">项目介绍</span>
+            <h2 class="section-title">关于清禾 · 云南山区教育基金</h2>
+          </div>
+          <div class="grid-2x">
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2">使命</div>
+              <p class="text-sm text-ink-2">为云南怒江、丽江山区 12 所学校提供长期教育支持，覆盖 1,842 名学生、96 位教师、12 校长。已持续 5 年，是 4499 平台长期承诺的旗舰公益项目。</p>
+            </div>
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2">5 大支持方向</div>
+              <div class="text-sm text-ink-2 mb-1">· 助学金（每位学生 5,000 元/年）</div>
+              <div class="text-sm text-ink-2 mb-1">· 教师培训（每校 8 万/年）</div>
+              <div class="text-sm text-ink-2 mb-1">· 教学设备（每校 30 万/年）</div>
+              <div class="text-sm text-ink-2 mb-1">· 心理健康（覆盖全体学生）</div>
+              <div class="text-sm text-ink-2">· 校友会支持（考入大学持续跟踪）</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 资金使用 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">资金使用</span>
+            <h2 class="section-title">486 万 / 600 万 · 公开透明</h2>
+            <p class="section-subtitle">每季度公示 · 第三方审计</p>
+          </div>
+          <div class="card">
+            <div class="fund-item">
+              <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                  <div class="fw-medium">助学金 · 直接发放</div>
+                  <div class="text-sm fw-medium text-mono">¥ 186 万 / 240 万</div>
+                </div>
+                <div class="progress progress-success"><div class="progress-bar" style="width: 78%;"></div></div>
+                <div class="text-xs text-ink-3 mt-1">1,842 名学生 · 每位 5,000 元/年</div>
+              </div>
+            </div>
+            <div class="fund-item">
+              <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                  <div class="fw-medium">教师培训</div>
+                  <div class="text-sm fw-medium text-mono">¥ 78 万 / 96 万</div>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 81%;"></div></div>
+                <div class="text-xs text-ink-3 mt-1">96 位教师 · 3 次年度集中培训</div>
+              </div>
+            </div>
+            <div class="fund-item">
+              <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                  <div class="fw-medium">教学设备</div>
+                  <div class="text-sm fw-medium text-mono">¥ 142 万 / 180 万</div>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 79%;"></div></div>
+                <div class="text-xs text-ink-3 mt-1">12 校 · 含图书 + 电脑 + 实验器材</div>
+              </div>
+            </div>
+            <div class="fund-item">
+              <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                  <div class="fw-medium">心理健康</div>
+                  <div class="text-sm fw-medium text-mono">¥ 36 万 / 48 万</div>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 75%;"></div></div>
+                <div class="text-xs text-ink-3 mt-1">2 位驻场心理师 + 远程支持</div>
+              </div>
+            </div>
+            <div class="fund-item">
+              <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                  <div class="fw-medium">校友会 · 大学跟踪</div>
+                  <div class="text-sm fw-medium text-mono">¥ 24 万 / 36 万</div>
+                </div>
+                <div class="progress progress-trust"><div class="progress-bar" style="width: 67%;"></div></div>
+                <div class="text-xs text-ink-3 mt-1">3-5 年持续跟踪 · 含大学助学金</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 项目里程碑 / 时间线 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">项目时间线</span>
+            <h2 class="section-title">5 年里程碑 · 第 5 期进行中</h2>
+          </div>
+          <div class="card">
+            <div class="flex items-start gap-3 py-3" style="border-bottom: 1px solid var(--color-line);">
+              <div class="badge badge-success" style="flex-shrink: 0;">2022</div>
+              <div class="flex-1">
+                <div class="fw-semibold">第 1 期 · 启动</div>
+                <div class="text-sm text-ink-2 mt-1">深圳湾慈善基金会联合发起，3 所试点学校，96 名学生</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 py-3" style="border-bottom: 1px solid var(--color-line);">
+              <div class="badge badge-success" style="flex-shrink: 0;">2023</div>
+              <div class="flex-1">
+                <div class="fw-semibold">第 2 期 · 扩展到 6 校</div>
+                <div class="text-sm text-ink-2 mt-1">增加 3 所学校 + 引入 4499 平台会员共同参与 + 480 名学生</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 py-3" style="border-bottom: 1px solid var(--color-line);">
+              <div class="badge badge-success" style="flex-shrink: 0;">2024</div>
+              <div class="flex-1">
+                <div class="fw-semibold">第 3 期 · 9 校 + 教师培训</div>
+                <div class="text-sm text-ink-2 mt-1">新增 3 校 + 启动教师培训计划 + 心理咨询服务 + 1,200 学生</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 py-3" style="border-bottom: 1px solid var(--color-line);">
+              <div class="badge badge-success" style="flex-shrink: 0;">2025</div>
+              <div class="flex-1">
+                <div class="fw-semibold">第 4 期 · 12 校 + 校友会</div>
+                <div class="text-sm text-ink-2 mt-1">12 校全覆盖 + 校友会成立 + 第一届大学生入学跟踪 + 1,520 学生</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 py-3">
+              <div class="badge badge-warn" style="flex-shrink: 0;">2026</div>
+              <div class="flex-1">
+                <div class="fw-semibold">第 5 期 · 进行中 · 1,842 学生</div>
+                <div class="text-sm text-ink-2 mt-1">目标 600 万 · 已筹集 486 万 · 计划增加 1 所高中 + 试点数字化教学</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 志愿者 + 受益人 -->
+        <section class="section">
+          <div class="grid-2x">
+            <div>
+              <div class="section-head">
+                <span class="eyebrow">志愿者</span>
+                <h2 class="section-title">48 位志愿者</h2>
+                <p class="section-subtitle">含 12 位 EMP 顾问 + 36 位 4499 会员</p>
+              </div>
+              <div class="card">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="avatar avatar-sm avatar-role-consultant">张</div>
+                  <div class="flex-1">
+                    <div class="fw-medium text-sm">张明 EMP</div>
+                    <div class="text-xs text-ink-3">项目顾问 · 累计 12 次走访</div>
+                  </div>
+                  <span class="badge badge-success badge-sm">长期</span>
+                </div>
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="avatar avatar-sm avatar-role-consultant">王</div>
+                  <div class="flex-1">
+                    <div class="fw-medium text-sm">王志远 EMP</div>
+                    <div class="text-xs text-ink-3">项目顾问 · 累计 8 次走访</div>
+                  </div>
+                  <span class="badge badge-success badge-sm">长期</span>
+                </div>
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="avatar avatar-sm avatar-role-ai">李</div>
+                  <div class="flex-1">
+                    <div class="fw-medium text-sm">李婧 AI 顾问</div>
+                    <div class="text-xs text-ink-3">教研支持 · 累计 6 次走访</div>
+                  </div>
+                  <span class="badge badge-success badge-sm">长期</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="avatar avatar-sm avatar-role-recommender">林</div>
+                  <div class="flex-1">
+                    <div class="fw-medium text-sm">林秀华（您）</div>
+                    <div class="text-xs text-ink-3">参与 1 次 · 2026-08 走访</div>
+                  </div>
+                  <span class="badge badge-accent badge-sm">+ 报名</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="section-head">
+                <span class="eyebrow">受益人</span>
+                <h2 class="section-title">1,842 名学生</h2>
+                <p class="section-subtitle">12 校 · 含小学生 / 初中生 / 高中生</p>
+              </div>
+              <div class="grid-2x2">
+                <div class="kpi-card" style="min-height: 80px;">
+                  <div class="kpi-label">小学生</div>
+                  <div class="kpi-value">986</div>
+                </div>
+                <div class="kpi-card" style="min-height: 80px;">
+                  <div class="kpi-label">初中生</div>
+                  <div class="kpi-value">562</div>
+                </div>
+                <div class="kpi-card" style="min-height: 80px;">
+                  <div class="kpi-label">高中生</div>
+                  <div class="kpi-value">294</div>
+                </div>
+                <div class="kpi-card" style="min-height: 80px;">
+                  <div class="kpi-label">已毕业</div>
+                  <div class="kpi-value">68</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 捐赠人 -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">捐赠人</span>
+              <h2 class="section-title">328 位捐赠人 · 5 大类</h2>
+            </div>
+            <div class="segmented js-segmented">
+              <div class="segmented-item is-active">全部</div>
+              <div class="segmented-item">个人</div>
+              <div class="segmented-item">企业</div>
+              <div class="segmented-item">基金会</div>
+            </div>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-1 fw-medium">个人会员 · 268 位</div>
+              <div class="text-md fw-semibold mb-1">¥ 186 万</div>
+              <div class="text-sm text-ink-2">平均 ¥ 6,940 / 人</div>
+              <div class="text-xs text-ink-3 mt-2">占比 38% · 4499 会员为主</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-1 fw-medium">企业捐赠 · 32 家</div>
+              <div class="text-md fw-semibold mb-1">¥ 168 万</div>
+              <div class="text-sm text-ink-2">平均 ¥ 5.25 万 / 家</div>
+              <div class="text-xs text-ink-3 mt-2">占比 35% · 含 4 家上市公司</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-1 fw-medium">家族办公室 · 18 家</div>
+              <div class="text-md fw-semibold mb-1">¥ 86 万</div>
+              <div class="text-sm text-ink-2">平均 ¥ 4.78 万 / 家</div>
+              <div class="text-xs text-ink-3 mt-2">占比 18% · 长期承诺</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-1 fw-medium">其他基金会 · 10 家</div>
+              <div class="text-md fw-semibold mb-1">¥ 46 万</div>
+              <div class="text-sm text-ink-2">平均 ¥ 4.6 万 / 家</div>
+              <div class="text-xs text-ink-3 mt-2">占比 9% · 含深圳湾慈善基金会</div>
+            </div>
+          </div>
+          <div class="table-wrap mt-4">
+            <table class="table">
+              <thead>
+                <tr><th>捐赠人</th><th>类型</th><th>金额</th><th>用途指定</th><th>日期</th><th>状态</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>林秀华</td><td>个人会员</td><td class="col-money">¥ 5,000</td><td>1 名学生助学金</td><td>2026-08-25</td><td><span class="badge badge-success">已到账</span></td></tr>
+                <tr><td>陈丽华</td><td>个人会员</td><td class="col-money">¥ 30,000</td><td>1 个班级教学包</td><td>2026-08-20</td><td><span class="badge badge-success">已到账</span></td></tr>
+                <tr><td>王明远</td><td>个人会员</td><td class="col-money">¥ 5,000</td><td>1 名学生助学金</td><td>2026-08-15</td><td><span class="badge badge-success">已到账</span></td></tr>
+                <tr><td>张伟杰</td><td>个人会员</td><td class="col-money">¥ 100,000</td><td>1 所学校综合支持</td><td>2026-08-08</td><td><span class="badge badge-success">已到账</span></td></tr>
+                <tr><td>深圳湾慈善基金会</td><td>基金会</td><td class="col-money">¥ 80,000</td><td>不指定</td><td>2026-08-01</td><td><span class="badge badge-success">已到账</span></td></tr>
+                <tr><td>林氏家族办公室</td><td>家办</td><td class="col-money">¥ 200,000</td><td>3 校教师培训</td><td>2026-07-22</td><td><span class="badge badge-success">已到账</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 公示与审计 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">公示与审计</span>
+            <h2 class="section-title">6 期公示 · 100% 公开</h2>
+            <p class="section-subtitle">季度公示 + 年度第三方审计</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">最近季度公示 · 2026 Q2</div>
+              <div class="text-md fw-semibold mb-2">已发放助学金 78 万 · 惠及 1,842 学生</div>
+              <div class="text-sm text-ink-2 mb-2">教师培训 3 场 · 96 人参与</div>
+              <div class="text-sm text-ink-2 mb-3">设备采购 12 校 · 含图书 4,200 册</div>
+              <button class="btn btn-secondary btn-sm">查看完整公示</button>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">2025 年度审计报告</div>
+              <div class="text-md fw-semibold mb-2">由普华永道审计 · 合规</div>
+              <div class="text-sm text-ink-2 mb-2">2025 年总支出 386 万 · 已发放 100%</div>
+              <div class="text-sm text-ink-2 mb-3">合规率 100% · 无违规使用</div>
+              <button class="btn btn-secondary btn-sm">下载审计报告</button>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">6 期公示档案</div>
+              <div class="text-sm text-ink-2 mb-1">· 2022 启动期公示</div>
+              <div class="text-sm text-ink-2 mb-1">· 2023 Q4 阶段公示</div>
+              <div class="text-sm text-ink-2 mb-1">· 2024 Q2 + Q4 公示</div>
+              <div class="text-sm text-ink-2 mb-1">· 2025 Q2 + Q4 公示</div>
+              <div class="text-sm text-ink-2">· 2026 Q2 公示</div>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">走访记录</div>
+              <div class="text-sm text-ink-2 mb-1">· 2026-08-10 走访 4 校</div>
+              <div class="text-sm text-ink-2 mb-1">· 2026-04-15 走访 6 校</div>
+              <div class="text-sm text-ink-2 mb-1">· 2025-12-20 走访 12 校</div>
+              <div class="text-sm text-ink-2 mb-1">· 2025-08-25 走访 8 校</div>
+              <div class="text-sm text-ink-2">含照片 + 视频 + 学生作品</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- AI 建议 -->
+        <section class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">建议升级为「学校综合支持」长期承诺</div>
+            <div class="ai-suggestion-reason">您今年已为清禾项目捐赠 ¥ 5,000 + 1 次走访。基于您家族办公室的长期承诺模式与平台 28 位家族办公室的相似选择，建议升级到「1 所学校 1 年综合支持」(¥ 100,000)，可获得命名权、季度走访、年度报告同步到您的 Trust Passport（PB +8）。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm" style="background: var(--color-charity);">升级为长期承诺</button>
+              <button class="btn btn-ghost btn-sm">查看历史捐赠</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 相关公益项目 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">相关项目</span>
+            <h2 class="section-title">3 个其他公益项目</h2>
+          </div>
+          <div class="grid-3x">
+            <div class="card card-clickable">
+              <span class="badge badge-success">环保</span>
+              <div class="fw-semibold mt-2 mb-1">清源 · 长江流域环保</div>
+              <div class="text-sm text-ink-2 mb-2">第 2 期 · 3 个省份</div>
+              <div class="text-xs text-ink-3">已筹集 186 万 / 240 万</div>
+            </div>
+            <div class="card card-clickable">
+              <span class="badge badge-warn">女性</span>
+              <div class="fw-semibold mt-2 mb-1">清云 · 山区女童助学</div>
+              <div class="text-sm text-ink-2 mb-2">第 3 期 · 8 省</div>
+              <div class="text-xs text-ink-3">已筹集 320 万 / 400 万</div>
+            </div>
+            <div class="card card-clickable">
+              <span class="badge badge-info">医疗</span>
+              <div class="fw-semibold mt-2 mb-1">清安 · 西部医疗支援</div>
+              <div class="text-sm text-ink-2 mb-2">第 1 期 · 5 省</div>
+              <div class="text-xs text-ink-3">已筹集 88 万 / 200 万</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="../js/app.js"></script>
+</body>
+</html>

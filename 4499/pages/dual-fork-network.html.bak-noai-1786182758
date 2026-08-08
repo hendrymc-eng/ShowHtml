@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>双叉网络 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .network-layout { display: grid; grid-template-columns: 1fr 340px; gap: var(--space-6); align-items: start; }
+    @media (max-width: 1280px) { .network-layout { grid-template-columns: 1fr; } .network-side { display: none; } }
+    .network-canvas {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      min-height: 580px;
+      position: relative;
+      overflow: hidden;
+    }
+    .network-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .layer-row { display: flex; align-items: center; justify-content: center; gap: var(--space-6); position: relative; z-index: 1; }
+    .node-cluster { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+    .node {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex; align-items: center; gap: var(--space-2);
+      min-width: 200px;
+      cursor: pointer;
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .node:hover { border-color: var(--color-accent); background: var(--color-accent-softer); transform: translateY(-1px); }
+    .node-self { border: 2px solid var(--color-accent); background: var(--color-accent-softer); }
+    .node-info { flex: 1; min-width: 0; }
+    .node-name { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .node-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .node-stat { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-accent); font-weight: var(--weight-medium); }
+    .layer-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-3); margin-top: var(--space-3); }
+    .network-legend { display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-ink-2); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .layer-gap { height: var(--space-12); position: relative; }
+
+    /* B1 增强：节点高亮 + 展开动画 */
+    .node.is-selected { border: 2px solid var(--color-accent); background: var(--color-accent-softer); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30, 63, 174, 0.12); }
+    .node { position: relative; }
+    .node.is-selected::before {
+      content: '✓';
+      position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--color-accent); color: var(--color-accent-ink);
+      font-size: 10px; display: flex; align-items: center; justify-content: center;
+    }
+    .layer-expandable { cursor: pointer; transition: all var(--dur-fast) var(--ease-out); }
+    .layer-expandable:hover { background: var(--color-accent-softer); border-color: var(--color-accent); }
+    .layer-expanded { animation: fade-in var(--dur-slow) var(--ease-out); }
+    @keyframes grow-bar { from { width: 0 !important; } }
+    .progress-bar.animate-in { animation: grow-bar 900ms var(--ease-out) forwards; }
+
+    /* B1 增强（数据密度） */
+    .node-stat-block { display: flex; align-items: center; gap: var(--space-2); }
+    .node-stat-mini {
+      font-family: var(--font-mono); font-size: 10px;
+      padding: 1px 5px; border-radius: var(--radius-xs);
+      background: var(--color-surface-2); color: var(--color-ink-2);
+    }
+    .node-stat-mini.warn { background: var(--color-warn-soft); color: var(--color-warn-2); }
+    .node-stat-mini.danger { background: var(--color-danger-soft); color: var(--color-danger); }
+    .node-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block; flex-shrink: 0;
+    }
+    .node-status-active { background: var(--color-success); }
+    .node-status-inactive { background: var(--color-ink-3); }
+    .node-status-warning { background: var(--color-warn); }
+    .node-status-danger { background: var(--color-danger); }
+    .node-detail-row {
+      display: flex; align-items: center; gap: var(--space-2);
+      font-size: 10px; color: var(--color-ink-3);
+      margin-top: 2px;
+    }
+
+    /* 网络健康指标 */
+    .health-metric { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); }
+    .health-metric:last-child { border-bottom: none; }
+    .health-icon {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .health-body { flex: 1; min-width: 0; }
+    .health-label { font-size: var(--text-sm); color: var(--color-ink-2); }
+    .health-value-row { display: flex; align-items: baseline; gap: var(--space-2); margin-top: 2px; }
+    .health-value { font-family: var(--font-display); font-weight: var(--weight-semibold); font-size: var(--text-lg); color: var(--color-ink); }
+    .health-unit { font-size: var(--text-xs); color: var(--color-ink-3); }
+    .health-bar-track { height: 4px; background: var(--color-surface-2); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .health-bar-fill { height: 100%; border-radius: 2px; transition: width var(--dur-slow) var(--ease-out); }
+
+    /* 层级分布 */
+    .layer-dist-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line);
+    }
+    .layer-dist-row:last-child { border-bottom: none; }
+    .layer-dist-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-accent-soft); color: var(--color-accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: var(--weight-semibold);
+      font-size: var(--text-md); flex-shrink: 0;
+    }
+    .layer-dist-body { flex: 1; min-width: 0; }
+    .layer-dist-label { font-size: var(--text-sm); color: var(--color-ink-2); }
+    .layer-dist-bar-track { height: 6px; background: var(--color-surface-2); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+    .layer-dist-bar-fill { height: 100%; background: var(--color-accent); border-radius: 3px; }
+    .layer-dist-value { text-align: right; flex-shrink: 0; }
+    .layer-dist-count { font-family: var(--font-display); font-weight: var(--weight-semibold); font-size: var(--text-lg); color: var(--color-ink); }
+    .layer-dist-pct { font-size: 10px; color: var(--color-ink-3); }
+
+    /* 关键人物卡片 */
+    .keyperson-card {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3); border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm); background: var(--color-surface);
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .keyperson-card:hover { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .keyperson-rank {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--color-accent); color: var(--color-accent-ink);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: var(--text-xs); font-weight: var(--weight-semibold);
+      flex-shrink: 0;
+    }
+    .keyperson-rank.r2 { background: var(--color-info); }
+    .keyperson-rank.r3 { background: var(--color-success); }
+    .keyperson-info { flex: 1; min-width: 0; }
+    .keyperson-name { font-size: var(--text-md); font-weight: var(--weight-medium); color: var(--color-ink); }
+    .keyperson-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .keyperson-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .keyperson-stat-val { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-accent); }
+    .keyperson-stat-label { font-size: 10px; color: var(--color-ink-3); }
+
+    /* 网络演化 */
+    .evolution-bar { display: flex; align-items: flex-end; gap: 4px; height: 80px; padding-bottom: 16px; }
+    .evolution-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .evolution-bar-fill { width: 100%; background: var(--color-accent); border-radius: 2px 2px 0 0; }
+    .evolution-bar-label { font-size: 9px; color: var(--color-ink-3); font-family: var(--font-mono); }
+    .evolution-bar-value { font-size: 10px; color: var(--color-ink); font-family: var(--font-mono); font-weight: var(--weight-medium); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;"><div class="topbar-brand-mark">4</div><span>4499</span></a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+            <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+</div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content-wide">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>双叉网络</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">双叉网络</h1>
+          <p class="page-subtitle">展示你的长期关系结构与服务覆盖情况 · 共 312 人 · 4 层</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">按区域筛选</button>
+            <button class="btn btn-secondary">按到期时间</button>
+            <button class="btn btn-secondary">导出</button>
+          </div>
+        </div>
+
+        <!-- Stat row · 网络健康指标 -->
+        <div class="grid-4x mb-6">
+          <div class="kpi-card">
+            <div class="kpi-label">活跃度</div>
+            <div class="kpi-value" style="color: var(--color-success);">82<span class="kpi-value-unit">%</span></div>
+            <div class="kpi-delta kpi-delta-up">▲ +3% 较上月</div>
+            <div class="kpi-meta">256 / 312 人近 30 天互动</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">多样性</div>
+            <div class="kpi-value" style="color: var(--color-accent);">7<span class="kpi-value-unit">类</span></div>
+            <div class="kpi-delta kpi-delta-up">▲ +1 新业务线</div>
+            <div class="kpi-meta">POIF/AI/企业/RWA/健康/再生/公益</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">深度</div>
+            <div class="kpi-value">4<span class="kpi-value-unit">层</span></div>
+            <div class="kpi-delta text-ink-3">稳定</div>
+            <div class="kpi-meta">平均 2.8 层 · 最深 4 层</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">增长</div>
+            <div class="kpi-value" style="color: var(--color-success);">+18<span class="kpi-value-unit">人</span></div>
+            <div class="kpi-delta kpi-delta-up">▲ 本月净增</div>
+            <div class="kpi-meta">新增 23 · 流失 5 · 净增 18</div>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-bar mb-4">
+          <div class="filter-chip is-active js-filter">全部层级</div>
+          <div class="filter-chip js-filter">第 1 层 <span class="filter-chip-count">86</span></div>
+          <div class="filter-chip js-filter">第 2 层 <span class="filter-chip-count">142</span></div>
+          <div class="filter-chip js-filter">第 3 层 <span class="filter-chip-count">68</span></div>
+          <div class="filter-chip js-filter">第 4 层 <span class="filter-chip-count">16</span></div>
+          <div class="filter-divider"></div>
+          <div class="filter-chip js-filter">即将到期 <span class="filter-chip-count">23</span></div>
+          <div class="filter-chip js-filter">需联系 <span class="filter-chip-count">12</span></div>
+          <div class="filter-search"><input type="text" class="input input-sm" placeholder="搜索姓名 / 编号" /></div>
+        </div>
+
+        <div class="network-layout">
+          <!-- Canvas -->
+          <div class="network-canvas">
+            <!-- Layer 0: self -->
+            <div class="layer-row" style="margin-top: var(--space-2);">
+              <div class="node-cluster">
+                <div class="node node-self js-node-select" data-node="self">
+                  <div class="avatar avatar-md avatar-role-recommender">陈</div>
+                  <div class="node-info">
+                    <div class="node-name">陈志远（你）</div>
+                    <div class="node-meta">推荐人 · 6 年 2 个月</div>
+                  </div>
+                  <div class="node-stat">312</div>
+                </div>
+                <div class="layer-label">第 0 层 · 自我</div>
+              </div>
+            </div>
+
+            <div class="layer-gap"></div>
+
+            <!-- Layer 1 -->
+            <div class="layer-row">
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="linxh">
+                  <div class="avatar avatar-sm avatar-role-recommender">林</div>
+                  <div class="node-info">
+                    <div class="node-name">林秀华 <span class="node-status-dot node-status-warning" title="即将到期"></span></div>
+                    <div class="node-meta">7 天后到期 · 高级</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 0</span>
+                      <span class="node-stat-mini">客 5</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">5</div>
+                </div>
+                <div class="layer-label">第 1 层 · 86 人</div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="xuli">
+                  <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">徐</div>
+                  <div class="node-info">
+                    <div class="node-name">徐丽 <span class="node-status-dot node-status-active" title="活跃"></span></div>
+                    <div class="node-meta">升级信号 · 标准</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 1</span>
+                      <span class="node-stat-mini">客 3</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">3</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="wangmy">
+                  <div class="avatar avatar-sm avatar-role-ai">王</div>
+                  <div class="node-info">
+                    <div class="node-name">王明远 <span class="node-status-dot node-status-active" title="活跃"></span></div>
+                    <div class="node-meta">企业诊断 · 企业</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 2</span>
+                      <span class="node-stat-mini">客 8</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">8</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="zhangwj" style="border-color: var(--color-warn-soft);">
+                  <div class="avatar avatar-sm" style="background: var(--color-warn-soft); color: var(--color-warn-2);">张</div>
+                  <div class="node-info">
+                    <div class="node-name">张伟杰 <span class="node-status-dot node-status-danger" title="流失风险"></span></div>
+                    <div class="node-meta" style="color: var(--color-danger);">流失风险 · 免费</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini warn">协 0</span>
+                      <span class="node-stat-mini danger">客 0</span>
+                    </div>
+                  </div>
+                  <div class="node-stat" style="color: var(--color-danger);">0</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="chenxm" style="border-color: var(--color-warn-soft);">
+                  <div class="avatar avatar-sm" style="background: var(--color-warn-soft); color: var(--color-warn-2);">陈</div>
+                  <div class="node-info">
+                    <div class="node-name">陈雪梅 <span class="node-status-dot node-status-warning" title="即将到期"></span></div>
+                    <div class="node-meta">5 天后到期 · 高级</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 0</span>
+                      <span class="node-stat-mini">客 4</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">4</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="fangjg">
+                  <div class="avatar avatar-sm avatar-role-consultant">方</div>
+                  <div class="node-info">
+                    <div class="node-name">方建国 <span class="node-status-dot node-status-warning" title="即将到期"></span></div>
+                    <div class="node-meta">6 天后到期 · 标准</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 1</span>
+                      <span class="node-stat-mini">客 2</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">2</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="zhouhm">
+                  <div class="avatar avatar-sm avatar-role-consultant">周</div>
+                  <div class="node-info">
+                    <div class="node-name">周慧敏 <span class="node-status-dot node-status-active" title="活跃"></span></div>
+                    <div class="node-meta">68 天后 · 高级</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 0</span>
+                      <span class="node-stat-mini">客 6</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">6</div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="zhaods">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">赵</div>
+                  <div class="node-info">
+                    <div class="node-name">赵东升 <span class="node-status-dot node-status-active" title="服务中"></span></div>
+                    <div class="node-meta">34 天后 · 标准</div>
+                    <div class="node-detail-row">
+                      <span class="node-stat-mini">协 0</span>
+                      <span class="node-stat-mini">客 1</span>
+                    </div>
+                  </div>
+                  <div class="node-stat">1</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="layer-gap"></div>
+
+            <!-- Layer 2 -->
+            <div class="layer-row">
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="liangwb" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">梁</div>
+                  <div class="node-info">
+                    <div class="node-name">梁文博</div>
+                    <div class="node-meta">L2 · 林秀华</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="caiwq" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">蔡</div>
+                  <div class="node-info">
+                    <div class="node-name">蔡文卿</div>
+                    <div class="node-meta">L2 · 林秀华</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="yehn" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">叶</div>
+                  <div class="node-info">
+                    <div class="node-name">叶海宁</div>
+                    <div class="node-meta">L2 · 王明远</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="jiangzx" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">江</div>
+                  <div class="node-info">
+                    <div class="node-name">江子轩</div>
+                    <div class="node-meta">L2 · 王明远</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="hanxs" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">韩</div>
+                  <div class="node-info">
+                    <div class="node-name">韩雪松</div>
+                    <div class="node-meta">L2 · 徐丽</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center text-sm text-ink-3 mt-4">第 2 层 · 142 人 · 展示前 5 个</div>
+
+            <div class="layer-gap"></div>
+
+            <!-- Layer 3 collapsed -->
+            <div class="layer-row" id="layer-3-toggle">
+              <div class="card card-pad-sm layer-expandable" style="text-align: center; min-width: 360px;">
+                <div class="text-sm text-ink-2">第 3 层 · <strong class="text-ink" id="l3-count">68 人</strong></div>
+                <div class="text-xs text-ink-3 mt-1" id="l3-hint">点击展开</div>
+              </div>
+            </div>
+
+            <div class="layer-row" id="layer-3-content" style="display: none;">
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="l3-1" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-surface-2); color: var(--color-ink-3);">钱</div>
+                  <div class="node-info">
+                    <div class="node-name">钱思琪</div>
+                    <div class="node-meta">L3 · 梁文博</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="l3-2" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-surface-2); color: var(--color-ink-3);">沈</div>
+                  <div class="node-info">
+                    <div class="node-name">沈佩珊</div>
+                    <div class="node-meta">L3 · 蔡文卿</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="l3-3" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-surface-2); color: var(--color-ink-3);">苏</div>
+                  <div class="node-info">
+                    <div class="node-name">苏文博</div>
+                    <div class="node-meta">L3 · 蔡文卿</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="l3-4" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-surface-2); color: var(--color-ink-3);">姚</div>
+                  <div class="node-info">
+                    <div class="node-name">姚丽君</div>
+                    <div class="node-meta">L3 · 叶海宁</div>
+                  </div>
+                </div>
+              </div>
+              <div class="node-cluster">
+                <div class="node js-node-select" data-node="l3-5" style="min-width: 160px;">
+                  <div class="avatar avatar-sm" style="background: var(--color-surface-2); color: var(--color-ink-3);">魏</div>
+                  <div class="node-info">
+                    <div class="node-name">魏建华</div>
+                    <div class="node-meta">L3 · 江子轩</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex items-center justify-between mt-6" style="position: relative; z-index: 1;">
+              <div class="network-legend">
+                <div class="legend-item"><div class="legend-dot" style="background: var(--color-accent);"></div>自己</div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--color-line-2);"></div>直接推荐</div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--color-info);"></div>间接层</div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--color-warn);"></div>需关注</div>
+                <div class="legend-item"><div class="legend-dot" style="background: var(--color-danger);"></div>流失风险</div>
+              </div>
+              <div class="text-xs text-ink-3">长按节点查看详情 · 推荐关系不因服务变化</div>
+            </div>
+          </div>
+
+          <!-- Side panel: selected node details -->
+          <aside class="network-side">
+            <div class="card mb-4">
+              <div class="card-header"><div><div class="card-title">林秀华</div><div class="card-subtitle text-mono">M-2024-0381</div></div><span class="badge badge-warn">7d</span></div>
+              <div class="grid-2x mt-4" style="gap: var(--space-3);">
+                <div><div class="kpi-label">位置</div><div class="text-sm fw-medium mt-1">第 1 层</div></div>
+                <div><div class="kpi-label">下属数</div><div class="text-sm fw-medium mt-1">5 人</div></div>
+                <div><div class="kpi-label">入会</div><div class="text-sm text-mono mt-1">2024-04</div></div>
+                <div><div class="kpi-label">PB 信誉</div><div class="text-sm text-mono mt-1" style="color: var(--color-trust);">1,240</div></div>
+              </div>
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="mt-4">
+                <div class="text-sm fw-medium mb-2">关系类型</div>
+                <div class="tag-stack">
+                  <span class="badge badge-accent">推荐关系</span>
+                  <span class="badge badge-info">长期服务</span>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="text-sm fw-medium mb-2">关系建立</div>
+                <div class="text-sm text-ink-2">2024-04-12 · 由陈志远推荐</div>
+                <div class="text-xs text-ink-3 mt-1">关系长期保留 · 不因其他顾问参与而变化</div>
+              </div>
+              <div class="flex gap-2 mt-4">
+                <button class="btn btn-primary btn-sm flex-1">联系</button>
+                <a href="crm-detail.html" class="btn btn-secondary btn-sm flex-1">详情</a>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">下属节点</div><div class="card-subtitle">5 人 · 第 2 层</div></div></div>
+              <div class="flex flex-col gap-2 mt-4">
+                <div class="flex items-center gap-2 p-2" style="border-radius: var(--radius-sm);"><div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">梁</div><div class="flex-1"><div class="text-sm fw-medium">梁文博</div><div class="text-xs text-ink-3">L2 · 待联系</div></div></div>
+                <div class="flex items-center gap-2 p-2" style="border-radius: var(--radius-sm);"><div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">蔡</div><div class="flex-1"><div class="text-sm fw-medium">蔡文卿</div><div class="text-xs text-ink-3">L2 · 已联系</div></div></div>
+                <div class="flex items-center gap-2 p-2" style="border-radius: var(--radius-sm);"><div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">钱</div><div class="flex-1"><div class="text-sm fw-medium">钱思琪</div><div class="text-xs text-ink-3">L2 · 续费中</div></div></div>
+                <div class="flex items-center gap-2 p-2" style="border-radius: var(--radius-sm);"><div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">沈</div><div class="flex-1"><div class="text-sm fw-medium">沈佩珊</div><div class="text-xs text-ink-3">L2 · 课程中</div></div></div>
+                <div class="flex items-center gap-2 p-2" style="border-radius: var(--radius-sm);"><div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">苏</div><div class="flex-1"><div class="text-sm fw-medium">苏文博</div><div class="text-xs text-ink-3">L2 · 已续费</div></div></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Network insights -->
+        <section class="section">
+          <div class="section-head-row"><div><span class="eyebrow">网络洞察</span><h2 class="section-title">关系结构与服务覆盖</h2></div></div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">服务覆盖度</div><div class="card-subtitle">网络中已建立服务关系的占比</div></div></div>
+              <div class="flex items-baseline gap-2 mt-4">
+                <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-success);">78%</div>
+                <span class="text-sm text-ink-2">242 / 312 人已服务</span>
+              </div>
+              <div class="progress progress-success mt-3"><div class="progress-bar" style="width: 78%;"></div></div>
+              <div class="text-xs text-ink-3 mt-2">未服务 70 人多为近期入会</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">关系活跃度</div><div class="card-subtitle">近 30 天网络内互动频次</div></div></div>
+              <div class="flex items-baseline gap-2 mt-4">
+                <div style="font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-accent);">428</div>
+                <span class="text-sm text-ink-2">次联系</span>
+              </div>
+              <div class="text-xs text-ink-3 mt-3">较上月 +12% · 协作者贡献 38%</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">关系类型分布</div><div class="card-subtitle">按平台规则保存</div></div></div>
+              <div class="flex flex-col gap-2 mt-4">
+                <div class="flex items-center justify-between"><span class="text-sm">推荐关系</span><span class="text-mono fw-medium">86</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm">长期合作</span><span class="text-mono fw-medium">142</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm">课程关系</span><span class="text-mono fw-medium">96</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm">服务关系</span><span class="text-mono fw-medium">68</span></div>
+                <div class="flex items-center justify-between"><span class="text-sm">协作者关系</span><span class="text-mono fw-medium">23</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">网络风险</div><div class="card-subtitle">需要关注的成员</div></div></div>
+              <div class="flex flex-col gap-3 mt-4">
+                <div class="alert-item alert-item-warn">
+                  <div class="alert-dot"></div>
+                  <div class="alert-main"><div class="alert-title">3 位高流失风险</div><div class="alert-desc">建议立即联系</div></div>
+                </div>
+                <div class="alert-item alert-item-info">
+                  <div class="alert-dot"></div>
+                  <div class="alert-main"><div class="alert-title">23 位 30 天内到期</div><div class="alert-desc">需要跟进续费</div></div>
+                </div>
+                <div class="alert-item alert-item-warn">
+                  <div class="alert-dot"></div>
+                  <div class="alert-main"><div class="alert-title">5 位长期未联系</div><div class="alert-desc">关系可能冷却</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 层级分布统计 -->
+          <div class="card card-pad-lg mt-4">
+            <div class="card-header">
+              <div>
+                <div class="card-title">层级分布统计</div>
+                <div class="card-subtitle">每层人数 + 占比 · 共 4 层 · 312 人</div>
+              </div>
+              <span class="badge badge-outline">4 层</span>
+            </div>
+            <div class="flex-col mt-4">
+              <div class="layer-dist-row">
+                <div class="layer-dist-num">L0</div>
+                <div class="layer-dist-body">
+                  <div class="flex items-center justify-between">
+                    <div class="layer-dist-label">第 0 层 · 自我</div>
+                    <div class="text-xs text-ink-3">长期根基</div>
+                  </div>
+                  <div class="layer-dist-bar-track"><div class="layer-dist-bar-fill" style="width: 0.32%; background: var(--color-accent-2);"></div></div>
+                </div>
+                <div class="layer-dist-value">
+                  <div class="layer-dist-count">1</div>
+                  <div class="layer-dist-pct">0.3%</div>
+                </div>
+              </div>
+              <div class="layer-dist-row">
+                <div class="layer-dist-num">L1</div>
+                <div class="layer-dist-body">
+                  <div class="flex items-center justify-between">
+                    <div class="layer-dist-label">第 1 层 · 直接推荐</div>
+                    <div class="text-xs text-ink-3">核心客户群</div>
+                  </div>
+                  <div class="layer-dist-bar-track"><div class="layer-dist-bar-fill" style="width: 27.6%;"></div></div>
+                </div>
+                <div class="layer-dist-value">
+                  <div class="layer-dist-count">86</div>
+                  <div class="layer-dist-pct">27.6%</div>
+                </div>
+              </div>
+              <div class="layer-dist-row">
+                <div class="layer-dist-num">L2</div>
+                <div class="layer-dist-body">
+                  <div class="flex items-center justify-between">
+                    <div class="layer-dist-label">第 2 层 · 长期合作</div>
+                    <div class="text-xs text-ink-3">关系稳定</div>
+                  </div>
+                  <div class="layer-dist-bar-track"><div class="layer-dist-bar-fill" style="width: 45.5%;"></div></div>
+                </div>
+                <div class="layer-dist-value">
+                  <div class="layer-dist-count">142</div>
+                  <div class="layer-dist-pct">45.5%</div>
+                </div>
+              </div>
+              <div class="layer-dist-row">
+                <div class="layer-dist-num">L3</div>
+                <div class="layer-dist-body">
+                  <div class="flex items-center justify-between">
+                    <div class="layer-dist-label">第 3 层 · 间接</div>
+                    <div class="text-xs text-ink-3">需长期维护</div>
+                  </div>
+                  <div class="layer-dist-bar-track"><div class="layer-dist-bar-fill" style="width: 21.8%; background: var(--color-info);"></div></div>
+                </div>
+                <div class="layer-dist-value">
+                  <div class="layer-dist-count">68</div>
+                  <div class="layer-dist-pct">21.8%</div>
+                </div>
+              </div>
+              <div class="layer-dist-row">
+                <div class="layer-dist-num">L4</div>
+                <div class="layer-dist-body">
+                  <div class="flex items-center justify-between">
+                    <div class="layer-dist-label">第 4 层 · 深层</div>
+                    <div class="text-xs text-ink-3">少量存在</div>
+                  </div>
+                  <div class="layer-dist-bar-track"><div class="layer-dist-bar-fill" style="width: 4.8%; background: var(--color-ink-3);"></div></div>
+                </div>
+                <div class="layer-dist-value">
+                  <div class="layer-dist-count">15</div>
+                  <div class="layer-dist-pct">4.8%</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-divider" style="margin-top: var(--space-4);"></div>
+            <div class="grid-3x mt-4" style="gap: var(--space-3);">
+              <div class="stat-mini"><div class="stat-mini-label">平均深度</div><div class="stat-mini-value">2.4</div><div class="stat-mini-delta text-ink-3">稳定</div></div>
+              <div class="stat-mini"><div class="stat-mini-label">最深层级</div><div class="stat-mini-value">4</div><div class="stat-mini-delta text-ink-3">极少数</div></div>
+              <div class="stat-mini"><div class="stat-mini-label">L1/L2 比</div><div class="stat-mini-value">0.61</div><div class="stat-mini-delta text-ink-3">健康</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section: 关键人物 (新) ========== -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">关键关系</span>
+              <h2 class="section-title">关键人物 · Top 5</h2>
+              <p class="section-subtitle">综合 PB 信誉、协作者数、客户数、活跃度排序</p>
+            </div>
+            <button class="btn btn-ghost btn-sm">查看完整排行</button>
+          </div>
+
+          <div class="grid-2x2">
+            <div class="keyperson-card">
+              <div class="keyperson-rank">1</div>
+              <div class="avatar avatar-sm avatar-role-ai" style="width:36px;height:36px;font-size:14px;">王</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name">王明远 <span class="badge badge-success badge-sm">企业</span></div>
+                <div class="keyperson-meta">第 1 层 · PB 1,860 · 1 年 4 个月</div>
+              </div>
+              <div class="keyperson-stats">
+                <div class="keyperson-stat-val">8</div>
+                <div class="keyperson-stat-label">客户数</div>
+              </div>
+            </div>
+
+            <div class="keyperson-card">
+              <div class="keyperson-rank r2">2</div>
+              <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success); width:36px;height:36px;font-size:14px;">徐</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name">徐丽 <span class="badge badge-accent badge-sm">升级</span></div>
+                <div class="keyperson-meta">第 1 层 · PB 1,420 · 1 年 8 个月</div>
+              </div>
+              <div class="keyperson-stats">
+                <div class="keyperson-stat-val">3</div>
+                <div class="keyperson-stat-label">客户数</div>
+              </div>
+            </div>
+
+            <div class="keyperson-card">
+              <div class="keyperson-rank r3">3</div>
+              <div class="avatar avatar-sm avatar-role-consultant" style="width:36px;height:36px;font-size:14px;">周</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name">周慧敏 <span class="badge badge-success badge-sm">活跃</span></div>
+                <div class="keyperson-meta">第 1 层 · PB 986 · 2 年</div>
+              </div>
+              <div class="keyperson-stats">
+                <div class="keyperson-stat-val">6</div>
+                <div class="keyperson-stat-label">客户数</div>
+              </div>
+            </div>
+
+            <div class="keyperson-card">
+              <div class="keyperson-rank">4</div>
+              <div class="avatar avatar-sm avatar-role-recommender" style="width:36px;height:36px;font-size:14px;">林</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name">林秀华 <span class="badge badge-warn badge-sm">即将到期</span></div>
+                <div class="keyperson-meta">第 1 层 · PB 1,240 · 2 年 4 个月</div>
+              </div>
+              <div class="keyperson-stats">
+                <div class="keyperson-stat-val">5</div>
+                <div class="keyperson-stat-label">客户数</div>
+              </div>
+            </div>
+
+            <div class="keyperson-card">
+              <div class="keyperson-rank">5</div>
+              <div class="avatar avatar-sm" style="background: var(--color-warn-soft); color: var(--color-warn-2); width:36px;height:36px;font-size:14px;">陈</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name">陈雪梅 <span class="badge badge-warn badge-sm">即将到期</span></div>
+                <div class="keyperson-meta">第 1 层 · PB 1,580 · 3 年 6 个月</div>
+              </div>
+              <div class="keyperson-stats">
+                <div class="keyperson-stat-val">4</div>
+                <div class="keyperson-stat-label">客户数</div>
+              </div>
+            </div>
+
+            <div class="keyperson-card" style="background: var(--color-surface-2);">
+              <div class="keyperson-rank" style="background: var(--color-ink-3);">+</div>
+              <div class="keyperson-info">
+                <div class="keyperson-name text-ink-3">更多排行</div>
+                <div class="keyperson-meta">查看完整 Top 50 关系人</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">查看</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section: 网络演化 (新) ========== -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">网络演化</span>
+              <h2 class="section-title">近 6 个月节点增长</h2>
+              <p class="section-subtitle">按月统计新增 / 流失 · 净增长趋势</p>
+            </div>
+            <div class="flex gap-2">
+              <div class="segmented js-segmented">
+                <div class="segmented-item is-active">6 月</div>
+                <div class="segmented-item">年度</div>
+                <div class="segmented-item">全部</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">导出</button>
+            </div>
+          </div>
+
+          <div class="grid-2x">
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">节点增长趋势</div>
+                  <div class="card-subtitle">2026-03 至 2026-08 · 312 人</div>
+                </div>
+                <span class="badge badge-success">↗ +72 净增</span>
+              </div>
+
+              <div class="evolution-bar mt-4">
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">240</div>
+                  <div class="evolution-bar-fill" style="height: 65%;"></div>
+                  <div class="evolution-bar-label">03月</div>
+                </div>
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">258</div>
+                  <div class="evolution-bar-fill" style="height: 70%;"></div>
+                  <div class="evolution-bar-label">04月</div>
+                </div>
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">270</div>
+                  <div class="evolution-bar-fill" style="height: 73%;"></div>
+                  <div class="evolution-bar-label">05月</div>
+                </div>
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">285</div>
+                  <div class="evolution-bar-fill" style="height: 77%;"></div>
+                  <div class="evolution-bar-label">06月</div>
+                </div>
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">294</div>
+                  <div class="evolution-bar-fill" style="height: 80%;"></div>
+                  <div class="evolution-bar-label">07月</div>
+                </div>
+                <div class="evolution-bar-col">
+                  <div class="evolution-bar-value">312</div>
+                  <div class="evolution-bar-fill" style="height: 85%; background: var(--color-accent-2);"></div>
+                  <div class="evolution-bar-label">08月</div>
+                </div>
+              </div>
+
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="grid-2x mt-4" style="gap: var(--space-3);">
+                <div class="stat-mini">
+                  <div class="stat-mini-label">6 月新增</div>
+                  <div class="stat-mini-value text-success">+98</div>
+                  <div class="stat-mini-delta text-ink-3">月均 16 人</div>
+                </div>
+                <div class="stat-mini">
+                  <div class="stat-mini-label">6 月流失</div>
+                  <div class="stat-mini-value text-danger">-26</div>
+                  <div class="stat-mini-delta text-ink-3">月均 4 人</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card-pad-lg">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">演化关键数字</div>
+                  <div class="card-subtitle">6 个月累计</div>
+                </div>
+              </div>
+
+              <div class="flex-col gap-3 mt-4">
+                <div class="health-metric">
+                  <div class="health-icon" style="background: var(--color-accent-soft); color: var(--color-accent);">↗</div>
+                  <div class="health-body">
+                    <div class="health-label">月均增长</div>
+                    <div class="health-value-row">
+                      <div class="health-value">+12</div>
+                      <div class="health-unit">人/月</div>
+                    </div>
+                    <div class="health-bar-track"><div class="health-bar-fill" style="width: 80%; background: var(--color-accent);"></div></div>
+                  </div>
+                </div>
+                <div class="health-metric">
+                  <div class="health-icon" style="background: var(--color-success-soft); color: var(--color-success);">⤴</div>
+                  <div class="health-body">
+                    <div class="health-label">增长率</div>
+                    <div class="health-value-row">
+                      <div class="health-value">5.2%</div>
+                      <div class="health-unit">月环比</div>
+                    </div>
+                    <div class="health-bar-track"><div class="health-bar-fill" style="width: 52%; background: var(--color-success);"></div></div>
+                  </div>
+                </div>
+                <div class="health-metric">
+                  <div class="health-icon" style="background: var(--color-warn-soft); color: var(--color-warn-2);">!</div>
+                  <div class="health-body">
+                    <div class="health-label">月均流失</div>
+                    <div class="health-value-row">
+                      <div class="health-value">-4</div>
+                      <div class="health-unit">人/月</div>
+                    </div>
+                    <div class="health-bar-track"><div class="health-bar-fill" style="width: 16%; background: var(--color-warn-2);"></div></div>
+                  </div>
+                </div>
+                <div class="health-metric">
+                  <div class="health-icon" style="background: var(--color-info-soft); color: var(--color-info);">⊕</div>
+                  <div class="health-body">
+                    <div class="health-label">平均深度</div>
+                    <div class="health-value-row">
+                      <div class="health-value">2.4</div>
+                      <div class="health-unit">层</div>
+                    </div>
+                    <div class="health-bar-track"><div class="health-bar-fill" style="width: 60%; background: var(--color-info);"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-divider" style="margin-top: var(--space-4);"></div>
+              <div class="text-sm fw-medium mb-2 mt-4">演化解读</div>
+              <div class="flex-col gap-2 text-sm">
+                <div class="flex items-start gap-2"><span style="color: var(--color-success);">↗</span><span>近 6 月从 240 增至 312 人 · 净增 72</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-accent);">+</span><span>月均 16 新增 · 4 流失 · 健康区间</span></div>
+                <div class="flex items-start gap-2"><span style="color: var(--color-info);">⊕</span><span>网络深度稳定在 2.4 层</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+    
+        <!-- Section: D.7 节点只读规则 + BR-003 关系变更审计 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">D.7 节点只读 + BR-003 关系变更审计</span>
+            <h2 class="section-title">双叉节点不因服务 / 课程 / 活动而变</h2>
+            <p class="section-subtitle">关系只读展示 · 任何"尝试修改节点"会被自动拒绝并留痕</p>
+          </div>
+          <div class="network-readonly-banner mb-4">
+            <div class="network-readonly-icon">⛓</div>
+            <div class="network-readonly-content">
+              <div class="network-readonly-title">D.7 节点只读规则 (CRM-003)</div>
+              <div class="network-readonly-text">本页面所有节点位置、推荐关系、双叉结构 <strong>只读</strong> 展示权威网络 · 任何服务、导师、课程、活动关系都 <strong>不改变</strong> 节点 · 例如您为林秀华申请专业支持后，林秀华在双叉网络中的位置、推荐链、关联人 <strong>保持不变</strong>，仅新增「服务关系」事件。</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">关系变更审计 · 近 30 天 · 5 次尝试</div>
+            <div class="network-change-audit">
+              <div class="network-change-row">
+                <div class="network-change-time">2026-08-12 14:32</div>
+                <div>
+                  <div class="text-sm fw-medium">尝试：因服务关系修改双叉节点位置</div>
+                  <div class="network-change-source">来源：pro-support-apply · 为林秀华申请专业支持 · ACL-03 联动</div>
+                </div>
+                <div class="network-change-action is-rejected">✗ 已拒绝</div>
+                <div class="network-change-rule">BR-003</div>
+              </div>
+              <div class="network-change-row">
+                <div class="network-change-time">2026-08-10 09:18</div>
+                <div>
+                  <div class="text-sm fw-medium">尝试：因私董会活动修改推荐人</div>
+                  <div class="network-change-source">来源：P2026-09 活动参与 · 主持人：张明</div>
+                </div>
+                <div class="network-change-action is-rejected">✗ 已拒绝</div>
+                <div class="network-change-rule">BR-003</div>
+              </div>
+              <div class="network-change-row">
+                <div class="network-change-time">2026-08-05 16:45</div>
+                <div>
+                  <div class="text-sm fw-medium">尝试：因课程完成修改双叉网络深度</div>
+                  <div class="network-change-source">来源：跨境架构 1.0 课程完成 · EMP 王建国</div>
+                </div>
+                <div class="network-change-action is-rejected">✗ 已拒绝</div>
+                <div class="network-change-rule">BR-003</div>
+              </div>
+              <div class="network-change-row">
+                <div class="network-change-time">2026-07-28 11:20</div>
+                <div>
+                  <div class="text-sm fw-medium">接受：用户主动修改推荐比例</div>
+                  <div class="network-change-source">来源：林秀华 · 修改给王建国的资源推荐比例 30% → 25%</div>
+                </div>
+                <div class="network-change-action is-accepted">✓ 已生效</div>
+                <div class="network-change-rule">用户授权</div>
+              </div>
+              <div class="network-change-row">
+                <div class="network-change-time">2026-07-15 14:08</div>
+                <div>
+                  <div class="text-sm fw-medium">尝试：因 EMP 服务改变节点位置</div>
+                  <div class="network-change-source">来源：张明 EMP 主动尝试修改其关联节点</div>
+                </div>
+                <div class="network-change-action is-rejected">✗ 已拒绝</div>
+                <div class="network-change-rule">BR-003</div>
+              </div>
+            </div>
+            <div class="ai-feedback-warning mt-3">
+              <strong>审计原则：</strong>所有"尝试修改双叉节点"的请求都会被系统自动拒绝并写入审计日志 · BR-003 业务规则不能被任何角色覆盖 · 唯一可接受的是「用户主动修改推荐比例」类型请求（需二次验证 + 留痕）。
+            </div>
+          </div>
+        </section>
+      </div>
+</main>
+  </div>
+<script src="../js/app.js"></script>
+<script>
+  // B1 增强：进度条入场动画
+  (function () {
+    var bars = document.querySelectorAll('.progress-bar');
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('animate-in'); obs.unobserve(e.target); } });
+      }, { threshold: 0.3 });
+      bars.forEach(function (b) { obs.observe(b); });
+    }
+  })();
+
+  // B1 增强：节点点击高亮 + 同步侧栏
+  (function () {
+    var data = {
+      self: { name: '陈志远（你）', id: 'Y-OWN', level: '推荐人·金', color: 'avatar-role-recommender', letter: '陈', meta: '第 0 层 · 自我 · 312 人', pb: '2,486', renewals: '0', sub: '0', tenure: '6 年 2 个月', biz: ['POIF', 'AI', '企业'], risk: '无' },
+      linxh: { name: '林秀华', id: 'M-2024-0381', level: '高级', color: 'avatar-role-recommender', letter: '林', meta: '第 1 层 · 7 天后到期', pb: '1,240', renewals: '5', sub: '5', tenure: '2 年 4 个月', biz: ['POIF', 'AI'], risk: '即将到期' },
+      xuli: { name: '徐丽', id: 'M-2024-1203', level: '标准', color: '', letter: '徐', meta: '第 1 层 · 升级信号', pb: '1,420', renewals: '2', sub: '3', tenure: '1 年 8 个月', biz: ['企业', 'RWA'], risk: '无' },
+      wangmy: { name: '王明远', id: 'M-2025-1102', level: '企业', color: 'avatar-role-ai', letter: '王', meta: '第 1 层 · 企业诊断', pb: '1,860', renewals: '2', sub: '8', tenure: '1 年 4 个月', biz: ['企业', 'AI'], risk: '无' },
+      zhangwj: { name: '张伟杰', id: 'M-2023-0902', level: '免费', color: '', letter: '张', meta: '第 1 层 · 流失风险', pb: '420', renewals: '0', sub: '0', tenure: '2 年 11 个月', biz: ['MCS'], risk: '流失风险 · 28 天未联系' },
+      chenxm: { name: '陈雪梅', id: 'M-2023-0211', level: '高级', color: '', letter: '陈', meta: '第 1 层 · 5 天后到期', pb: '1,580', renewals: '4', sub: '4', tenure: '3 年 6 个月', biz: ['POIF', '企业'], risk: '即将到期' },
+      fangjg: { name: '方建国', id: 'M-2024-0618', level: '标准', color: 'avatar-role-consultant', letter: '方', meta: '第 1 层 · 6 天后到期', pb: '780', renewals: '1', sub: '2', tenure: '1 年 2 个月', biz: ['再生营'], risk: '即将到期' },
+      zhouhm: { name: '周慧敏', id: 'M-2024-0729', level: '高级', color: 'avatar-role-consultant', letter: '周', meta: '第 1 层 · 68 天后到期', pb: '986', renewals: '3', sub: '6', tenure: '2 年', biz: ['POIF', '健康'], risk: '无' },
+      zhaods: { name: '赵东升', id: 'M-2024-0512', level: '标准', color: '', letter: '赵', meta: '第 1 层 · 34 天后到期', pb: '886', renewals: '1', sub: '1', tenure: '1 年 3 个月', biz: ['AI', '黄金'], risk: '服务中' },
+      liangwb: { name: '梁文博', id: 'M-2024-0321', level: '免费', color: '', letter: '梁', meta: '第 2 层 · 林秀华', pb: '180', renewals: '0', sub: '—', tenure: '4 天', biz: ['POIF'], risk: '无' },
+      caiwq: { name: '蔡文卿', id: 'M-2024-0503', level: '标准', color: '', letter: '蔡', meta: '第 2 层 · 林秀华', pb: '620', renewals: '1', sub: '—', tenure: '1 年 3 个月', biz: ['POIF'], risk: '无' },
+      yehn: { name: '叶海宁', id: 'M-2025-0122', level: '标准', color: '', letter: '叶', meta: '第 2 层 · 王明远', pb: '720', renewals: '1', sub: '—', tenure: '7 个月', biz: ['AI'], risk: '无' },
+      jiangzx: { name: '江子轩', id: 'M-2024-1208', level: '高级', color: '', letter: '江', meta: '第 2 层 · 王明远', pb: '1,080', renewals: '2', sub: '—', tenure: '8 个月', biz: ['企业'], risk: '无' },
+      hanxs: { name: '韩雪松', id: 'M-2025-0301', level: '标准', color: '', letter: '韩', meta: '第 2 层 · 徐丽', pb: '860', renewals: '1', sub: '—', tenure: '5 个月', biz: ['RWA'], risk: '无' }
+    };
+
+    var side = document.querySelector('.network-side');
+    if (!side) return;
+
+    document.querySelectorAll('.js-node-select').forEach(function (n) {
+      n.addEventListener('click', function () {
+        document.querySelectorAll('.js-node-select').forEach(function (other) { other.classList.remove('is-selected'); });
+        n.classList.add('is-selected');
+        var id = n.getAttribute('data-node');
+        var d = data[id] || { name: id, id: 'M-—', level: '—', color: '', letter: '?', meta: '—', pb: '—', renewals: '—', sub: '—', tenure: '—', biz: [], risk: '无' };
+        // 更新侧栏
+        var av = side.querySelector('.avatar-xl');
+        if (av) { av.className = 'avatar avatar-xl ' + d.color; av.textContent = d.letter; }
+        var titles = side.querySelectorAll('.card-title');
+        if (titles[0]) titles[0].textContent = d.name;
+        var subs = side.querySelectorAll('.card-subtitle');
+        if (subs[0]) subs[0].textContent = d.id;
+        // 等级 badge
+        var badge = side.querySelector('.card-header .badge');
+        if (badge) badge.textContent = d.meta.split(' · ').pop() || '7d';
+        // KPI label 后的值
+        var labels = side.querySelectorAll('.text-sm.fw-medium');
+        labels.forEach(function (m) {
+          var lbl = m.previousElementSibling;
+          if (!lbl) return;
+          var t = lbl.textContent.trim();
+          if (t === '位置') m.textContent = d.meta.split(' · ')[0] || '—';
+          if (t === '下属数') m.textContent = d.sub;
+          if (t === '入会') m.textContent = d.tenure;
+          if (t === 'PB 信誉') { m.textContent = d.pb; m.style.color = 'var(--color-trust)'; }
+        });
+        // 业务兴趣 tag-stack（第二个 .tag-stack 即关系类型后面那个）
+        var stacks = side.querySelectorAll('.tag-stack');
+        if (stacks[1]) {
+          stacks[1].innerHTML = d.biz.map(function (b) { return '<span class="badge badge-outline">' + b + '</span>'; }).join('');
+        }
+        toast('已选中：' + d.name, 'info');
+      });
+    });
+  })();
+
+  // B1 增强：层级展开收起
+  (function () {
+    var toggle = document.getElementById('layer-3-toggle');
+    var content = document.getElementById('layer-3-content');
+    var hint = document.getElementById('l3-hint');
+    if (!toggle || !content) return;
+    toggle.addEventListener('click', function () {
+      var isOpen = content.style.display !== 'none';
+      if (isOpen) {
+        content.style.display = 'none';
+        if (hint) hint.textContent = '点击展开';
+      } else {
+        content.style.display = '';
+        content.classList.add('layer-expanded');
+        if (hint) hint.textContent = '点击收起';
+        toast('已展开第 3 层 · 展示前 5 个', 'info');
+      }
+    });
+  })();
+
+  // B1 增强：filter chip 单选互斥
+  (function () {
+    var chips = document.querySelectorAll('.filter-bar .filter-chip.js-filter');
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        chips.forEach(function (c) { c.classList.remove('is-active'); });
+        chip.classList.add('is-active');
+        toast('已筛选：' + chip.textContent.trim().split(' ')[0], 'info');
+      });
+    });
+  })();
+
+  // B1 增强：page actions 按钮 toast
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.page-actions .btn, .alert-item');
+    if (!btn) return;
+    var t = btn.textContent.trim();
+    if (t === '按区域筛选') toast('打开区域筛选', 'info');
+    else if (t === '按到期时间') toast('按到期时间排序', 'info');
+    else if (t === '导出') toast('正在生成网络结构导出文件', 'info');
+  });
+
+  // B1 增强：网络洞察卡点击
+  document.querySelectorAll('.card-clickable').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var t = c.querySelector('.card-title');
+      if (t) toast('打开详情：' + t.textContent.trim(), 'info');
+    });
+  });
+</script>
+</body>
+</html>

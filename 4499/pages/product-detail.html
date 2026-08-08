@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品详情 · 跨境合规认证课程包 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .product-hero { background: linear-gradient(180deg, var(--color-warn-soft) 0%, var(--color-paper) 100%); border-bottom: 1px solid var(--color-line); padding: var(--space-10) 0; }
+    .product-hero-inner { max-width: var(--container-content); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); }
+    @media (max-width: 1024px) { .product-hero-inner { grid-template-columns: 1fr; } }
+    .product-cover { aspect-ratio: 1; background: linear-gradient(135deg, var(--color-warn-soft) 0%, var(--color-trust-soft) 100%); border: 1px solid var(--color-line); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-warn-2); }
+    .product-buy-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-6); position: sticky; top: calc(var(--topbar-height) + var(--space-4)); }
+    .spec-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line); }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-name { font-size: var(--text-sm); color: var(--color-ink-3); width: 80px; flex-shrink: 0; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div><span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input" placeholder="搜索产品、商家、规格…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <section class="product-hero">
+        <div class="product-hero-inner">
+          <div>
+            <div class="breadcrumb">
+              <a href="workbench-recommender.html">我的工作台</a>
+              <span class="breadcrumb-sep">/</span>
+              <a href="#">产品购买</a>
+              <span class="breadcrumb-sep">/</span>
+              <span>跨境合规认证课程包</span>
+            </div>
+            <span class="eyebrow">产品 · 教育类 · 4499 × 商业学院联合</span>
+            <h1 class="page-title" style="margin-top: var(--space-2);">跨境合规认证课程包 · 2026 升级版</h1>
+            <p class="page-subtitle">12 模块 + 4 次 1v1 答疑 + 1 次线下工作坊 + 颁发跨境合规证书。专为家族办公室、跨境投资、企业合规岗设计。</p>
+            <div class="flex gap-2 mt-4">
+              <span class="badge badge-trust">跨境合规</span>
+              <span class="badge badge-accent">POIF</span>
+              <span class="badge badge-info">MCS</span>
+              <span class="badge badge-success">含证书</span>
+              <span class="badge badge-warn">限会员</span>
+            </div>
+            <div class="grid-4x mt-6">
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">已售出</div>
+                <div class="kpi-value"><span class="js-counter" data-target="486">0</span><span class="kpi-value-unit">份</span></div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">评分</div>
+                <div class="kpi-value">4.8<span class="kpi-value-unit">/ 5</span></div>
+                <div class="text-xs text-ink-3">218 条评价</div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">复购率</div>
+                <div class="kpi-value"><span class="js-counter" data-target="32">0</span><span class="kpi-value-unit">%</span></div>
+              </div>
+              <div class="kpi-card" style="min-height: 96px;">
+                <div class="kpi-label">完课率</div>
+                <div class="kpi-value"><span class="js-counter" data-target="88">0</span><span class="kpi-value-unit">%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="product-buy-card">
+            <div class="product-cover" style="margin-bottom: var(--space-4);">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 4 9 8 10 4-1 8-5 8-10V6l-8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="text-3xl text-display fw-semibold">¥ 4,800</div>
+            <div class="text-sm text-ink-3 mt-1 line-through">原价 ¥ 6,800 · 限时 8 折</div>
+            <div class="mt-4 flex gap-2">
+              <span class="badge badge-success">含证书</span>
+              <span class="badge badge-warn">限时</span>
+            </div>
+            <div class="mt-4">
+              <div class="text-sm text-ink-2 mb-2">规格</div>
+              <div class="segmented js-segmented" style="width: 100%;">
+                <div class="segmented-item is-active" style="flex: 1;">标准版</div>
+                <div class="segmented-item" style="flex: 1;">企业版</div>
+              </div>
+            </div>
+            <button class="btn btn-primary w-full mt-4" style="height: 44px;">立即购买</button>
+            <button class="btn btn-secondary w-full mt-2">加入购物车</button>
+            <div class="text-xs text-ink-3 mt-4 text-center">购买后立即开通 · 含 30 天无理由退换</div>
+            <div class="mt-4 pt-4" style="border-top: 1px solid var(--color-line);">
+              <div class="text-xs text-ink-3">承诺</div>
+              <div class="text-sm text-ink-2 mt-1">· 90 天学完颁发证书</div>
+              <div class="text-sm text-ink-2">· 终身内容更新免费</div>
+              <div class="text-sm text-ink-2">· 1v1 答疑不限次数</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="app-content">
+        <!-- 规格 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">产品规格</span>
+            <h2 class="section-title">详细规格</h2>
+          </div>
+          <div class="card">
+            <div class="spec-row">
+              <div class="spec-name">课程模块</div>
+              <div class="flex-1 text-md">12 个模块 · 96 学时</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">1v1 答疑</div>
+              <div class="flex-1 text-md">4 次（每月 1 次 · 60 分钟）</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">线下工作坊</div>
+              <div class="flex-1 text-md">1 次（深圳 / 北京 / 上海可选）</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">证书</div>
+              <div class="flex-1 text-md">跨境合规认证证书（终身有效）</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">有效期</div>
+              <div class="flex-1 text-md">2 年内可重学 + 内容永久更新</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">适合人群</div>
+              <div class="flex-1 text-md">家族办公室 / 跨境投资 / 企业合规岗</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">先修要求</div>
+              <div class="flex-1 text-md">POIF 投资基础 或 2 年跨境业务经验</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-name">语言</div>
+              <div class="flex-1 text-md">中文授课 · 英文材料可选</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12 模块内容 -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">课程内容</span>
+              <h2 class="section-title">12 个模块内容</h2>
+            </div>
+            <div class="segmented js-segmented">
+              <div class="segmented-item is-active">全部</div>
+              <div class="segmented-item">基础</div>
+              <div class="segmented-item">进阶</div>
+              <div class="segmented-item">实战</div>
+            </div>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="fw-semibold mb-2 text-sm">基础模块 · 4 个</div>
+              <div class="text-sm text-ink-2 mb-1">· M01 跨境投资合规框架（8 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M02 大湾区跨境政策（8 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M03 香港 / 新加坡对比（8 学时）</div>
+              <div class="text-sm text-ink-2">· M04 跨境数据合规（8 学时）</div>
+            </div>
+            <div class="card">
+              <div class="fw-semibold mb-2 text-sm">进阶模块 · 5 个</div>
+              <div class="text-sm text-ink-2 mb-1">· M05 跨境税务合规（10 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M06 反洗钱与反恐怖融资（8 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M07 跨境架构设计合规（8 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M08 ESG 与跨境合规（8 学时）</div>
+              <div class="text-sm text-ink-2">· M09 跨境合规审计（8 学时）</div>
+            </div>
+            <div class="card">
+              <div class="fw-semibold mb-2 text-sm">实战模块 · 3 个</div>
+              <div class="text-sm text-ink-2 mb-1">· M10 真实案例分析 · 大湾区（8 学时）</div>
+              <div class="text-sm text-ink-2 mb-1">· M11 真实案例分析 · 跨境架构（8 学时）</div>
+              <div class="text-sm text-ink-2">· M12 综合考试 + 案例答辩（6 学时）</div>
+            </div>
+            <div class="card">
+              <div class="fw-semibold mb-2 text-sm">增值服务</div>
+              <div class="text-sm text-ink-2 mb-1">· 1v1 答疑 4 次（每月 1 次）</div>
+              <div class="text-sm text-ink-2 mb-1">· 线下工作坊 1 次（深圳 / 北京 / 上海）</div>
+              <div class="text-sm text-ink-2 mb-1">· 跨境合规证书（终身有效）</div>
+              <div class="text-sm text-ink-2">· 校友会 1 年免费（线下活动）</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 价格方案 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">价格方案</span>
+            <h2 class="section-title">3 种购买方式</h2>
+            <p class="section-subtitle">个人 / 企业 / 团队 3 种方案</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card">
+              <span class="badge badge-outline">个人版</span>
+              <div class="text-3xl text-display fw-semibold mt-3">¥ 4,800</div>
+              <div class="text-sm text-ink-3">原价 ¥ 6,800 · 限时 8 折</div>
+              <div class="mt-4 space-y-1">
+                <div class="text-sm text-ink-2">· 1 人学习</div>
+                <div class="text-sm text-ink-2">· 12 模块 + 4 次 1v1</div>
+                <div class="text-sm text-ink-2">· 1 张个人证书</div>
+                <div class="text-sm text-ink-2">· 90 天学完</div>
+              </div>
+              <button class="btn btn-secondary w-full mt-4">选择个人版</button>
+            </div>
+            <div class="card" style="border-color: var(--color-accent); border-width: 2px;">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-accent">企业版 · 推荐</span>
+                <span class="text-xs text-ink-3">最多 5 人</span>
+              </div>
+              <div class="text-3xl text-display fw-semibold mt-3">¥ 18,000</div>
+              <div class="text-sm text-ink-3">人均 ¥ 3,600 · 节省 25%</div>
+              <div class="mt-4 space-y-1">
+                <div class="text-sm text-ink-2">· 5 人学习</div>
+                <div class="text-sm text-ink-2">· 12 模块 + 8 次 1v1</div>
+                <div class="text-sm text-ink-2">· 5 张个人证书 + 1 张企业证书</div>
+                <div class="text-sm text-ink-2">· 1 次定制内训</div>
+                <div class="text-sm text-ink-2">· 1 年重学</div>
+              </div>
+              <button class="btn btn-primary w-full mt-4">选择企业版</button>
+            </div>
+            <div class="card">
+              <span class="badge badge-outline">团队版</span>
+              <div class="text-3xl text-display fw-semibold mt-3">¥ 48,000</div>
+              <div class="text-sm text-ink-3">最多 20 人 · 含定制</div>
+              <div class="mt-4 space-y-1">
+                <div class="text-sm text-ink-2">· 20 人学习</div>
+                <div class="text-sm text-ink-2">· 12 模块 + 20 次 1v1</div>
+                <div class="text-sm text-ink-2">· 20 张证书</div>
+                <div class="text-sm text-ink-2">· 2 次定制内训</div>
+                <div class="text-sm text-ink-2">· 2 年重学 + 校友会</div>
+              </div>
+              <button class="btn btn-secondary w-full mt-4">联系定制</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 商家 / 讲师 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">商家与讲师</span>
+            <h2 class="section-title">4499 × 商业学院联合出品</h2>
+          </div>
+          <div class="grid-2x">
+            <div class="card">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="avatar avatar-lg avatar-role-platform">4</div>
+                <div class="flex-1">
+                  <div class="fw-semibold">4499 平台官方</div>
+                  <div class="text-xs text-ink-3 text-mono">PID-PLATFORM-001</div>
+                </div>
+                <span class="badge badge-success">官方认证</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">课程由 4499 平台教研中心联合出品，已服务 6,200+ 会员。</div>
+              <div class="grid-2x mt-3">
+                <div>
+                  <div class="text-xs text-ink-3">累计销量</div>
+                  <div class="fw-semibold">12,800+</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">好评率</div>
+                  <div class="fw-semibold text-success">96%</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="avatar avatar-lg avatar-role-platform">商</div>
+                <div class="flex-1">
+                  <div class="fw-semibold">鹏城商业学院</div>
+                  <div class="text-xs text-ink-3 text-mono">PID-PARTNER-008</div>
+                </div>
+                <span class="badge badge-accent">战略合作</span>
+              </div>
+              <div class="text-sm text-ink-2 mb-2">深圳头部商业教育机构 · 跨境合规领域教研合作 5 年。</div>
+              <div class="grid-2x mt-3">
+                <div>
+                  <div class="text-xs text-ink-3">教研团队</div>
+                  <div class="fw-semibold">18 位</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">EMP 顾问</div>
+                  <div class="fw-semibold">12 位</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2x2 mt-4">
+            <div class="card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="avatar avatar-md avatar-role-consultant">张</div>
+                <div>
+                  <div class="fw-semibold">张明 · EMP 主讲师</div>
+                  <div class="text-xs text-ink-3">跨境合规领域 18 年经验</div>
+                </div>
+              </div>
+              <p class="text-sm text-ink-2">主导本课程 60% 内容 · 出版《跨境合规实操指南》</p>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="avatar avatar-md avatar-role-consultant">王</div>
+                <div>
+                  <div class="fw-semibold">王志远 · EMP 联合讲师</div>
+                  <div class="text-xs text-ink-3">税务与跨境架构专家</div>
+                </div>
+              </div>
+              <p class="text-sm text-ink-2">主导 M05 税务合规模块 · 4 家中外家族办公室顾问</p>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="avatar avatar-md avatar-role-ai">李</div>
+                <div>
+                  <div class="fw-semibold">李婧 · AI 案例讲师</div>
+                  <div class="text-xs text-ink-3">真实案例库 86 个</div>
+                </div>
+              </div>
+              <p class="text-sm text-ink-2">主导 M10-M12 实战模块 · 案例均来自真实业务</p>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="avatar avatar-md avatar-role-platform">陈</div>
+                <div>
+                  <div class="fw-semibold">陈律师 · 外部专家</div>
+                  <div class="text-xs text-ink-3">君合律师事务所合伙人</div>
+                </div>
+              </div>
+              <p class="text-sm text-ink-2">M06-M08 法律模块客座 · 真实跨境架构案例</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 评价 -->
+        <section class="section">
+          <div class="section-head-row">
+            <div>
+              <span class="eyebrow">学员评价</span>
+              <h2 class="section-title">218 条评价 · 4.8 / 5</h2>
+            </div>
+            <div class="segmented js-segmented">
+              <div class="segmented-item is-active">全部</div>
+              <div class="segmented-item">好评</div>
+              <div class="segmented-item">中评</div>
+              <div class="segmented-item">差评</div>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <div class="filter-chip is-active js-filter">全部 <span class="filter-chip-count">218</span></div>
+            <div class="filter-chip js-filter">5 星 <span class="filter-chip-count">158</span></div>
+            <div class="filter-chip js-filter">4 星 <span class="filter-chip-count">42</span></div>
+            <div class="filter-chip js-filter">3 星 <span class="filter-chip-count">12</span></div>
+            <div class="filter-chip js-filter">含图片 <span class="filter-chip-count">38</span></div>
+            <div class="filter-chip js-filter">企业版 <span class="filter-chip-count">46</span></div>
+          </div>
+          <div class="grid-2x2 mt-4">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-recommender">林</div>
+                <div class="fw-medium">林建华 · 企业版</div>
+                <span class="badge badge-success" style="margin-left:auto;">5.0</span>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">2026-08-12 · 已完课</div>
+              <p class="text-sm text-ink-2">企业版带了 4 位团队成员一起学，1v1 答疑环节张明 EMP 直接用我们公司的实际案例讲解，非常受用。证书已经拿到，团队 5 人均通过。</p>
+              <div class="flex gap-2 mt-3">
+                <span class="badge badge-outline">企业版</span>
+                <span class="badge badge-outline">已完课</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-recommender">陈</div>
+                <div class="fw-medium">陈丽华 · 个人版</div>
+                <span class="badge badge-success" style="margin-left:auto;">5.0</span>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">2026-07-28 · 已完课</div>
+              <p class="text-sm text-ink-2">跨境架构设计模块特别专业，王志远 EMP 讲的香港和新加坡对比非常清晰，已推荐 2 位同事购买。</p>
+              <div class="flex gap-2 mt-3">
+                <span class="badge badge-outline">个人版</span>
+                <span class="badge badge-outline">已完课</span>
+                <span class="badge badge-outline">推荐过</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-ai">王</div>
+                <div class="fw-medium">王明远 · 个人版</div>
+                <span class="badge badge-success" style="margin-left:auto;">4.5</span>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">2026-07-15 · 已完课</div>
+              <p class="text-sm text-ink-2">M10-M12 真实案例分析对工作直接有帮助，已应用到 2 个跨境项目中。希望后续能增加 RWA 专题。</p>
+              <div class="flex gap-2 mt-3">
+                <span class="badge badge-outline">个人版</span>
+                <span class="badge badge-outline">实战</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm avatar-role-consultant">张</div>
+                <div class="fw-medium">张伟杰 · 个人版</div>
+                <span class="badge badge-warn" style="margin-left:auto;">3.5</span>
+              </div>
+              <div class="text-xs text-ink-3 mb-2">2026-06-22 · 已完课</div>
+              <p class="text-sm text-ink-2">课程内容扎实，但前 4 个基础模块对有经验学员偏简单。希望分层版或跳过机制。</p>
+              <div class="flex gap-2 mt-3">
+                <span class="badge badge-outline">建议</span>
+                <span class="badge badge-outline">分层</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 退换 / 服务承诺 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">服务承诺</span>
+            <h2 class="section-title">4 项承诺</h2>
+          </div>
+          <div class="grid-2x2">
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2 flex items-center gap-2"><span class="badge badge-success">1</span> 30 天无理由退换</div>
+              <div class="text-sm text-ink-2">购买后 30 天内学习进度 &lt; 30% 可申请全额退款。</div>
+            </div>
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2 flex items-center gap-2"><span class="badge badge-success">2</span> 终身内容更新</div>
+              <div class="text-sm text-ink-2">课程内容随政策更新同步升级 · 学员免费获取。</div>
+            </div>
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2 flex items-center gap-2"><span class="badge badge-success">3</span> 90 天拿证</div>
+              <div class="text-sm text-ink-2">90 天内完成全部模块 + 考试即可颁发证书，未通过可补考。</div>
+            </div>
+            <div class="card">
+              <div class="text-sm fw-semibold mb-2 flex items-center gap-2"><span class="badge badge-success">4</span> 1v1 不限次</div>
+              <div class="text-sm text-ink-2">学习期间可预约 EMP 顾问 1v1 答疑，不限次数（个人版 4 次 / 企业版 8 次 / 团队版 20 次）。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- AI 建议 -->
+        <section class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">建议您选择「企业版」</div>
+            <div class="ai-suggestion-reason">您作为家族办公室核心成员，已有 2 位同事（陈丽华 + 王明远）购买过同款个人版。升级到企业版可省 25%、获 5 张证书 + 1 次定制内训，团队学习效果更佳。基于 18 个家族办公室用户的相似选择，推荐度高。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">升级到企业版</button>
+              <button class="btn btn-ghost btn-sm">查看企业版详情</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 相关产品 -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">相关产品</span>
+            <h2 class="section-title">4 个相关课程包</h2>
+          </div>
+          <div class="grid-3x">
+            <div class="card card-clickable">
+              <span class="badge badge-accent">POIF</span>
+              <div class="fw-semibold mt-2 mb-1">POIF 投资基础</div>
+              <div class="text-sm text-ink-2 mb-2">12 模块 · 96 学时</div>
+              <div class="text-xs text-ink-3">¥ 0 · 含在会员权益</div>
+            </div>
+            <div class="card card-clickable">
+              <span class="badge badge-info">MCS</span>
+              <div class="fw-semibold mt-2 mb-1">跨境并购全流程实操</div>
+              <div class="text-sm text-ink-2 mb-2">8 模块 · 64 学时</div>
+              <div class="text-xs text-ink-3">¥ 3,800 · 限时 9 折</div>
+            </div>
+            <div class="card card-clickable">
+              <span class="badge badge-trust">家族传承</span>
+              <div class="fw-semibold mt-2 mb-1">家族信托与传承规划</div>
+              <div class="text-sm text-ink-2 mb-2">8 模块 · 48 学时</div>
+              <div class="text-xs text-ink-3">¥ 2,800</div>
+            </div>
+            <div class="card card-clickable">
+              <span class="badge badge-success">ESG 投资</span>
+              <div class="fw-semibold mt-2 mb-1">ESG 投资分析师认证</div>
+              <div class="text-sm text-ink-2 mb-2">10 模块 · 80 学时</div>
+              <div class="text-xs text-ink-3">¥ 4,200 · 含证书</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

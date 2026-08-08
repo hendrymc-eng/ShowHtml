@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>组织商业画像 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .org-hero { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-6); display: grid; grid-template-columns: 80px 1fr auto; gap: var(--space-6); align-items: center; }
+    @media (max-width: 768px) { .org-hero { grid-template-columns: 1fr; } }
+    .org-logo { width: 80px; height: 80px; border-radius: var(--radius-md); background: var(--color-charity-soft); color: var(--color-charity); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 32px; font-weight: 600; }
+    .impact-num { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-ink); letter-spacing: -0.02em; }
+    .impact-label { font-size: var(--text-sm); color: var(--color-ink-3); }
+
+    /* 联系记录 5 项必填 (PRD CRM-006) */
+    .contact-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-3); }
+    .contact-form-field { display: flex; flex-direction: column; gap: 4px; }
+    .contact-form-label { font-size: var(--text-xs); color: var(--color-ink-3); font-weight: var(--weight-medium); }
+    .contact-form-label .req { color: var(--color-danger); }
+    .contact-form-input, .contact-form-select, .contact-form-textarea {
+      padding: 8px 10px; border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+      font-size: var(--text-sm); background: var(--color-surface); color: var(--color-ink);
+      font-family: inherit;
+    }
+    .contact-form-textarea { min-height: 60px; resize: vertical; }
+
+    /* 联系方式审计提示 (PRD CRM-010 / §3.4) */
+    .export-watermark-notice {
+      padding: var(--space-3); background: var(--color-warn-soft);
+      border: 1px solid var(--color-warn-soft); border-radius: var(--radius-sm);
+      font-size: var(--text-xs); color: var(--color-ink-2);
+    }
+    .export-watermark-notice strong { color: var(--color-ink); }
+    .audit-log-entry { display: grid; grid-template-columns: 140px 1fr 1fr; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line); font-size: var(--text-xs); }
+    .audit-log-entry:last-child { border-bottom: none; }
+    .audit-log-time { font-family: var(--font-mono); color: var(--color-ink-3); }
+    .audit-log-actor { color: var(--color-ink); font-weight: var(--weight-medium); }
+    .audit-log-action { color: var(--color-ink-2); }
+
+    /* 字段来源标签 (PRD PRO-003) */
+    .field-source { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-medium); margin-left: 4px; vertical-align: middle; }
+    .field-source-self { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .field-source-platform { background: var(--color-info-soft); color: var(--color-info); }
+    .field-source-verified { background: var(--color-success-soft); color: var(--color-success); }
+    .field-source-ai { background: var(--color-accent-soft); color: var(--color-accent); }
+    .field-verified-badge { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: var(--color-success-soft); color: var(--color-success); border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-semibold); margin-left: 4px; vertical-align: middle; }
+    .field-unverified-badge { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: var(--color-surface-2); color: var(--color-ink-3); border: 1px dashed var(--color-line-2); border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-medium); margin-left: 4px; vertical-align: middle; }
+
+    /* 版本历史 (PRD PRO-006) */
+    .version-timeline { display: flex; flex-direction: column; gap: var(--space-2); }
+    .version-item { display: grid; grid-template-columns: 100px 1fr 180px; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line); font-size: var(--text-sm); }
+    .version-item:last-child { border-bottom: none; }
+    .version-time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-3); }
+    .version-changes { color: var(--color-ink-2); }
+    .version-diff { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .version-diff .old { background: var(--color-danger-soft); color: var(--color-danger); padding: 1px 4px; border-radius: 2px; text-decoration: line-through; }
+    .version-diff .new { background: var(--color-success-soft); color: var(--color-success); padding: 1px 4px; border-radius: 2px; }
+
+    /* 字段来源图例 */
+    .field-source-legend { display: flex; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-2) var(--space-3); background: var(--color-surface-2); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-ink-3); }
+    .field-source-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".contact-row" placeholder="搜索成员、项目、活动…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+
+        <div class="app-content">                </section>
+
+        <!-- ========== 面包屑 (Breadcrumb) ========== -->
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>商业画像</span>
+          <span class="breadcrumb-sep">/</span>
+          <span>组织机构</span>
+        </div>
+
+        <!-- ========== Page Head ========== -->
+        <div class="page-head">
+          <h1 class="page-title">组织机构画像</h1>
+          <p class="page-subtitle">深圳湾公益基金会 · 5A 级 · 由机构管理员维护 · AI 团队交叉验证</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">申请专业支持</button>
+            <button class="btn btn-secondary">导出档案</button>
+            <button class="btn btn-primary">编辑画像</button>
+          </div>
+        </div>
+
+        <!-- ========== 机构主卡 ========== -->
+        <div class="card card-pad-lg mb-4">
+          <div class="card-header">
+            <div class="flex items-center gap-4">
+              <div class="avatar avatar-xl" style="background: var(--color-success-soft); color: var(--color-success);">湾</div>
+              <div>
+                <div class="card-title">深圳湾公益基金会</div>
+                <div class="card-subtitle">ORG-2024-0042 · 注册号 53110000XXXX · 法定代表人 林秀华 · 2018-03 成立 · 8 位核心成员</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="kpi-label">PB 信誉</div>
+              <div class="kpi-value" style="color: var(--color-trust);">87</div>
+              <div class="kpi-delta kpi-delta-up">↑ 本季 +3</div>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="badge badge-success">5A 级</span>
+            <span class="badge badge-info">民政部注册</span>
+            <span class="badge badge-warn">EMP 顾问中</span>
+            <span class="badge badge-trust">4499 优选</span>
+            <span class="badge badge-outline">透明度 100%</span>
+          </div>
+        </div>
+
+        <div class="grid-4x gap-3 mb-6">
+          <div class="kpi-card">
+            <div class="kpi-label">核心成员</div>
+            <div class="kpi-value" style="color: var(--color-accent);">24</div>
+            <div class="kpi-delta kpi-delta-up">↗ +2 本季</div>
+            <div class="kpi-meta">全职 18 · 兼职 6 · 含 3 位发起方</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">志愿者</div>
+            <div class="kpi-value" style="color: var(--color-success);">18</div>
+            <div class="kpi-delta kpi-delta-up">↗ +5 本月</div>
+            <div class="kpi-meta">EMP 8 位 · 社会志愿者 10 位</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">合作项目</div>
+            <div class="kpi-value">8</div>
+            <div class="kpi-delta text-ink-3">执行中 5 / 完成 3</div>
+            <div class="kpi-meta">5A 评估 · 5 个长期合作</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">资金透明</div>
+            <div class="kpi-value" style="color: var(--color-success);">100<span class="kpi-value-unit">%</span></div>
+            <div class="kpi-delta kpi-delta-up">↗ 实时公示</div>
+            <div class="kpi-meta">月度审计 · 季度公示</div>
+          </div>
+        </div>
+
+        <!-- ========== Section 3: 组织架构 + 治理结构 ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">组织治理 · ORG-GOV</span>
+            <h2 class="section-title">组织架构 + 治理结构</h2>
+            <p class="section-subtitle">机构性质 / 主管部门 / 理事会 / 监事会 / 秘书处 · 由理事会决议维护</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card">
+              <div class="kpi-label">机构性质</div>
+              <div class="text-md fw-medium mt-1">公募基金会（5A 级）</div>
+              <div class="text-xs text-ink-3 mt-2">2018-03 民政部注册 · 法定代表人 林秀华 · 注册资金 500 万</div>
+              <div class="mt-3"><span class="badge badge-success">民政部登记</span> <span class="badge badge-info">5A 评估</span></div>
+            </div>
+            <div class="card">
+              <div class="kpi-label">业务主管单位</div>
+              <div class="text-md fw-medium mt-1">深圳市民政局</div>
+              <div class="text-xs text-ink-3 mt-2">2018-03 起业务指导 · 年度报告已公示 · 年度评估 优</div>
+              <div class="mt-3"><span class="badge badge-outline">年度评估 优</span> <span class="badge badge-info">合规</span></div>
+            </div>
+            <div class="card">
+              <div class="kpi-label">理事会组成</div>
+              <div class="text-md fw-medium mt-1">11 席 · 5 内部 + 6 外部</div>
+              <div class="text-xs text-ink-3 mt-2">理事长 林秀华 · 副理事长 2 · 秘书长 1 · 理事 7</div>
+              <div class="mt-3"><span class="badge badge-success">ESG 顾问</span> <span class="badge badge-warn">EMP 顾问中</span></div>
+            </div>
+            <div class="card">
+              <div class="kpi-label">监事会</div>
+              <div class="text-md fw-medium mt-1">3 席 · 独立监事</div>
+              <div class="text-xs text-ink-3 mt-2">王建国（独立）/ 李文华（独立）/ 张明（律师）</div>
+              <div class="mt-3"><span class="badge badge-outline">独立 2/3</span></div>
+            </div>
+            <div class="card">
+              <div class="kpi-label">秘书处</div>
+              <div class="text-md fw-medium mt-1">执行团队 24 人</div>
+              <div class="text-xs text-ink-3 mt-2">项目部 12 / 志愿者部 4 / 财务部 3 / 行政部 5</div>
+              <div class="mt-3"><span class="badge badge-info">全职 18 / 兼职 6</span></div>
+            </div>
+            <div class="card">
+              <div class="kpi-label">决策机制</div>
+              <div class="text-md fw-medium mt-1">理事会季度会议 + 重大事项专项决议</div>
+              <div class="text-xs text-ink-3 mt-2">最近会议 2026-07-15 · 出席率 11/11 · 决议公示</div>
+              <div class="mt-3"><span class="badge badge-success">决议透明</span></div>
+            </div>
+          </div>
+
+        <!-- ========== Section 4: 核心业务 + 服务范围 ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">核心业务 · CORE-SVC</span>
+            <h2 class="section-title">核心业务 + 服务范围</h2>
+            <p class="section-subtitle">4 大业务条线 · 资金 100% 透明 · 受益人实名可查</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="kpi-card">
+              <div class="kpi-label">教育助学</div>
+              <div class="kpi-value" style="color: var(--color-accent);">42</div>
+              <div class="kpi-delta text-ink-3">项目 / 资助学生 1,820 名</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">山区医疗</div>
+              <div class="kpi-value" style="color: var(--color-danger);">18</div>
+              <div class="kpi-delta text-ink-3">项目 / 义诊 8,500 人次</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">紧急救助</div>
+              <div class="kpi-value" style="color: var(--color-warn-2);">6</div>
+              <div class="kpi-delta text-ink-3">项目 / 平均响应 4 小时</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">志愿者培训</div>
+              <div class="kpi-value" style="color: var(--color-success);">12</div>
+              <div class="kpi-delta text-ink-3">课程 / 累计培训 580 人</div>
+            </div>
+          </div>
+          <div class="card mt-4">
+            <div class="kpi-label mb-3">业务条线详情</div>
+            <div class="version-timeline">
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-accent);">教育助学</div>
+                <div>
+                  <div class="version-changes">粤东西北山区 + 云南怒江 · 九年义务教育阶段资助</div>
+                  <div class="version-diff text-ink-3">年度预算 280 万 · 已执行 186 万 · 1,820 名学生受益</div>
+                </div>
+                <div class="text-xs text-ink-3">项目数 42<br/>执行率 66%</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-danger);">山区医疗</div>
+                <div>
+                  <div class="version-changes">流动医院 + 义诊 + 大病救助 · 联合 12 家三甲医院</div>
+                  <div class="version-diff text-ink-3">年度预算 320 万 · 已执行 198 万 · 8,500 人次义诊</div>
+                </div>
+                <div class="text-xs text-ink-3">项目数 18<br/>执行率 62%</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-warn-2);">紧急救助</div>
+                <div>
+                  <div class="version-changes">自然灾害 / 重大疾病 / 突发事故 · 4 小时响应</div>
+                  <div class="version-diff text-ink-3">年度预算 80 万 · 已执行 56 万 · 平均响应 4 小时</div>
+                </div>
+                <div class="text-xs text-ink-3">项目数 6<br/>执行率 70%</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-success);">志愿者培训</div>
+                <div>
+                  <div class="version-changes">公益通识 + 项目管理 + 急救技能 + 心理疏导</div>
+                  <div class="version-diff text-ink-3">年度预算 30 万 · 已执行 18 万 · 580 名志愿者完成培训</div>
+                </div>
+                <div class="text-xs text-ink-3">课程数 12<br/>执行率 60%</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section 5: 合作机会 · AI 匹配 ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">合作机会 · COOP-AI</span>
+            <h2 class="section-title">合作机会 · AI 智能匹配</h2>
+            <p class="section-subtitle">基于业务条线 + 受益人画像 · AI 推荐 6 位合作方 · 匹配度 78%-92%</p>
+          </div>
+          <div class="ai-suggestion mb-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-accent">AI 建议</span>
+              <span class="ai-suggestion-title" style="margin: 0;">优先合作 3 类机构</span>
+            </div>
+            <div class="text-sm text-ink-2" style="line-height: 1.6;">
+              根据您 4 大业务条线（教育 42% / 医疗 32% / 救助 14% / 培训 12%），建议优先合作：
+              <strong>① 教育类资助方</strong>（基金会 / 企业 CSR）匹配度 92% ·
+              <strong>② 医疗资源方</strong>（三甲医院 / 医疗器械企业）匹配度 87% ·
+              <strong>③ 应急物流企业</strong>（公益仓储 / 冷链）匹配度 81%
+            </div>
+          </div>
+          <div class="card">
+            <div class="version-timeline">
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-success);">92%</div>
+                <div>
+                  <div class="version-changes">深圳前海嘉禾咨询有限公司</div>
+                  <div class="version-diff text-ink-3">教育类企业 CSR · 已合作 3 年 · 2026 年拟追加 80 万教育资助</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：长期合作伙伴<br/>标签：教育 / CSR</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-success);">89%</div>
+                <div>
+                  <div class="version-changes">北京大学深圳教育基金会</div>
+                  <div class="version-diff text-ink-3">教育类资助方 · 山区教育联盟发起方 · 可对接 12 所高校志愿者</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：战略联盟<br/>标签：教育 / 联盟</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-success);">87%</div>
+                <div>
+                  <div class="version-changes">深圳市人民医院公益部</div>
+                  <div class="version-diff text-ink-3">医疗资源方 · 义诊专家 24 位 · 大病救助绿色通道</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：医疗战略<br/>标签：医疗 / 公立</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-warn-2);">84%</div>
+                <div>
+                  <div class="version-changes">顺丰公益基金会</div>
+                  <div class="version-diff text-ink-3">应急物流方 · 公益仓 8 城覆盖 · 紧急救助 4 小时响应</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：物流协同<br/>标签：物流 / 应急</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-warn-2);">81%</div>
+                <div>
+                  <div class="version-changes">深圳湾企业家俱乐部</div>
+                  <div class="version-diff text-ink-3">资源聚合平台 · 86 位企业家会员 · 月度公益沙龙</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：资源网络<br/>标签：资源 / 社群</div>
+              </div>
+              <div class="version-item">
+                <div class="version-time" style="color: var(--color-info);">78%</div>
+                <div>
+                  <div class="version-changes">深圳市志愿服务联合会</div>
+                  <div class="version-diff text-ink-3">志愿者管理 · 580 名志愿者可入册 · 培训认证体系</div>
+                </div>
+                <div class="text-xs text-ink-3">推荐理由：志愿者网络<br/>标签：志愿 / 培训</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+            </div>
+    </main>
+  </div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

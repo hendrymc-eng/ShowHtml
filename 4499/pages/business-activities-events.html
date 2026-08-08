@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>活动与聚会 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .event-row { display: grid; grid-template-columns: 80px 1fr auto; gap: var(--space-4); align-items: center; padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); transition: all var(--dur-fast) var(--ease-out); }
+    .event-row:hover { background: var(--color-surface-2); border-color: var(--color-line-2); }
+    .event-date { text-align: center; }
+    .event-day { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-ink); line-height: 1; letter-spacing: -0.02em; }
+    .event-month { font-size: var(--text-sm); color: var(--color-ink-3); margin-top: 4px; }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".event-row" placeholder="搜索沙龙、聚会、论坛…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="business-activities-list.html">商业活动</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>活动与聚会</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">活动与聚会</h1>
+          <p class="page-subtitle"><span class="js-counter" data-target="22">22</span> 场即将开始 · <span class="js-counter" data-target="5">5</span> 场您已报名 · 涵盖沙龙、论坛、同学聚会、私人董事会</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">我的活动</button>
+            <button class="btn btn-secondary">导出日历</button>
+            <button class="btn btn-primary">+ 创建活动</button>
+          </div>
+        </div>
+
+        <!-- 活动 KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">已报名</div>
+            <div class="kpi-value"><span class="js-counter" data-target="5">5</span></div>
+            <div class="kpi-delta kpi-delta-up">2 场 7 天内</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">已签到</div>
+            <div class="kpi-value"><span class="js-counter" data-target="28">28</span></div>
+            <div class="kpi-delta kpi-delta-up">全年累计</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">待复盘</div>
+            <div class="kpi-value" style="color: var(--color-warn-2);"><span class="js-counter" data-target="3">3</span></div>
+            <div class="kpi-delta" style="color: var(--color-warn-2);">已结束 3 天</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">活动评分</div>
+            <div class="kpi-value" style="color: var(--color-trust);"><span class="js-counter" data-target="4.7">4.7</span><span class="kpi-value-unit">/5</span></div>
+            <div class="kpi-delta kpi-delta-up">+0.2 较上季</div>
+          </div>
+        </div>
+
+        <!-- 状态筛选 -->
+        <div class="filter-bar mb-6">
+          <span class="filter-chip js-filter is-active" data-status="all">全部 <span class="filter-chip-count">22</span></span>
+          <span class="filter-chip js-filter" data-status="registered">已报名 <span class="filter-chip-count">5</span></span>
+          <span class="filter-chip js-filter" data-status="checked-in">已签到 <span class="filter-chip-count">28</span></span>
+          <span class="filter-chip js-filter" data-status="review">待复盘 <span class="filter-chip-count">3</span></span>
+          <span class="filter-divider"></span>
+          <span class="filter-chip js-filter" data-type="salon">沙龙 <span class="filter-chip-count">8</span></span>
+          <span class="filter-chip js-filter" data-type="forum">论坛 <span class="filter-chip-count">5</span></span>
+          <span class="filter-chip js-filter" data-type="reunion">同学聚会 <span class="filter-chip-count">6</span></span>
+          <span class="filter-chip js-filter" data-type="pdb">私人董事会 <span class="filter-chip-count">3</span></span>
+          <div class="filter-search"><input type="text" class="input input-sm js-row-search" data-target-rows=".event-row" placeholder="搜索活动名 / 编号 / 主办方…" /></div>
+        </div>
+
+        <!-- 已报名活动（高优先级） -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">已报名 · REGISTERED</span>
+            <h2 class="section-title">5 场即将开始</h2>
+            <p class="section-subtitle">AI 团队按时间排序 · 提前 24h 提醒</p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <a href="business-activities-detail.html" class="event-row js-searchable" data-search="P2026-09 私人董事会 家族传承 张明 9月12日" style="text-decoration:none; color: inherit; border-color: var(--color-accent); background: var(--color-accent-softer);">
+              <div class="event-date">
+                <div class="event-day">12</div>
+                <div class="event-month">9月 周五</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-accent">已确认</span>
+                  <span class="badge badge-outline">私人董事会</span>
+                </div>
+                <div class="text-md fw-semibold">P2026-09 私人董事会 · 主题：家族传承</div>
+                <div class="text-sm text-ink-2 mt-1">14:00 - 17:30 · 深圳前海 XX 会议室 · 限 12 人 · EMP 张明 主持</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">3 天后</div>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="btn btn-ghost btn-sm">详情</button>
+                  <button class="btn btn-secondary btn-sm">签到码</button>
+                </div>
+              </div>
+            </a>
+            <div class="event-row js-searchable" data-search="大湾区跨境并购秋季论坛 9月18日">
+              <div class="event-date">
+                <div class="event-day">18</div>
+                <div class="event-month">9月 周四</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-success">已确认</span>
+                  <span class="badge badge-outline">论坛</span>
+                </div>
+                <div class="text-md fw-semibold">2026 大湾区跨境并购秋季论坛</div>
+                <div class="text-sm text-ink-2 mt-1">09:00 - 18:00 · 深圳湾木棉花酒店 · 300 人规模 · 5 位专家主题分享</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">9 天后</div>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="btn btn-ghost btn-sm">详情</button>
+                  <button class="btn btn-secondary btn-sm">签到码</button>
+                </div>
+              </div>
+            </div>
+            <div class="event-row js-searchable" data-search="中秋 EMBA 同学聚会 复旦 9月25日">
+              <div class="event-date">
+                <div class="event-day">25</div>
+                <div class="event-month">9月 周四</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-success">已确认</span>
+                  <span class="badge badge-outline">同学聚会</span>
+                </div>
+                <div class="text-md fw-semibold">中秋 EMBA 同学聚会 · 邀请制</div>
+                <div class="text-sm text-ink-2 mt-1">19:00 - 22:00 · 复旦大学 EMBA 深圳同学会 · 限 60 人</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">16 天后</div>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="btn btn-ghost btn-sm">详情</button>
+                  <button class="btn btn-secondary btn-sm">签到码</button>
+                </div>
+              </div>
+            </div>
+            <div class="event-row js-searchable" data-search="跨境并购对标工作坊 10月15日">
+              <div class="event-date">
+                <div class="event-day">15</div>
+                <div class="event-month">10月 周三</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-success">已确认</span>
+                  <span class="badge badge-outline">工作坊</span>
+                </div>
+                <div class="text-md fw-semibold">跨境并购对标分析工作坊 · M7 阶段</div>
+                <div class="text-sm text-ink-2 mt-1">14:00 - 18:00 · EMP 张明 主持 · 含案例研讨</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">36 天后</div>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="btn btn-ghost btn-sm">详情</button>
+                  <button class="btn btn-secondary btn-sm">签到码</button>
+                </div>
+              </div>
+            </div>
+            <div class="event-row js-searchable" data-search="传承规划沙龙 11月8日">
+              <div class="event-date">
+                <div class="event-day">08</div>
+                <div class="event-month">11月 周日</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-success">已确认</span>
+                  <span class="badge badge-outline">沙龙</span>
+                </div>
+                <div class="text-md fw-semibold">传承规划实战 · 第 18 期私享沙龙</div>
+                <div class="text-sm text-ink-2 mt-1">14:00 - 17:00 · 深圳湾木棉花 · 限 30 人 · EMP 王建国 主理</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">60 天后</div>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="btn btn-ghost btn-sm">详情</button>
+                  <button class="btn btn-secondary btn-sm">签到码</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 推荐活动 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">AI 精选 · FOR YOU</span>
+            <h2 class="section-title">基于兴趣推荐 4 场</h2>
+            <p class="section-subtitle">基于您长期关注 + 同行热门 + 近期趋势</p>
+          </div>
+          <div class="grid-2x2">
+            <div class="event-row">
+              <div class="event-date">
+                <div class="event-day">20</div>
+                <div class="event-month">9月 周六</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-info">沙龙</span>
+                </div>
+                <div class="text-md fw-semibold">家族办公室私享沙龙 · 第 12 期</div>
+                <div class="text-sm text-ink-2 mt-1">14:00 - 17:00 · 深圳湾木棉花 · 限 30 人 · EMP 王志远 主理</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">11 天后</div>
+                <button class="btn btn-secondary btn-sm mt-2" onclick="toast('已发起报名，待主办方确认','info')">+ 报名</button>
+              </div>
+            </div>
+            <div class="event-row">
+              <div class="event-date">
+                <div class="event-day">28</div>
+                <div class="event-month">9月 周日</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-warn">论坛</span>
+                </div>
+                <div class="text-md fw-semibold">AI 应用与商业未来论坛 · 2026</div>
+                <div class="text-sm text-ink-2 mt-1">全天 · 香港会议展览中心 · 500 人规模 · 国际嘉宾</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">19 天后</div>
+                <button class="btn btn-secondary btn-sm mt-2" onclick="toast('已发起报名','info')">+ 报名</button>
+              </div>
+            </div>
+            <div class="event-row">
+              <div class="event-date">
+                <div class="event-day">05</div>
+                <div class="event-month">10月 周日</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-accent">私人董事会</span>
+                </div>
+                <div class="text-md fw-semibold">P2026-10 私人董事会 · 主题：二代教育</div>
+                <div class="text-sm text-ink-2 mt-1">14:00 - 17:30 · 限 12 人 · EMP 李文华 主持</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">26 天后</div>
+                <button class="btn btn-secondary btn-sm mt-2" onclick="toast('已发起报名','info')">+ 报名</button>
+              </div>
+            </div>
+            <div class="event-row">
+              <div class="event-date">
+                <div class="event-day">12</div>
+                <div class="event-month">10月 周日</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-trust">同学聚会</span>
+                </div>
+                <div class="text-md fw-semibold">港大金融博士校友返校日</div>
+                <div class="text-sm text-ink-2 mt-1">10:00 - 16:00 · 香港大学校园 · 校友专属</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-ink-3">33 天后</div>
+                <button class="btn btn-secondary btn-sm mt-2" onclick="toast('已发起报名','info')">+ 报名</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 待复盘 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">待复盘 · REVIEW</span>
+            <h2 class="section-title">3 场已结束待复盘</h2>
+            <p class="section-subtitle">复盘后进入您的活动档案 · 关联 Trust Passport</p>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>活动名称</th>
+                  <th>类型</th>
+                  <th>结束时间</th>
+                  <th>签到状态</th>
+                  <th>评价</th>
+                  <th>复盘</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="js-searchable" data-search="对标工作坊 8月25日">
+                  <td>跨境并购对标分析工作坊</td>
+                  <td>工作坊</td>
+                  <td>2026-08-25</td>
+                  <td><span class="badge badge-success">已签到</span></td>
+                  <td>5/5 ⭐</td>
+                  <td><button class="btn btn-primary btn-sm">立即复盘</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="家族办公室圆桌 8月20日">
+                  <td>家族办公室圆桌 · 2026-08</td>
+                  <td>圆桌</td>
+                  <td>2026-08-20</td>
+                  <td><span class="badge badge-success">已签到</span></td>
+                  <td>4/5 ⭐</td>
+                  <td><button class="btn btn-primary btn-sm">立即复盘</button></td>
+                </tr>
+                <tr class="js-searchable" data-search="清华 EMBA 校友返校">
+                  <td>清华 EMBA 校友返校日</td>
+                  <td>同学聚会</td>
+                  <td>2026-08-15</td>
+                  <td><span class="badge badge-warn">请假</span></td>
+                  <td>—</td>
+                  <td><button class="btn btn-ghost btn-sm">查看记录</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 活动数据 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">活动数据 · STATS</span>
+            <h2 class="section-title">2026 年度活动参与</h2>
+            <p class="section-subtitle">您本年共参加 28 场 · 平均评分 4.7 / 5</p>
+          </div>
+          <div class="grid-4x">
+            <div class="kpi-card">
+              <div class="kpi-label">已参加</div>
+              <div class="kpi-value"><span class="js-counter" data-target="28">28</span><span class="kpi-value-unit">场</span></div>
+              <div class="kpi-delta kpi-delta-up">↑ 12 较去年</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">签到率</div>
+              <div class="kpi-value" style="color: var(--color-success);"><span class="js-counter" data-target="96">96</span><span class="kpi-value-unit">%</span></div>
+              <div class="kpi-delta kpi-delta-up">↑ 4 百分点</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">结识新朋友</div>
+              <div class="kpi-value"><span class="js-counter" data-target="42">42</span></div>
+              <div class="kpi-delta kpi-delta-up">8 位仍在合作</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">公益时数</div>
+              <div class="kpi-value" style="color: var(--color-charity);"><span class="js-counter" data-target="86">86</span><span class="kpi-value-unit">h</span></div>
+              <div class="kpi-delta kpi-delta-up">含公益活动</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">3 场待复盘已超 3 天 · 建议立即处理</div>
+            <div class="ai-suggestion-reason">复盘可显著提升您的活动质量感知数据。AI 已根据您的笔记 + 现场照片 + 其他参与者的反馈生成 3 份复盘草稿，确认后即可发布到您的活动档案 + 提升 PB 信誉。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">查看 3 份草稿</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入今日待办','info')">稍后处理</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: EVT-SUP-002 统一报名 + EVT-SUP-004 团体险触发 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">EVT-SUP-002 / 004 · 统一报名 + 团体险触发</span>
+            <h2 class="section-title">会议 / 课程 / 公益 / 商业项目统一报名模型</h2>
+            <p class="section-subtitle">报名 + 订单 + 资格 + 保险四状态一致 · 线下活动自动触发团体险</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">统一报名 4 状态一致性</div>
+            <div class="event-register-flow">
+              <div class="event-register-row">
+                <div class="event-register-num">1</div>
+                <div>
+                  <div class="event-register-name">报名状态</div>
+                  <div class="event-register-meta">已报名 / 待审核 / 已通过 / 候补 / 已取消</div>
+                </div>
+                <div><span class="event-register-state is-consistent">一致</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">2</div>
+                <div>
+                  <div class="event-register-name">订单状态</div>
+                  <div class="event-register-meta">免费 / 待支付 / 已支付 / 已退款 / 已结算</div>
+                </div>
+                <div><span class="event-register-state is-consistent">同步</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">3</div>
+                <div>
+                  <div class="event-register-name">资格状态</div>
+                  <div class="event-register-meta">EMP 严选资格 / 推荐人 / 公益志愿者 / 公开</div>
+                </div>
+                <div><span class="event-register-state is-consistent">校验</span></div>
+              </div>
+              <div class="event-register-row">
+                <div class="event-register-num">4</div>
+                <div>
+                  <div class="event-register-name">保险状态</div>
+                  <div class="event-register-meta">团体险触发 / 资料待补 / 已投保 / 拒保</div>
+                </div>
+                <div><span class="event-register-state is-warn">线下触发</span></div>
+              </div>
+            </div>
+            <div class="insurance-trigger-banner">
+              <div class="text-sm">
+                <strong>EVT-SUP-004 团体险自动触发：</strong>所有线下会议（深圳前海私董会 / 北京私享会等）报名后系统自动生成团体险购买请求 · 保险资料最小化采集（仅姓名 + 身份证 + 紧急联系人）· 保单状态回写到活动 + 个人记录。
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">您报名的线下活动 · 团体险状态</div>
+            <table class="benef-diff-table">
+              <thead>
+                <tr>
+                  <th>活动</th>
+                  <th>报名 / 资格 / 订单</th>
+                  <th>团体险</th>
+                  <th>资料待补</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="benef-diff-name">P2026-09 私董会（深圳）</td>
+                  <td>✓ 一致</td>
+                  <td>已投保 · 平安</td>
+                  <td>—</td>
+                </tr>
+                <tr class="is-diff">
+                  <td class="benef-diff-name">P2026-10 北京私享会</td>
+                  <td>✓ 一致</td>
+                  <td>资料待补</td>
+                  <td>紧急联系人 × 1</td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">公益 09-15 山区走访</td>
+                  <td>✓ 一致</td>
+                  <td>已投保 · 团体意外险</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td class="benef-diff-name">课程 · 跨境架构闭门</td>
+                  <td>✓ 一致（线上 · 无需保险）</td>
+                  <td>不适用</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="ai-feedback-warning mt-3">
+              <strong>EVT-SUP-005 资料最小化：</strong>团体险只采集姓名 / 身份证 / 紧急联系人 3 项 · 用途严格限定活动保障 · 字段、授权、保留期限、传输对象可审计 · 未授权或缺失字段时不发送保险系统。
+            </div>
+          </div>
+        </div>
+
+      </div>
+</main>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

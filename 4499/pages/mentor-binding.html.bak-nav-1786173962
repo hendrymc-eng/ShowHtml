@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>导师业务绑定 · 4499</title>
+  <meta name="description" content="导师与企业 / 业务 / 会议绑定（默认 1 个月）· 到期自动解绑 · 收益归因只记录事件不计算金额" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/utilities.css" />
+  <style>
+    body { background: var(--color-paper); }
+    .mb-shell { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
+    .mb-hero {
+      background: linear-gradient(135deg, var(--color-info-soft) 0%, var(--color-paper) 100%);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6) var(--space-7);
+      margin-bottom: var(--space-5);
+    }
+    .mb-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: flex; align-items: center; gap: var(--space-4);
+    }
+    .mb-card.is-active { border-color: var(--color-success); }
+    .mb-card.is-expiring { border-color: var(--color-warn-2); }
+    .mb-card.is-expired { opacity: 0.6; }
+    .mb-timeline { position: relative; padding-left: var(--space-6); }
+    .mb-timeline::before {
+      content: ''; position: absolute; left: 14px; top: 0; bottom: 0;
+      width: 2px; background: var(--color-line);
+    }
+    .mb-timeline-row {
+      position: relative; padding: var(--space-3) 0;
+    }
+    .mb-timeline-dot {
+      position: absolute; left: -22px; top: 18px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--color-surface); border: 2px solid var(--color-accent);
+    }
+    .mb-timeline-dot.is-done { background: var(--color-accent); }
+    .mb-timeline-dot.is-current { background: var(--color-accent); box-shadow: 0 0 0 4px var(--color-accent-soft); }
+  
+    .tools-nav { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); }
+    .tools-nav-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+    .tools-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+    .tools-nav-card { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-paper); text-decoration: none; color: inherit; transition: all 200ms ease; }
+    .tools-nav-card:hover { border-color: var(--color-line-2); transform: translateY(-1px); }
+    .tools-nav-card.is-current { border-color: var(--color-accent); }
+    .tools-nav-icon { width: 18px; height: 18px; color: var(--color-accent); flex-shrink: 0; margin-top: 2px; }
+    .tools-nav-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .tools-nav-desc { font-size: var(--text-xs); color: var(--color-ink-3); line-height: 1.4; margin-top: 2px; }
+    .tools-nav-badge { display: inline-block; font-size: 10px; color: var(--color-ink-4); margin-top: 4px; }
+    @media (max-width: 1024px) { .tools-nav-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .tools-nav-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+
+  <div class="mb-shell">
+    <!-- Hero -->
+    <div class="mb-hero">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="badge badge-info">MTR · 导师业务绑定</span>
+        <span class="badge badge-outline">区别于 30 天服务窗口（BR-057）</span>
+      </div>
+      <h1 style="font-size: var(--text-2xl); margin: 0 0 var(--space-2);">导师业务绑定 · 默认 1 个月自动解绑</h1>
+        <a href="workbench-recommender.html" class="btn btn-ghost btn-sm" style="margin-top: var(--space-3); display: inline-block;">← 返回工作台</a>
+      <p style="color: var(--color-ink-2); margin: 0;">
+        控制导师与企业 / 业务 / 会议的<strong>收益归因</strong>（不是服务授权）· 到期自动解绑 · 续绑须基于新会议 / 辅导 / 续约事件
+      </p>
+    </div>
+
+    <!-- 关键区分 -->
+    <div class="grid-2x mb-5">
+      <div class="card card-pad-md" style="border-left: 3px solid var(--color-info);">
+        <div class="text-xs text-ink-3 mb-1">类型 A</div>
+        <div class="fw-semibold mb-2">30 天服务窗口</div>
+        <div class="text-sm text-ink-2">控制客户资料 / 联系方式 / 业务明细的<strong>临时访问权限</strong> · 30 天到期 → 撤销</div>
+        <a href="service-window.html" class="text-xs text-accent mt-2 d-inline-block">查看 →</a>
+      </div>
+      <div class="card card-pad-md" style="border-left: 3px solid var(--color-accent);">
+        <div class="text-xs text-ink-3 mb-1">类型 B</div>
+        <div class="fw-semibold mb-2">导师业务绑定（1 个月）</div>
+        <div class="text-sm text-ink-2">控制导师对<strong>业务 / 会议 / 项目</strong>的<strong>收益归因关系</strong> · 1 个月到期 → 自动解绑</div>
+        <span class="text-xs text-accent mt-2 d-inline-block">当前页</span>
+      </div>
+    </div>
+
+    <!-- 当前绑定 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">当前绑定</span>
+        <h2 class="section-title">3 个绑定 · 1 个即将到期</h2>
+        <p class="section-subtitle">导师业务绑定 = 控制贡献和收益归因 · 不得与服务授权混淆（BR-057）</p>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <!-- 活跃绑定 1 -->
+        <div class="mb-card is-active">
+          <div class="avatar avatar-md" style="background: var(--color-success); color: #fff; flex-shrink: 0;">王</div>
+          <div style="flex: 1; min-width: 200px;">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">王怡然 导师</span>
+              <span class="badge badge-success">活跃 · 剩余 18 天</span>
+            </div>
+            <div class="text-xs text-ink-3">绑定业务：<strong>某省级中小企业协会 · 出海辅导会议</strong> · 周期 2026-07-22 → 2026-08-22</div>
+            <div class="text-xs text-ink-2 mt-1">已签到 142 / 200 人 · 满意度 4.7 / 5 · 复盘率 96%</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-3">归因事件</div>
+            <div class="text-sm fw-medium">12 条</div>
+          </div>
+          <a href="business-activities-detail.html" class="btn btn-ghost btn-sm">查看业务</a>
+        </div>
+
+        <!-- 即将到期 -->
+        <div class="mb-card is-expiring">
+          <div class="avatar avatar-md" style="background: var(--color-warn-2); color: #fff; flex-shrink: 0;">李</div>
+          <div style="flex: 1; min-width: 200px;">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">李教授 EMP 导师</span>
+              <span class="badge badge-warn">即将到期 · 3 天</span>
+            </div>
+            <div class="text-xs text-ink-3">绑定业务：<strong>某 AI 公司 · 高管教练</strong> · 周期 2026-07-08 → 2026-08-08</div>
+            <div class="text-xs text-ink-2 mt-1">辅导 5 / 6 次 · 1 次未完成 · 建议续绑或解绑</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-3">归因事件</div>
+            <div class="text-sm fw-medium">4 条</div>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-secondary btn-sm">续绑</button>
+            <a href="business-activities-detail.html" class="btn btn-ghost btn-sm">查看</a>
+          </div>
+        </div>
+
+        <!-- 已解绑 -->
+        <div class="mb-card is-expired">
+          <div class="avatar avatar-md" style="background: var(--color-ink-4); color: #fff; flex-shrink: 0;">陈</div>
+          <div style="flex: 1; min-width: 200px;">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">陈博士 顾问</span>
+              <span class="badge badge-outline">已解绑 · 60 天前</span>
+            </div>
+            <div class="text-xs text-ink-3">原绑定业务：<strong>某跨境并购项目</strong> · 2026-04-15 → 2026-05-15</div>
+            <div class="text-xs text-ink-2 mt-1">归因事件 8 条 · 历史记录保留 · 未续绑</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-3">历史归因</div>
+            <div class="text-sm fw-medium text-ink-3">8 条</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">查看历史</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 发起新绑定 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">发起新绑定</span>
+        <h2 class="section-title">营销部 / 项目方 / 企业 / 中心邀请</h2>
+        <p class="section-subtitle">导师未通过资格校验不能绑定（MTR-001）· 续绑需新事件触发（MTR-002）</p>
+      </div>
+      <div class="card card-pad-md">
+        <div class="grid-2x" style="gap: var(--space-3);">
+          <div class="input-group">
+            <label class="input-label">绑定导师 <span class="required-mark">*</span></label>
+            <select class="select"><option>王怡然 · EMP 跨境合规</option><option>李教授 · GMP 企业战略</option></select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">绑定业务类型 <span class="required-mark">*</span></label>
+            <select class="select">
+              <option>会议 / 沙龙</option>
+              <option>企业项目</option>
+              <option>专项辅导</option>
+              <option>公益项目</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">业务开始 <span class="required-mark">*</span></label>
+            <input class="input" type="date" value="2026-09-01" />
+          </div>
+          <div class="input-group">
+            <label class="input-label">业务结束（默认 1 个月）</label>
+            <input class="input" type="date" value="2026-10-01" />
+          </div>
+          <div class="input-group" style="grid-column: 1 / -1;">
+            <label class="input-label">绑定范围 <span class="required-mark">*</span></label>
+            <textarea class="input" rows="2" placeholder="如：辅导跨境合规专题、复盘会、3 次小组会">某省级中小企业协会 · 跨境合规专题会议 · 1 次主会 + 3 次复盘</textarea>
+          </div>
+          <div class="input-group" style="grid-column: 1 / -1;">
+            <label class="input-label">归因事件配置</label>
+            <div class="text-xs text-ink-2 mb-2">系统自动捕获：会议参与人数 / 签到 / 辅导次数 / 转化 / 复盘率 / 满意度（不直接计算收益金额）</div>
+            <div class="flex gap-2 flex-wrap">
+              <span class="badge badge-outline">会议参与人数</span>
+              <span class="badge badge-outline">签到率</span>
+              <span class="badge badge-outline">辅导次数</span>
+              <span class="badge badge-outline">转化数</span>
+              <span class="badge badge-outline">复盘率</span>
+              <span class="badge badge-outline">满意度</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+          <button class="btn btn-ghost">取消</button>
+          <button class="btn btn-primary">发起绑定申请</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 绑定状态机 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="eyebrow">绑定状态机</span>
+        <h2 class="section-title">绑定生命周期</h2>
+        <p class="section-subtitle">1 个月自动解绑 · 续绑需新事件触发 · 收益归因只到 Active 期</p>
+      </div>
+      <div class="card card-pad-md">
+        <div class="mb-timeline">
+          <div class="mb-timeline-row">
+            <div class="mb-timeline-dot is-done"></div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">Draft 草稿</span>
+              <span class="badge badge-outline">发起申请</span>
+            </div>
+            <div class="text-xs text-ink-3">营销部 / 项目方 / 企业 / 中心邀请 · 系统校验导师资格</div>
+          </div>
+          <div class="mb-timeline-row">
+            <div class="mb-timeline-dot is-done"></div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">Active 服务中</span>
+              <span class="badge badge-success">当前</span>
+            </div>
+            <div class="text-xs text-ink-3">归因事件开始捕获 · 1 个月倒计时 · 剩余 7 / 3 / 1 天提醒</div>
+          </div>
+          <div class="mb-timeline-row">
+            <div class="mb-timeline-dot"></div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">Expiring 即将到期</span>
+              <span class="badge badge-warn">3 天内</span>
+            </div>
+            <div class="text-xs text-ink-3">通知业务方和导师 · 可续绑或解绑</div>
+          </div>
+          <div class="mb-timeline-row">
+            <div class="mb-timeline-dot"></div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">Expired 已到期</span>
+              <span class="badge badge-outline">自动</span>
+            </div>
+            <div class="text-xs text-ink-3">MTR-002 · 自动解绑 · 停止新收益归因 · 写入解绑事件 · 历史保留</div>
+          </div>
+          <div class="mb-timeline-row">
+            <div class="mb-timeline-dot"></div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="fw-semibold">Renewed 续绑</span>
+              <span class="badge badge-info">新事件</span>
+            </div>
+            <div class="text-xs text-ink-3">基于新会议 / 辅导 / 续约事件触发 · 重新生成绑定关系</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 风险提示 -->
+    <div class="card" style="background: var(--color-warn-soft); border-left: 3px solid var(--color-warn-2); padding: var(--space-4) var(--space-5); margin-top: var(--space-5);">
+      <div class="flex items-start gap-3">
+        <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--color-warn-2); color: #fff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: var(--weight-semibold);">!</div>
+        <div>
+          <div class="fw-semibold mb-1">重要：导师业务绑定 ≠ 30 天服务窗口（BR-057）</div>
+          <div class="text-sm text-ink-2">导师业务绑定 = 控制<strong>收益归因</strong>（会议 / 辅导 / 项目的贡献归属）· 30 天服务窗口 = 控制<strong>客户资料 / 联系方式</strong>访问权限 · 二者必须分别配置，不能混用</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>保险保单库 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .policy-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .policy-card.is-warn { border-color: var(--color-warn); }
+    .policy-card.is-danger { border-color: var(--color-danger); }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".policy-card" placeholder="搜索保单号 / 险种 / 保险公司…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        
+<div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>个人</span>
+          <span class="breadcrumb-sep">/</span>
+          <span>保险保单</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">保险保单库</h1>
+          <p class="page-subtitle"><span class="js-counter" data-target="8">8</span> 张保单 · 年缴 ¥<span class="js-counter" data-target="268000">268,000</span> · 总保额 5,800 万 · 由 AI 团队监控状态</p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">导出</button>
+            <button class="btn btn-secondary">提醒设置</button>
+            <button class="btn btn-primary">+ 新增保单</button>
+          </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">保单总数</div>
+            <div class="kpi-value"><span class="js-counter" data-target="8">8</span></div>
+            <div class="kpi-delta kpi-delta-up">6 有效 + 2 即将续</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">年缴保费</div>
+            <div class="kpi-value">¥<span class="js-counter" data-target="268000">268,000</span></div>
+            <div class="kpi-delta kpi-delta-up">↓ 8% 较去年</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">总保额</div>
+            <div class="kpi-value"><span class="js-counter" data-target="5800">5,800</span><span class="kpi-value-unit">万</span></div>
+            <div class="kpi-delta kpi-delta-up">4 类险种</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">保障完整度</div>
+            <div class="kpi-value" style="color: var(--color-warn-2);"><span class="js-counter" data-target="82">82</span><span class="kpi-value-unit">%</span></div>
+            <div class="kpi-delta" style="color: var(--color-warn-2);">建议补 1 项</div>
+          </div>
+        </div>
+
+        <!-- 状态筛选 -->
+        <div class="filter-bar mb-6">
+          <span class="filter-chip js-filter is-active" data-status="all">全部 <span class="filter-chip-count">8</span></span>
+          <span class="filter-chip js-filter" data-status="valid">有效 <span class="filter-chip-count">6</span></span>
+          <span class="filter-chip js-filter" data-status="expiring">即将到期 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-status="expired">已失效 <span class="filter-chip-count">0</span></span>
+          <span class="filter-divider"></span>
+          <span class="filter-chip js-filter" data-type="life">寿险 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-type="health">健康险 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-type="accident">意外险 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-type="property">财产险 <span class="filter-chip-count">2</span></span>
+          <div class="filter-search"><input type="text" class="input input-sm js-row-search" data-target-rows=".policy-card" placeholder="搜索保单号 / 险种…" /></div>
+        </div>
+
+        <!-- Section 1: 即将到期提醒 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">即将到期 · EXPIRING SOON</span>
+            <h2 class="section-title">2 张保单 30 天内到期</h2>
+            <p class="section-subtitle">AI 团队提前 30 天提醒 · 可一键续保</p>
+          </div>
+          <div class="grid-2x">
+            <div class="policy-card is-warn js-searchable" data-search="友邦 全佑一生 终身寿险 14 天" data-status="expiring" data-type="life">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-warn">14 天后到期</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2025-0089</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">友邦 · 全佑一生终身寿险</div>
+                <div class="text-sm text-ink-2">身故 / 全残保障 · 含分红</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">年缴保费</div>
+                  <div class="text-sm fw-medium text-mono">¥68,000</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">保额</div>
+                  <div class="text-sm fw-medium text-mono">800 万</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">到期日</div>
+                  <div class="text-sm fw-medium">2026-09-26</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">状态</div>
+                  <div class="text-sm fw-medium" style="color: var(--color-warn-2);">需续保</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-primary btn-sm" onclick="toast('已发起续保申请','success')">立即续保</button>
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm">比较方案</button>
+              </div>
+            </div>
+            <div class="policy-card is-warn js-searchable" data-search="平安 境外旅行险 26 天" data-status="expiring" data-type="accident">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-warn">26 天后到期</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2025-0062</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">平安 · 境外旅行险 · 全年</div>
+                <div class="text-sm text-ink-2">全球紧急救援 + 医疗 + 行李</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div>
+                  <div class="text-xs text-ink-3">年缴保费</div>
+                  <div class="text-sm fw-medium text-mono">¥3,800</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">保额</div>
+                  <div class="text-sm fw-medium text-mono">500 万</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">到期日</div>
+                  <div class="text-sm fw-medium">2026-10-08</div>
+                </div>
+                <div>
+                  <div class="text-xs text-ink-3">状态</div>
+                  <div class="text-sm fw-medium" style="color: var(--color-warn-2);">需续保</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-primary btn-sm" onclick="toast('已发起续保申请','success')">立即续保</button>
+                <button class="btn btn-secondary btn-sm">查看详情</button>
+                <button class="btn btn-ghost btn-sm">比较方案</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 全部保单 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">全部保单 · ALL POLICIES</span>
+            <h2 class="section-title">8 张保单完整列表</h2>
+            <p class="section-subtitle">4 类险种 · 5 家保险公司 · 总保额 5,800 万</p>
+          </div>
+          <div class="grid-2x">
+            <div class="policy-card js-searchable" data-search="友邦 全佑一生 终身寿险 PL-2024-0218" data-status="valid" data-type="life">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2024-0218</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">友邦 · 全佑一生终身寿险</div>
+                <div class="text-sm text-ink-2">含分红 + 万能账户</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">800 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥68,000</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">长期</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">友邦保险</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="招商信诺 高端医疗 PL-2024-0089" data-status="valid" data-type="health">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2024-0089</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">招商信诺 · 高端医疗险</div>
+                <div class="text-sm text-ink-2">全球医疗 + 私立医院</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">2000 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥48,000</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">2027-03-15</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">招商信诺</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="中国人寿 重大疾病险 PL-2024-0142" data-status="valid" data-type="health">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2024-0142</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">中国人寿 · 重大疾病险</div>
+                <div class="text-sm text-ink-2">80 种重疾 + 多次赔付</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">300 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥18,000</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">长期</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">中国人寿</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="苏黎世 家庭意外险 PL-2025-0032" data-status="valid" data-type="accident">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2025-0032</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">苏黎世 · 家庭意外险</div>
+                <div class="text-sm text-ink-2">3 位家庭成员</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">500 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥6,800</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">2026-12-22</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">苏黎世保险</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="中国平安 商务出行险 PL-2025-0048" data-status="valid" data-type="accident">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2025-0048</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">中国平安 · 商务出行险</div>
+                <div class="text-sm text-ink-2">境内 + 境外商务出行</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">300 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥4,200</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">2026-11-30</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">中国平安</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="中国人保 家庭财产险 PL-2024-0167" data-status="valid" data-type="property">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2024-0167</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">中国人保 · 家庭财产险</div>
+                <div class="text-sm text-ink-2">深圳湾 1 号 + 老家别墅</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">1500 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥12,000</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">2026-12-08</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">中国人保</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+            <div class="policy-card js-searchable" data-search="太保 高端车险 PL-2024-0198" data-status="valid" data-type="property">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success">有效</span>
+                <span class="text-xs text-ink-3 text-mono">PL-2024-0198</span>
+              </div>
+              <div>
+                <div class="text-md fw-semibold">中国太保 · 高端车险</div>
+                <div class="text-sm text-ink-2">保时捷 + 商务车</div>
+              </div>
+              <div class="grid-2x" style="gap: var(--space-2);">
+                <div><div class="text-xs text-ink-3">保额</div><div class="text-sm fw-medium text-mono">200 万</div></div>
+                <div><div class="text-xs text-ink-3">年缴</div><div class="text-sm fw-medium text-mono">¥8,200</div></div>
+                <div><div class="text-xs text-ink-3">到期日</div><div class="text-sm fw-medium">2027-01-15</div></div>
+                <div><div class="text-xs text-ink-3">保险公司</div><div class="text-sm fw-medium">中国太保</div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="btn btn-ghost btn-sm">详情</button>
+                <button class="btn btn-ghost btn-sm">下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: 受益人配置 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">受益人 · BENEFICIARIES</span>
+            <h2 class="section-title">5 张保单的受益人</h2>
+            <p class="section-subtitle">由您指定 · 变更需 7 天冷静期</p>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>保单</th><th>类型</th><th>受益人 1</th><th>比例</th><th>受益人 2</th><th>比例</th><th>状态</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>友邦终身寿险</td>
+                  <td>寿险</td>
+                  <td>林建华（配偶）</td>
+                  <td class="col-money">60%</td>
+                  <td>林思远（子）</td>
+                  <td class="col-money">40%</td>
+                  <td><span class="badge badge-success">已生效</span></td>
+                </tr>
+                <tr>
+                  <td>招商信诺医疗险</td>
+                  <td>健康险</td>
+                  <td>本人（被保险人）</td>
+                  <td class="col-money">100%</td>
+                  <td>—</td>
+                  <td class="col-money">—</td>
+                  <td><span class="badge badge-success">已生效</span></td>
+                </tr>
+                <tr>
+                  <td>中国人寿重疾险</td>
+                  <td>健康险</td>
+                  <td>本人（被保险人）</td>
+                  <td class="col-money">100%</td>
+                  <td>—</td>
+                  <td class="col-money">—</td>
+                  <td><span class="badge badge-success">已生效</span></td>
+                </tr>
+                <tr>
+                  <td>中国人保家庭财产险</td>
+                  <td>财产险</td>
+                  <td>本人（被保险人）</td>
+                  <td class="col-money">100%</td>
+                  <td>—</td>
+                  <td class="col-money">—</td>
+                  <td><span class="badge badge-success">已生效</span></td>
+                </tr>
+                <tr>
+                  <td>太保车险</td>
+                  <td>财产险</td>
+                  <td>本人（被保险人）</td>
+                  <td class="col-money">100%</td>
+                  <td>—</td>
+                  <td class="col-money">—</td>
+                  <td><span class="badge badge-success">已生效</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 4: 文件管理 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">文件管理 · FILES</span>
+            <h2 class="section-title">12 份保单文件</h2>
+            <p class="section-subtitle">电子保单 + 发票 + 理赔记录 · 全部可下载</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-info-soft); color: var(--color-info);">PDF</div>
+                <span class="badge badge-info badge-sm">电子保单</span>
+              </div>
+              <div class="text-sm fw-medium mb-1">友邦终身寿险 · 电子保单</div>
+              <div class="text-xs text-ink-3 mb-2">2024-09-12 · 4.2 MB</div>
+              <button class="btn btn-ghost btn-sm w-full">下载</button>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-success-soft); color: var(--color-success);">PDF</div>
+                <span class="badge badge-success badge-sm">发票</span>
+              </div>
+              <div class="text-sm fw-medium mb-1">2025 年保费发票</div>
+              <div class="text-xs text-ink-3 mb-2">2025-09-15 · 1.8 MB</div>
+              <button class="btn btn-ghost btn-sm w-full">下载</button>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="avatar avatar-sm" style="background: var(--color-warn-soft); color: var(--color-warn-2);">PDF</div>
+                <span class="badge badge-warn badge-sm">理赔</span>
+              </div>
+              <div class="text-sm fw-medium mb-1">2024 医疗理赔记录</div>
+              <div class="text-xs text-ink-3 mb-2">2024-12-08 · 0.6 MB</div>
+              <button class="btn btn-ghost btn-sm w-full">下载</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">建议补 1 份"长期护理险"提升保障完整度</div>
+            <div class="ai-suggestion-reason">您当前保障完整度 82%，缺失"长期护理险"。您已配置寿险 / 重疾 / 医疗 / 意外 / 财产 5 大类。补 1 份长期护理险（保额 200 万 · 年缴 ¥6,000）后完整度达 95%，并解锁"家族传承规划师"EMP 优先服务权益。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">查看 3 款产品</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入今日待办','info')">稍后处理</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: 正式保单免责声明 (POL-002 / POL-001 / POL-004 / BR-013) -->
+        <div class="section">
+          <div class="policy-disclaimer">
+            <div class="policy-disclaimer-icon">!</div>
+            <div class="policy-disclaimer-content">
+              <div class="policy-disclaimer-title">正式保单免责声明</div>
+              <div class="policy-disclaimer-text">4499 展示的保单信息为 OpulnX 同步的电子副本与摘要 · <strong>正式内容以承保机构保单为准</strong>。如副本与正式保单存在不一致，一切理赔、收益、受益人归属均以承保机构保单为准。</div>
+              <div class="policy-disclaimer-rules">
+                <span class="policy-disclaimer-rule">POL-002 · 只读副本</span>
+                <span class="policy-disclaimer-rule">POL-001 · 幂等更新</span>
+                <span class="policy-disclaimer-rule">POL-004 · 外部保单仅保管</span>
+                <span class="policy-disclaimer-rule">BR-013 · 受益人以正式保单为准</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

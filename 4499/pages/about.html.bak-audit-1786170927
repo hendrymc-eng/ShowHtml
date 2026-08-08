@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>关于 4499 · 我们的使命与边界</title>
+  <meta name="description" content="4499 平台是 OpulnX 生态中的会员成功与生态运营平台，致力于把分散的商业协作沉淀为长期可验证的信任。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/brand-anim.css" />
+  <style>
+    /* Hallmark · macrostructure: Marquee Hero + 紧凑 page-section · tone: modern-minimal · anchor hue: Cobalt oklch(48% 0.18 255) · system-managed (design.md v1.0 · 2026-08-08) */
+    body { background: var(--color-paper); }
+    .site-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--color-paper);
+      border-bottom: 1px solid var(--color-line);
+      backdrop-filter: saturate(180%) blur(8px);
+    }
+    .site-nav-inner {
+      max-width: var(--container-max);
+      margin: 0 auto; padding: 0 var(--space-6);
+      height: 64px;
+      display: flex; align-items: center; gap: var(--space-8);
+    }
+    .site-brand {
+      display: flex; align-items: center; gap: var(--space-2);
+      font-family: var(--font-display);
+      font-weight: var(--weight-semibold);
+      font-size: var(--text-lg);
+      color: var(--color-ink);
+      text-decoration: none; letter-spacing: -0.01em;
+    }
+    .site-brand-mark {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+      color: var(--color-accent-ink);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: var(--weight-bold); font-size: var(--text-sm);
+      font-family: var(--font-display);
+    }
+    .site-menu { display: flex; align-items: center; gap: var(--space-1); flex: 1; }
+    .site-menu a {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      color: var(--color-ink-2);
+      font-size: var(--text-md); font-weight: var(--weight-medium);
+      text-decoration: none;
+      transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+    }
+    .site-menu a:hover { color: var(--color-ink); background: var(--color-surface-2); }
+    .site-menu a.is-current { color: var(--color-ink); }
+    .site-actions { display: flex; align-items: center; gap: var(--space-2); }
+    .nav-toggle { display: none; }
+
+    /* Hero (taller, more vertical breathing) */
+    .hero {
+      background: linear-gradient(180deg, var(--color-accent-softer) 0%, var(--color-paper) 100%);
+      border-bottom: 1px solid var(--color-line);
+      padding: var(--space-16) 0 var(--space-12);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-decor-stack {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-decor-orb-1 {
+      position: absolute;
+      top: -100px; right: 10%;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+      opacity: 0.16;
+      filter: blur(50px);
+    }
+    .hero-decor-orb-2 {
+      position: absolute;
+      bottom: -120px; left: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--color-trust) 0%, transparent 70%);
+      opacity: 0.10;
+      filter: blur(60px);
+    }
+    .hero-decor-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+      -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+      opacity: 0.4;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-inner {
+      max-width: 880px;
+      margin: 0 auto; padding: 0 var(--space-6);
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--color-accent);
+      padding: 6px var(--space-3);
+      background: var(--color-accent-soft);
+      border-radius: var(--radius-pill);
+      margin-bottom: var(--space-5);
+    }
+    .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: var(--text-display);
+      font-weight: var(--weight-semibold);
+      color: var(--color-ink);
+      line-height: 1.05; letter-spacing: -0.025em;
+      margin: 0 0 var(--space-5);
+    }
+    .hero-subtitle {
+      font-size: var(--text-xl);
+      color: var(--color-ink-2);
+      line-height: var(--leading-relaxed);
+      max-width: 640px; margin: 0 auto;
+    }
+
+    .page-section { padding: var(--space-10) 0; }
+    .page-section:first-of-type { padding-top: var(--space-6); }
+    .hero + .page-section { padding-top: var(--space-3); padding-bottom: var(--space-6); }
+    .page-section + .page-section { border-top: 1px solid var(--color-line); }
+    .container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6); }
+    .container-narrow { max-width: 880px; }
+
+    /* Mission/Vision split */
+    .mv-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    .mv-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .mv-eyebrow {
+      font-size: var(--text-xs);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--color-accent);
+      font-weight: var(--weight-medium);
+      margin-bottom: var(--space-3);
+      display: block;
+    }
+    .mv-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-semibold);
+      color: var(--color-ink);
+      margin: 0 0 var(--space-3);
+      letter-spacing: -0.01em;
+    }
+    .mv-text { font-size: var(--text-md); color: var(--color-ink-2); line-height: var(--leading-relaxed); margin: 0; }
+
+    /* Story long-form */
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: var(--space-12);
+      align-items: start;
+    }
+    .story-aside {
+      position: sticky; top: 96px;
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+    }
+    .story-aside-row { display: flex; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); }
+    .story-aside-row:last-child { border-bottom: none; }
+    .story-aside-label { font-size: var(--text-sm); color: var(--color-ink-3); }
+    .story-aside-value { font-size: var(--text-sm); color: var(--color-ink); font-weight: var(--weight-medium); }
+    .story-body p { font-size: var(--text-md); color: var(--color-ink-2); line-height: var(--leading-relaxed); margin: 0 0 var(--space-4); }
+    .story-body p:last-child { margin-bottom: 0; }
+    .story-body .pullquote {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-ink);
+      font-weight: var(--weight-medium);
+      border-left: 2px solid var(--color-accent);
+      padding: var(--space-2) 0 var(--space-2) var(--space-5);
+      margin: var(--space-6) 0;
+      letter-spacing: -0.01em;
+    }
+
+    /* Principles (2x2) */
+    .principle-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .principle-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .principle-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-ink-4);
+      margin-bottom: var(--space-4);
+      letter-spacing: 0.08em;
+    }
+    .principle-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--color-ink);
+      margin: 0 0 var(--space-2);
+    }
+    .principle-desc {
+      font-size: var(--text-sm);
+      color: var(--color-ink-2);
+      line-height: var(--leading-relaxed);
+      margin: 0;
+    }
+
+    /* Boundary table */
+    .boundary-table {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: var(--space-8);
+    }
+    .boundary-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 1fr;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .boundary-row:last-child { border-bottom: none; }
+    .boundary-row.is-head { background: var(--color-surface-2); }
+    .boundary-row.is-head .boundary-cell { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-3); font-weight: var(--weight-medium); }
+    .boundary-cell { padding: var(--space-4) var(--space-5); font-size: var(--text-md); color: var(--color-ink-2); }
+    .boundary-cell:first-child { font-weight: var(--weight-medium); color: var(--color-ink); border-right: 1px solid var(--color-line); background: var(--color-surface-2); }
+    .boundary-tag {
+      display: inline-flex; align-items: center; gap: var(--space-1);
+      padding: 2px var(--space-2);
+      font-size: var(--text-xs);
+      border-radius: var(--radius-pill);
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      font-weight: var(--weight-medium);
+      margin-right: var(--space-2);
+    }
+    .boundary-tag-no { background: var(--color-surface-3); color: var(--color-ink-3); }
+    .boundary-tag-yes { background: var(--color-success-soft); color: var(--color-success); }
+
+    /* Team cards */
+    .team-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+    }
+    .team-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      text-align: center;
+    }
+    .team-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-weight: var(--weight-semibold);
+      font-size: var(--text-xl);
+      margin: 0 auto var(--space-4);
+    }
+    .team-name {
+      font-size: var(--text-md);
+      font-weight: var(--weight-semibold);
+      color: var(--color-ink);
+      margin: 0 0 var(--space-1);
+    }
+    .team-role {
+      font-size: var(--text-sm);
+      color: var(--color-ink-3);
+      margin: 0 0 var(--space-3);
+    }
+    .team-bio {
+      font-size: var(--text-sm);
+      color: var(--color-ink-2);
+      line-height: var(--leading-relaxed);
+      margin: 0;
+    }
+
+    /* CTA band */
+    .cta-band {
+      background: var(--color-ink);
+      color: var(--color-ink-inv);
+      padding: var(--space-20) 0;
+    }
+    .cta-band-inner {
+      max-width: var(--container-max);
+      margin: 0 auto; padding: 0 var(--space-6);
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-12); align-items: center;
+    }
+    .cta-band-eyebrow { color: var(--color-ink-4); margin-bottom: var(--space-3); display: block; }
+    .cta-band-title { font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink-inv); margin: 0; letter-spacing: -0.02em; }
+    .cta-band-actions { display: flex; gap: var(--space-3); justify-content: flex-end; flex-wrap: wrap; }
+    .btn-on-dark { background: var(--color-ink-inv); color: var(--color-ink); }
+    .btn-on-dark:hover { background: var(--color-surface-2); }
+    .btn-on-dark-outline { background: transparent; color: var(--color-ink-inv); border-color: var(--color-line-3); }
+    .btn-on-dark-outline:hover { background: rgba(255,255,255,0.08); }
+
+    /* Footer */
+    .site-footer { background: var(--color-surface); border-top: 1px solid var(--color-line); padding: var(--space-16) 0 var(--space-8); }
+    .footer-grid {
+      max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6);
+      display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); gap: var(--space-8);
+    }
+    .footer-brand-block { display: flex; flex-direction: column; gap: var(--space-3); }
+    .footer-tagline { font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); max-width: 280px; }
+    .footer-social { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
+    .footer-social a {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-2);
+      color: var(--color-ink-2);
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none;
+    }
+    .footer-social a:hover { background: var(--color-accent-soft); color: var(--color-accent); }
+    .footer-col h4 { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-3); font-weight: var(--weight-medium); margin: 0 0 var(--space-3); }
+    .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .footer-col a { font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; }
+    .footer-col a:hover { color: var(--color-ink); }
+    .footer-bottom {
+      max-width: var(--container-max); margin: var(--space-12) auto 0;
+      padding: var(--space-6) var(--space-6) 0;
+      border-top: 1px solid var(--color-line);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);
+      font-size: var(--text-sm); color: var(--color-ink-3);
+    }
+    .footer-bottom-links { display: flex; gap: var(--space-4); }
+    .footer-bottom-links a { color: var(--color-ink-3); text-decoration: none; }
+    .footer-bottom-links a:hover { color: var(--color-ink); }
+
+    @media (max-width: 1200px) {
+      .hero-title { font-size: 56px; }
+      .footer-grid { grid-template-columns: 1.5fr repeat(2, 1fr); }
+    }
+    @media (max-width: 1024px) {
+      .hero-title { font-size: 48px; }
+      .mv-grid { grid-template-columns: 1fr; }
+      .story-grid { grid-template-columns: 1fr; }
+      .story-aside { position: static; }
+      .cta-band-inner { grid-template-columns: 1fr; }
+      .cta-band-actions { justify-content: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .site-menu { display: none; }
+      .nav-toggle { display: inline-flex; }
+      .site-actions .btn-text-hide { display: none; }
+      .hero { padding: var(--space-14) 0 var(--space-10); }
+      .hero-title { font-size: 36px; }
+      .page-section { padding: var(--space-12) 0; }
+      .principle-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .boundary-row { grid-template-columns: 1fr; }
+      .boundary-cell:first-child { border-right: none; border-bottom: 1px solid var(--color-line); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand-block { grid-column: span 2; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: 30px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand-block { grid-column: span 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms !important; } }
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../js/brand-motion.js"></script>
+</head>
+<body>
+<div data-scroll-progress></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <header class="site-nav">
+    <div class="site-nav-inner">
+      <a href="index.html" class="site-brand">
+        <span class="site-brand-mark">4</span>
+        <span>4499</span>
+      </a>
+      <nav class="site-menu" aria-label="主导航">
+        <a href="index.html">产品</a>
+        <a href="index.html#solutions">解决方案</a>
+        <a href="index.html#cases">客户案例</a>
+        <a href="resources.html">资源</a>
+        <a href="about.html" class="is-current">关于</a>
+      </nav>
+      <div class="site-actions">
+        <a href="#" class="btn btn-ghost btn-md btn-text-hide">登录</a>
+        <a href="contact.html" class="btn btn-primary btn-md">预约咨询</a>
+        <button class="btn btn-ghost btn-icon btn-md nav-toggle" aria-label="菜单">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" data-hero>
+    <div class="hero-decor-stack" aria-hidden="true">
+      <div class="hero-decor-orb-1 decor-orb"></div>
+      <div class="hero-decor-orb-2 decor-orb"></div>
+      <div class="hero-decor-lines"></div>
+    </div>
+    <div class="hero-inner">
+      <span class="hero-eyebrow" data-hero-eyebrow>
+        <span class="hero-eyebrow-dot"></span>
+        关于 4499
+      </span>
+      <h1 class="hero-title js-title-split">用长期主义，<br />重写商业信任的底座</h1>
+      <p class="hero-subtitle" data-hero-subtitle>
+        4499 是 OpulnX 生态中的会员成功与生态运营平台。我们相信信任不是营销话术，而是来自可被独立核验的真实行为记录。
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission / Vision -->
+  <section class="page-section" data-section>
+    <div class="container">
+      <div class="section-head js-fade-up" data-section-body>
+        <span class="eyebrow">使命 · 愿景</span>
+        <h2 class="section-title">我们想做成的事</h2>
+        <p class="section-subtitle">两条线的对齐：我们为谁而做、我们希望看到什么变化。</p>
+      </div>
+      <div class="mv-grid js-fade-stagger">
+        <div class="mv-card">
+          <span class="mv-eyebrow">使命 · Mission</span>
+          <h3 class="mv-title">让每一次商业协作都留得下来</h3>
+          <p class="mv-text">
+            4499 把每一次真实发生的服务、推荐、协作，沉淀为可被引用的长期记录。我们不创造"虚假繁荣"，只让已有的真实关系被看见、被承认、被复用。
+          </p>
+        </div>
+        <div class="mv-card">
+          <span class="mv-eyebrow">愿景 · Vision</span>
+          <h3 class="mv-title">成为跨机构、跨平台的信任底层</h3>
+          <p class="mv-text">
+            长期目标是让 4499 输出的 Trust Passport 被 OpulnX 生态、机构、监管与保险等多方独立认可；我们不做内容、不做撮合收费、也不替代专业业务。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="page-section" data-section>
+    <div class="container">
+      <div class="section-head js-fade-up" data-section-body>
+        <span class="eyebrow">品牌故事</span>
+        <h2 class="section-title">为什么是 4499</h2>
+      </div>
+      <div class="story-grid js-fade-up">
+        <aside class="story-aside" aria-label="项目信息">
+          <div class="story-aside-row">
+            <span class="story-aside-label">品牌代号</span>
+            <span class="story-aside-value">4499</span>
+          </div>
+          <div class="story-aside-row">
+            <span class="story-aside-label">所属生态</span>
+            <span class="story-aside-value">OpulnX</span>
+          </div>
+          <div class="story-aside-row">
+            <span class="story-aside-label">运营主体</span>
+            <span class="story-aside-value">Opulrich</span>
+          </div>
+          <div class="story-aside-row">
+            <span class="story-aside-label">立项时间</span>
+            <span class="story-aside-value">2026 Q3</span>
+          </div>
+          <div class="story-aside-row">
+            <span class="story-aside-label">当前阶段</span>
+            <span class="story-aside-value">P0 · 高保真原型</span>
+          </div>
+        </aside>
+        <div class="story-body">
+          <p>
+            过去十年，我们看到大量企业、机构、顾问之间的协作都停留在 Excel、微信聊天记录、个人印象里。当关系结束、机构变更、人员流动，最珍贵的"信任资产"也随之消失。
+          </p>
+          <div class="pullquote">
+            信任不应该是"我认识谁"，而应该是"过去 24 个月里，我们共同完成过什么"。
+          </div>
+          <p>
+            4499 平台从 2026 年 Q3 开始立项，定位是 OpulnX 生态中的"会员成功与生态运营平台"。我们不做交易撮合、不抽取佣金、不替代任何专业业务，只做一件事：把分散的真实协作变成可被引用的长期记录。
+          </p>
+          <p>
+            "4499" 这个代号本身没有任何营销含义；它代表的是平台对自身角色的定位 — 在商业关系网络中，做一个"被多方交叉验证的节点"，而不是"流量入口"。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="page-section" data-section id="principles">
+    <div class="container">
+      <div class="section-head js-fade-up" data-section-body>
+        <span class="eyebrow">核心原则</span>
+        <h2 class="section-title">我们不做什么、和为什么</h2>
+        <p class="section-subtitle">这些原则写在设计稿、写在合同里，也写进每一个 PR review 的讨论中。</p>
+      </div>
+      <div class="principle-grid js-fade-stagger">
+        <div class="principle-card">
+          <div class="principle-num">PRINCIPLE · 01</div>
+          <h3 class="principle-title">标签纪律</h3>
+          <p class="principle-desc">
+            前台不出现"后台 / 手动设定 / 运营 / 比赛池 / 抽奖 / 分销 / 团队 / 层级收益 / 充值 / 提现 / 平台代币"等术语。统一用"AI 团队 / 精选 / 服务窗口 / 客户经营 / 数字信誉"。
+          </p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">PRINCIPLE · 02</div>
+          <h3 class="principle-title">可验证性</h3>
+          <p class="principle-desc">
+            任何信任值、徽章、推荐结果都必须能溯源到具体的服务事件、履约记录或资质核验。我们不接受"自我声明"作为输入。
+          </p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">PRINCIPLE · 03</div>
+          <h3 class="principle-title">长期主义</h3>
+          <p class="principle-desc">
+            推荐关系、双叉网络不以"团队 / 分销"视觉表达，强调长期关系 + 真实行为；短期刷分无法提升信任。
+          </p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">PRINCIPLE · 04</div>
+          <h3 class="principle-title">边界清晰</h3>
+          <p class="principle-desc">
+            4499 只读同步 OpulnX 生态数据，不操作专业业务、不替代保险与法律服务、不承担平台外的合规责任。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="page-section" data-section>
+    <div class="container">
+      <div class="section-head js-fade-up" data-section-body>
+        <span class="eyebrow">共建者</span>
+        <h2 class="section-title">来自 4 类共建者的力量</h2>
+        <p class="section-subtitle">4499 不是单一团队的产品，而是 4 类共建者共同治理的生态平台。</p>
+      </div>
+      <div class="team-grid js-fade-stagger">
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--color-role-recommender-soft); color: var(--color-role-recommender);">R</div>
+          <h3 class="team-name">推荐人</h3>
+          <p class="team-role">商业关系的最前端</p>
+          <p class="team-bio">在 OpulnX 体系内负责发现、连接、经营长期客户关系；他们是 Trust Passport 的第一手输入源。</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--color-role-consultant-soft); color: var(--color-role-consultant);">E</div>
+          <h3 class="team-name">EMP 顾问</h3>
+          <p class="team-role">专业能力的承载者</p>
+          <p class="team-bio">具备法律、税务、财富管理等专业资质的独立顾问；他们通过专业中心参与协作，并形成可被引用的服务记录。</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--color-role-center-soft); color: var(--color-role-center);">C</div>
+          <h3 class="team-name">专业中心</h3>
+          <p class="team-role">机构能力的聚合体</p>
+          <p class="team-bio">与机构共建的特定领域服务窗口，承载 30 天服务窗口期内的承接、履约、回访闭环。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boundary -->
+  <section class="page-section" data-section id="boundary">
+    <div class="container">
+      <div class="section-head js-fade-up" data-section-body>
+        <span class="eyebrow">生态边界</span>
+        <h2 class="section-title">4499 与其他主体的关系</h2>
+        <p class="section-subtitle">我们与 OpulnX 平台、Opulrich 运营主体、保险公司、专业机构之间有清晰的责任切分。</p>
+      </div>
+      <div class="boundary-table js-fade-up">
+        <div class="boundary-row is-head">
+          <div class="boundary-cell">关系方</div>
+          <div class="boundary-cell">4499 做什么</div>
+          <div class="boundary-cell">4499 不做什么</div>
+        </div>
+        <div class="boundary-row">
+          <div class="boundary-cell">OpulnX 平台</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-yes">同步</span>只读同步账户、关系、信任值等生态数据</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-no">不操作</span>不修改 OpulnX 核心账户与业务数据</div>
+        </div>
+        <div class="boundary-row">
+          <div class="boundary-cell">Opulrich 运营方</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-yes">运营</span>负责 4499 日常运营、生态共建、版本迭代</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-no">不持有</span>不持有保单、不持有客户资金、不持有专业资质</div>
+        </div>
+        <div class="boundary-row">
+          <div class="boundary-cell">保险公司</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-yes">引用</span>只读同步保单摘要、续约提醒、理赔状态</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-no">不出单</span>不进行投保、出单、定价、核保等保险动作</div>
+        </div>
+        <div class="boundary-row">
+          <div class="boundary-cell">专业机构</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-yes">匹配</span>为 EMP 顾问 / 专业中心提供智能匹配入口</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-no">不替代</span>不替代机构专业判断、不出具专业意见</div>
+        </div>
+        <div class="boundary-row">
+          <div class="boundary-cell">推荐人</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-yes">记录</span>记录长期服务关系、续约、授权行为</div>
+          <div class="boundary-cell"><span class="boundary-tag boundary-tag-no">不结算</span>不参与交易结算、不分配佣金</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="cta-band-inner js-fade-up">
+      <div>
+        <span class="eyebrow cta-band-eyebrow">与我们共建</span>
+        <h2 class="cta-band-title">成为 4499 长期关系网络的一部分</h2>
+        <p style="color: var(--color-ink-3); margin: var(--space-4) 0 0; font-size: var(--text-md); line-height: var(--leading-relaxed); max-width: 520px;">我们正在和早期共建者打磨 Trust Passport；欢迎任何认同"长期主义"的机构、顾问、企业加入。</p>
+      </div>
+      <div class="cta-band-actions">
+        <a href="contact.html" class="btn btn-on-dark btn-lg">预约咨询</a>
+        <a href="contact.html#apply" class="btn btn-on-dark-outline btn-lg">申请加入</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer js-fade-up">
+    <div class="footer-grid">
+      <div class="footer-brand-block">
+        <a href="index.html" class="site-brand">
+          <span class="site-brand-mark">4</span>
+          <span>4499</span>
+        </a>
+        <p class="footer-tagline">OpulnX 生态中的会员成功与生态运营平台。把分散的协作沉淀为可验证的长期信任。</p>
+        <div class="footer-social" aria-label="社交媒体">
+          <a href="#" aria-label="LinkedIn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7 0h3.8v2.2h.05c.53-1 1.83-2.2 3.77-2.2 4.03 0 4.78 2.65 4.78 6.1V24h-4v-7.4c0-1.77-.03-4.05-2.47-4.05-2.47 0-2.85 1.93-2.85 3.92V24h-4V8z"/></svg>
+          </a>
+          <a href="#" aria-label="X / Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="微信公众号">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 9.5a1 1 0 100-2 1 1 0 000 2zm5 0a1 1 0 100-2 1 1 0 000 2zM12 2C6.5 2 2 5.5 2 9.7c0 2.4 1.4 4.5 3.6 6L5 18l3-1.6c.9.2 1.8.3 2.7.3.2-1 .7-1.9 1.5-2.6-1-.1-1.9-.3-2.8-.7-2.7-1-4.5-3.1-4.5-5.4 0-3.3 3.4-6 7.5-6s7.5 2.7 7.5 6c0 .6-.1 1.2-.3 1.7.6.1 1.2.3 1.7.5.2-.7.3-1.4.3-2.2C22 5.5 17.5 2 12 2z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>产品</h4>
+        <ul>
+          <li><a href="index.html#solutions">价值主张</a></li>
+          <li><a href="index.html#ai-matching">AI 匹配</a></li>
+          <li><a href="index.html#cases">客户案例</a></li>
+          <li><a href="resources.html">资源中心</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>解决方案</h4>
+        <ul>
+          <li><a href="index.html#solutions">推荐人工作台</a></li>
+          <li><a href="index.html#solutions">EMP 顾问协作</a></li>
+          <li><a href="index.html#solutions">专业中心共建</a></li>
+          <li><a href="index.html#solutions">保单只读同步</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>关于</h4>
+        <ul>
+          <li><a href="about.html">品牌故事</a></li>
+          <li><a href="about.html#principles">核心原则</a></li>
+          <li><a href="about.html#boundary">生态边界</a></li>
+          <li><a href="contact.html">联系我们</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>资源</h4>
+        <ul>
+          <li><a href="resources.html">白皮书</a></li>
+          <li><a href="resources.html">案例研究</a></li>
+          <li><a href="resources.html">行业洞察</a></li>
+          <li><a href="resources.html">帮助中心</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 4499 · OpulnX 生态成员 · 海南亚洲公益研究院等机构共建</span>
+      <div class="footer-bottom-links">
+        <a href="#">隐私政策</a>
+        <a href="#">服务条款</a>
+        <a href="#">合规声明</a>
+      </div>
+    </div>
+  </footer>
+<!-- GSAP 3.x 动效 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="../js/app.js" defer></script>
+<script src="../js/brand-anim.js" defer></script>
+</body>
+</html>

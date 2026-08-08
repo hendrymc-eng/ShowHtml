@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品购买 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .product-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); overflow: hidden; transition: all var(--dur-fast) var(--ease-out); cursor: pointer; }
+    .product-card:hover { border-color: var(--color-line-2); }
+    .product-cover { height: 120px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .product-body { padding: var(--space-4); }
+    .product-price { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 600; color: var(--color-ink); letter-spacing: -0.02em; }
+    .order-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line); }
+    .order-row:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".order-row" placeholder="搜索产品、报告、工具…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+      <a href="workbench-recommender.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span>我的工作台</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">客户与会员</div>
+      <a href="crm-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>会员与客户</span><span class="sidebar-badge badge badge-accent badge-sm">86</span></a>
+      <a href="dual-fork-network.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="14" cy="14" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3M9 9L5 12M9 9l4 3" stroke="currentColor" stroke-width="1.4"/></svg><span>双叉网络</span></a>
+      <a href="recommendations.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>推荐关系</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业画像</div>
+      <a href="business-profile-enterprise.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>我的企业</span></a>
+      <a href="business-profile-people.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15.5a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人画像</span></a>
+      <a href="business-profile-organization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>组织画像</span></a>
+      <a href="business-profile-product.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品画像</span></a>
+      <a href="business-profile-project.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>项目画像</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业网络</div>
+      <a href="business-network-contacts.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>商业联系人</span></a>
+      <a href="business-network-resources.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 4v6l-6 4-6-4V6l6-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>商业资源</span></a>
+      <a href="resource-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>资源目录</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">商业实践</div>
+      <a href="business-activities-list.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/></svg><span>活动总览</span></a>
+      <a href="my-courses.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>我的课程</span></a>
+      <a href="business-activities-learning.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>学习中心</span></a>
+      <a href="business-activities-events.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/></svg><span>活动与聚会</span></a>
+      <a href="business-activities-projects.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>项目中心</span></a>
+      <a href="business-activities-services.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 14l5-5 3 3 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>服务订单</span></a>
+      <a href="business-activities-products.html" class="sidebar-item is-active"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12M7 11h4" stroke="currentColor" stroke-width="1.4"/></svg><span>产品购买</span></a>
+      <a href="business-activities-charity.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 14s-5-3-5-7a3 3 0 015-2 3 3 0 015 2c0 4-5 7-5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>公益行动</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">专业协作</div>
+      <a href="pro-support-apply.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14a3.5 3.5 0 017 0M9 14a3 3 0 016 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>申请专业支持</span><span class="sidebar-badge badge badge-warn badge-sm">3</span></a>
+            <a href="service-authorization.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M3 7h12" stroke="currentColor" stroke-width="1.4"/></svg><span>服务授权</span></a>
+      <a href="service-window.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>30 天服务窗口</span></a>
+      <a href="mentors.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>导师与专家</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">信誉护照</div>
+      <a href="trust-passport.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l5 2v5c0 3.5-2.2 6.4-5 7.5-2.8-1.1-5-4-5-7.5V4l5-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 9.5l2 2 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Trust Passport</span></a>
+      </div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">AI 匹配</div>
+      <a href="ai-matching.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4l4 4-4 4M9 14h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 智能匹配</span></a>
+      <a href="ai-match.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M14 4l-2 2M4 14l2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg><span>AI 专家匹配</span></a>
+      <a href="ai-marketing.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>AI 营销中心</span></a>
+      <a href="ai-customer-service.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>AI 客服中心</span></a>
+</div>
+      <div class="sidebar-section">
+      <div class="sidebar-section-title">个人与传承</div>
+      <a href="personal-data.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v10H3z" stroke="currentColor" stroke-width="1.4"/><path d="M6 8h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>个人资料</span></a>
+      <a href="insurance-policies.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2l6 2v5c0 4-2.5 7-6 7s-6-3-6-7V4l6-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>保险保单</span></a>
+      <a href="beneficiary.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>受益人</span></a>
+      <a href="task-center.html" class="sidebar-item"><svg class="sidebar-icon" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 7h4M7 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>任务中心</span><span class="sidebar-badge badge badge-warn badge-sm">12</span></a>
+      </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content">
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="business-activities-list.html">商业活动</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>产品购买</span>
+        </div>
+
+        <div class="page-head">
+          <h1 class="page-title">产品购买</h1>
+          <p class="page-subtitle">6 款产品 · 0.5% 自动捐赠 · 您已购 <span class="js-counter" data-target="14">14</span> 件 · 累计捐赠 ¥<span class="js-counter" data-target="1820">1,820</span></p>
+          <div class="page-actions">
+            <button class="btn btn-secondary">购物车 (2)</button>
+            <button class="btn btn-secondary">我的购买</button>
+            <button class="btn btn-primary">+ 浏览全部</button>
+          </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="grid-4x mb-8">
+          <div class="kpi-card">
+            <div class="kpi-label">累计购买</div>
+            <div class="kpi-value"><span class="js-counter" data-target="14">14</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ 3 本季</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">累计消费</div>
+            <div class="kpi-value">¥<span class="js-counter" data-target="1860000">1860000</span></div>
+            <div class="kpi-delta kpi-delta-up">↑ ¥22 万</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">公益捐赠</div>
+            <div class="kpi-value" style="color: var(--color-charity);">¥<span class="js-counter" data-target="1820">1,820</span></div>
+            <div class="kpi-delta kpi-delta-up">0.5% 自动</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">待核销</div>
+            <div class="kpi-value" style="color: var(--color-warn-2);"><span class="js-counter" data-target="2">2</span></div>
+            <div class="kpi-delta" style="color: var(--color-warn-2);">报告 1 + 课程 1</div>
+          </div>
+        </div>
+
+        <!-- 分类筛选 -->
+        <div class="filter-bar mb-6">
+          <span class="filter-chip js-filter is-active" data-cat="all">全部 <span class="filter-chip-count">6</span></span>
+          <span class="filter-divider"></span>
+          <span class="filter-chip js-filter" data-cat="consulting">咨询包 <span class="filter-chip-count">3</span></span>
+          <span class="filter-chip js-filter" data-cat="report">研究报告 <span class="filter-chip-count">2</span></span>
+          <span class="filter-chip js-filter" data-cat="tool">工具 / SaaS <span class="filter-chip-count">1</span></span>
+          <span class="filter-divider"></span>
+          <span class="filter-chip js-filter" data-status="certified">已认证 <span class="filter-chip-count">5</span></span>
+          <span class="filter-chip js-filter" data-status="charity">公益嵌入 <span class="filter-chip-count">6</span></span>
+          <div class="filter-search"><input type="text" class="input input-sm js-row-search" data-target-rows=".order-row" placeholder="搜索产品名 / 编号…" /></div>
+          <div class="segmented">
+            <div class="segmented-item is-active">推荐</div>
+            <div class="segmented-item">最新</div>
+            <div class="segmented-item">价格</div>
+          </div>
+        </div>
+
+        <!-- 产品卡片网格 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">AI 精选 · FOR YOU</span>
+            <h2 class="section-title">基于您画像推荐 6 款</h2>
+            <p class="section-subtitle">长期关注 + 同行热门 + 近期趋势</p>
+          </div>
+          <div class="grid-3x">
+            <a href="business-profile-product.html" class="product-card" style="text-decoration:none; color: inherit; border-color: var(--color-accent);">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-accent-softer) 0%, var(--color-accent-soft) 100%); color: var(--color-accent);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18M8 13h4M8 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span class="badge badge-accent" style="position: absolute; top: 8px; right: 8px;">畅销</span>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-accent">咨询包</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">大湾区家族办公室 1.0 咨询包</div>
+                <div class="text-xs text-ink-3 mb-3">深圳前海 XX 投资</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥38,000</span><span class="text-xs text-ink-3"> / 季度</span></div>
+                  <button class="btn btn-primary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </a>
+            <div class="product-card">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-info-soft) 0%, var(--color-info-soft) 100%); color: var(--color-info);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z M4 9h16M9 4v16" stroke="currentColor" stroke-width="1.5"/></svg>
+                <span class="badge badge-info" style="position: absolute; top: 8px; right: 8px;">新上</span>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-info">研究报告</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">大湾区家族办公室白皮书 2026</div>
+                <div class="text-xs text-ink-3 mb-3">深圳湾慈善基金会</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥1,200</span><span class="text-xs text-ink-3"> / 数字</span></div>
+                  <button class="btn btn-secondary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-card">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-success-soft) 0%, var(--color-success-softer) 100%); color: var(--color-success);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-success">咨询包</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">跨境并购全流程陪跑</div>
+                <div class="text-xs text-ink-3 mb-3">EMP 张明 团队</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥68,000</span><span class="text-xs text-ink-3"> / 项目</span></div>
+                  <button class="btn btn-secondary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-card">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-warn-softer) 0%, var(--color-warn-soft) 100%); color: var(--color-warn-2);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M3 12l9-9 9 9-9 9-9-9z" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-warn">研究报告</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">慈善信托年度报告 2026</div>
+                <div class="text-xs text-ink-3 mb-3">清禾公益基金 + 4499</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥680</span><span class="text-xs text-ink-3"> / 数字</span></div>
+                  <button class="btn btn-secondary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-card">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-trust-soft) 0%, var(--color-trust-soft) 100%); color: var(--color-trust);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-trust">工具 / SaaS</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">家族资产配置计算器</div>
+                <div class="text-xs text-ink-3 mb-3">4499 平台官方</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥2,800</span><span class="text-xs text-ink-3"> / 年</span></div>
+                  <button class="btn btn-secondary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-card">
+              <div class="product-cover" style="background: linear-gradient(135deg, var(--color-charity-soft) 0%, var(--color-charity-soft) 100%); color: var(--color-charity);">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4-7-10a4 4 0 017-3 4 4 0 017 3c0 6-7 10-7 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                <span class="badge badge-charity" style="position: absolute; top: 8px; right: 8px;">公益</span>
+              </div>
+              <div class="product-body">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-charity">公益</span>
+                  <span class="badge badge-success">已认证</span>
+                </div>
+                <div class="text-md fw-semibold mb-1">山区助学 · 1 个孩子 1 年</div>
+                <div class="text-xs text-ink-3 mb-3">深圳湾慈善基金会</div>
+                <div class="flex items-center justify-between">
+                  <div><span class="product-price">¥3,600</span><span class="text-xs text-ink-3"> / 年</span></div>
+                  <button class="btn btn-secondary btn-sm" onclick="toast('已加入购物车','success')">+ 加入</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 购买记录 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">购买记录 · HISTORY</span>
+            <h2 class="section-title">最近 6 单</h2>
+            <p class="section-subtitle">已完成 14 单 · 累计捐赠 1,820 元</p>
+          </div>
+          <div class="card">
+            <div class="order-row js-searchable" data-search="PR-2026-0089 跨境并购全流程陪跑 咨询包 核销中">
+              <div class="text-mono text-sm">PR-2026-0089</div>
+              <div class="flex-1">
+                <div class="fw-medium">跨境并购全流程陪跑</div>
+                <div class="text-xs text-ink-3">EMP 张明 团队 · 2026-08-22</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥68,000</div>
+              <div><span class="badge badge-warn">核销中</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+            <div class="order-row js-searchable" data-search="PR-2026-0082 白皮书 2026 研究报告">
+              <div class="text-mono text-sm">PR-2026-0082</div>
+              <div class="flex-1">
+                <div class="fw-medium">大湾区家族办公室白皮书 2026</div>
+                <div class="text-xs text-ink-3">深圳湾慈善基金会 · 2026-08-15</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥1,200</div>
+              <div><span class="badge badge-warn">核销中</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+            <div class="order-row js-searchable" data-search="PR-2026-0076 咨询包 季度 已核销">
+              <div class="text-mono text-sm">PR-2026-0076</div>
+              <div class="flex-1">
+                <div class="fw-medium">大湾区家族办公室 1.0 咨询包 · Q3 续费</div>
+                <div class="text-xs text-ink-3">2026-07-12 · 续费第 3 次</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥38,000</div>
+              <div><span class="badge badge-success">已核销</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+            <div class="order-row js-searchable" data-search="PR-2026-0061 慈善信托报告 公益">
+              <div class="text-mono text-sm">PR-2026-0061</div>
+              <div class="flex-1">
+                <div class="fw-medium">慈善信托年度报告 2026</div>
+                <div class="text-xs text-ink-3">清禾公益基金 · 2026-06-30</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥680</div>
+              <div><span class="badge badge-success">已核销</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+            <div class="order-row js-searchable" data-search="PR-2026-0049 山区助学 公益">
+              <div class="text-mono text-sm">PR-2026-0049</div>
+              <div class="flex-1">
+                <div class="fw-medium">山区助学 · 资助 3 个孩子 1 年</div>
+                <div class="text-xs text-ink-3">深圳湾慈善基金会 · 2026-05-15</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥10,800</div>
+              <div><span class="badge badge-success">已核销</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+            <div class="order-row js-searchable" data-search="PR-2026-0038 资产计算器 工具 SaaS">
+              <div class="text-mono text-sm">PR-2026-0038</div>
+              <div class="flex-1">
+                <div class="fw-medium">家族资产配置计算器 · 年费</div>
+                <div class="text-xs text-ink-3">4499 平台官方 · 2026-04-08</div>
+              </div>
+              <div class="text-sm fw-medium text-mono">¥2,800</div>
+              <div><span class="badge badge-success">已核销</span></div>
+              <div><button class="btn btn-ghost btn-sm">详情</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 核销中心 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">核销中心 · REDEEM</span>
+            <h2 class="section-title">2 个待核销</h2>
+            <p class="section-subtitle">订单完成后 7 天内自动核销 · 报告类可下载 · 课程类自动加入</p>
+          </div>
+          <div class="grid-2x">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-warn">待核销</span>
+                <span class="text-xs text-mono text-ink-3">PR-2026-0089</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">跨境并购全流程陪跑</div>
+              <div class="text-sm text-ink-2 mb-3">咨询包 · 首次交付 8/12 节 · 预计 2026-10 完成</div>
+              <div class="progress progress-sm mb-3"><div class="progress-bar" style="width: 67%;"></div></div>
+              <div class="text-xs text-ink-3 mb-3">下次交付 09-10 14:00</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-secondary btn-sm">查看进度</button>
+                <button class="btn btn-ghost btn-sm">联系 EMP</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-warn">待核销</span>
+                <span class="text-xs text-mono text-ink-3">PR-2026-0082</span>
+              </div>
+              <div class="text-md fw-semibold mb-1">大湾区家族办公室白皮书 2026</div>
+              <div class="text-sm text-ink-2 mb-3">研究报告 · 数字版 · 2026-09-01 08:00 自动核销</div>
+              <div class="progress progress-sm mb-3"><div class="progress-bar" style="width: 92%; background: var(--color-warn);"></div></div>
+              <div class="text-xs text-ink-3 mb-3">预计 3 天内 · 已通知出版方</div>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-primary btn-sm">立即查看</button>
+                <button class="btn btn-ghost btn-sm">下载样章</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 支付方式 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">支付与发票 · PAYMENT</span>
+            <h2 class="section-title">支持的支付方式</h2>
+            <p class="section-subtitle">所有支付通过 4499 平台代收 · 自动开具发票</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">企业网银</div>
+              <div class="text-md fw-semibold mb-2">公对公转账</div>
+              <div class="text-sm text-ink-2 mb-3">中农工建招 + 平安 · 2-4 小时到账</div>
+              <span class="badge badge-success badge-sm">推荐</span>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">个人支付</div>
+              <div class="text-md fw-semibold mb-2">微信 / 支付宝</div>
+              <div class="text-sm text-ink-2 mb-3">实时到账 · 1 万元以下免手续费</div>
+              <span class="badge badge-info badge-sm">小额</span>
+            </div>
+            <div class="card">
+              <div class="text-xs text-ink-3 mb-2 fw-medium">境外支付</div>
+              <div class="text-md fw-semibold mb-2">SWIFT / 信用卡</div>
+              <div class="text-sm text-ink-2 mb-3">支持 USD / HKD · 1-3 个工作日</div>
+              <span class="badge badge-trust badge-sm">跨境</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 建议 -->
+        <div class="section">
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-icon">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>AI 团队建议</span>
+            </div>
+            <div class="ai-suggestion-title">续费"大湾区家族办公室 1.0 咨询包"可享 9 折</div>
+            <div class="ai-suggestion-reason">您即将完成 1 年长期订阅（Q3 续费 + Q4 续费），按平台规则可享 9 折优惠（原价 ¥152,000 · 折后 ¥136,800 · 节省 ¥15,200）。同时 0.5% 自动捐赠将额外支持山区助学项目。</div>
+            <div class="ai-suggestion-actions">
+              <button class="btn btn-primary btn-sm">立即续费</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已设置到期前 7 天提醒','info')">稍后提醒</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: PRD-001 订单生命周期 + 退款/退换规则 -->
+        <div class="section">
+          <div class="section-head">
+            <span class="eyebrow">PRD-001 · 订单生命周期 + 退款/退换</span>
+            <h2 class="section-title">6 状态完整流转 + 7 天冷静期</h2>
+            <p class="section-subtitle">非货币 · 0.5% 自动捐赠 · 退款不影响信誉但需 AI 复盘</p>
+          </div>
+          <div class="card mb-4">
+            <div class="text-sm fw-semibold mb-3">6 状态订单生命周期</div>
+            <div class="product-order-flow">
+              <div class="product-order-node is-done">
+                <div class="product-order-num">S1</div>
+                <div class="product-order-name">选购</div>
+              </div>
+              <div class="product-order-arrow">→</div>
+              <div class="product-order-node is-done">
+                <div class="product-order-num">S2</div>
+                <div class="product-order-name">下单</div>
+              </div>
+              <div class="product-order-arrow">→</div>
+              <div class="product-order-node is-done">
+                <div class="product-order-num">S3</div>
+                <div class="product-order-name">支付</div>
+              </div>
+              <div class="product-order-arrow">→</div>
+              <div class="product-order-node is-current">
+                <div class="product-order-num">S4</div>
+                <div class="product-order-name">交付</div>
+              </div>
+              <div class="product-order-arrow">→</div>
+              <div class="product-order-node">
+                <div class="product-order-num">S5</div>
+                <div class="product-order-name">确认</div>
+              </div>
+              <div class="product-order-arrow">→</div>
+              <div class="product-order-node">
+                <div class="product-order-num">S6</div>
+                <div class="product-order-name">评价</div>
+              </div>
+            </div>
+            <div class="ai-feedback-warning mt-3">
+              <strong>BR-010 边界：</strong>产品订单只保存权威支付引用 + 快照 · 4499 <strong>不直接伪造支付或分账成功</strong> · 真实支付由 OpulnX / 银行 / 第三方支付完成。
+            </div>
+          </div>
+          <div class="card">
+            <div class="text-sm fw-semibold mb-3">退款 / 退换 规则</div>
+            <div class="grid-2x" style="gap: var(--space-3);">
+              <div>
+                <div class="text-sm fw-semibold mb-2">✓ 7 天冷静期</div>
+                <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">订单确认后 7 天内 · 无理由全额退款 · 不影响信誉 · 但 0.5% 公益捐赠不退回（已发生）</div>
+              </div>
+              <div>
+                <div class="text-sm fw-semibold mb-2">✓ 质量问题 30 天</div>
+                <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">产品有质量问题 30 天内 · 退换 + 邮费由商家承担 · 0.5% 公益捐赠同样不退回</div>
+              </div>
+              <div>
+                <div class="text-sm fw-semibold mb-2">⚠ 数字产品 / 课程</div>
+                <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">已学习 &gt; 30% 不可退 · 30% 以下按比例退 · 认证考试 1 次已用不可退</div>
+              </div>
+              <div>
+                <div class="text-sm fw-semibold mb-2">⚠ 服务订单</div>
+                <div class="text-xs text-ink-2" style="line-height: var(--leading-relaxed);">未开始：全额退 · 已开始 &lt; 50%：按比例退 · 已完成：不可退（服务已交付）</div>
+              </div>
+            </div>
+            <div class="ai-feedback-warning mt-3">
+              <strong>退款后 AI 复盘：</strong>每次退款都会触发 AI 复盘 · 收集退款原因（质量问题 / 描述不符 / 冲动消费 / 其他）· 用于优化产品描述 + 推荐算法 · 不会影响您的信誉评分。
+            </div>
+          </div>
+        </div>
+
+      </div>
+</main>
+  </div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

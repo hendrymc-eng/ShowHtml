@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人商业画像 · 4499</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <style>
+    .profile-hero { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-6); display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-6); align-items: center; }
+    @media (max-width: 768px) { .profile-hero { grid-template-columns: 1fr; } }
+    .dim-bar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; }
+    .dim-bar + .dim-bar { border-top: 1px solid var(--color-line); }
+    .dim-name { font-size: var(--text-sm); color: var(--color-ink-2); width: 120px; flex-shrink: 0; }
+    .dim-bar-track { flex: 1; }
+    .dim-score { font-family: var(--font-mono); font-weight: var(--weight-semibold); font-size: var(--text-md); color: var(--color-ink); width: 40px; text-align: right; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-item { display: flex; gap: var(--space-3); padding-bottom: var(--space-4); position: relative; }
+    .timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 7px; top: 18px; bottom: 0; width: 1px; background: var(--color-line); }
+    .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--color-surface); border: 2px solid var(--color-accent); flex-shrink: 0; margin-top: 4px; }
+    .timeline-item-done .timeline-dot { background: var(--color-accent); }
+    .timeline-item-current .timeline-dot { background: var(--color-warn); border-color: var(--color-warn); }
+    .timeline-title { font-size: var(--text-md); color: var(--color-ink); }
+    .timeline-meta { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+
+    /* 联系记录 5 项必填 (PRD CRM-006) */
+    .contact-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-3); }
+    .contact-form-field { display: flex; flex-direction: column; gap: 4px; }
+    .contact-form-label { font-size: var(--text-xs); color: var(--color-ink-3); font-weight: var(--weight-medium); }
+    .contact-form-label .req { color: var(--color-danger); }
+    .contact-form-input, .contact-form-select, .contact-form-textarea {
+      padding: 8px 10px; border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+      font-size: var(--text-sm); background: var(--color-surface); color: var(--color-ink);
+      font-family: inherit;
+    }
+    .contact-form-textarea { min-height: 60px; resize: vertical; }
+
+    /* 联系方式审计提示 (PRD CRM-010 / §3.4) */
+    .export-watermark-notice {
+      padding: var(--space-3); background: var(--color-warn-soft);
+      border: 1px solid var(--color-warn-soft); border-radius: var(--radius-sm);
+      font-size: var(--text-xs); color: var(--color-ink-2);
+    }
+    .export-watermark-notice strong { color: var(--color-ink); }
+    .audit-log-entry { display: grid; grid-template-columns: 140px 1fr 1fr; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line); font-size: var(--text-xs); }
+    .audit-log-entry:last-child { border-bottom: none; }
+    .audit-log-time { font-family: var(--font-mono); color: var(--color-ink-3); }
+    .audit-log-actor { color: var(--color-ink); font-weight: var(--weight-medium); }
+    .audit-log-action { color: var(--color-ink-2); }
+
+    /* 字段来源标签 (PRD PRO-003) */
+    .field-source { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-medium); margin-left: 4px; vertical-align: middle; }
+    .field-source-self { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .field-source-platform { background: var(--color-info-soft); color: var(--color-info); }
+    .field-source-verified { background: var(--color-success-soft); color: var(--color-success); }
+    .field-source-ai { background: var(--color-accent-soft); color: var(--color-accent); }
+    .field-verified-badge { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: var(--color-success-soft); color: var(--color-success); border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-semibold); margin-left: 4px; vertical-align: middle; }
+    .field-unverified-badge { display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: var(--color-surface-2); color: var(--color-ink-3); border: 1px dashed var(--color-line-2); border-radius: var(--radius-xs); font-size: 10px; font-weight: var(--weight-medium); margin-left: 4px; vertical-align: middle; }
+
+    /* 版本历史 (PRD PRO-006) */
+    .version-timeline { display: flex; flex-direction: column; gap: var(--space-2); }
+    .version-item { display: grid; grid-template-columns: 100px 1fr 180px; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line); font-size: var(--text-sm); }
+    .version-item:last-child { border-bottom: none; }
+    .version-time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-3); }
+    .version-changes { color: var(--color-ink-2); }
+    .version-diff { font-size: var(--text-xs); color: var(--color-ink-3); margin-top: 2px; }
+    .version-diff .old { background: var(--color-danger-soft); color: var(--color-danger); padding: 1px 4px; border-radius: 2px; text-decoration: line-through; }
+    .version-diff .new { background: var(--color-success-soft); color: var(--color-success); padding: 1px 4px; border-radius: 2px; }
+
+    /* 字段来源图例 */
+    .field-source-legend { display: flex; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-2) var(--space-3); background: var(--color-surface-2); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-ink-3); }
+    .field-source-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+
+    /* Hallmark · component: service-records + ai-match · genre: modern-minimal · theme: Cobalt (design.md v1.0)
+     * states: default · hover · focus-within
+     * contrast: pass
+     * redesign 2026-08-08: timeline + match-card (replaces emoji-heavy field-row × 5) */
+
+    /* 服务记录 — 摘要条 */
+    .svc-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); overflow: hidden; }
+    .svc-summary-cell { padding: var(--space-5) var(--space-6); border-right: 1px solid var(--color-line); }
+    .svc-summary-cell:last-child { border-right: none; }
+    .svc-summary-label { font-size: var(--text-xs); color: var(--color-ink-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-2); font-weight: var(--weight-medium); }
+    .svc-summary-value { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-semibold); color: var(--color-ink); line-height: 1.1; letter-spacing: -0.02em; }
+    .svc-summary-unit { font-family: var(--font-body); font-size: var(--text-md); color: var(--color-ink-3); margin-left: var(--space-1); font-weight: var(--weight-regular); letter-spacing: 0; }
+
+    /* 服务记录 — timeline (替换重复 field-row × 5) */
+    .svc-timeline { display: flex; flex-direction: column; }
+    .svc-timeline-item { display: grid; grid-template-columns: 20px 90px 1fr 90px 110px; gap: var(--space-4); align-items: center; padding: var(--space-4) 0; border-bottom: 1px solid var(--color-line); position: relative; transition: background 150ms ease; }
+    .svc-timeline-item:last-child { border-bottom: none; }
+    .svc-timeline-item::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 1px; background: var(--color-line); }
+    .svc-timeline-item:first-child::before { top: calc(var(--space-4) + 7px); }
+    .svc-timeline-item:last-child::before { bottom: calc(50% + 7px); }
+    .svc-timeline-item:hover { background: var(--color-surface-2); }
+    .svc-timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--color-surface); border: 2px solid var(--color-accent); flex-shrink: 0; position: relative; z-index: 1; }
+    .svc-timeline-item.is-done .svc-timeline-dot { background: var(--color-accent); }
+    .svc-timeline-item.is-pending .svc-timeline-dot { background: var(--color-surface); border-color: var(--color-warn); }
+    .svc-timeline-date { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-3); }
+    .svc-timeline-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .svc-timeline-title { font-size: var(--text-md); color: var(--color-ink); font-weight: var(--weight-medium); }
+    .svc-timeline-meta { font-size: var(--text-xs); color: var(--color-ink-3); }
+    .svc-timeline-amount { font-family: var(--font-mono); font-size: var(--text-md); color: var(--color-ink); font-weight: var(--weight-semibold); text-align: right; }
+    .svc-timeline-amount.is-zero { color: var(--color-ink-3); font-weight: var(--weight-regular); }
+
+    /* AI 合作机会 — 摘要条 (替代 ai-suggestion banner) */
+    .match-summary { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--color-accent-soft); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
+    .match-summary-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--color-accent); color: var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .match-summary-body { flex: 1; }
+    .match-summary-text { font-size: var(--text-sm); color: var(--color-ink); line-height: 1.5; }
+    .match-summary-text strong { color: var(--color-accent); font-weight: var(--weight-semibold); }
+
+    /* AI 合作机会 — match-card (替代重复 field-row × 5 + emoji 装饰) */
+    .match-card { display: grid; grid-template-columns: 36px 1fr 180px; gap: var(--space-5); padding: var(--space-5) var(--space-6); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); margin-bottom: var(--space-3); position: relative; transition: border-color 200ms ease, transform 200ms ease; }
+    .match-card:last-child { margin-bottom: 0; }
+    .match-card:hover, .match-card:focus-within { border-color: var(--color-accent); transform: translateY(-1px); }
+    .match-card-rank { font-family: var(--font-mono); font-size: var(--text-xl); color: var(--color-ink-3); font-weight: var(--weight-regular); line-height: 1.2; padding-top: 2px; }
+    .match-card-body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+    .match-card-head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .match-card-name { font-size: var(--text-md); color: var(--color-ink); font-weight: var(--weight-semibold); }
+    .match-card-tag { display: inline-flex; align-items: center; padding: 1px 8px; font-size: var(--text-xs); background: var(--color-surface-2); color: var(--color-ink-2); border-radius: var(--radius-pill); font-weight: var(--weight-medium); }
+    .match-card-desc { font-size: var(--text-sm); color: var(--color-ink-2); line-height: 1.5; }
+    .match-card-meta { display: flex; gap: var(--space-4); flex-wrap: wrap; font-size: var(--text-xs); color: var(--color-ink-3); }
+    .match-card-meta-item { display: inline-flex; align-items: center; gap: 4px; }
+    .match-card-meta-item strong { font-family: var(--font-mono); color: var(--color-ink-2); font-weight: var(--weight-semibold); }
+    .match-card-bar { display: flex; align-items: center; gap: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
+    .match-card-bar-label { font-size: var(--text-xs); color: var(--color-ink-3); width: 56px; flex-shrink: 0; }
+    .match-card-bar-track { flex: 1; height: 4px; background: var(--color-surface-2); border-radius: 2px; overflow: hidden; }
+    .match-card-bar-fill { height: 100%; background: var(--color-accent); border-radius: 2px; }
+    .match-card.is-urgent .match-card-bar-fill { background: var(--color-danger); }
+    .match-card.is-warn .match-card-bar-fill { background: var(--color-warn); }
+    .match-card-bar-value { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink); font-weight: var(--weight-semibold); width: 28px; text-align: right; }
+    .match-card-actions { display: flex; flex-direction: column; gap: var(--space-2); align-items: stretch; }
+
+    /* :focus-visible 强调 */
+    .match-card a:focus-visible, .match-card button:focus-visible, .svc-timeline-item a:focus-visible, .svc-timeline-item button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: var(--radius-xs); }
+
+    /* 响应式 (hallmark gate 32-37) */
+    @media (max-width: 900px) {
+      .svc-summary { grid-template-columns: 1fr; }
+      .svc-summary-cell { border-right: none; border-bottom: 1px solid var(--color-line); }
+      .svc-summary-cell:last-child { border-bottom: none; }
+      .svc-timeline-item { grid-template-columns: 20px 1fr; gap: var(--space-2) var(--space-3); }
+      .svc-timeline-date, .svc-timeline-amount { display: none; }
+      .match-card { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-4); }
+      .match-card-actions { flex-direction: row; }
+    }
+  
+    .subject-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-accent-soft); border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-accent); cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-out); position: relative; }
+    .subject-chip:hover { background: var(--color-accent); }
+    .subject-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .subject-chip[data-subject="user"] { background: var(--color-surface-2); border-color: var(--color-line); color: var(--color-ink-2); }
+    .subject-chip[data-subject="enterprise"] { background: var(--color-info-soft); border-color: var(--color-info); color: var(--color-info); }
+    .subject-chip[data-subject="organization"] { background: var(--color-warn-soft); border-color: var(--color-warn-2); color: var(--color-warn-2); }
+    .subject-menu { position: absolute; top: calc(100% + 4px); right: 0; min-width: 140px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: 4px; box-shadow: var(--shadow-md); z-index: 100; }
+    .subject-menu-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: var(--text-xs); color: var(--color-ink-2); border-radius: var(--radius-sm); cursor: pointer; }
+    .subject-menu-item:hover { background: var(--color-surface); color: var(--color-ink); }
+    .subject-menu-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-2); }
+    .subject-menu-item[data-subject="user"] .subject-menu-dot { background: var(--color-ink-3); }
+    .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
+    .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
+    .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+    </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="workbench-recommender.html" class="topbar-brand" style="text-decoration:none;">
+      <div class="topbar-brand-mark">4</div>
+      <span>4499</span>
+    </a>
+    <div class="topbar-search"><input type="text" class="input js-row-search" data-target-rows=".timeline-item" placeholder="搜索会员、客户、专家、活动…" /></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" aria-label="通知"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a5 5 0 0110 0v3l1.5 2.5h-13L4 10V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 15.5a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="subject-chip" id="jsSubjectChip" data-subject="member" title="点击切换主体上下文" onclick="toggleSubjectMenu(event)" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <span class="subject-chip-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+        <span class="subject-chip-label" id="jsSubjectLabel">个人会员</span>
+        <span class="subject-chip-dot"></span>
+        <svg class="subject-chip-caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="subject-menu" id="jsSubjectMenu" hidden>
+          <div class="subject-menu-item" data-subject="user" onclick="switchSubject('user')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 10a4 4 0 018 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>普通参与者
+          </div>
+          <div class="subject-menu-item" data-subject="member" onclick="switchSubject('member')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 2v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5V3l4-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>个人会员
+          </div>
+          <div class="subject-menu-item" data-subject="enterprise" onclick="switchSubject('enterprise')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><rect x="2" y="2.5" width="8" height="7" rx="0.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>企业经营
+          </div>
+          <div class="subject-menu-item" data-subject="organization" onclick="switchSubject('organization')" tabindex="0" role="menuitem">
+            <span class="subject-menu-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l4 1.5v3c0 2.5-1.5 4.5-4 5-2.5-.5-4-2.5-4-5v-3L6 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4.5 6l1 1 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>组织运营
+          </div>
+        </div>
+      </div>
+      
+      </div>
+      <div class="avatar avatar-md avatar-role-recommender">陈</div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="appSidebar">
+      <!-- 由 js/app.js renderSidebar() 注入 (4 主体切换) -->
+    </aside>
+
+    <main class="app-main">
+
+        <div class="app-content">        
+        <!-- ========== 面包屑 ========== -->
+        <div class="breadcrumb">
+          <a href="workbench-recommender.html">我的工作台</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="business-profile-enterprise.html">商业画像</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>个人</span>
+        </div>
+
+        <!-- ========== Page Head ========== -->
+        <div class="page-head">
+          <h1 class="page-title">个人商业画像</h1>
+          <p class="page-subtitle">陈志远 · 推荐人 / 跨境投资顾问 · 6 年累计推荐 312 人 · 累计签约客户 64 位</p>
+          <div class="page-actions">
+            <a href="pro-support-apply.html" class="btn btn-secondary">申请专业支持</a>
+            <button class="btn btn-secondary" onclick="toast('档案导出已加入导出队列','info')">导出档案</button>
+            <a href="profile-edit.html" class="btn btn-primary">编辑画像</a>
+          </div>
+        </div>
+
+        <!-- ========== 人物主卡 ========== -->
+        <div class="card card-pad-lg mb-4">
+          <div class="card-header">
+            <div class="flex items-center gap-4">
+              <div class="avatar avatar-xl avatar-role-recommender">陈</div>
+              <div>
+                <div class="card-title">陈志远</div>
+                <div class="card-subtitle">P-2020-0114 · 1986-04-22 · 男 · 中国国籍 · 广东深圳 · 6 年从业</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="kpi-label">PB 信誉值</div>
+              <div class="kpi-value" style="color: var(--color-trust);">94</div>
+              <div class="kpi-delta kpi-delta-up">↑ 本季 +5</div>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="badge badge-accent">推荐人</span>
+            <span class="badge badge-success">EMP 认证</span>
+            <span class="badge badge-info">跨境投资</span>
+            <span class="badge badge-trust">4499 优选</span>
+            <span class="badge badge-outline">推荐人</span>
+            <span class="badge badge-outline">跨境投资顾问</span>
+            <span class="badge badge-outline">企业成长顾问</span>
+            <span class="badge badge-outline">公益参与者</span>
+          </div>
+        </div>
+
+        <div class="grid-4x gap-3 mb-6">
+          <div class="kpi-card">
+            <div class="kpi-label">累计推荐</div>
+            <div class="kpi-value">312<span class="kpi-value-unit">人</span></div>
+            <div class="kpi-delta text-ink-3">6 年</div>
+            <div class="kpi-meta">L1 86 · L2 142 · L3 68 · L4 16</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">签约客户</div>
+            <div class="kpi-value" style="color: var(--color-accent);">64</div>
+            <div class="kpi-delta kpi-delta-up">↗ +8 本季</div>
+            <div class="kpi-meta">POIF 19 · AI 16 · 企业 14 · RWA 15</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">行业资源</div>
+            <div class="kpi-value">86</div>
+            <div class="kpi-delta text-ink-3">律师 / 税务 / 私行</div>
+            <div class="kpi-meta">律师 28 · 税务 22 · 私行 36</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">客户续约率</div>
+            <div class="kpi-value" style="color: var(--color-success);">91<span class="kpi-value-unit">%</span></div>
+            <div class="kpi-delta kpi-delta-up">↗ 高于平台均值 18%</div>
+            <div class="kpi-meta">高净值 94% · 跨境 88%</div>
+          </div>
+        </div>
+
+        <!-- ========== Section: 专业背景 + 资质 (PRO-001) ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">专业身份 · PRO-001</span>
+            <h2 class="section-title">专业背景 + 资质</h2>
+            <p class="section-subtitle">从业年限 / 专业认证 / 行业经验 · 全部经第三方核验</p>
+          </div>
+          <div class="grid-3x">
+            <div class="card card-pad-sm">
+              <div class="kpi-label">从业年限</div>
+              <div class="text-md fw-medium">6 年 <span class="field-source-verified">verified</span></div>
+              <div class="text-xs text-ink-3 mt-1">2020-03 起 · 推荐人</div>
+            </div>
+            <div class="card card-pad-sm">
+              <div class="kpi-label">专业认证</div>
+              <div class="text-md fw-medium">EMP 认证 · CFA L3 <span class="field-source-verified">verified</span></div>
+              <div class="text-xs text-ink-3 mt-1">EMP 2022 / CFA 2023</div>
+            </div>
+            <div class="card card-pad-sm">
+              <div class="kpi-label">行业经验</div>
+              <div class="text-md fw-medium">跨境投资 · 品牌出海 <span class="field-source-self">self</span></div>
+              <div class="text-xs text-ink-3 mt-1">3 个赛道</div>
+            </div>
+            <div class="card card-pad-sm">
+              <div class="kpi-label">学历背景</div>
+              <div class="text-md fw-medium">中欧国际工商学院 EMBA <span class="field-source-verified">verified</span></div>
+              <div class="text-xs text-ink-3 mt-1">学信网可查</div>
+            </div>
+            <div class="card card-pad-sm">
+              <div class="kpi-label">专业特长</div>
+              <div class="text-md fw-medium">跨境并购 / 家族传承 <span class="field-source-self">self</span></div>
+              <div class="text-xs text-ink-3 mt-1">3 个专长标签</div>
+            </div>
+            <div class="card card-pad-sm">
+              <div class="kpi-label">可服务范围</div>
+              <div class="text-md fw-medium">大湾区 + 长三角 + 东南亚 <span class="field-source-self">self</span></div>
+              <div class="text-xs text-ink-3 mt-1">3 个区域</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section: 服务记录 + 业务表现 (PRO-002) ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">服务记录 · PRO-002</span>
+            <h2 class="section-title">服务记录 + 业务表现</h2>
+            <p class="section-subtitle">推荐人 / 客户 / 项目 / 收入 4 维度 · 含本季对比上月</p>
+          </div>
+          <div class="grid-2x2 mb-4">
+            <div class="kpi-card">
+              <div class="kpi-label">累计推荐人</div>
+              <div class="kpi-value">312</div>
+              <div class="kpi-delta kpi-delta-up">+12 本月</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">服务客户</div>
+              <div class="kpi-value" style="color: var(--color-accent);">64</div>
+              <div class="kpi-delta kpi-delta-up">+3 本月</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">主导项目</div>
+              <div class="kpi-value">18</div>
+              <div class="kpi-delta text-ink-3">本季 4 个进行中</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">业务收入</div>
+              <div class="kpi-value" style="color: var(--color-success);">¥286 万</div>
+              <div class="kpi-delta kpi-delta-up">+22% YoY</div>
+            </div>
+          </div>
+          <div class="svc-summary mb-4">
+            <div class="svc-summary-cell">
+              <div class="svc-summary-label">已记录</div>
+              <div class="svc-summary-value">5<span class="svc-summary-unit">条</span></div>
+            </div>
+            <div class="svc-summary-cell">
+              <div class="svc-summary-label">累计金额</div>
+              <div class="svc-summary-value">¥ 28.4<span class="svc-summary-unit">万</span></div>
+            </div>
+            <div class="svc-summary-cell">
+              <div class="svc-summary-label">平均单值</div>
+              <div class="svc-summary-value">¥ 5.7<span class="svc-summary-unit">万</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">最近服务记录</div>
+                <div class="card-subtitle">5 条 · 按时间倒序 · 2026-06 ~ 2026-08</div>
+              </div>
+              <a href="crm-list.html" class="btn btn-ghost btn-sm">查看全部 →</a>
+            </div>
+            <div class="card-divider"></div>
+            <div class="svc-timeline">
+              <div class="svc-timeline-item is-done">
+                <div class="svc-timeline-dot"></div>
+                <div class="svc-timeline-date">2026-08-02</div>
+                <div class="svc-timeline-main">
+                  <div class="svc-timeline-title">林秀华 · 高级会员续费 + 企业诊断</div>
+                  <div class="svc-timeline-meta">签约金额 · 推荐人抽成 18%</div>
+                </div>
+                <span class="badge badge-success">已签约</span>
+                <div class="svc-timeline-amount">¥ 48,000</div>
+              </div>
+              <div class="svc-timeline-item is-done">
+                <div class="svc-timeline-dot"></div>
+                <div class="svc-timeline-date">2026-07-25</div>
+                <div class="svc-timeline-main">
+                  <div class="svc-timeline-title">王明远 · 企业会员升级（标准 → 高级）</div>
+                  <div class="svc-timeline-meta">签约金额 · 推荐人抽成 15%</div>
+                </div>
+                <span class="badge badge-success">已签约</span>
+                <div class="svc-timeline-amount">¥ 68,000</div>
+              </div>
+              <div class="svc-timeline-item is-done">
+                <div class="svc-timeline-dot"></div>
+                <div class="svc-timeline-date">2026-07-10</div>
+                <div class="svc-timeline-main">
+                  <div class="svc-timeline-title">周慧敏 · 健康排毒营 V5.0 完课回访</div>
+                  <div class="svc-timeline-meta">课后回访 · 已推荐 EMP 进阶课程</div>
+                </div>
+                <span class="badge badge-accent">已回访</span>
+                <div class="svc-timeline-amount is-zero">—</div>
+              </div>
+              <div class="svc-timeline-item is-pending">
+                <div class="svc-timeline-dot"></div>
+                <div class="svc-timeline-date">2026-06-28</div>
+                <div class="svc-timeline-main">
+                  <div class="svc-timeline-title">徐丽 · 企业服务定价页咨询</div>
+                  <div class="svc-timeline-meta">已发送企业服务方案 · 跟进中</div>
+                </div>
+                <span class="badge badge-warn">跟进中</span>
+                <div class="svc-timeline-amount is-zero">—</div>
+              </div>
+              <div class="svc-timeline-item is-done">
+                <div class="svc-timeline-dot"></div>
+                <div class="svc-timeline-date">2026-06-12</div>
+                <div class="svc-timeline-main">
+                  <div class="svc-timeline-title">跨境并购项目 P-2024-082 · 主导方</div>
+                  <div class="svc-timeline-meta">项目规模 ¥ 3,200 万 · 顾问费</div>
+                </div>
+                <span class="badge badge-info">已完成</span>
+                <div class="svc-timeline-amount">¥ 860,000</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== Section: 合作机会 · AI 匹配 ========== -->
+        <section class="section">
+          <div class="section-head">
+            <span class="eyebrow">合作机会 · AI 匹配</span>
+            <h2 class="section-title">基于画像的 AI 推荐</h2>
+            <p class="section-subtitle">匹配您的专业特长 / 资源池 / 业务方向的 5 个高匹配机会</p>
+          </div>
+          <div class="match-summary">
+            <div class="match-summary-icon">
+              <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="match-summary-body">
+              <div class="match-summary-text"><strong>5 个高匹配机会</strong> · 3 个紧急（7 天内启动）· 匹配您的"大湾区 + 跨境投资 + 1,000 万+"画像</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="toast('已加入资源中心','info')">稍后处理</button>
+          </div>
+          <div class="match-card is-urgent">
+            <div class="match-card-rank">01</div>
+            <div class="match-card-body">
+              <div class="match-card-head">
+                <div class="avatar avatar-md" style="background: var(--color-accent-soft); color: var(--color-accent);">环</div>
+                <div class="match-card-name">环太资本</div>
+                <span class="match-card-tag">跨境并购</span>
+                <span class="badge badge-danger" style="background:var(--color-danger-soft);color:var(--color-danger);">紧急</span>
+              </div>
+              <div class="match-card-desc">东南亚医疗器械并购 · 规模 ¥ 8,500 万 · 顾问费预算 6-8%</div>
+              <div class="match-card-meta">
+                <span class="match-card-meta-item">项目 <strong>P-2026-091</strong></span>
+                <span class="match-card-meta-item">地区 <strong>东南亚 · 大湾区</strong></span>
+                <span class="match-card-meta-item">窗口 <strong>7 天</strong></span>
+              </div>
+              <div class="match-card-bar">
+                <div class="match-card-bar-label">匹配度</div>
+                <div class="match-card-bar-track"><div class="match-card-bar-fill" style="width: 92%;"></div></div>
+                <div class="match-card-bar-value">92</div>
+              </div>
+            </div>
+            <div class="match-card-actions">
+              <a href="project-detail.html" class="btn btn-primary btn-sm">查看项目</a>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已标记关注','info')">标记关注</button>
+            </div>
+          </div>
+          <div class="match-card is-urgent">
+            <div class="match-card-rank">02</div>
+            <div class="match-card-body">
+              <div class="match-card-head">
+                <div class="avatar avatar-md avatar-role-recommender">王</div>
+                <div class="match-card-name">王明远</div>
+                <span class="match-card-tag">企业诊断</span>
+                <span class="badge badge-danger" style="background:var(--color-danger-soft);color:var(--color-danger);">紧急</span>
+              </div>
+              <div class="match-card-desc">企业会员王明远提交诊断申请 · 3 天前 · 等待您审批启动 · AI 顾问张明可接单</div>
+              <div class="match-card-meta">
+                <span class="match-card-meta-item">来源 <strong>企业会员</strong></span>
+                <span class="match-card-meta-item">订单 <strong>¥ 36,000</strong></span>
+                <span class="match-card-meta-item">建议 <strong>审批 + 介绍顾问</strong></span>
+              </div>
+              <div class="match-card-bar">
+                <div class="match-card-bar-label">匹配度</div>
+                <div class="match-card-bar-track"><div class="match-card-bar-fill" style="width: 88%;"></div></div>
+                <div class="match-card-bar-value">88</div>
+              </div>
+            </div>
+            <div class="match-card-actions">
+              <a href="pro-support-apply.html" class="btn btn-primary btn-sm">查看申请</a>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已转交张明顾问','info')">转交顾问</button>
+            </div>
+          </div>
+          <div class="match-card is-warn">
+            <div class="match-card-rank">03</div>
+            <div class="match-card-body">
+              <div class="match-card-head">
+                <div class="avatar avatar-md avatar-role-consultant">林</div>
+                <div class="match-card-name">林秀华家族办公室</div>
+                <span class="match-card-tag">家族传承</span>
+                <span class="badge badge-warn">高</span>
+              </div>
+              <div class="match-card-desc">希望您引荐保险 + 私行服务 · 估算规模 ¥ 5,000 万 · 您的"家族传承"专长完美匹配</div>
+              <div class="match-card-meta">
+                <span class="match-card-meta-item">地区 <strong>深圳 · 上海</strong></span>
+                <span class="match-card-meta-item">引荐抽成 <strong>12%</strong></span>
+                <span class="match-card-meta-item">建议 <strong>3 位保险 + 1 位私行</strong></span>
+              </div>
+              <div class="match-card-bar">
+                <div class="match-card-bar-label">匹配度</div>
+                <div class="match-card-bar-track"><div class="match-card-bar-fill" style="width: 86%;"></div></div>
+                <div class="match-card-bar-value">86</div>
+              </div>
+            </div>
+            <div class="match-card-actions">
+              <button class="btn btn-primary btn-sm" onclick="toast('引荐已发起','success')">立即引荐</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入跟进','info')">稍后处理</button>
+            </div>
+          </div>
+          <div class="match-card is-urgent">
+            <div class="match-card-rank">04</div>
+            <div class="match-card-body">
+              <div class="match-card-head">
+                <div class="avatar avatar-md" style="background: var(--color-warn-soft); color: var(--color-warn-2);">张</div>
+                <div class="match-card-name">张伟杰</div>
+                <span class="match-card-tag">流失唤醒</span>
+                <span class="badge badge-danger" style="background:var(--color-danger-soft);color:var(--color-danger);">紧急</span>
+              </div>
+              <div class="match-card-desc">90 天免费会员 · 28 天未联系 · 流失风险分 86（高危）· 您是其推荐人</div>
+              <div class="match-card-meta">
+                <span class="match-card-meta-item">风险分 <strong>86 / 100</strong></span>
+                <span class="match-card-meta-item">上次联系 <strong>28 天前</strong></span>
+                <span class="match-card-meta-item">建议 <strong>48h 内电话</strong></span>
+              </div>
+              <div class="match-card-bar">
+                <div class="match-card-bar-label">匹配度</div>
+                <div class="match-card-bar-track"><div class="match-card-bar-fill" style="width: 84%;"></div></div>
+                <div class="match-card-bar-value">84</div>
+              </div>
+            </div>
+            <div class="match-card-actions">
+              <a href="crm-detail.html" class="btn btn-primary btn-sm">立即联系</a>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已发送体验课','info')">发体验课</button>
+            </div>
+          </div>
+          <div class="match-card is-warn">
+            <div class="match-card-rank">05</div>
+            <div class="match-card-body">
+              <div class="match-card-head">
+                <div class="avatar avatar-md" style="background: var(--color-success-soft); color: var(--color-success);">周</div>
+                <div class="match-card-name">周慧敏</div>
+                <span class="match-card-tag">EMP 进阶</span>
+                <span class="badge badge-warn">高</span>
+              </div>
+              <div class="match-card-desc">3 天前完成《健康排毒营 V5.0》 · 评分 5/5 · 您是推荐人 · 完课回访窗口期</div>
+              <div class="match-card-meta">
+                <span class="match-card-meta-item">课程评分 <strong>5/5</strong></span>
+                <span class="match-card-meta-item">抽成 <strong>18%</strong></span>
+                <span class="match-card-meta-item">建议 <strong>回访 + 推荐</strong></span>
+              </div>
+              <div class="match-card-bar">
+                <div class="match-card-bar-label">匹配度</div>
+                <div class="match-card-bar-track"><div class="match-card-bar-fill" style="width: 81%;"></div></div>
+                <div class="match-card-bar-value">81</div>
+              </div>
+            </div>
+            <div class="match-card-actions">
+              <button class="btn btn-primary btn-sm" onclick="toast('回访任务已创建','success')">发起回访</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('已加入本周计划','info')">加入计划</button>
+            </div>
+          </div>
+        </section>
+            </div>
+    </main>
+  </div>
+
+<script src="../js/sidebar-config.js"></script>
+  <script src="../js/app.js"></script>
+<script>
+  // 主体切换菜单
+  function toggleSubjectMenu(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('jsSubjectMenu');
+    if (!menu) return;
+    menu.hidden = !menu.hidden;
+  }
+  function switchSubject(t) {
+    try { localStorage.setItem('mvs_subject_type', t); } catch (e) {}
+    // 触发自定义事件, 让 app.js 监听并重渲染 sidebar (不刷新页面)
+    window.dispatchEvent(new CustomEvent('mvs:subject-changed'));
+    // 关闭菜单
+    var menu = document.getElementById('jsSubjectMenu');
+    if (menu) menu.hidden = true;
+    // toast 提示
+    if (typeof toast === 'function') {
+      var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+      toast('已切换到「' + (labels[t] || t) + '」', 'success');
+    }
+  }
+  // 初始化 chip (根据 localStorage)
+  (function () {
+    var cur = 'member';
+    try { cur = localStorage.getItem('mvs_subject_type') || 'member'; } catch (e) {}
+    var labels = { user: '普通参与者', member: '个人会员', enterprise: '企业经营', organization: '组织运营' };
+    var chip = document.getElementById('jsSubjectChip');
+    var lbl = document.getElementById('jsSubjectLabel');
+    if (chip) chip.setAttribute('data-subject', cur);
+    if (lbl) lbl.textContent = labels[cur] || '个人会员';
+    // 点击外部关闭菜单
+    document.addEventListener('click', function () {
+      var menu = document.getElementById('jsSubjectMenu');
+      if (menu) menu.hidden = true;
+    });
+  })();
+  </script>
+  </body>
+</html>

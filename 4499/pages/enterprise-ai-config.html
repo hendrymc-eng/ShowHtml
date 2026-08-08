@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>企业 AI 配置 · 4499</title>
+  <meta name="description" content="多租户隔离的企业 AI 配置表（企业基础 / 业务产品 / 客户画像 / 营销配置 / 客服配置 / 合规边界）" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
+  <link rel="stylesheet" href="../css/components.css"?v=2 />
+  <link rel="stylesheet" href="../css/utilities.css" />
+  <style>
+    body { background: var(--color-paper); }
+    .config-shell { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
+    .config-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+    .config-section-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .config-section-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--color-accent-soft); color: var(--color-accent);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: var(--text-sm); font-weight: var(--weight-semibold);
+      flex-shrink: 0;
+    }
+    .config-section-title { font-size: var(--text-md); font-weight: var(--weight-semibold); color: var(--color-ink); margin: 0; }
+    .config-section-required { font-size: var(--text-xs); color: var(--color-ink-3); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+    .form-grid-full { grid-column: 1 / -1; }
+    .tag-input {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 6px;
+      border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+      min-height: 36px; background: var(--color-paper);
+    }
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--color-accent-soft); color: var(--color-accent);
+      padding: 2px 8px; border-radius: var(--radius-pill);
+      font-size: var(--text-xs);
+    }
+    .blocked-word-input { display: flex; gap: 4px; flex-wrap: wrap; padding: 6px; border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+    .blocked-word-chip {
+      background: var(--color-danger-soft); color: var(--color-danger-2);
+      padding: 2px 8px; border-radius: var(--radius-pill);
+      font-size: var(--text-xs); display: inline-flex; align-items: center; gap: 4px;
+    }
+    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+  
+    .tools-nav { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); }
+    .tools-nav-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+    .tools-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+    .tools-nav-card { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-paper); text-decoration: none; color: inherit; transition: all 200ms ease; }
+    .tools-nav-card:hover { border-color: var(--color-line-2); transform: translateY(-1px); }
+    .tools-nav-card.is-current { border-color: var(--color-accent); }
+    .tools-nav-icon { width: 18px; height: 18px; color: var(--color-accent); flex-shrink: 0; margin-top: 2px; }
+    .tools-nav-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-ink); }
+    .tools-nav-desc { font-size: var(--text-xs); color: var(--color-ink-3); line-height: 1.4; margin-top: 2px; }
+    .tools-nav-badge { display: inline-block; font-size: 10px; color: var(--color-ink-4); margin-top: 4px; }
+    @media (max-width: 1024px) { .tools-nav-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .tools-nav-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+
+  <div class="config-shell">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-5" style="flex-wrap: wrap; gap: var(--space-3);">
+      <div>
+        <div class="text-xs text-ink-3 mb-1">UMAX / 4499 / 多租户配置</div>
+        <h1 style="font-size: var(--text-2xl); margin: 0 0 4px;">企业 AI 配置</h1>
+        <a href="workbench-recommender.html" class="btn btn-ghost btn-sm" style="margin-top: var(--space-3); display: inline-block;">← 返回工作台</a>
+        <p class="text-sm text-ink-2" style="margin: 0;">配置驱动 · 多租户隔离 · 同一测试问题在不同企业空间返回不同配置内容</p>
+      </div>
+      <div class="flex gap-2">
+        <span class="badge badge-warn">配置未完成 · 6 / 6 待提交</span>
+        <a href="ai-marketing.html" class="btn btn-secondary btn-sm">预览营销输出</a>
+        <button class="btn btn-primary btn-sm">保存并发布</button>
+      </div>
+    </div>
+
+    <!-- 工具导航 -->
+    <div class="tools-nav">
+      <div class="tools-nav-head">
+        <div>
+          <span class="eyebrow">快速跳转</span>
+          <div class="text-sm fw-semibold">5 个新增管理工具</div>
+        </div>
+        <a href="workbench-recommender.html" class="text-xs text-accent">← 返回工作台</a>
+      </div>
+      <div class="tools-nav-grid">
+        <a href="umax-app-center.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h8M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">UMAX 应用中心</div>
+            <div class="tools-nav-desc">3 类 AI Agent 入口 + 跨平台</div>
+            <div class="tools-nav-badge">入口</div>
+          </div>
+        </a>
+        <a href="enterprise-ai-config.html" class="tools-nav-card is-current">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v3M9 13v3M2 9h3M13 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">企业 AI 配置</div>
+            <div class="tools-nav-desc">6 配置域 · 多租户隔离</div>
+            <div class="tools-nav-badge">配置</div>
+          </div>
+        </a>
+        <a href="activation.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 7h12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM5 7V5a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">激活码核销</div>
+            <div class="tools-nav-desc">8-10 位激活码 · 7 步流程</div>
+            <div class="tools-nav-badge">服务</div>
+          </div>
+        </a>
+        <a href="mentor-binding.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 16a6 6 0 0112 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">导师业务绑定</div>
+            <div class="tools-nav-desc">30 天服务窗口 · 5 状态机</div>
+            <div class="tools-nav-badge">协作</div>
+          </div>
+        </a>
+        <a href="game-hub.html" class="tools-nav-card">
+          <div class="tools-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="6" width="14" height="8" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M6 10h2M7 9v2M11 10h.01M13 10h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="tools-nav-title">Game Hub</div>
+            <div class="tools-nav-desc">第一阶段 · 已识别会员对战</div>
+            <div class="tools-nav-badge">商户</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+
+    <!-- 当前企业信息 -->
+    <div class="card card-pad-md mb-4" style="background: var(--color-accent-soft); border-color: var(--color-accent-soft);">
+      <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+        <div class="avatar avatar-md" style="background: var(--color-accent); color: #fff;">UM</div>
+        <div style="flex: 1; min-width: 200px;">
+          <div class="fw-semibold">UMC 自营企业</div>
+          <div class="text-xs text-ink-2">企业 ID: ENT-2026-UMC · 主体类型: Enterprise · 配置版本 v1.0</div>
+        </div>
+        <span class="badge badge-success">已开通 AI 销冠</span>
+        <span class="badge badge-outline">未开通 AI 营销 / 客服</span>
+      </div>
+    </div>
+
+    <!-- 1. 企业基础 -->
+    <div class="config-section">
+      <div class="config-section-head">
+        <div class="config-section-num">1</div>
+        <div>
+          <h2 class="config-section-title">企业基础</h2>
+          <div class="config-section-required">必填 · 确定企业空间 / 权限 / 默认模板 / 客户分层</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group">
+          <label class="input-label">企业名称 <span class="required-mark">*</span></label>
+          <input class="input" value="UMC 自营" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">行业 <span class="required-mark">*</span></label>
+          <select class="select">
+            <option>企业服务</option>
+            <option>教育培训</option>
+            <option>金融服务</option>
+            <option>健康医疗</option>
+            <option>游戏文娱</option>
+            <option>消费零售</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">国家 / 地区 <span class="required-mark">*</span></label>
+          <select class="select"><option>中国</option><option>新加坡</option><option>美国</option></select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">联系人 <span class="required-mark">*</span></label>
+          <input class="input" value="陈志远" />
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">品牌语气</label>
+          <select class="select">
+            <option>专业克制（推荐）</option>
+            <option>亲和温暖</option>
+            <option>幽默轻松</option>
+            <option>高端商务</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 业务产品 -->
+    <div class="config-section">
+      <div class="config-section-head">
+        <div class="config-section-num">2</div>
+        <div>
+          <h2 class="config-section-title">业务产品</h2>
+          <div class="config-section-required">必填 · 驱动 AI 销冠和 AI 营销中心生成合规话术</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group">
+          <label class="input-label">核心产品 / 服务 <span class="required-mark">*</span></label>
+          <input class="input" value="商业关系与信任匹配" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">服务周期</label>
+          <select class="select">
+            <option>月度订阅</option>
+            <option>季度订阅</option>
+            <option>年度订阅</option>
+            <option>按服务次数</option>
+          </select>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">目标客户</label>
+          <textarea class="input" rows="2" placeholder="如：Opulrich 有效会员、推荐人、咨询师、企业主">Opulrich 有效会员、推荐人、咨询师、企业主</textarea>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">常见异议</label>
+          <textarea class="input" rows="2" placeholder="如：价格、隐私、AI 是否取代人工">价格 · 隐私保护 · AI 是否取代人工 · 数据是否出售</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 客户画像 -->
+    <div class="config-section">
+      <div class="config-section-head">
+        <div class="config-section-num">3</div>
+        <div>
+          <h2 class="config-section-title">客户画像</h2>
+          <div class="config-section-required">必填 · 帮助 AI 判断谁适合联系 / 先说什么 / 不该推什么</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group form-grid-full">
+          <label class="input-label">客户类型标签</label>
+          <div class="tag-input">
+            <span class="tag-chip">Opulrich 金级</span>
+            <span class="tag-chip">推荐人</span>
+            <span class="tag-chip">咨询师</span>
+            <span class="tag-chip">企业主</span>
+            <span class="tag-chip">即将到期</span>
+            <span class="tag-chip">高意向</span>
+            <span class="tag-chip">+ 添加</span>
+          </div>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">禁忌人群（不推送）</label>
+          <div class="tag-input">
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">财务困难</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">刚失去家人</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">无服务需求</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">+ 添加</span>
+          </div>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">复购周期</label>
+          <select class="select">
+            <option>30 天</option>
+            <option>90 天</option>
+            <option>180 天</option>
+            <option>365 天</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 营销配置 -->
+    <div class="config-section">
+      <div class="config-section-head">
+        <div class="config-section-num">4</div>
+        <div>
+          <h2 class="config-section-title">营销配置</h2>
+          <div class="config-section-required">必填 · 生成营销内容 / 活动宣传 · 需遵守企业审核</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group form-grid-full">
+          <label class="input-label">营销目标</label>
+          <div class="tag-input">
+            <span class="tag-chip">拉新</span>
+            <span class="tag-chip">续费提醒</span>
+            <span class="tag-chip">活动宣传</span>
+            <span class="tag-chip">品牌曝光</span>
+            <span class="tag-chip">+ 添加</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">主要渠道</label>
+          <select class="select">
+            <option>微信朋友圈</option><option>企业微信</option><option>小红书</option><option>邮件</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">素材库版本</label>
+          <input class="input" value="v2026.08" />
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">批准模板</label>
+          <textarea class="input" rows="2" placeholder="如：续费提醒模板 A/B/C">续费提醒模板 A · 续费提醒模板 B · 活动邀请模板</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 客服配置 -->
+    <div class="config-section">
+      <div class="config-section-head">
+        <div class="config-section-num">5</div>
+        <div>
+          <h2 class="config-section-title">客服配置</h2>
+          <div class="config-section-required">必填 · 实现 AI 客服托管与人工接管</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group form-grid-full">
+          <label class="input-label">FAQ 知识库</label>
+          <textarea class="input" rows="3" placeholder="每行一个 FAQ：Q:xxx A:xxx">Q: 4499 是什么？A: 会员成功与生态运营工作台
+Q: 怎么开通 AI 销冠？A: 购买激活码后在 UMAX 应用中心核销
+Q: 数据是否出售？A: 否 · 数据归用户本人所有 · 见隐私政策</textarea>
+        </div>
+        <div class="input-group">
+          <label class="input-label">转人工触发</label>
+          <select class="select"><option>含投诉 / 退款 / 损失</option><option>含金融 / 法律 / 医疗关键词</option><option>连续 2 次 AI 答非所问</option></select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">客服 SLA</label>
+          <input class="input" value="首次响应 ≤ 30 秒 · 转人工 ≤ 1 分钟" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 合规边界 -->
+    <div class="config-section" style="border-color: var(--color-warn-2);">
+      <div class="config-section-head">
+        <div class="config-section-num" style="background: var(--color-warn-soft); color: var(--color-warn-2);">6</div>
+        <div>
+          <h2 class="config-section-title">合规边界</h2>
+          <div class="config-section-required">必填 · 避免 AI 生成不实承诺 / 违规营销 / 越权回复 · 触发即转人工</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="input-group form-grid-full">
+          <label class="input-label">禁用词（命中自动转人工）</label>
+          <div class="blocked-word-input">
+            <span class="blocked-word-chip">保证收益 ×</span>
+            <span class="blocked-word-chip">稳赚不赔 ×</span>
+            <span class="blocked-word-chip">无风险 ×</span>
+            <span class="blocked-word-chip">100% 提升 ×</span>
+            <span class="blocked-word-chip">无理由退款 ×</span>
+            <span class="blocked-word-chip">+ 添加</span>
+          </div>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">高风险场景（自动转人工）</label>
+          <div class="tag-input">
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">投诉</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">退款</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">金融</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">法律</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">医疗</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">保险</span>
+            <span class="tag-chip" style="background: var(--color-warn-soft); color: var(--color-warn-2);">+ 添加</span>
+          </div>
+        </div>
+        <div class="input-group form-grid-full">
+          <label class="input-label">人工确认规则</label>
+          <textarea class="input" rows="2" placeholder="如：高影响消息需人工确认后才能发送">高影响消息（涉及金额 / 资产 / 关系变更）需人工确认后才能发送 · 批量触达需 CRM-SUP 审批</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer actions -->
+    <div class="flex justify-between items-center" style="margin-top: var(--space-5); padding: var(--space-4) 0;">
+      <div class="text-xs text-ink-3">
+        ⓘ 配置未完成前服务不能进入正式启用状态（AI-SUP-003）· 同一测试问题在不同企业空间应返回不同配置内容
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost">取消</button>
+        <button class="btn btn-secondary">保存草稿</button>
+        <button class="btn btn-primary">保存并发布</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
