@@ -103,6 +103,121 @@
     .subject-menu-item[data-subject="member"] .subject-menu-dot { background: var(--color-accent); }
     .subject-menu-item[data-subject="enterprise"] .subject-menu-dot { background: var(--color-info); }
     .subject-menu-item[data-subject="organization"] .subject-menu-dot { background: var(--color-warn-2); }
+
+    /* ============================================================
+     * 关键关系原则 · ACL-03 / D.9 强调框
+     * 设计思路（按记忆里"section + eyebrow + 2x2 hairline card + 顶部 accent strip"节奏）：
+     *  - 5 个 ACL item 用 2x2 网格（4 + 1 跨列）
+     *  - 顶部 3px accent strip 横线（section 节奏标识）
+     *  - 每张 card：左侧 ID 徽章（monospace, 64px 固定） + 文字区
+     *  - 文字区 ink-2 + line-height 1.65
+     *  - 整体 accent 强调（Cobalt · 信任/重要感，不是警告）
+     *  - hover 轻交互：左边线 accent + 2px 右移
+     *  - 跟 design.md hairline-first 视觉同源
+     * ============================================================ */
+    .acl-emphasis {
+      margin-top: var(--space-5);
+      background: var(--color-accent-softer);
+      border: 1px solid var(--color-accent-soft);
+      border-left: 3px solid var(--color-accent);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+    }
+    /* 顶部 accent strip — 节奏标识 */
+    .acl-emphasis::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-2) 50%, transparent 100%);
+    }
+    .acl-emphasis-title {
+      font-size: var(--text-md);
+      font-weight: var(--weight-semibold);
+      color: var(--color-ink);
+      padding: var(--space-4) var(--space-5) var(--space-3);
+      border-bottom: 1px solid var(--color-accent-soft);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .acl-emphasis-title::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-soft);
+      flex-shrink: 0;
+    }
+    /* 2x2 网格 — 5 个 item, 第 5 个跨 2 列 */
+    .acl-emphasis-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5) var(--space-5);
+    }
+    .acl-emphasis-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-left: 2px solid var(--color-line-2);
+      border-radius: var(--radius-sm);
+      transition: all var(--dur-fast) var(--ease-out);
+      min-width: 0;
+    }
+    .acl-emphasis-item:hover {
+      border-color: var(--color-line-2);
+      border-left-color: var(--color-accent);
+      transform: translateX(2px);
+      box-shadow: 0 1px 3px rgba(15, 22, 32, 0.04);
+    }
+    /* 第 5 个 item 跨 2 列 */
+    .acl-emphasis-item.is-span-2 {
+      grid-column: 1 / -1;
+    }
+    .acl-emphasis-id {
+      flex-shrink: 0;
+      min-width: 64px;
+      padding: 3px 8px;
+      background: var(--color-accent-soft);
+      border: 1px solid transparent;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent);
+      letter-spacing: 0.05em;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .acl-emphasis-item:hover .acl-emphasis-id {
+      background: var(--color-accent);
+      color: var(--color-accent-ink);
+      border-color: var(--color-accent);
+    }
+    .acl-emphasis-text {
+      font-size: var(--text-sm);
+      color: var(--color-ink-2);
+      line-height: 1.65;
+      flex: 1;
+      min-width: 0;
+    }
+    .acl-emphasis-text strong {
+      color: var(--color-ink);
+      font-weight: var(--weight-semibold);
+    }
+    @media (max-width: 900px) {
+      .acl-emphasis-list { grid-template-columns: 1fr; }
+      .acl-emphasis-item.is-span-2 { grid-column: auto; }
+    }
+    @media (max-width: 768px) {
+      .acl-emphasis-item { flex-direction: column; align-items: stretch; gap: var(--space-2); }
+      .acl-emphasis-id { align-self: flex-start; }
+    }
     </style>
 </head>
 <body>
@@ -230,6 +345,50 @@
                 </div>
               </div>
               <div class="help-box"><div class="help-box-text">📌 服务授权与最小权限原则：仅开放完成本次服务所需的数据，权限绑定服务模块，不可跨业务使用。</div></div>
+            </section>
+
+            <!-- 关键关系原则 · ACL-03 / D.9 (从底部挪到 Step 1 之后) -->
+            <section class="section">
+              <div class="section-head">
+                <span class="eyebrow">关键关系原则 · CRITICAL · ACL-03 / D.9</span>
+                <h2 class="section-title">推荐关系 + 双叉节点不因服务而变</h2>
+                <p class="section-subtitle">您申请专业支持后，原来的"谁推荐谁"和"双叉网络位置"保持不变</p>
+              </div>
+              <div class="acl-emphasis">
+                <div class="acl-emphasis-title">推荐关系与服务关系分离 (BR-003 / ACL-03)</div>
+                <div class="acl-emphasis-list">
+                  <div class="acl-emphasis-item">
+                    <div class="acl-emphasis-id">ACL-01</div>
+                    <div class="acl-emphasis-text">申请专业支持 <strong>必须先取得客户授权</strong> · 无授权 = 无数据 · 系统直接返回"无权限访问" · 不会返回部分字段</div>
+                  </div>
+                  <div class="acl-emphasis-item">
+                    <div class="acl-emphasis-id">ACL-02</div>
+                    <div class="acl-emphasis-text">30 天服务窗口<strong>到期后，联系方式立即失效</strong> · 即使专家手动收藏，AI 也会在 31 天主动删除缓存 · 已发送消息不撤回但专家无法继续</div>
+                  </div>
+                  <div class="acl-emphasis-item">
+                    <div class="acl-emphasis-id">ACL-03</div>
+                    <div class="acl-emphasis-text">原<strong>推荐关系和双叉节点不变</strong> · 仅新增服务关系 · 客户在双叉网络图中的位置、推荐人、推荐链全部保留 · 服务结束后服务关系移除但推荐关系永存</div>
+                  </div>
+                  <div class="acl-emphasis-item">
+                    <div class="acl-emphasis-id">E2E-03</div>
+                    <div class="acl-emphasis-text">完整流程：<strong>申请专业支持 → AI 匹配 → 专家接单 → 30 天服务 → 到期撤权</strong> · 推荐关系不变 · 权限最小 · 结果与撤权自动完成</div>
+                  </div>
+                  <div class="acl-emphasis-item is-span-2">
+                    <div class="acl-emphasis-id">D.9</div>
+                    <div class="acl-emphasis-text">导师-业务绑定是<strong>独立 30 天概念</strong> · 与客户-专家授权是两个不同的对象 · 系统会分别标签展示 · 不可混淆</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mt-4" style="background: var(--color-accent-soft);">
+                <div class="flex items-center gap-3">
+                  <div class="avatar avatar-md avatar-role-recommender">林</div>
+                  <div class="flex-1">
+                    <div class="text-sm fw-semibold">您为林秀华申请专业支持</div>
+                    <div class="text-xs text-ink-3">您是林秀华的推荐人 · 申请后您在双叉网络中的"林秀华推荐人"位置不变 · 仅新增"申请了一次服务"事件</div>
+                  </div>
+                  <span class="badge badge-accent">推荐关系保留</span>
+                </div>
+              </div>
             </section>
 
             <!-- 服务内容 -->
@@ -650,51 +809,7 @@
           </aside>
         </div>
       </div>
-    
-        <!-- Section: ACL-03 + D.9 关键场景强调 -->
-        <section class="section">
-          <div class="section-head">
-            <span class="eyebrow">关键关系原则 · CRITICAL · ACL-03 / D.9</span>
-            <h2 class="section-title">推荐关系 + 双叉节点不因服务而变</h2>
-            <p class="section-subtitle">您申请专业支持后，原来的"谁推荐谁"和"双叉网络位置"保持不变</p>
-          </div>
-          <div class="acl-emphasis">
-            <div class="acl-emphasis-title">推荐关系与服务关系分离 (BR-003 / ACL-03)</div>
-            <div class="acl-emphasis-list">
-              <div class="acl-emphasis-item">
-                <div class="acl-emphasis-id">ACL-01</div>
-                <div class="acl-emphasis-text">申请专业支持 <strong>必须先取得客户授权</strong> · 无授权 = 无数据 · 系统直接返回"无权限访问" · 不会返回部分字段</div>
-              </div>
-              <div class="acl-emphasis-item">
-                <div class="acl-emphasis-id">ACL-02</div>
-                <div class="acl-emphasis-text">30 天服务窗口<strong>到期后，联系方式立即失效</strong> · 即使专家手动收藏，AI 也会在 31 天主动删除缓存 · 已发送消息不撤回但专家无法继续</div>
-              </div>
-              <div class="acl-emphasis-item">
-                <div class="acl-emphasis-id">ACL-03</div>
-                <div class="acl-emphasis-text">原<strong>推荐关系和双叉节点不变</strong> · 仅新增服务关系 · 客户在双叉网络图中的位置、推荐人、推荐链全部保留 · 服务结束后服务关系移除但推荐关系永存</div>
-              </div>
-              <div class="acl-emphasis-item">
-                <div class="acl-emphasis-id">E2E-03</div>
-                <div class="acl-emphasis-text">完整流程：<strong>申请专业支持 → AI 匹配 → 专家接单 → 30 天服务 → 到期撤权</strong> · 推荐关系不变 · 权限最小 · 结果与撤权自动完成</div>
-              </div>
-              <div class="acl-emphasis-item">
-                <div class="acl-emphasis-id">D.9</div>
-                <div class="acl-emphasis-text">导师-业务绑定是<strong>独立 30 天概念</strong> · 与客户-专家授权是两个不同的对象 · 系统会分别标签展示 · 不可混淆</div>
-              </div>
-            </div>
-          </div>
-          <div class="card mt-4" style="background: var(--color-accent-soft);">
-            <div class="flex items-center gap-3">
-              <div class="avatar avatar-md avatar-role-recommender">林</div>
-              <div class="flex-1">
-                <div class="text-sm fw-semibold">您为林秀华申请专业支持</div>
-                <div class="text-xs text-ink-3">您是林秀华的推荐人 · 申请后您在双叉网络中的"林秀华推荐人"位置不变 · 仅新增"申请了一次服务"事件</div>
-              </div>
-              <span class="badge badge-accent">推荐关系保留</span>
-            </div>
-          </div>
-        </section>
-</main>
+    </main>
   </div>
 
   <!-- ========== B1 增强：确认提交 Modal ========== -->

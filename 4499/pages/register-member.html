@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>申请成为个人会员 · 4499</title>
+  <meta name="description" content="申请成为 4499 个人会员。3 个工作日审核。走 Opulrich 身份 + 商业画像 + 资料上传。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css?v=2" />
+  <link rel="stylesheet" href="../css/components.css?v=2" />
+  <link rel="stylesheet" href="../css/brand-anim.css?v=2" />
+  <style>
+    :root { --site-container: 1200px; --site-narrow: 880px; }
+    body { background: var(--color-paper); }
+    .site-nav { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.85); border-bottom: 1px solid var(--color-line); backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px); }
+    .site-nav-inner { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); height: 60px; display: flex; align-items: center; gap: var(--space-8); }
+    .site-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); color: var(--color-ink); text-decoration: none; letter-spacing: -0.01em; }
+    .site-brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--color-ink); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .site-menu { display: flex; align-items: center; gap: 2px; flex: 1; }
+    .site-menu a { padding: 6px 12px; border-radius: 6px; color: var(--color-ink-2); font-size: 14px; font-weight: 500; text-decoration: none; transition: all 200ms ease; }
+    .site-menu a:hover { color: var(--color-ink); background: var(--color-surface-2); }
+    .site-menu a.is-current { color: var(--color-ink); }
+    .site-actions { display: flex; align-items: center; gap: var(--space-2); }
+    .container { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); }
+
+    .reg-hero { padding: 64px 0 32px; }
+    .reg-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-ink-3); margin-bottom: 32px; }
+    .reg-breadcrumb a { color: var(--color-ink-3); text-decoration: none; }
+    .reg-breadcrumb a:hover { color: var(--color-accent); }
+    .reg-breadcrumb-sep { color: var(--color-ink-3); }
+    .reg-breadcrumb-current { color: var(--color-ink); }
+    .reg-hero-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    .reg-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 12px; }
+    .reg-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .reg-h1 { font-family: var(--font-display); font-size: 40px; font-weight: 600; color: var(--color-ink); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
+    .reg-sub { font-size: 16px; color: var(--color-ink-2); line-height: 1.6; max-width: 720px; margin: 0; }
+    .reg-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .reg-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 999px; font-size: 13px; color: var(--color-ink-2); }
+    .reg-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); box-shadow: 0 0 0 3px var(--color-success-soft); }
+
+    .reg-layout { padding: 32px 0 96px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 48px; align-items: start; }
+    @media (max-width: 1024px) { .reg-layout { grid-template-columns: 1fr; } }
+
+    /* form section */
+    .reg-section { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 16px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+    .reg-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-2) 50%, transparent 100%); }
+    .reg-section-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--color-accent-softer); color: var(--color-accent); font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+    .reg-section-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--color-ink); margin: 0 0 4px; }
+    .reg-section-sub { font-size: 14px; color: var(--color-ink-2); margin: 0 0 24px; line-height: 1.5; }
+    .reg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .reg-row { grid-template-columns: 1fr; } }
+    .reg-row + .reg-row,
+    .reg-field + .reg-field { margin-top: 16px; }
+    .reg-field { display: flex; flex-direction: column; gap: 6px; }
+    .reg-field-label { font-size: 13px; font-weight: 500; color: var(--color-ink-2); }
+    .reg-field-label .req { color: var(--color-danger); margin-left: 2px; }
+    .reg-field-hint { font-size: 12px; color: var(--color-ink-3); }
+    .reg-checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 4px; }
+    .reg-checkbox { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--color-ink-2); transition: all 150ms ease; }
+    .reg-checkbox:hover { border-color: var(--color-accent); color: var(--color-ink); }
+    .reg-checkbox input { width: 16px; height: 16px; accent-color: var(--color-accent); cursor: pointer; flex-shrink: 0; }
+    .reg-checkbox:has(input:checked) { background: var(--color-accent-softer); border-color: var(--color-accent); color: var(--color-ink); }
+
+    .reg-upload { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .reg-upload-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--color-paper); border: 1px dashed var(--color-line-2); border-radius: 10px; cursor: pointer; transition: all 150ms ease; }
+    .reg-upload-item:hover { border-color: var(--color-accent); background: var(--color-accent-softer); }
+    .reg-upload-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--color-surface); border: 1px solid var(--color-line); display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0; }
+    .reg-upload-body { flex: 1; min-width: 0; }
+    .reg-upload-name { font-size: 13px; font-weight: 600; color: var(--color-ink); margin-bottom: 2px; }
+    .reg-upload-hint { font-size: 12px; color: var(--color-ink-3); }
+    .reg-upload-status { font-size: 12px; color: var(--color-ink-3); font-weight: 500; }
+    .reg-upload.is-done { border-style: solid; border-color: var(--color-success); background: var(--color-success-soft); }
+    .reg-upload.is-done .reg-upload-status { color: var(--color-success); }
+
+    .reg-consent { display: flex; align-items: flex-start; gap: 10px; padding: 16px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 10px; margin-top: 16px; }
+    .reg-consent input { width: 16px; height: 16px; accent-color: var(--color-accent); cursor: pointer; margin-top: 2px; flex-shrink: 0; }
+    .reg-consent-text { font-size: 13px; color: var(--color-ink-2); line-height: 1.6; }
+    .reg-consent-text a { color: var(--color-accent); text-decoration: none; }
+    .reg-consent-text a:hover { text-decoration: underline; }
+
+    .reg-actions { display: flex; align-items: center; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+
+    /* sticky sidebar */
+    .reg-side { position: sticky; top: 80px; }
+    .reg-side-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+    .reg-side-card.is-accent { background: var(--color-accent-softer); border-color: var(--color-accent-soft); }
+    .reg-side-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 8px; }
+    .reg-side-title { font-size: 16px; font-weight: 600; color: var(--color-ink); margin: 0 0 12px; }
+    .reg-timeline { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .reg-timeline-item { display: flex; gap: 12px; position: relative; }
+    .reg-timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 11px; top: 26px; bottom: -16px; width: 1px; background: var(--color-line); }
+    .reg-timeline-num { width: 22px; height: 22px; border-radius: 50%; background: var(--color-paper); border: 1px solid var(--color-line-2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--color-ink-2); flex-shrink: 0; position: relative; z-index: 1; }
+    .reg-timeline-item.is-done .reg-timeline-num { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+    .reg-timeline-body { flex: 1; }
+    .reg-timeline-name { font-size: 13px; font-weight: 600; color: var(--color-ink); }
+    .reg-timeline-desc { font-size: 12px; color: var(--color-ink-3); line-height: 1.5; margin-top: 2px; }
+    .reg-timeline-time { font-size: 11px; color: var(--color-ink-3); margin-top: 4px; font-family: var(--font-mono); }
+
+    .reg-note { display: flex; gap: 10px; padding: 12px 14px; background: var(--color-warn-soft); border: 1px solid var(--color-warn-2-soft); border-radius: 10px; margin-top: 12px; }
+    .reg-note-icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--color-warn-2); margin-top: 2px; }
+    .reg-note-text { font-size: 12px; color: var(--color-ink-2); line-height: 1.6; }
+    .reg-note-text strong { color: var(--color-ink); }
+
+    .reg-source { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 8px; font-size: 12px; color: var(--color-ink-3); }
+    .reg-source-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); box-shadow: 0 0 0 3px var(--color-success-soft); }
+
+    /* footer */
+    .site-footer { background: var(--color-ink); color: rgba(255,255,255,0.6); padding: 64px 0 24px; margin-top: 64px; }
+    .site-footer-inner { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; }
+    @media (max-width: 768px) { .site-footer-inner { grid-template-columns: 1fr 1fr; } }
+    .site-footer-brand .site-brand { color: #fff; }
+    .site-footer-brand .site-brand-mark { background: #fff; color: var(--color-ink); }
+    .site-footer-brand p { font-size: 13px; line-height: 1.6; margin: 0; }
+    .site-footer-col h4 { font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px; }
+    .site-footer-col a { display: block; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; padding: 4px 0; }
+    .site-footer-col a:hover { color: #fff; }
+    .site-footer-bottom { max-width: var(--site-container); margin: 32px auto 0; padding: 24px var(--space-6) 0; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.4); }
+    @media (max-width: 768px) { .site-footer-bottom { flex-direction: column; gap: 8px; } }
+  </style>
+</head>
+<body>
+  <a href="#reg-form" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">跳到表单</a>
+
+  <header class="site-nav" role="banner">
+    <div class="site-nav-inner">
+      <a href="index.html" class="site-brand" aria-label="4499 首页">
+        <span class="site-brand-mark">4</span>
+        <span>4499</span>
+      </a>
+      <nav class="site-menu" aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="about.html">关于</a>
+        <a href="resources.html">资源</a>
+        <a href="contact.html" class="is-current">联系</a>
+        <a href="help-center.html">帮助</a>
+      </nav>
+      <div class="site-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm">登录</a>
+        <a href="contact.html" class="btn btn-primary btn-sm">申请加入</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="reg-hero">
+    <div class="container">
+      <div class="reg-breadcrumb">
+        <a href="index.html">首页</a>
+        <span class="reg-breadcrumb-sep">/</span>
+        <a href="contact.html">联系</a>
+        <span class="reg-breadcrumb-sep">/</span>
+        <span class="reg-breadcrumb-current">个人会员申请</span>
+      </div>
+
+      <div class="reg-hero-grid">
+        <div>
+          <span class="reg-eyebrow">
+            <span class="reg-eyebrow-dot"></span>
+            Member Application · 个人会员
+          </span>
+          <h1 class="reg-h1">申请成为<br />4499 个人会员</h1>
+          <p class="reg-sub">愿意长期经营个人商业价值的参与者。完整画像、专属 PB 信誉值、专属信誉护照 · 资源上架、服务发布、商业品牌经营。3 个工作日完成审核。</p>
+          <div class="reg-badges">
+            <span class="reg-badge"><span class="reg-badge-dot"></span>3 个工作日审核</span>
+            <span class="reg-badge">走 Opulrich 身份</span>
+            <span class="reg-badge">免费申请</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="reg-layout">
+      <!-- 左侧：表单 -->
+      <form id="reg-form" autocomplete="on">
+        <!-- Section 1: 基础信息 -->
+        <div class="reg-section">
+          <span class="reg-section-num">1</span>
+          <h2 class="reg-section-title">基础信息</h2>
+          <p class="reg-section-sub">先建立最基础的画像。手机号和邮箱用于登录和接收审核结果。</p>
+
+          <div class="reg-row">
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-name">真实姓名<span class="req">*</span></label>
+              <input id="r-name" class="input input-lg" type="text" placeholder="请输入身份证姓名" autocomplete="name" />
+              <span class="reg-field-hint">必须与身份证一致</span>
+            </div>
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-id">身份证号<span class="req">*</span></label>
+              <input id="r-id" class="input input-lg" type="text" placeholder="18 位身份证号" inputmode="text" maxlength="18" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="reg-row">
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-phone">手机号<span class="req">*</span></label>
+              <input id="r-phone" class="input input-lg" type="tel" placeholder="+86 138 0000 8888" autocomplete="tel" />
+            </div>
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-email">邮箱<span class="req">*</span></label>
+              <input id="r-email" class="input input-lg" type="email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="reg-row">
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-region">所在地区<span class="req">*</span></label>
+              <select id="r-region" class="select input-lg">
+                <option>中国大陆</option>
+                <option>中国香港</option>
+                <option>中国澳门</option>
+                <option>中国台湾</option>
+                <option>新加坡</option>
+                <option>马来西亚</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div class="reg-field">
+              <label class="reg-field-label" for="r-language">主要语言</label>
+              <select id="r-language" class="select input-lg">
+                <option>简体中文</option>
+                <option>English</option>
+                <option>繁體中文</option>
+                <option>Bahasa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reg-field">
+            <label class="reg-field-label" for="r-recommender">推荐人（如有）</label>
+            <input id="r-recommender" class="input input-lg" type="text" placeholder="推荐人姓名 / 会员编号" />
+            <span class="reg-field-hint">留空则由系统匹配。推荐关系长期有效，不影响后续参与。</span>
+          </div>
+        </div>
+
+        <!-- Section 2: 商业画像 -->
+        <div class="reg-section">
+          <span class="reg-section-num">2</span>
+          <h2 class="reg-section-title">商业画像 · 业务身份与能力</h2>
+          <p class="reg-section-sub">用于 AI 匹配、资源推荐、客户发现。多选 · 可后续在「我的工作台」调整。</p>
+
+          <div class="reg-field">
+            <label class="reg-field-label">业务身份<span class="req">*</span></label>
+            <span class="reg-field-hint">选择 1-3 个最符合你当前定位的身份</span>
+            <div class="reg-checkbox-grid">
+              <label class="reg-checkbox"><input type="checkbox" />推荐人</label>
+              <label class="reg-checkbox"><input type="checkbox" />企业顾问</label>
+              <label class="reg-checkbox"><input type="checkbox" />EMP 导师</label>
+              <label class="reg-checkbox"><input type="checkbox" />AI 顾问</label>
+              <label class="reg-checkbox"><input type="checkbox" />课程讲师</label>
+              <label class="reg-checkbox"><input type="checkbox" />创作者 / 推广伙伴</label>
+              <label class="reg-checkbox"><input type="checkbox" />服务商</label>
+              <label class="reg-checkbox"><input type="checkbox" />RWA / 黄金顾问</label>
+            </div>
+          </div>
+
+          <div class="reg-field" style="margin-top: 20px;">
+            <label class="reg-field-label">能力标签<span class="req">*</span></label>
+            <span class="reg-field-hint">选择 3-8 个关键词 · 决定 AI 推荐和搜索匹配</span>
+            <div class="reg-checkbox-grid">
+              <label class="reg-checkbox"><input type="checkbox" />品牌营销</label>
+              <label class="reg-checkbox"><input type="checkbox" />渠道招商</label>
+              <label class="reg-checkbox"><input type="checkbox" />客户经营</label>
+              <label class="reg-checkbox"><input type="checkbox" />企业顾问</label>
+              <label class="reg-checkbox"><input type="checkbox" />AI 应用</label>
+              <label class="reg-checkbox"><input type="checkbox" />数据治理</label>
+              <label class="reg-checkbox"><input type="checkbox" />RWA / 资产</label>
+              <label class="reg-checkbox"><input type="checkbox" />公益 / NGO</label>
+              <label class="reg-checkbox"><input type="checkbox" />培训 / 课程</label>
+              <label class="reg-checkbox"><input type="checkbox" />跨境贸易</label>
+              <label class="reg-checkbox"><input type="checkbox" />媒体 / 内容</label>
+              <label class="reg-checkbox"><input type="checkbox" />医疗 / 健康</label>
+            </div>
+          </div>
+
+          <div class="reg-field" style="margin-top: 20px;">
+            <label class="reg-field-label" for="r-can-provide">可提供的事项<span class="req">*</span></label>
+            <textarea id="r-can-provide" class="textarea" rows="3" placeholder="例：AI 工具选型咨询、跨境品牌资源对接、3 个月客户陪跑"></textarea>
+          </div>
+
+          <div class="reg-field">
+            <label class="reg-field-label" for="r-need">所需事项</label>
+            <textarea id="r-need" class="textarea" rows="3" placeholder="例：寻找 5-10 家合作服务商、希望被推荐给企业客户"></textarea>
+          </div>
+        </div>
+
+        <!-- Section 3: 资料上传 -->
+        <div class="reg-section">
+          <span class="reg-section-num">3</span>
+          <h2 class="reg-section-title">资料上传 · 身份与资质</h2>
+          <p class="reg-section-sub">JPG / PNG / PDF · 单文件 ≤ 10 MB。仅审核人员可见，不会公开展示。</p>
+
+          <div class="reg-upload">
+            <div class="reg-upload-item">
+              <div class="reg-upload-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 12l3-3 3 3 3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="reg-upload-body">
+                <div class="reg-upload-name">身份证人像面 <span style="color: var(--color-danger);">*</span></div>
+                <div class="reg-upload-hint">JPG / PNG · 需清晰可读</div>
+              </div>
+              <span class="reg-upload-status">点击上传</span>
+            </div>
+
+            <div class="reg-upload-item">
+              <div class="reg-upload-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 12l3-3 3 3 3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="reg-upload-body">
+                <div class="reg-upload-name">身份证国徽面 <span style="color: var(--color-danger);">*</span></div>
+                <div class="reg-upload-hint">JPG / PNG · 需清晰可读</div>
+              </div>
+              <span class="reg-upload-status">点击上传</span>
+            </div>
+
+            <div class="reg-upload-item">
+              <div class="reg-upload-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.5L2 5v4c0 3.5 2.5 6.5 7 7.5 4.5-1 7-4 7-7.5V5L9 1.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="reg-upload-body">
+                <div class="reg-upload-name">手持身份证照 <span style="color: var(--color-danger);">*</span></div>
+                <div class="reg-upload-hint">手持证件 · 脸部清晰 · 验证身份</div>
+              </div>
+              <span class="reg-upload-status">点击上传</span>
+            </div>
+
+            <div class="reg-upload-item">
+              <div class="reg-upload-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="reg-upload-body">
+                <div class="reg-upload-name">专业资质证书 <span style="color: var(--color-ink-3); font-weight: 400;">(选填)</span></div>
+                <div class="reg-upload-hint">EMP / 律师 / 会计师 / 医师 等 · PDF 多文件</div>
+              </div>
+              <span class="reg-upload-status">点击上传</span>
+            </div>
+          </div>
+
+          <div class="reg-consent">
+            <input type="checkbox" id="r-consent-1" />
+            <div class="reg-consent-text">
+              <label for="r-consent-1">我已阅读并同意 <a href="#">《4499 会员服务协议》</a>、<a href="#">《Opulrich 身份授权协议》</a> 和 <a href="#">《隐私政策》</a>。授权 Opulrich 将身份认证结果同步至 4499 平台。</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="reg-actions">
+          <a href="contact.html" class="btn btn-secondary btn-md">返回</a>
+          <button type="submit" class="btn btn-primary btn-md">提交申请</button>
+        </div>
+      </form>
+
+      <!-- 右侧：审核时间线 -->
+      <aside class="reg-side">
+        <div class="reg-side-card is-accent">
+          <div class="reg-side-eyebrow">审核时间线</div>
+          <h3 class="reg-side-title">3 个工作日完成</h3>
+          <div class="reg-timeline">
+            <div class="reg-timeline-item is-done">
+              <div class="reg-timeline-num">✓</div>
+              <div class="reg-timeline-body">
+                <div class="reg-timeline-name">提交申请</div>
+                <div class="reg-timeline-desc">填表 · 系统校验必填项</div>
+                <div class="reg-timeline-time">0 min</div>
+              </div>
+            </div>
+            <div class="reg-timeline-item is-done">
+              <div class="reg-timeline-num">✓</div>
+              <div class="reg-timeline-body">
+                <div class="reg-timeline-name">身份认证</div>
+                <div class="reg-timeline-desc">Opulrich 同步 KYC 结果</div>
+                <div class="reg-timeline-time">≤ 24 h</div>
+              </div>
+            </div>
+            <div class="reg-timeline-item">
+              <div class="reg-timeline-num">3</div>
+              <div class="reg-timeline-body">
+                <div class="reg-timeline-name">资料审核</div>
+                <div class="reg-timeline-desc">推荐人复核 + 商业画像校对</div>
+                <div class="reg-timeline-time">1-3 个工作日</div>
+              </div>
+            </div>
+            <div class="reg-timeline-item">
+              <div class="reg-timeline-num">4</div>
+              <div class="reg-timeline-body">
+                <div class="reg-timeline-name">开通工作台</div>
+                <div class="reg-timeline-desc">获得 PB 信誉值 · 进入个人会员工作台</div>
+                <div class="reg-timeline-time">审核通过后立即</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reg-side-card">
+          <div class="reg-side-eyebrow">注意事项</div>
+          <div class="reg-note">
+            <svg class="reg-note-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2L1.5 16h15L9 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 7v4M9 13.5h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <div class="reg-note-text">
+              资料仅审核人员可见。<strong>所有资料加密存储</strong>，不会出现在公开页或被其他会员查看。
+            </div>
+          </div>
+          <div class="reg-note">
+            <svg class="reg-note-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <div class="reg-note-text">
+              审核期间可继续浏览资源、查看公开案例。<strong>通过后才可上架资源、发布服务</strong>。
+            </div>
+          </div>
+          <div class="reg-note">
+            <svg class="reg-note-icon" viewBox="0 0 18 18" fill="none"><path d="M2 9a7 7 0 0114 0M16 9a7 7 0 01-14 0" stroke="currentColor" stroke-width="1.4"/><path d="M5 9h.01M13 9h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <div class="reg-note-text">
+              申请被驳回？<strong>30 天后可重新提交</strong>，驳回原因会邮件告知。
+            </div>
+          </div>
+        </div>
+
+        <div class="reg-source">
+          <span class="reg-source-dot"></span>
+          会员状态以 Opulrich 为权威来源
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-brand">
+        <div class="site-brand" style="margin-bottom: 16px;"><span class="site-brand-mark">4</span><span>4499</span></div>
+        <p>Ecosystem Workbench · 商业成长与长期信任平台<br />OpulnX 生态的会员成功与运营平台</p>
+        <p style="margin-top: 12px; font-size: 12px;">会员状态以 Opulrich 为权威来源</p>
+      </div>
+      <div class="site-footer-col">
+        <h4>产品</h4>
+        <a href="workbench-recommender.html">工作台</a>
+        <a href="crm-list.html">客户经营</a>
+        <a href="trust-passport.html">信誉护照</a>
+        <a href="ai-match.html">AI 智能匹配</a>
+      </div>
+      <div class="site-footer-col">
+        <h4>资源</h4>
+        <a href="resources.html">案例与资源</a>
+        <a href="about.html">设计哲学</a>
+        <a href="help-center.html">帮助中心</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+      <div class="site-footer-col">
+        <h4>OpulnX 生态</h4>
+        <a href="#">Opulrich · 会员身份</a>
+        <a href="#">UMAX · 统一入口</a>
+        <a href="#">Opulatrix · 游戏商户</a>
+        <a href="#">OPVI · 企业 AI</a>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© 2026 4499 Ecosystem Workbench</span>
+      <span>Built with OpulnX · Powered by UMC</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="../js/brand-anim.js?v=3"></script>
+</body>
+</html>

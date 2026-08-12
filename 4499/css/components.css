@@ -30,7 +30,7 @@
 
 /* Primary */
 .btn-primary { background: var(--color-accent); color: var(--color-accent-ink); }
-.btn-primary:hover, .btn-primary.is-hover { background: var(--color-accent-2); }
+.btn-primary:hover, .btn-primary.is-hover { background: var(--color-accent-2); color: var(--color-accent-ink); }
 .btn-primary:active, .btn-primary.is-active { background: var(--color-accent); transform: translateY(1px); }
 .btn-primary:focus-visible, .btn-primary.is-focus { box-shadow: var(--focus-ring); }
 

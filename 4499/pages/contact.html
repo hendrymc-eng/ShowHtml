@@ -3,604 +3,469 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>联系 4499 · 预约咨询</title>
-  <meta name="description" content="联系 4499 平台：销售咨询、生态合作、媒体询问、客户服务。3 个办公地点：海南海口、北京、上海。" />
+  <title>联系 4499</title>
+  <meta name="description" content="联系 4499。4 类主体接入、AI 助手在线答疑、帮助中心、紧急服务窗口。OpulnX 生态协同。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/tokens.css"?v=2 />
-  <link rel="stylesheet" href="../css/components.css"?v=2 />
-  <link rel="stylesheet" href="../css/brand-anim.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css?v=2" />
+  <link rel="stylesheet" href="../css/components.css?v=2" />
+  <link rel="stylesheet" href="../css/brand-anim.css?v=2" />
   <style>
+    :root { --site-container: 1200px; --site-narrow: 880px; }
     body { background: var(--color-paper); }
-    .site-nav { position: sticky; top: 0; z-index: 50; background: var(--color-paper); border-bottom: 1px solid var(--color-line); backdrop-filter: saturate(180%) blur(8px); }
-    .site-nav-inner { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6); height: 64px; display: flex; align-items: center; gap: var(--space-8); }
-    .site-brand { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-display); font-weight: var(--weight-semibold); font-size: var(--text-lg); color: var(--color-ink); text-decoration: none; letter-spacing: -0.01em; }
-    .site-brand-mark { width: 28px; height: 28px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2)); color: var(--color-accent-ink); display: inline-flex; align-items: center; justify-content: center; font-weight: var(--weight-bold); font-size: var(--text-sm); font-family: var(--font-display); }
-    .site-menu { display: flex; align-items: center; gap: var(--space-1); flex: 1; }
-    .site-menu a { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--color-ink-2); font-size: var(--text-md); font-weight: var(--weight-medium); text-decoration: none; transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
+    .site-nav { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.85); border-bottom: 1px solid var(--color-line); backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px); }
+    .site-nav-inner { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); height: 60px; display: flex; align-items: center; gap: var(--space-8); }
+    .site-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); color: var(--color-ink); text-decoration: none; letter-spacing: -0.01em; }
+    .site-brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--color-ink); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .site-menu { display: flex; align-items: center; gap: 2px; flex: 1; }
+    .site-menu a { padding: 6px 12px; border-radius: 6px; color: var(--color-ink-2); font-size: 14px; font-weight: 500; text-decoration: none; transition: all 200ms ease; }
     .site-menu a:hover { color: var(--color-ink); background: var(--color-surface-2); }
     .site-menu a.is-current { color: var(--color-ink); }
     .site-actions { display: flex; align-items: center; gap: var(--space-2); }
-    .nav-toggle { display: none; }
+    .container { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); }
+    .container-narrow { max-width: var(--site-narrow); margin: 0 auto; padding: 0 var(--space-6); }
+    .sec { padding: 96px 0; position: relative; }
+    .sec-tight { padding: 64px 0; }
+    .sec + .sec { border-top: 1px solid var(--color-line); }
+    .sec-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); margin-bottom: 16px; }
+    .sec-eyebrow::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--color-accent); }
+    .sec-title { font-family: var(--font-display); font-size: 40px; font-weight: 600; color: var(--color-ink); line-height: 1.15; letter-spacing: -0.025em; margin: 0; }
+    .sec-sub { color: var(--color-ink-2); font-size: 17px; line-height: 1.6; margin: 16px 0 0; max-width: 640px; }
+    .sec-head { margin-bottom: 56px; }
 
-    /* Hero (compact) */
-    .hero { background: linear-gradient(180deg, var(--color-accent-softer) 0%, var(--color-paper) 100%); border-bottom: 1px solid var(--color-line); padding: var(--space-20) 0 var(--space-16); position: relative; overflow: hidden; }
-    .hero-decor-stack { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-    .hero-decor-orb-1 { position: absolute; top: -100px; right: -60px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%); opacity: 0.16; filter: blur(50px); }
-    .hero-decor-orb-2 { position: absolute; bottom: -120px; left: 5%; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, var(--color-trust) 0%, transparent 70%); opacity: 0.10; filter: blur(60px); }
-    .hero-decor-lines { position: absolute; inset: 0; background-image: linear-gradient(to right, var(--color-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-line) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%); opacity: 0.4; }
-    .hero-inner { position: relative; z-index: 1; }
-    .hero-inner { max-width: 880px; margin: 0 auto; padding: 0 var(--space-6); text-align: center; }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); font-weight: var(--weight-medium); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent); padding: 6px var(--space-3); background: var(--color-accent-soft); border-radius: var(--radius-pill); margin-bottom: var(--space-5); }
+    .hero { padding: 120px 0 80px; text-align: center; position: relative; overflow: hidden; }
+    .hero-grid-bg { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, var(--color-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 60% 50% at 50% 35%, black 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 35%, black 30%, transparent 75%); opacity: 0.45; }
+    .hero-inner { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 var(--space-6); }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--color-ink-2); padding: 6px 14px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 999px; margin-bottom: 32px; }
     .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
-    .hero-title { font-family: var(--font-display); font-size: 56px; font-weight: var(--weight-semibold); color: var(--color-ink); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 var(--space-5); }
-    .hero-subtitle { font-size: var(--text-lg); color: var(--color-ink-2); line-height: var(--leading-relaxed); max-width: 600px; margin: 0 auto; }
+    .hero-title { font-family: var(--font-display); font-size: 56px; font-weight: 600; color: var(--color-ink); line-height: 1.08; letter-spacing: -0.03em; margin: 0; }
+    .hero-sub { color: var(--color-ink-2); font-size: 20px; line-height: 1.5; margin: 28px auto 0; max-width: 640px; }
 
-    .page-section { padding: var(--space-20) 0; }
-    .page-section + .page-section { border-top: 1px solid var(--color-line); }
-    .container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6); }
+    /* 4 主体接入 */
+    .entry-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--color-line); border-radius: 20px; overflow: hidden; }
+    .entry-item { padding: 36px 32px; border-right: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); transition: background 200ms ease; }
+    .entry-item:nth-child(2n) { border-right: none; }
+    .entry-item:nth-last-child(-n+2) { border-bottom: none; }
+    .entry-item:hover { background: var(--color-surface-2); }
+    .entry-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .entry-icon { width: 40px; height: 40px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .entry-icon[data-subject="user"] { background: var(--color-surface-2); color: var(--color-ink-2); }
+    .entry-icon[data-subject="member"] { background: var(--color-accent-soft); color: var(--color-accent); }
+    .entry-icon[data-subject="enterprise"] { background: var(--color-info-soft); color: var(--color-info); }
+    .entry-icon[data-subject="organization"] { background: var(--color-warn-soft); color: var(--color-warn); }
+    .entry-name { font-size: 19px; font-weight: 600; color: var(--color-ink); }
+    .entry-en { font-family: var(--font-display); font-size: 12px; color: var(--color-ink-3); letter-spacing: 0.02em; }
+    .entry-desc { font-size: 14px; color: var(--color-ink-2); line-height: 1.6; margin-bottom: 20px; }
+    .entry-steps { display: flex; flex-direction: column; gap: 6px; padding: 16px 0; border-top: 1px dashed var(--color-line-2); border-bottom: 1px dashed var(--color-line-2); margin-bottom: 20px; }
+    .entry-step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-ink-2); }
+    .entry-step-num { font-family: var(--font-mono); font-size: 11px; color: var(--color-ink-4); width: 16px; flex-shrink: 0; }
+    .entry-cta { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
+    .entry-cta-link { font-size: 14px; font-weight: 500; color: var(--color-accent); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+    .entry-cta-link:hover { gap: 8px; transition: gap 200ms ease; }
+    .entry-time { font-size: 12px; color: var(--color-ink-3); }
 
-    /* Contact channels (2x2) */
-    .channel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-top: var(--space-8); }
-    .channel-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-line);
-      border-radius: var(--radius-md);
-      padding: var(--space-6);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .channel-icon {
-      width: 40px; height: 40px;
-      border-radius: var(--radius-sm);
-      background: var(--color-accent-soft);
-      color: var(--color-accent);
-      display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: var(--space-2);
-    }
-    .channel-label { font-size: var(--text-xs); color: var(--color-ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: var(--weight-medium); }
-    .channel-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: var(--weight-semibold); color: var(--color-ink); margin: 0; }
-    .channel-desc { font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); margin: 0; }
-    .channel-value { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-accent); margin-top: auto; }
-    .channel-value a { color: inherit; text-decoration: none; }
-    .channel-value a:hover { text-decoration: underline; }
-
-    /* Form section (split) */
-    .form-split { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--space-12); align-items: start; margin-top: var(--space-8); }
-    .form-aside h3 { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-semibold); color: var(--color-ink); margin: 0 0 var(--space-3); letter-spacing: -0.01em; }
-    .form-aside p { font-size: var(--text-md); color: var(--color-ink-2); line-height: var(--leading-relaxed); margin: 0 0 var(--space-6); }
-    .form-aside ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-    .form-aside li { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
-    .form-aside li svg { flex-shrink: 0; color: var(--color-accent); margin-top: 2px; }
-
-    .form-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-line);
-      border-radius: var(--radius-md);
-      padding: var(--space-8);
-    }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
-    .form-grid .full { grid-column: span 2; }
-    .form-actions { display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--color-line); flex-wrap: wrap; }
-    .form-actions-note { font-size: var(--text-sm); color: var(--color-ink-3); }
-
-    /* Office locations */
-    .office-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-8); }
-    .office-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-line);
-      border-radius: var(--radius-md);
-      padding: var(--space-6);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .office-map {
-      aspect-ratio: 16 / 10;
-      border-radius: var(--radius-sm);
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-line);
-      overflow: hidden;
-      margin-bottom: var(--space-2);
-    }
-    .office-map svg { width: 100%; height: 100%; display: block; }
-    .office-tag {
-      display: inline-flex; align-items: center; gap: var(--space-1);
-      font-size: var(--text-xs);
-      color: var(--color-accent);
-      background: var(--color-accent-soft);
-      padding: 2px var(--space-2);
-      border-radius: var(--radius-pill);
-      width: fit-content;
-      font-weight: var(--weight-medium);
-    }
-    .office-city { font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--weight-semibold); color: var(--color-ink); margin: 0; }
-    .office-address { font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); margin: 0; }
-    .office-meta { display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--text-sm); color: var(--color-ink-3); margin-top: auto; }
-    .office-meta-row { display: flex; gap: var(--space-2); }
-    .office-meta-row strong { color: var(--color-ink); font-weight: var(--weight-medium); min-width: 60px; }
+    /* AI 助手 */
+    .ai-assistant { background: var(--color-ink); color: #fff; border-radius: 20px; padding: 48px; }
+    .ai-assistant-head { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+    .ai-assistant-avatar { width: 48px; height: 48px; border-radius: 50%; background: #fff; color: var(--color-ink); display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; }
+    .ai-assistant-title { font-size: 22px; font-weight: 600; color: #fff; }
+    .ai-assistant-sub { font-size: 14px; color: rgba(255, 255, 255, 0.6); margin-top: 2px; }
+    .ai-assistant-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(110, 220, 130, 0.15); color: rgb(140, 230, 160); border-radius: 999px; font-size: 12px; margin-left: auto; }
+    .ai-assistant-status-dot { width: 6px; height: 6px; border-radius: 50%; background: rgb(140, 230, 160); box-shadow: 0 0 0 3px rgba(110, 220, 130, 0.2); }
+    .ai-assistant-msgs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .ai-msg { padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; max-width: 80%; }
+    .ai-msg.is-user { background: rgba(255, 255, 255, 0.1); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .ai-msg.is-bot { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.92); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .ai-msg-suggestion { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(255, 255, 255, 0.1); color: #fff; border-radius: 999px; font-size: 12px; margin-right: 6px; cursor: pointer; }
+    .ai-msg-suggestion:hover { background: rgba(255, 255, 255, 0.15); }
+    .ai-assistant-input { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; }
+    .ai-assistant-input input { flex: 1; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; font-family: inherit; }
+    .ai-assistant-input input::placeholder { color: rgba(255, 255, 255, 0.4); }
+    .ai-assistant-input button { padding: 6px 14px; background: #fff; color: var(--color-ink); border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
 
     /* FAQ */
-    .faq-list { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md); margin-top: var(--space-8); overflow: hidden; }
-    .faq-item { border-bottom: 1px solid var(--color-line); padding: 0; }
+    .faq-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--color-line); border-radius: 16px; overflow: hidden; }
+    .faq-item { border-bottom: 1px solid var(--color-line); transition: background 200ms ease; }
     .faq-item:last-child { border-bottom: none; }
-    .faq-q {
-      width: 100%;
-      text-align: left;
-      padding: var(--space-5) var(--space-6);
-      display: flex; align-items: center; justify-content: space-between;
-      gap: var(--space-4);
-      font-size: var(--text-md);
-      color: var(--color-ink);
-      font-weight: var(--weight-medium);
-      cursor: pointer;
-      background: transparent;
-      transition: background var(--dur-fast) var(--ease-out);
-    }
+    .faq-q { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--color-ink); }
     .faq-q:hover { background: var(--color-surface-2); }
-    .faq-q-icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--color-ink-3); transition: transform var(--dur-fast) var(--ease-out); }
-    .faq-item.is-open .faq-q-icon { transform: rotate(45deg); color: var(--color-accent); }
-    .faq-a { display: none; padding: 0 var(--space-6) var(--space-5); font-size: var(--text-md); color: var(--color-ink-2); line-height: var(--leading-relaxed); }
-    .faq-item.is-open .faq-a { display: block; }
+    .faq-q-icon { font-size: 18px; color: var(--color-ink-3); transition: transform 200ms ease; }
+    .faq-item.is-open .faq-q-icon { transform: rotate(45deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 200ms ease; }
+    .faq-item.is-open .faq-a { max-height: 400px; }
+    .faq-a-inner { padding: 0 28px 20px; font-size: 14px; color: var(--color-ink-2); line-height: 1.7; }
 
-    /* Footer */
-    .site-footer { background: var(--color-surface); border-top: 1px solid var(--color-line); padding: var(--space-16) 0 var(--space-8); }
-    .footer-grid { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); gap: var(--space-8); }
-    .footer-brand-block { display: flex; flex-direction: column; gap: var(--space-3); }
-    .footer-tagline { font-size: var(--text-sm); color: var(--color-ink-2); line-height: var(--leading-relaxed); max-width: 280px; }
-    .footer-social { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
-    .footer-social a { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--color-surface-2); color: var(--color-ink-2); display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
-    .footer-social a:hover { background: var(--color-accent-soft); color: var(--color-accent); }
-    .footer-col h4 { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-3); font-weight: var(--weight-medium); margin: 0 0 var(--space-3); }
-    .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-    .footer-col a { font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; }
-    .footer-col a:hover { color: var(--color-ink); }
-    .footer-bottom { max-width: var(--container-max); margin: var(--space-12) auto 0; padding: var(--space-6) var(--space-6) 0; border-top: 1px solid var(--color-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); font-size: var(--text-sm); color: var(--color-ink-3); }
-    .footer-bottom-links { display: flex; gap: var(--space-4); }
-    .footer-bottom-links a { color: var(--color-ink-3); text-decoration: none; }
-    .footer-bottom-links a:hover { color: var(--color-ink); }
+    /* 联系渠道 */
+    .channel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--color-line); border-radius: 16px; overflow: hidden; }
+    .channel-item { padding: 24px; border-right: 1px solid var(--color-line); text-align: center; }
+    .channel-item:last-child { border-right: none; }
+    .channel-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--color-surface-2); color: var(--color-ink-2); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .channel-name { font-size: 14px; font-weight: 500; color: var(--color-ink); margin-bottom: 4px; }
+    .channel-info { font-size: 12px; color: var(--color-ink-3); line-height: 1.5; }
 
-    @media (max-width: 1200px) {
-      .hero-title { font-size: 48px; }
-      .channel-grid { grid-template-columns: repeat(2, 1fr); }
-      .footer-grid { grid-template-columns: 1.5fr repeat(2, 1fr); }
-    }
+    .site-footer { border-top: 1px solid var(--color-line); padding: 48px 0 32px; background: var(--color-surface); }
+    .site-footer-inner { max-width: var(--site-container); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+    .site-footer-brand { color: var(--color-ink-2); font-size: 13px; line-height: 1.6; }
+    .site-footer-col h4 { font-size: 12px; font-weight: 600; color: var(--color-ink); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 16px; }
+    .site-footer-col a { display: block; padding: 4px 0; color: var(--color-ink-2); font-size: 13px; text-decoration: none; }
+    .site-footer-col a:hover { color: var(--color-ink); }
+    .site-footer-bottom { max-width: var(--site-container); margin: 32px auto 0; padding: 24px var(--space-6) 0; border-top: 1px solid var(--color-line); display: flex; justify-content: space-between; color: var(--color-ink-3); font-size: 12px; }
+
     @media (max-width: 1024px) {
-      .form-split { grid-template-columns: 1fr; }
+      .hero-title { font-size: 44px; }
+      .sec-title { font-size: 32px; }
+      .entry-grid { grid-template-columns: 1fr; }
+      .entry-item { border-right: none; border-bottom: 1px solid var(--color-line); }
+      .entry-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--color-line); }
+      .entry-item:last-child { border-bottom: none; }
+      .channel-grid { grid-template-columns: repeat(2, 1fr); }
+      .channel-item:nth-child(2n) { border-right: none; }
+      .channel-item:nth-child(-n+2) { border-bottom: 1px solid var(--color-line); }
+      .site-footer-inner { grid-template-columns: 1fr 1fr; }
+      .ai-assistant { padding: 32px 24px; }
     }
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
+      .site-nav-inner { padding: 0 var(--space-4); gap: var(--space-3); }
       .site-menu { display: none; }
-      .nav-toggle { display: inline-flex; }
-      .site-actions .btn-text-hide { display: none; }
-      .hero { padding: var(--space-16) 0 var(--space-12); }
+      .sec { padding: 64px 0; }
+      .hero { padding: 64px 0 48px; }
       .hero-title { font-size: 36px; }
-      .page-section { padding: var(--space-16) 0; }
+      .sec-title { font-size: 28px; }
       .channel-grid { grid-template-columns: 1fr; }
-      .office-grid { grid-template-columns: 1fr; }
-      .form-card { padding: var(--space-6); }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-grid .full { grid-column: span 1; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .footer-brand-block { grid-column: span 2; }
+      .channel-item { border-right: none; border-bottom: 1px solid var(--color-line); }
+      .channel-item:last-child { border-bottom: none; }
+      .ai-assistant { padding: 24px 16px; border-radius: 16px; }
+      .site-footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .site-footer-bottom { flex-direction: column; gap: 12px; }
     }
-    @media (max-width: 480px) {
-      .hero-title { font-size: 30px; }
-      .form-actions { flex-direction: column; align-items: stretch; }
-      .form-actions .btn { width: 100%; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .footer-brand-block { grid-column: span 1; }
-    }
-    @media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms !important; } }
+    /* ================================
+     * contact hero — 4 主体入口首屏合一
+     * 改：左侧文案 + 右侧 2x2 紧凑卡片
+     * 让 4 主体入口在 1440x900 首屏立即可见
+     * ================================ */
+    .contact-hero { padding: 56px 0 64px; position: relative; }
+    .contact-hero-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 64px; align-items: center; min-height: 580px; }
+    @media (max-width: 1024px) { .contact-hero-grid { grid-template-columns: 1fr; gap: 40px; min-height: 0; } }
+    .contact-hero-text { max-width: 460px; }
+    .contact-hero-text .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 16px; }
+    .contact-hero-text .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .contact-hero-text .hero-title { font-family: var(--font-display); font-size: 48px; font-weight: 600; color: var(--color-ink); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 16px; }
+    .contact-hero-text .hero-sub { font-size: 15px; color: var(--color-ink-2); line-height: 1.6; margin: 0 0 24px; }
+    .contact-hero-trust { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+    .contact-hero-trust-item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 999px; font-size: 12px; color: var(--color-ink-2); }
+    .contact-hero-trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-success); }
+
+    /* 右侧 2x2 紧凑 4 主体卡片 */
+    .contact-hero-entries { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 640px) { .contact-hero-entries { grid-template-columns: 1fr; } }
+    .entry-item-compact { display: flex; flex-direction: column; gap: 10px; padding: 20px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 14px; text-decoration: none; color: var(--color-ink); transition: all 200ms ease; position: relative; overflow: hidden; }
+    .entry-item-compact::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: background 200ms ease; }
+    .entry-item-compact[data-subject="user"]::before { background: var(--color-ink-3); opacity: 0.4; }
+    .entry-item-compact[data-subject="member"]::before { background: var(--color-accent); }
+    .entry-item-compact[data-subject="enterprise"]::before { background: var(--color-info); }
+    .entry-item-compact[data-subject="organization"]::before { background: var(--color-warn-2); }
+    .entry-item-compact:hover { border-color: var(--color-line-3); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15, 22, 32, 0.06); }
+    .entry-item-compact[data-subject="user"]:hover { border-color: var(--color-ink-3); }
+    .entry-item-compact[data-subject="member"]:hover { border-color: var(--color-accent); }
+    .entry-item-compact[data-subject="enterprise"]:hover { border-color: var(--color-info); }
+    .entry-item-compact[data-subject="organization"]:hover { border-color: var(--color-warn-2); }
+    .entry-compact-head { display: flex; align-items: center; gap: 12px; }
+    .entry-compact-head .entry-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .entry-compact-head .entry-icon[data-subject="user"] { background: var(--color-surface-3); color: var(--color-ink-2); }
+    .entry-compact-head .entry-icon[data-subject="member"] { background: var(--color-accent-softer); color: var(--color-accent); }
+    .entry-compact-head .entry-icon[data-subject="enterprise"] { background: var(--color-info-soft); color: var(--color-info); }
+    .entry-compact-head .entry-icon[data-subject="organization"] { background: var(--color-warn-2-soft); color: var(--color-warn-2); }
+    .entry-compact-title { display: flex; flex-direction: column; gap: 0; }
+    .entry-compact-title .entry-name { font-size: 15px; font-weight: 600; color: var(--color-ink); line-height: 1.3; }
+    .entry-compact-title .entry-en { font-size: 11px; color: var(--color-ink-3); line-height: 1.3; margin-top: 2px; }
+    .entry-compact-desc { font-size: 12.5px; color: var(--color-ink-2); line-height: 1.55; margin: 0; min-height: 38px; }
+    .entry-compact-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--color-line); margin-top: 4px; }
+    .entry-compact-link { font-size: 13px; font-weight: 600; color: var(--color-accent); text-decoration: none; }
+    .entry-item-compact[data-subject="user"] .entry-compact-link { color: var(--color-ink-2); }
+    .entry-item-compact[data-subject="enterprise"] .entry-compact-link { color: var(--color-info); }
+    .entry-item-compact[data-subject="organization"] .entry-compact-link { color: var(--color-warn-2); }
+    .entry-compact-time { font-size: 11px; color: var(--color-ink-3); }
   </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="../js/brand-motion.js"></script>
 </head>
 <body>
-<div data-scroll-progress></div>
-  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-  <header class="site-nav">
+  <header class="site-nav" role="banner">
     <div class="site-nav-inner">
-      <a href="index.html" class="site-brand">
-        <span class="site-brand-mark">4</span>
-        <span>4499</span>
+      <a href="index.html" class="site-brand" aria-label="4499 首页">
+        <span class="site-brand-mark">4</span><span>4499</span>
       </a>
       <nav class="site-menu" aria-label="主导航">
-        <a href="index.html">产品</a>
-        <a href="index.html#solutions">解决方案</a>
-        <a href="index.html#cases">客户案例</a>
-        <a href="resources.html">资源</a>
+        <a href="index.html">首页</a>
         <a href="about.html">关于</a>
+        <a href="resources.html">资源</a>
         <a href="contact.html" class="is-current">联系</a>
+        <a href="help-center.html">帮助</a>
       </nav>
       <div class="site-actions">
-        <a href="#" class="btn btn-ghost btn-md btn-text-hide">登录</a>
-        <a href="#form" class="btn btn-primary btn-md">预约咨询</a>
-        <button class="btn btn-ghost btn-icon btn-md nav-toggle" aria-label="菜单">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-        </button>
+        <a href="login.html" class="btn btn-ghost btn-sm">登录</a>
+        <a href="contact.html" class="btn btn-primary btn-sm">申请加入</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero" data-hero>
-    <div class="hero-decor-stack" aria-hidden="true">
-      <div class="hero-decor-orb-1 decor-orb"></div>
-      <div class="hero-decor-orb-2 decor-orb"></div>
-      <div class="hero-decor-lines"></div>
-    </div>
-    <div class="hero-inner">
-      <span class="hero-eyebrow" data-hero-eyebrow>
-        <span class="hero-eyebrow-dot"></span>
-        联系我们
-      </span>
-      <h1 class="hero-title js-title-split">先听场景，<br />再聊产品</h1>
-      <p class="hero-subtitle" data-hero-subtitle>如果你正在做一件需要长期信任才能成立的事，欢迎告诉我们。我们不催、不卖货，先把你描述清楚。</p>
-    </div>
-  </section>
+  <section class="hero contact-hero">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="container contact-hero-grid">
+      <!-- 左侧文案 -->
+      <div class="contact-hero-text">
+        <span class="hero-eyebrow js-fade-up"><span class="hero-eyebrow-dot"></span>Contact · 和我们对话</span>
+        <h1 class="hero-title js-title-split">告诉我们<br />你是谁</h1>
+        <p class="hero-sub js-fade-up">4 类主体各有入口，AI 助手 24/7 在线答疑。专业问题走 30 天服务窗口，紧急申请 4 小时首响应。</p>
+        <div class="contact-hero-trust" aria-label="承诺">
+          <span class="contact-hero-trust-item"><span class="contact-hero-trust-dot"></span>选错了不扣分</span>
+          <span class="contact-hero-trust-item"><span class="contact-hero-trust-dot"></span>24h 人工调整</span>
+          <span class="contact-hero-trust-item"><span class="contact-hero-trust-dot"></span>Opulrich 同步</span>
+        </div>
+      </div>
 
-  <!-- Section 1: 联系方式 -->
-  <section class="page-section" data-section>
-    <div class="container">
-      <div class="section-head js-fade-up" data-section-body>
-        <span class="eyebrow">联系方式</span>
-        <h2 class="section-title">按场景找到对应的人</h2>
-        <p class="section-subtitle">不同场景由不同团队承接；选对了入口，我们能更快回应你。</p>
-      </div>
-      <div class="channel-grid js-fade-stagger">
-        <div class="channel-card">
-          <span class="channel-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-          </span>
-          <span class="channel-label">销售咨询</span>
-          <h3 class="channel-title">企业 / 机构采购</h3>
-          <p class="channel-desc">了解 4499 工作台、Trust Passport、API 接入等商业化方案；面向企业决策人与机构负责人。</p>
-          <span class="channel-value"><a href="mailto:sales@4499.example">sales@4499.example</a></span>
-        </div>
-        <div class="channel-card">
-          <span class="channel-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          </span>
-          <span class="channel-label">生态合作</span>
-          <h3 class="channel-title">专业中心 / 顾问</h3>
-          <p class="channel-desc">共建专业中心、加入 EMP 顾问网络、或申请内测；面向具备专业资质的个人与机构。</p>
-          <span class="channel-value"><a href="mailto:partners@4499.example">partners@4499.example</a></span>
-        </div>
-        <div class="channel-card">
-          <span class="channel-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
-          </span>
-          <span class="channel-label">媒体询问</span>
-          <h3 class="channel-title">记者 / 分析师</h3>
-          <p class="channel-desc">白皮书下载、媒体问答、采访邀约与品牌素材；面向财经 / 科技 / 行业媒体。</p>
-          <span class="channel-value"><a href="mailto:press@4499.example">press@4499.example</a></span>
-        </div>
-        <div class="channel-card">
-          <span class="channel-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          </span>
-          <span class="channel-label">客户支持</span>
-          <h3 class="channel-title">已有用户 / 试用</h3>
-          <p class="channel-desc">账号问题、功能咨询、问题反馈；面向已注册或正在试用 4499 的用户。</p>
-          <span class="channel-value"><a href="mailto:support@4499.example">support@4499.example</a></span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 2: 联系表单 -->
-  <section class="page-section" data-section id="form">
-    <div class="container">
-      <div class="section-head js-fade-up" data-section-body>
-        <span class="eyebrow">表单</span>
-        <h2 class="section-title">填写你的场景</h2>
-        <p class="section-subtitle">我们会在 1 个工作日内回复；如果你勾选"申请加入"，会由生态团队优先处理。</p>
-      </div>
-      <div class="form-split js-fade-up">
-        <aside class="form-aside">
-          <h3>提交前，你可以期待</h3>
-          <p>我们不批量发模板邮件。每一次提交都会被真人读，并按你描述的场景匹配对应团队。</p>
-          <ul>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 7"/></svg>
-              <span>1 个工作日内收到第一封回信（节假日顺延）</span>
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 7"/></svg>
-              <span>回信会先复述你的场景，再给出建议</span>
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 7"/></svg>
-              <span>如果暂时不适合合作，会如实告知原因</span>
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 7"/></svg>
-              <span>所有信息仅用于本次沟通，不进入营销列表</span>
-            </li>
-          </ul>
-        </aside>
-        <form class="form-card" id="apply" onsubmit="event.preventDefault(); alert('已收到（演示）');">
-          <div class="form-grid">
-            <div class="input-group">
-              <label class="input-label" for="f-name">姓名 *</label>
-              <input id="f-name" class="input" type="text" placeholder="你的姓名" required />
-            </div>
-            <div class="input-group">
-              <label class="input-label" for="f-company">公司 / 机构</label>
-              <input id="f-company" class="input" type="text" placeholder="所在组织（可选）" />
-            </div>
-            <div class="input-group">
-              <label class="input-label" for="f-email">工作邮箱 *</label>
-              <input id="f-email" class="input" type="email" placeholder="name@company.com" required />
-            </div>
-            <div class="input-group">
-              <label class="input-label" for="f-role">你的角色</label>
-              <select id="f-role" class="select">
-                <option>企业 · 决策人 / 业务负责人</option>
-                <option>机构 · 专业服务方</option>
-                <option>顾问 · EMP / 独立顾问</option>
-                <option>媒体 / 分析师</option>
-                <option>其他</option>
-              </select>
-            </div>
-            <div class="input-group full">
-              <label class="input-label" for="f-topic">咨询主题</label>
-              <select id="f-topic" class="select">
-                <option>了解产品与方案</option>
-                <option>申请加入 4499 平台</option>
-                <option>申请成为 EMP 顾问</option>
-                <option>共建专业中心</option>
-                <option>媒体 / 采访</option>
-                <option>已有账号支持</option>
-              </select>
-            </div>
-            <div class="input-group full">
-              <label class="input-label" for="f-msg">具体需求 *</label>
-              <textarea id="f-msg" class="textarea" rows="4" placeholder="用 2-3 句话描述你目前在做、想解决的问题、可接受的节奏。" required></textarea>
-              <span class="input-hint">我们更喜欢你描述"场景"，而不是只问"价格"。</span>
+      <!-- 右侧 2x2 紧凑 4 主体卡片 -->
+      <div class="contact-hero-entries">
+        <a class="entry-item-compact" data-subject="user" href="login.html">
+          <div class="entry-compact-head">
+            <span class="entry-icon" data-subject="user" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 16.5a7 7 0 0114 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <div class="entry-compact-title">
+              <div class="entry-name">用户</div>
+              <div class="entry-en">User · 普通参与者</div>
             </div>
           </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary btn-md">提交咨询</button>
-            <button type="reset" class="btn btn-ghost btn-md">清空</button>
-            <span class="form-actions-note">提交即表示同意《隐私政策》。我们不会把你的信息用于营销。</span>
+          <p class="entry-compact-desc">基础画像 · 信誉值 · 活动浏览。无商业经营权限。</p>
+          <div class="entry-compact-foot">
+            <span class="entry-compact-link">用户注册 →</span>
+            <span class="entry-compact-time">立即可用</span>
           </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 3: 办公地点 -->
-  <section class="page-section" data-section>
-    <div class="container">
-      <div class="section-head js-fade-up" data-section-body>
-        <span class="eyebrow">办公地点</span>
-        <h2 class="section-title">3 个城市，3 种节奏</h2>
-        <p class="section-subtitle">海南是注册与运营总部；北京对接 OpulnX 总部与监管；上海对接跨境与机构合作。</p>
-      </div>
-      <div class="office-grid js-fade-stagger">
-        <div class="office-card">
-          <div class="office-map" aria-hidden="true">
-            <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--color-line)" stroke-width="1"/>
-                </pattern>
-              </defs>
-              <rect width="240" height="150" fill="url(#map-grid)"/>
-              <path d="M 20 100 Q 80 60 140 80 T 220 50" fill="none" stroke="var(--color-accent-2)" stroke-width="1.5" stroke-dasharray="3 3"/>
-              <circle cx="120" cy="78" r="8" fill="var(--color-accent)"/>
-              <circle cx="120" cy="78" r="16" fill="none" stroke="var(--color-accent)" stroke-opacity="0.3" stroke-width="1"/>
-              <circle cx="120" cy="78" r="24" fill="none" stroke="var(--color-accent)" stroke-opacity="0.15" stroke-width="1"/>
-            </svg>
-          </div>
-          <span class="office-tag">HQ · 总部</span>
-          <h3 class="office-city">海南 · 海口</h3>
-          <p class="office-address">海南省海口市龙华区国贸大道 4499 号 · 4499 中心 18 层</p>
-          <div class="office-meta">
-            <div class="office-meta-row"><strong>职能</strong> 运营总部 · 产品研发 · 客户成功</div>
-            <div class="office-meta-row"><strong>电话</strong> +86 898-XXXX-XXXX</div>
-            <div class="office-meta-row"><strong>类型</strong> 注册主体所在地</div>
-          </div>
-        </div>
-        <div class="office-card">
-          <div class="office-map" aria-hidden="true">
-            <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="map-grid-2" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--color-line)" stroke-width="1"/>
-                </pattern>
-              </defs>
-              <rect width="240" height="150" fill="url(#map-grid-2)"/>
-              <path d="M 30 60 L 100 80 L 180 50 L 220 70" fill="none" stroke="var(--color-accent-2)" stroke-width="1.5" stroke-dasharray="3 3"/>
-              <circle cx="120" cy="75" r="8" fill="var(--color-accent)"/>
-              <circle cx="120" cy="75" r="16" fill="none" stroke="var(--color-accent)" stroke-opacity="0.3" stroke-width="1"/>
-              <circle cx="120" cy="75" r="24" fill="none" stroke="var(--color-accent)" stroke-opacity="0.15" stroke-width="1"/>
-            </svg>
-          </div>
-          <span class="office-tag">OpulnX 协作</span>
-          <h3 class="office-city">北京 · 朝阳</h3>
-          <p class="office-address">北京市朝阳区建国路 88 号 · OpulnX 中心 12 层</p>
-          <div class="office-meta">
-            <div class="office-meta-row"><strong>职能</strong> 生态对接 · 监管沟通 · 品牌</div>
-            <div class="office-meta-row"><strong>电话</strong> +86 10-XXXX-XXXX</div>
-            <div class="office-meta-row"><strong>类型</strong> 与 OpulnX 联合办公</div>
-          </div>
-        </div>
-        <div class="office-card">
-          <div class="office-map" aria-hidden="true">
-            <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="map-grid-3" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--color-line)" stroke-width="1"/>
-                </pattern>
-              </defs>
-              <rect width="240" height="150" fill="url(#map-grid-3)"/>
-              <path d="M 20 90 Q 80 60 120 70 T 220 50" fill="none" stroke="var(--color-accent-2)" stroke-width="1.5" stroke-dasharray="3 3"/>
-              <circle cx="120" cy="70" r="8" fill="var(--color-accent)"/>
-              <circle cx="120" cy="70" r="16" fill="none" stroke="var(--color-accent)" stroke-opacity="0.3" stroke-width="1"/>
-              <circle cx="120" cy="70" r="24" fill="none" stroke="var(--color-accent)" stroke-opacity="0.15" stroke-width="1"/>
-            </svg>
-          </div>
-          <span class="office-tag">机构合作</span>
-          <h3 class="office-city">上海 · 浦东</h3>
-          <p class="office-address">上海市浦东新区世纪大道 100 号 · 金融中心 28 层</p>
-          <div class="office-meta">
-            <div class="office-meta-row"><strong>职能</strong> 跨境业务 · 机构合作 · EMP 网络</div>
-            <div class="office-meta-row"><strong>电话</strong> +86 21-XXXX-XXXX</div>
-            <div class="office-meta-row"><strong>类型</strong> 区域合作中心</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 4: FAQ -->
-  <section class="page-section" data-section>
-    <div class="container">
-      <div class="section-head js-fade-up" data-section-body>
-        <span class="eyebrow">常见问题</span>
-        <h2 class="section-title">在联系我们之前，你可能想知道</h2>
-      </div>
-      <div class="faq-list js-fade-up">
-        <div class="faq-item is-open">
-          <button class="faq-q" type="button" aria-expanded="true">
-            <span>4499 平台现在能试用吗？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">目前 P0 高保真原型已完成 8 / 8，正在向 P1 中保真迭代。试用申请已开放，但需要经过资质核验与场景匹配；预计 2026 Q4 起对受邀用户开放早期访问。</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">
-            <span>4499 和 OpulnX 是什么关系？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">4499 是 OpulnX 生态中的"会员成功与生态运营平台"。我们由 Opulrich 运营，与 OpulnX 平台账户互通、关系数据只读同步，但不操作 OpulnX 核心业务。</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">
-            <span>个人顾问能加入 4499 吗？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">可以。我们当前正在内测 EMP 顾问网络（10 位种子用户），具备法律、税务、财富管理等专业资质的顾问可通过 partners@4499.example 申请加入。审核通过后会安排一对一 onboarding。</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">
-            <span>数据安全与合规如何保证？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">4499 严格遵守最小必要原则收集信息；关系数据加密存储；任何信任值调整均留痕并接受独立审计；我们不持有保单、不持有客户资金。详细规范见《隐私政策》与《合规声明》。</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">
-            <span>为什么页面里很多数据标着"待补充"？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">因为我们更愿意等真实数据出来再展示。平台处于 P0 阶段，部分指标尚无外部可独立核验的数据；我们拒绝"+47% conversion"这类无来源的营销话术。</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">
-            <span>如果暂时不适合合作，会被告知吗？</span>
-            <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-          <div class="faq-a">会。如果你的场景与 4499 当前阶段不匹配，我们会在回信中说明原因，并提示你可能更适合的替代渠道。我们不做"先加微信再说"的销售动作。</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="site-footer js-fade-up">
-    <div class="footer-grid">
-      <div class="footer-brand-block">
-        <a href="index.html" class="site-brand">
-          <span class="site-brand-mark">4</span>
-          <span>4499</span>
         </a>
-        <p class="footer-tagline">OpulnX 生态中的会员成功与生态运营平台。把分散的协作沉淀为可验证的长期信任。</p>
-        <div class="footer-social" aria-label="社交媒体">
-          <a href="#" aria-label="LinkedIn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7 0h3.8v2.2h.05c.53-1 1.83-2.2 3.77-2.2 4.03 0 4.78 2.65 4.78 6.1V24h-4v-7.4c0-1.77-.03-4.05-2.47-4.05-2.47 0-2.85 1.93-2.85 3.92V24h-4V8z"/></svg>
-          </a>
-          <a href="#" aria-label="X / Twitter">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a href="#" aria-label="微信公众号">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 9.5a1 1 0 100-2 1 1 0 000 2zm5 0a1 1 0 100-2 1 1 0 000 2zM12 2C6.5 2 2 5.5 2 9.7c0 2.4 1.4 4.5 3.6 6L5 18l3-1.6c.9.2 1.8.3 2.7.3.2-1 .7-1.9 1.5-2.6-1-.1-1.9-.3-2.8-.7-2.7-1-4.5-3.1-4.5-5.4 0-3.3 3.4-6 7.5-6s7.5 2.7 7.5 6c0 .6-.1 1.2-.3 1.7.6.1 1.2.3 1.7.5.2-.7.3-1.4.3-2.2C22 5.5 17.5 2 12 2z"/></svg>
-          </a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>产品</h4>
-        <ul>
-          <li><a href="index.html#solutions">价值主张</a></li>
-          <li><a href="index.html#ai-matching">AI 匹配</a></li>
-          <li><a href="index.html#cases">客户案例</a></li>
-          <li><a href="resources.html">资源中心</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>解决方案</h4>
-        <ul>
-          <li><a href="index.html#solutions">推荐人工作台</a></li>
-          <li><a href="index.html#solutions">EMP 顾问协作</a></li>
-          <li><a href="index.html#solutions">专业中心共建</a></li>
-          <li><a href="index.html#solutions">保单只读同步</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>关于</h4>
-        <ul>
-          <li><a href="about.html">品牌故事</a></li>
-          <li><a href="about.html#principles">核心原则</a></li>
-          <li><a href="about.html#boundary">生态边界</a></li>
-          <li><a href="contact.html">联系我们</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>资源</h4>
-        <ul>
-          <li><a href="resources.html">白皮书</a></li>
-          <li><a href="resources.html">案例研究</a></li>
-          <li><a href="resources.html">行业洞察</a></li>
-          <li><a href="resources.html">帮助中心</a></li>
-        </ul>
+
+        <a class="entry-item-compact" data-subject="member" href="register-member.html">
+          <div class="entry-compact-head">
+            <span class="entry-icon" data-subject="member" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2l6 3v5c0 4.5-2.5 8-6 9-3.5-1-6-4.5-6-9V5l6-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="entry-compact-title">
+              <div class="entry-name">个人会员</div>
+              <div class="entry-en">Member · 推荐人 / 顾问</div>
+            </div>
+          </div>
+          <p class="entry-compact-desc">完整画像 · PB 信誉值 · 资源上架 · 商业品牌经营。</p>
+          <div class="entry-compact-foot">
+            <span class="entry-compact-link">申请成为会员 →</span>
+            <span class="entry-compact-time">3 工作日审核</span>
+          </div>
+        </a>
+
+        <a class="entry-item-compact" data-subject="enterprise" href="register-enterprise.html">
+          <div class="entry-compact-head">
+            <span class="entry-icon" data-subject="enterprise" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <div class="entry-compact-title">
+              <div class="entry-name">企业</div>
+              <div class="entry-en">Enterprise · 企业商户</div>
+            </div>
+          </div>
+          <p class="entry-compact-desc">企业画像 · 资源清单 · 需求发布 · 项目合作。</p>
+          <div class="entry-compact-foot">
+            <span class="entry-compact-link">企业入驻申请 →</span>
+            <span class="entry-compact-time">5 工作日审核</span>
+          </div>
+        </a>
+
+        <a class="entry-item-compact" data-subject="organization" href="register-org.html">
+          <div class="entry-compact-head">
+            <span class="entry-icon" data-subject="organization" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2l6 1.5v5c0 4.5-2.5 8-6 9-3.5-1-6-4.5-6-9v-5L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.5 10l1.5 1.5 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="entry-compact-title">
+              <div class="entry-name">组织</div>
+              <div class="entry-en">Organization · 基金会 / NGO</div>
+            </div>
+          </div>
+          <p class="entry-compact-desc">成员管理 · 资源调度 · 公益项目 · 行业活动。</p>
+          <div class="entry-compact-foot">
+            <span class="entry-compact-link">组织入驻申请 →</span>
+            <span class="entry-compact-time">5 工作日审核</span>
+          </div>
+        </a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 4499 · OpulnX 生态成员 · 海南亚洲公益研究院等机构共建</span>
-      <div class="footer-bottom-links">
-        <a href="#">隐私政策</a>
-        <a href="#">服务条款</a>
-        <a href="#">合规声明</a>
+  </section>
+
+  <!-- AI 助手 -->
+  <section class="sec">
+    <div class="container">
+      <div class="sec-head">
+        <span class="sec-eyebrow">AI Assistant · 24/7 在线</span>
+        <h2 class="sec-title">不是聊天窗口<br />是真正的助手</h2>
+        <p class="sec-sub">基于你的画像、历史、当前任务，主动提供建议。不是你问它答，是它主动找你。</p>
       </div>
+      <div class="ai-assistant js-fade-up">
+        <div class="ai-assistant-head">
+          <span class="ai-assistant-avatar" aria-hidden="true">AI</span>
+          <div>
+            <div class="ai-assistant-title">4499 AI 助手</div>
+            <div class="ai-assistant-sub">基于你的画像 · 关系网络 · 任务历史</div>
+          </div>
+          <span class="ai-assistant-status"><span class="ai-assistant-status-dot"></span>在线</span>
+        </div>
+        <div class="ai-assistant-msgs">
+          <div class="ai-msg is-user">我是企业经营，需要找一个懂 To B 销售的导师陪跑 3 个月，怎么开始？</div>
+          <div class="ai-msg is-bot">
+            好的。根据你提交的企业画像（智能硬件行业 / 年营收 800 万 / 团队 12 人），AI 已为你匹配 <strong>3 位候选 EMP 导师</strong>，平均匹配度 <strong>87 分</strong>。<br><br>
+            <strong>推荐方案</strong>：申请「企业战略咨询」模块，30 天服务窗口，¥ 8,000 - 25,000 区间。<br><br>
+            你可以先看看这 3 位导师的简介、过往服务记录、PB 信誉值：
+            <div style="margin-top: 12px;">
+              <span class="ai-msg-suggestion">张明（EMP · 92 分）</span>
+              <span class="ai-msg-suggestion">李文华（企业顾问 · 87 分）</span>
+              <span class="ai-msg-suggestion">王志远（中心分配 · 82 分）</span>
+            </div>
+          </div>
+        </div>
+        <div class="ai-assistant-input">
+          <input type="text" placeholder="问点什么 · 如「我能找到什么样的资源？」「我的 PB 信誉值怎么提升？」" />
+          <button type="button">发送</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec">
+    <div class="container-narrow">
+      <div class="sec-head">
+        <span class="sec-eyebrow">Help Center · 帮助中心</span>
+        <h2 class="sec-title">最常被问到的 6 个问题</h2>
+        <p class="sec-sub">其他问题请直接 AI 助手提问，或走 4 主体接入入口。</p>
+      </div>
+      <div class="faq-list" id="faq">
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>4499 是给谁用的？我能加入吗？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">4499 是给愿意认真做商业、愿意积累信任、愿意长期主义的人准备的。无论你是个人会员、企业代表、组织运营者，都可以申请。User 角色默认开放，注册即可使用。</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>申请会员需要多久？需要什么资料？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">个人会员 3 个工作日审核，提交基础画像 + 能力标签即可。企业 / 组织入驻 5 个工作日审核，需要营业执照、法人资料、组织章程（组织）。</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>30 天服务窗口是什么意思？到期后怎么办？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">30 天是默认的服务期限。期间专家可访问你授权的数据。到期后访问权限自动关闭，已发送的消息不撤回但专家无法继续。可在窗口期内申请延期或更换专家。</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>PB 信誉值是什么？怎么提升？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">PB 是 Personal/Public Believability，是数字信誉资产，非积分、非货币、非奖金。正向行为（服务、成交、公益、帮扶）增值，失信、违约、投诉行为减值。永久累计，动态更新。</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>4499 和 Opulrich / UMAX 是什么关系？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Opulrich 是会员身份平台，UMAX 是统一入口和通讯。4499 是会员成功与生态运营平台（Ecosystem Workbench），是 CRM + AI + 服务的完整工作后台。三者属于 OpulnX 生态协同。</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="this.parentElement.classList.toggle('is-open')">
+            <span>紧急申请多久能响应？</span>
+            <span class="faq-q-icon">+</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">紧急申请走 4 小时首响应通道，普通申请默认 3 个工作日。紧急申请需在申请时勾选"加急"并说明紧急度，由专业中心调度空闲专家。</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系渠道 -->
+  <section class="sec sec-tight" style="background: var(--color-surface);">
+    <div class="container">
+      <div class="sec-head" style="margin-bottom: 32px;">
+        <span class="sec-eyebrow">Channels · 4 种联系方式</span>
+        <h2 class="sec-title">找到最适合你的方式</h2>
+      </div>
+      <div class="channel-grid">
+        <div class="channel-item">
+          <div class="channel-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 8a5 5 0 019-3 5 5 0 011 9.7L11 16l-2-1.5a5 5 0 01-6-1A5 5 0 013 8z" stroke="currentColor" stroke-width="1.4"/></svg>
+          </div>
+          <div class="channel-name">微信</div>
+          <div class="channel-info">扫码加入 4499 会员群<br />每日 1 条生态动态</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M2 8h14" stroke="currentColor" stroke-width="1.4"/></svg>
+          </div>
+          <div class="channel-name">企业邮箱</div>
+          <div class="channel-info">contact@4499.work<br />工作日 24h 内回复</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2a7 7 0 017 7c0 2-1 3-2 4l-1 1h-8l-1-1c-1-1-2-2-2-4a7 7 0 017-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 16h4M7.5 14h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div class="channel-name">AI 助手</div>
+          <div class="channel-info">本页直接对话<br />24/7 在线答疑</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M9 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div class="channel-name">工作时间</div>
+          <div class="channel-info">周一至周五<br />09:00 - 18:00 (UTC+8)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-brand">
+        <div class="site-brand" style="margin-bottom: 16px;"><span class="site-brand-mark">4</span><span>4499</span></div>
+        <p>Ecosystem Workbench · 商业成长与长期信任平台<br />OpulnX 生态的会员成功与运营平台</p>
+        <p style="margin-top: 12px; font-size: 12px;">会员状态以 Opulrich 为权威来源</p>
+      </div>
+      <div class="site-footer-col">
+        <h4>产品</h4>
+        <a href="workbench-recommender.html">工作台</a>
+        <a href="crm-list.html">客户经营</a>
+        <a href="trust-passport.html">信誉护照</a>
+        <a href="ai-match.html">AI 智能匹配</a>
+      </div>
+      <div class="site-footer-col">
+        <h4>资源</h4>
+        <a href="resources.html">案例与资源</a>
+        <a href="about.html">设计哲学</a>
+        <a href="help-center.html">帮助中心</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+      <div class="site-footer-col">
+        <h4>OpulnX 生态</h4>
+        <a href="#" rel="noopener">Opulrich · 会员身份</a>
+        <a href="#" rel="noopener">UMAX · 统一入口</a>
+        <a href="#" rel="noopener">Opulatrix · 游戏商户</a>
+        <a href="#" rel="noopener">OPVI · 企业 AI</a>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© 2026 4499 Ecosystem Workbench</span>
+      <span>Built with OpulnX · Powered by UMC</span>
     </div>
   </footer>
 
-  <script>
-    // FAQ accordion (lightweight, no external lib)
-    document.querySelectorAll('.faq-item').forEach(function(item) {
-      var q = item.querySelector('.faq-q');
-      q.addEventListener('click', function() {
-        var isOpen = item.classList.contains('is-open');
-        document.querySelectorAll('.faq-item').forEach(function(other) {
-          other.classList.remove('is-open');
-          other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
-        });
-        if (!isOpen) {
-          item.classList.add('is-open');
-          q.setAttribute('aria-expanded', 'true');
-        }
-      });
-    });
-  </script>
-<!-- GSAP 3.x 动效 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="../js/app.js" defer></script>
-<script src="../js/brand-anim.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="../js/brand-anim.js?v=3"></script>
 </body>
 </html>
