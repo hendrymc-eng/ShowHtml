@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · 充值</title>
+<style>
+  :root { --color-brand: #0A2540; --color-brand-soft: #E6EDF5; --color-accent: #D4AF37; --color-accent-soft: #FAF3DC; --color-up: #16A34A; --color-up-soft: #DCFCE7; --color-down: #DC2626; --color-down-soft: #FEE2E2; --color-warn: #D97706; --color-warn-soft: #FEF3C7; --color-info: #2563EB; --color-info-soft: #DBEAFE; --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5; --color-border: #E2E8F0; --color-text: #0F172A; --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8; --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif; --radius-md: 12px; --radius-lg: 16px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a:active { opacity: 0.7; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 56px - 34px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; }
+
+  .scope { background: var(--color-info-soft); margin: 12px; padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px; }
+  .scope .ic { width: 20px; height: 20px; color: var(--color-info); flex-shrink: 0; margin-top: 1px; }
+  .scope .body .t1 { font-size: 11px; font-weight: 700; color: #1E3A8A; margin-bottom: 2px; }
+  .scope .body .t2 { font-size: 10px; color: #1E40AF; line-height: 1.5; }
+
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06); }
+  .section .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .section .head .t1 { font-size: 13px; font-weight: 700; }
+  .section .head .t1 .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; margin-left: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .balance { background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%); margin: 0 12px 12px; padding: 16px; border-radius: 16px; color: #fff; position: relative; overflow: hidden; }
+  .balance::after { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%); border-radius: 50%; }
+  .balance .l { font-size: 12px; color: rgba(255,255,255,0.7); position: relative; }
+  .balance .v { font-size: 30px; font-weight: 700; margin-top: 4px; position: relative; }
+  .balance .v .small { font-size: 18px; color: rgba(255,255,255,0.8); margin-left: 4px; }
+  .balance .meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 11px; color: rgba(255,255,255,0.6); position: relative; }
+  .balance .meta .up { color: #4ADE80; }
+
+  .methods { display: flex; flex-direction: column; gap: 8px; }
+  .method { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1.5px solid var(--color-border); border-radius: 10px; cursor: pointer; }
+  .method.is-active { border-color: var(--color-brand); background: var(--color-brand-soft); }
+  .method .ic { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .method .body { flex: 1; }
+  .method .t1 { font-size: 13px; font-weight: 600; }
+  .method .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .method .check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--color-border); flex-shrink: 0; }
+  .method.is-active .check { background: var(--color-brand); border-color: var(--color-brand); }
+
+  .amount-input { display: flex; align-items: center; padding: 14px 16px; background: var(--color-surface); border-radius: 10px; }
+  .amount-input .currency { font-size: 18px; font-weight: 700; color: var(--color-text-secondary); margin-right: 8px; }
+  .amount-input input { flex: 1; border: 0; background: transparent; font-size: 24px; font-weight: 700; color: var(--color-text); outline: none; font-variant-numeric: tabular-nums; }
+  .amount-presets { display: flex; gap: 8px; margin-top: 10px; }
+  .amount-presets .preset { flex: 1; padding: 6px 0; text-align: center; background: var(--color-surface); border-radius: 6px; font-size: 12px; color: var(--color-brand); font-weight: 600; }
+
+  .summary { display: flex; flex-direction: column; gap: 8px; }
+  .summary .row { display: flex; justify-content: space-between; font-size: 12px; }
+  .summary .row .l { color: var(--color-text-secondary); }
+  .summary .row .v { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .summary .row.total { padding-top: 8px; border-top: 1px solid var(--color-border); font-size: 14px; font-weight: 700; }
+
+  .limit { background: var(--color-warn-soft); margin: 0 12px 16px; padding: 10px 12px; border-radius: 10px; display: flex; align-items: center; gap: 8px; }
+  .limit .ic { width: 18px; height: 18px; color: var(--color-warn); flex-shrink: 0; }
+  .limit .t { font-size: 11px; color: #92400E; line-height: 1.5; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="battery"><div class="level"></div></div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="home.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">充值</div>
+    <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+  </div>
+
+  <div class="content">
+    <div class="scope">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div class="body">
+        <div class="t1">法币充值走持牌支付通道</div>
+        <div class="t2">平台不直接接收法币 · 通过合作支付机构完成入金 · 平台仅展示支付方式</div>
+      </div>
+    </div>
+
+    <div class="balance">
+      <div class="l">当前 OpulnX 账户余额</div>
+      <div class="v num">$328,562<span class="small num">.47</span></div>
+      <div class="meta">
+        <span>≈ HK$ 2,562,786</span>
+        <span>·</span>
+        <span class="up">+ $2,840 今日</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">选择充值方式 <span class="eb">METHOD</span></div></div>
+      <div class="methods">
+        <div class="method is-active">
+          <div class="ic" style="background: #1677FF;">银</div>
+          <div class="body">
+            <div class="t1">银行卡转账</div>
+            <div class="t2">招行 · ****3210 · 到账 5-30 分钟</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="method">
+          <div class="ic" style="background: #1677FF;">支</div>
+          <div class="body">
+            <div class="t1">支付宝</div>
+            <div class="t2">单笔 ≤ ¥50,000 · 到账即时</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="method">
+          <div class="ic" style="background: #1AAD19;">微</div>
+          <div class="body">
+            <div class="t1">微信支付</div>
+            <div class="t2">单笔 ≤ ¥50,000 · 到账即时</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="method">
+          <div class="ic" style="background: #F59E0B;">链</div>
+          <div class="body">
+            <div class="t1">数字资产转入</div>
+            <a class="t2" href="javascript:void(0)" onclick="demoAction('USDT/POE/ETH 链上转账 · 需 12 区块确认')">USDT/POE/ETH 链上转账 · 需 12 区块确认</a>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">充值金额 <span class="eb">AMOUNT</span></div></div>
+      <div class="amount-input">
+        <span class="currency">$</span>
+        <input type="text" value="10,000" inputmode="decimal">
+      </div>
+      <div class="amount-presets">
+        <div class="preset">$1,000</div>
+        <div class="preset">$5,000</div>
+        <div class="preset is-active" style="background: var(--color-brand-soft);">$10,000</div>
+        <div class="preset">$50,000</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">费用明细 <span class="eb">FEE</span></div></div>
+      <div class="summary">
+        <div class="row"><div class="l">充值金额</div><div class="v num">$10,000.00</div></div>
+        <div class="row"><div class="l">支付通道费</div><div class="v num">$0.00</div></div>
+        <div class="row"><div class="l">平台服务费</div><div class="v num">$0.00</div></div>
+        <div class="row total"><div class="l">实际到账</div><div class="v num">$10,000.00</div></div>
+      </div>
+    </div>
+
+    <div class="limit">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div class="t">KYC L2 单日充值 ≤ $20,000 · L3 提升至 $100,000</div>
+    </div>
+
+    <div style="height: 100px;"></div>
+  </div>
+
+  <div style="position: absolute; bottom: 90px; left: 0; right: 0; padding: 12px 16px; background: var(--color-bg); border-top: 1px solid var(--color-border); z-index: 8;">
+    <a style="height: 44px; border-radius: 10px; background: var(--color-up); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;; display: flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer;" href="deposit-confirm.html">立即充值 · $10,000</a>
+  </div>
+
+    <div class="tabbar">
+    
+    <a class="tab" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="lbl">首页</div></a>
+    <a class="tab" href="global-investment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg><div class="lbl">全球投资</div></a>
+    <a class="tab" href="poe-finance.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg><div class="lbl">POE 金融</div></a>
+    <a class="tab" href="asset-market.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg><div class="lbl">资产市场</div></a>
+    <a class="tab" href="me.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg><div class="lbl">我的</div></a>
+  
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+
+  <script>
+    function demoAction(name) {
+      // 原型演示用：点击按钮不跳转，弹提示
+      var el = document.createElement('div');
+      el.textContent = '✓ ' + name + '（原型演示）';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A2540;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 1500);
+    }
+  </script>
+</body>
+</html>

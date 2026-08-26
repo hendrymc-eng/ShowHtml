@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · OTC 发布卖单</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-hover: #0F3556;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-disabled: #CBD5E1;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.rec-card, a.center-item, a.tab { display: flex; }
+  a.btn-primary, a.btn-secondary, a.btn-ghost, a.act-btn { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  /* 业务范围 banner（不担保法币） */
+  .scope-banner {
+    margin: 12px 16px 0;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .scope-banner .icon { color: var(--color-text-secondary); flex-shrink: 0; }
+  .scope-banner .icon svg { width: 18px; height: 18px; }
+  .scope-banner .body .t1 { font-size: 12px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
+  .scope-banner .body .t2 { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+  .scope-banner .body .t2 b { color: var(--color-down); font-weight: 600; }
+
+  /* 横向二级 Tab */
+  .sub-tabs { display: flex; background: var(--color-bg); border-bottom: 1px solid var(--color-border); padding: 0 16px; position: sticky; top: 0; z-index: 5; margin-top: 12px; }
+  .sub-tab { flex: 1; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: var(--color-text-tertiary); position: relative; cursor: pointer; }
+  .sub-tab.is-active { color: var(--color-brand); font-weight: 600; }
+  .sub-tab.is-active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 2.5px; background: var(--color-brand); border-radius: 2px 2px 0 0; }
+
+  /* 卖家信任度 */
+  .trust-card { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 12px; padding: 14px; margin: 12px 12px 0; display: flex; gap: 12px; align-items: center; }
+  .trust-card .left { position: relative; flex-shrink: 0; }
+  .trust-card .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+  .trust-card .lvl-pill { position: absolute; bottom: -2px; right: -2px; padding: 1px 5px; background: var(--color-brand); color: var(--color-accent); font-size: 9px; font-weight: 700; border-radius: 3px; border: 1.5px solid var(--color-bg); line-height: 1.3; }
+  .trust-card .body { flex: 1; min-width: 0; }
+  .trust-card .row1 { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+  .trust-card .row1 .name { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .trust-card .row1 .check { display: flex; align-items: center; color: var(--color-up); }
+  .trust-card .row1 .t1 { font-size: 10px; color: var(--color-text-tertiary); }
+  .trust-card .stats { display: flex; gap: 12px; }
+  .trust-card .stat { text-align: left; }
+  .trust-card .stat .v { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .trust-card .stat .v.up { color: var(--color-up); }
+  .trust-card .stat .l { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* 委托类型 市价/限价 */
+  .order-type { display: flex; background: var(--color-surface-2); border-radius: 8px; padding: 3px; margin-bottom: 14px; }
+  .order-type .ot-item { flex: 1; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 600; color: var(--color-text-tertiary); border-radius: 6px; cursor: pointer; }
+  .order-type .ot-item.is-active { background: var(--color-bg); color: var(--color-brand); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08); }
+  .order-type .ot-item .tip { display: block; font-size: 9px; color: var(--color-text-tertiary); font-weight: 400; margin-top: 1px; }
+  .order-type .ot-item.is-active .tip { color: var(--color-text-secondary); }
+
+  /* Section */
+  .section { background: var(--color-bg); margin-top: 8px; padding: 16px; }
+  .section .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .section .head .eyebrow { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 3px; }
+  .section .head .h { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .section .head .more { font-size: 11px; color: var(--color-text-tertiary); }
+
+  /* 资产选择 chip */
+  .asset-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .asset-chip {
+    padding: 8px 12px;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500;
+    color: var(--color-text);
+  }
+  .asset-chip.is-active {
+    background: var(--color-brand-soft);
+    border-color: var(--color-brand);
+    color: var(--color-brand);
+    font-weight: 600;
+  }
+  .asset-chip .symbol { font-weight: 700; }
+  .asset-chip .price { font-size: 11px; color: var(--color-text-tertiary); }
+  .asset-chip.is-active .price { color: var(--color-brand); opacity: 0.8; }
+
+  /* 表单 */
+  .field { margin-bottom: 14px; }
+  .field .label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; font-weight: 500; display: flex; justify-content: space-between; }
+  .field .label .req { color: var(--color-down); }
+  .field .label .hint { color: var(--color-brand); cursor: pointer; }
+  .field .input {
+    height: 44px;
+    background: var(--color-surface);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 0 12px;
+    display: flex; align-items: center;
+    gap: 8px;
+  }
+  .field .input.is-focus { border-color: var(--color-brand); background: var(--color-bg); }
+  .field .input .prefix { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+  .field .input input { flex: 1; border: 0; background: transparent; font-family: var(--font-family); font-size: 16px; color: var(--color-text); outline: 0; }
+  .field .input .suffix { font-size: 12px; color: var(--color-text-tertiary); }
+  .field .input .max { padding: 2px 6px; background: var(--color-brand-soft); color: var(--color-brand); font-size: 10px; font-weight: 600; border-radius: 3px; }
+  .field .help { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; }
+  .field .help .up { color: var(--color-up); font-weight: 600; }
+
+  /* 支付方式 */
+  .pay-list { display: flex; flex-direction: column; gap: 8px; }
+  .pay-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px;
+    background: var(--color-surface);
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .pay-row.is-active { background: var(--color-brand-soft); border-color: var(--color-brand); }
+  .pay-row .checkbox {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .pay-row.is-active .checkbox { background: var(--color-brand); border-color: var(--color-brand); }
+  .pay-row .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 10px; flex-shrink: 0; }
+  .pay-row .body { flex: 1; }
+  .pay-row .name { font-size: 13px; font-weight: 500; color: var(--color-text); }
+  .pay-row .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  /* 限额行 */
+  .range-row { display: flex; gap: 8px; }
+  .range-row .field { flex: 1; margin-bottom: 0; }
+
+  /* 托管释放流程图 */
+  .flow {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 4px;
+  }
+  .flow .head { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+  .flow .head .icon { width: 18px; height: 18px; color: var(--color-info); }
+  .flow .head .icon svg { width: 18px; height: 18px; }
+  .flow .head .t1 { font-size: 12px; font-weight: 600; color: var(--color-text); }
+  .flow .steps { display: flex; flex-direction: column; position: relative; }
+  .flow .steps::before { content: ''; position: absolute; left: 9px; top: 12px; bottom: 12px; width: 2px; background: var(--color-border); }
+  .flow .step { display: flex; align-items: flex-start; gap: 10px; position: relative; padding-bottom: 14px; }
+  .flow .step:last-child { padding-bottom: 0; }
+  .flow .step .dot { width: 20px; height: 20px; border-radius: 50%; background: var(--color-info); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; z-index: 1; box-shadow: 0 0 0 3px var(--color-bg); }
+  .flow .step.is-active .dot { background: var(--color-accent); }
+  .flow .step.is-pending .dot { background: var(--color-text-tertiary); }
+  .flow .step .body { flex: 1; padding-top: 1px; }
+  .flow .step .name { font-size: 12px; color: var(--color-text); font-weight: 600; }
+  .flow .step .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; line-height: 1.5; }
+
+  /* 风险提示 */
+  .risk {
+    margin: 8px 16px 0;
+    padding: 10px 12px;
+    background: var(--color-warn-soft);
+    border: 1px solid #FCD34D;
+    border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .risk .icon { color: var(--color-warn); flex-shrink: 0; }
+  .risk .icon svg { width: 16px; height: 16px; }
+  .risk .body { flex: 1; }
+  .risk .t1 { font-size: 11px; font-weight: 600; color: #78350F; }
+  .risk .t2 { font-size: 10px; color: #78350F; line-height: 1.5; }
+
+  /* 底部 CTA */
+  .cta-bar {
+    padding: 12px 16px;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    position: sticky; bottom: 0;
+  }
+  .cta-bar .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .cta-bar .summary .l { font-size: 11px; color: var(--color-text-tertiary); }
+  .cta-bar .summary .v { font-size: 16px; font-weight: 700; color: var(--color-text); }
+  .cta-bar .btn {
+    width: 100%; height: 44px;
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    background: var(--color-brand); color: #fff;
+  }
+  .cta-bar .t1 { font-size: 10px; color: var(--color-text-tertiary); text-align: center; margin-top: 6px; }
+
+  /* 5 tab */
+  .tabbar { height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; position: relative; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { height: 34px; background: var(--color-bg); display: flex; align-items: center; justify-content: center; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+  <div class="nav">
+    <a class="icon-btn" href="otc-order-book.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">OTC 发布卖单</div>
+    <div class="icon-btn" style="visibility: hidden;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- 业务范围 banner（不担保法币） -->
+    <div class="scope-banner">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4M12 17.5v.01"/></svg>
+      </div>
+      <div class="body">
+        <div class="t1">OTC 业务范围</div>
+        <div class="t2">OpulnX <b>仅托管数字资产</b>，不参与、不担保交易双方<b>法币收付</b>。价格由买卖双方自主协商。</div>
+      </div>
+    </div>
+
+    <div class="sub-tabs">
+      <div class="sub-tab">买入</div>
+      <div class="sub-tab is-active">卖出</div>
+      <div class="sub-tab">订单大厅</div>
+    </div>
+
+    <!-- 卖家信任度 -->
+    <div class="trust-card">
+      <div class="left">
+        <div class="avatar">M</div>
+        <div class="lvl-pill">L4</div>
+      </div>
+      <div class="body">
+        <div class="row1">
+          <span class="name">Michael Chen</span>
+          <span class="check"><svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><circle cx="8" cy="8" r="8"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+          <span class="t1">实名认证</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="v num">156</div><div class="l">累计成交</div></div>
+          <div class="stat"><div class="v up num">99.2%</div><div class="l">好评率</div></div>
+          <div class="stat"><div class="v num">2 分</div><div class="l">平均放币</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 资产选择 -->
+    <div class="section">
+      <div class="head">
+        <div>
+          <div class="eyebrow">SELECT ASSET</div>
+          <div class="h">选择出售资产</div>
+        </div>
+      </div>
+      <div class="asset-chips">
+        <div class="asset-chip is-active">
+          <span class="symbol">POE</span>
+          <span class="price num">$1.2345</span>
+        </div>
+        <div class="asset-chip">
+          <span class="symbol">UMDT</span>
+          <span class="price num">$1.0001</span>
+        </div>
+        <div class="asset-chip">
+          <span class="symbol">BTC</span>
+          <span class="price num">$67,842</span>
+        </div>
+        <div class="asset-chip">
+          <span class="symbol">ETH</span>
+          <span class="price num">$3,521</span>
+        </div>
+        <div class="asset-chip">
+          <span class="symbol">OPX</span>
+          <span class="price num">$0.128</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数量 + 单价 -->
+    <div class="section">
+      <div class="head">
+        <div>
+          <div class="eyebrow">QUANTITY & PRICE</div>
+          <div class="h">出售数量与价格</div>
+        </div>
+      </div>
+
+      <!-- 委托类型 市价/限价 -->
+      <div class="order-type">
+        <div class="ot-item is-active">限价 <span class="tip">指定价格 · 等待成交</span></div>
+        <div class="ot-item">市价 <span class="tip">按盘口即时成交</span></div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          <span>出售数量 <span class="req">*</span></span>
+          <span class="hint">可用 1,250 POE · 全部</span>
+        </div>
+        <div class="input is-focus">
+          <span class="prefix">POE</span>
+          <input type="text" value="500" inputmode="numeric">
+          <span class="suffix">≈ $617.25 USD</span>
+          <div class="max">MAX</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          <span>单价 <span class="req">*</span></span>
+          <span class="hint">市价 +0.5%</span>
+        </div>
+        <div class="input">
+          <span class="prefix">$</span>
+          <input type="text" value="1.2407" inputmode="decimal">
+          <span class="suffix">/ POE</span>
+        </div>
+        <div class="help">比市价高 +0.5%（更快成交）</div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          <span>总价</span>
+        </div>
+        <div class="input">
+          <span class="prefix">$</span>
+          <input type="text" value="620.35" disabled>
+          <span class="suffix">USD</span>
+        </div>
+        <div class="help">平台仅托管数字资产，<b>法币收款由你与买方自行协商</b></div>
+      </div>
+
+      <!-- 限额 -->
+      <div class="field">
+        <div class="label">
+          <span>单笔限额 <span class="req">*</span></span>
+        </div>
+        <div class="range-row">
+          <div class="input">
+            <span class="prefix">最低</span>
+            <input type="text" value="100" inputmode="numeric">
+            <span class="suffix">POE</span>
+          </div>
+          <div class="input">
+            <span class="prefix">最高</span>
+            <input type="text" value="500" inputmode="numeric">
+            <span class="suffix">POE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          <span>付款时限</span>
+        </div>
+        <div class="input">
+          <input type="text" value="30 分钟内付款，否则自动取消" disabled>
+        </div>
+      </div>
+    </div>
+
+    <!-- 支付方式 -->
+    <div class="section">
+      <div class="head">
+        <div>
+          <div class="eyebrow">PAYMENT METHOD</div>
+          <div class="h">接受支付方式（多选）</div>
+        </div>
+        <div class="more">+ 添加</div>
+      </div>
+      <div class="pay-list">
+        <div class="pay-row is-active">
+          <div class="checkbox">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,2 4,7 8,11 1,4" /></svg>
+          </div>
+          <div class="icon" style="background: #1677FF;">银</div>
+          <div class="body">
+            <div class="name">银行卡</div>
+            <div class="t2">** **** 3210 · 招商银行</div>
+          </div>
+        </div>
+        <div class="pay-row is-active">
+          <div class="checkbox">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,2 4,7 8,11 1,4" /></svg>
+          </div>
+          <div class="icon" style="background: #1AAD19;">微</div>
+          <div class="body">
+            <div class="name">微信支付</div>
+            <div class="t2">实名认证：Michael C.</div>
+          </div>
+        </div>
+        <div class="pay-row">
+          <div class="checkbox"></div>
+          <div class="icon" style="background: #1677FF;">支</div>
+          <div class="body">
+            <div class="name">支付宝</div>
+            <div class="t2">未添加</div>
+          </div>
+        </div>
+        <div class="pay-row">
+          <div class="checkbox"></div>
+          <div class="icon" style="background: #6B7280;">现</div>
+          <div class="body">
+            <div class="name">现金面交</div>
+            <div class="t2">同城市面对面交易</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 托管释放流程 -->
+    <div class="section">
+      <div class="head">
+        <div>
+          <div class="eyebrow">ESCROW FLOW</div>
+          <div class="h">托管释放流程</div>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="t1">你的 POE 资产托管冻结在 OpulnX</div>
+        </div>
+        <div class="steps">
+          <div class="step is-active">
+            <div class="dot">1</div>
+            <div class="body">
+              <div class="name">买方接单 · 上传付款凭证</div>
+              <div class="t2">付款后 30 分钟内需上传银行/微信/支付宝流水截图</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="dot">2</div>
+            <div class="body">
+              <a class="name" href="javascript:void(0)" onclick="demoAction('你确认收到法币')">你确认收到法币</a>
+              <a class="t2" href="javascript:void(0)" onclick="demoAction('核对到账金额 · 确认无误后点击「已收款」')">核对到账金额 · 确认无误后点击「已收款」</a>
+            </div>
+          </div>
+          <div class="step">
+            <div class="dot">3</div>
+            <div class="body">
+              <div class="name">平台自动释放 POE 给买方</div>
+              <div class="t2">托管智能合约执行 · 2 分钟内到账</div>
+            </div>
+          </div>
+          <div class="step is-pending">
+            <div class="dot">4</div>
+            <div class="body">
+              <div class="name">未付款 / 争议 → 平台仲裁</div>
+              <div class="t2">仅判定数字资产归属 · 法币纠纷平台不介入</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 风险提示 -->
+    <div class="risk">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/></svg>
+      </div>
+      <div class="body">
+        <div class="t1">法币收款风险自担</div>
+        <div class="t2">买方未付款或违约，平台不介入法币纠纷。请谨慎接单、确认到账后再确认释放。</div>
+      </div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <!-- 底部 CTA -->
+  <div class="cta-bar">
+    <div class="summary">
+      <span class="l">你将出售 500 POE</span>
+      <span class="v num">$620.35 USD</span>
+    </div>
+    <a class="btn" href="otc-order-create-confirm.html">发布卖单 · 锁定 500 POE</a>
+    <a class="t1" href="javascript:void(0)" onclick="demoAction('点击即同意 OTC 商家协议 · 资产托管至订单完成或取消')">点击即同意 OTC 商家协议 · 资产托管至订单完成或取消</a>
+  </div>
+
+    <div class="tabbar">
+    
+    <a class="tab" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="lbl">首页</div></a>
+    <a class="tab" href="global-investment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg><div class="lbl">全球投资</div></a>
+    <a class="tab" href="poe-finance.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg><div class="lbl">POE 金融</div></a>
+    <a class="tab" href="asset-market.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg><div class="lbl">资产市场</div></a>
+    <a class="tab" href="me.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg><div class="lbl">我的</div></a>
+  
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+
+  <script>
+    function demoAction(name) {
+      // 原型演示用：点击按钮不跳转，弹提示
+      var el = document.createElement('div');
+      el.textContent = '✓ ' + name + '（原型演示）';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A2540;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 1500);
+    }
+  </script>
+</body>
+</html>

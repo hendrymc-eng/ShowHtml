@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · POE 期权购买</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7;
+    --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0; --color-text: #0F172A;
+    --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.tab, a.chip, a.cta { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 20px; }
+
+  /* 期权类型切换 */
+  .type-toggle { display: flex; background: var(--color-bg); margin: 12px 12px 0; border-radius: 10px; padding: 4px; }
+  .type-toggle .opt { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--color-text-secondary); border-radius: 8px; cursor: pointer; }
+  .type-toggle .opt.is-call { background: var(--color-up-soft); color: var(--color-up); }
+  .type-toggle .opt.is-put { background: var(--color-down-soft); color: var(--color-down); }
+  .type-toggle .opt.is-neutral { color: var(--color-text-tertiary); }
+
+  /* 期权 Hero */
+  .hero { background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%); margin: 12px; border-radius: 12px; padding: 14px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(212, 175, 55, 0.12); border-radius: 50%; }
+  .hero .badge { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.12); border-radius: 4px; font-size: 10px; font-weight: 600; margin-bottom: 8px; }
+  .hero .row { display: flex; justify-content: space-between; align-items: center; }
+  .hero .row .l { font-size: 11px; color: rgba(255,255,255,0.7); }
+  .hero .row .v { font-size: 22px; font-weight: 700; line-height: 1.1; margin-top: 2px; }
+  .hero .row .v .unit { font-size: 12px; color: var(--color-accent); margin-left: 4px; }
+  .hero .row .right .pnl { font-size: 11px; color: #4ADE80; font-weight: 600; }
+  .hero .divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
+  .hero .meta { display: flex; gap: 16px; font-size: 11px; }
+  .hero .meta .item .l { color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+  .hero .meta .item .v { font-weight: 600; }
+
+  /* section 通用 */
+  .section { background: var(--color-bg); margin: 12px; border-radius: 12px; padding: 14px; }
+  .section .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .section .head .t1 { font-size: 13px; font-weight: 600; }
+
+  /* 行权价选择 */
+  .strike-list { display: flex; flex-direction: column; gap: 6px; }
+  .strike { display: flex; align-items: center; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; cursor: pointer; }
+  .strike.is-active { border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .strike .left { flex: 1; }
+  .strike .l { font-size: 12px; color: var(--color-text-secondary); }
+  .strike .v { font-size: 14px; font-weight: 600; margin-top: 1px; }
+  .strike .right { text-align: right; }
+  .strike .prem { font-size: 14px; font-weight: 700; color: var(--color-accent); }
+  .strike .prem .lbl { font-size: 9px; color: var(--color-text-tertiary); font-weight: 500; }
+  .strike .apr { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+
+  /* 到期日 chips */
+  .chips { display: flex; gap: 6px; }
+  .chip { flex: 1; height: 32px; border-radius: 8px; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-text-secondary); cursor: pointer; }
+  .chip.is-active { border-color: var(--color-accent); background: var(--color-accent-soft); color: var(--color-text); font-weight: 600; }
+
+  /* 输入 */
+  .field { margin-bottom: 12px; }
+  .field .lbl { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .field .lbl .meta { color: var(--color-text-tertiary); font-size: 11px; }
+  .input { display: flex; align-items: center; height: 40px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 12px; background: var(--color-bg); }
+  .input input { flex: 1; border: 0; outline: 0; font-size: 14px; background: transparent; }
+  .input .unit { font-size: 12px; color: var(--color-text-tertiary); margin-left: 4px; }
+
+  /* Greeks 卡片 */
+  .greeks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .greek { padding: 10px; background: var(--color-surface); border-radius: 8px; }
+  .greek .l { font-size: 11px; color: var(--color-text-secondary); }
+  .greek .v { font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .greek .d { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+
+  /* 盈亏曲线 */
+  .pl-chart { background: var(--color-surface); border-radius: 8px; padding: 10px; }
+  .pl-chart .head { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .pl-chart .head .v { color: var(--color-up); font-weight: 600; }
+
+  /* 4 步行权流程 */
+  .steps { display: flex; align-items: center; gap: 0; margin-bottom: 12px; }
+  .step { flex: 1; text-align: center; }
+  .step .ic { width: 28px; height: 28px; margin: 0 auto 4px; border-radius: 50%; background: var(--color-surface); border: 1.5px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-text-tertiary); font-weight: 700; }
+  .step.is-done .ic { background: var(--color-up); border-color: var(--color-up); color: #fff; }
+  .step.is-active .ic { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+  .step .t { font-size: 10px; color: var(--color-text-tertiary); }
+  .step .line { height: 1.5px; background: var(--color-border); flex: 0.3; }
+
+  /* 摘要 */
+  .summary { display: flex; flex-direction: column; }
+  .summary .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 12px; }
+  .summary .row .l { color: var(--color-text-secondary); }
+  .summary .row .v { font-weight: 600; }
+  .summary .divider { height: 1px; background: var(--color-border); margin: 6px 0; }
+  .summary .row.total .l { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .summary .row.total .v { font-size: 16px; font-weight: 700; color: var(--color-accent); }
+
+  /* 风险 */
+  .risk { padding: 10px; background: var(--color-warn-soft); border-radius: 8px; }
+  .risk .t1 { font-size: 12px; font-weight: 600; color: var(--color-warn); margin-bottom: 4px; }
+  .risk .t2 { font-size: 11px; color: #92400E; line-height: 1.5; }
+
+  /* CTA */
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border); display: flex; gap: 10px; align-items: center; }
+  .cta-bar .info { flex: 1; }
+  .cta-bar .info .l { font-size: 10px; color: var(--color-text-tertiary); }
+  .cta-bar .info .v { font-size: 16px; font-weight: 700; color: var(--color-accent); }
+  .cta-bar .cta { height: 44px; padding: 0 20px; background: var(--color-brand); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; align-items: center; justify-content: center; }
+
+  /* tabbar */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .tab.is-active .lbl { font-weight: 600; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="poe-option-detail.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">POE 期权购买</div>
+    <a class="icon-btn right" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9 a2.5 2.5 0 0 1 5 0 c0 1.5 -2.5 2 -2.5 3.5 M12 17 a0.5 0.5 0 0 0 0 0.01"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <!-- 类型切换 -->
+    <div class="type-toggle">
+      <div class="opt is-call">看涨 CALL</div>
+      <div class="opt is-neutral">看跌 PUT</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="badge">POE 看涨期权 · CALL</div>
+      <div class="row">
+        <div><div class="l">行权价</div><div class="v num">$1.40<span class="unit">/POE</span></div></div>
+        <div class="right" style="text-align: right;">
+          <div class="l">当前 POE 价</div>
+          <div class="v num">$1.2345</div>
+          <div class="pnl">▲ +2.18% · 24H</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="meta">
+        <div class="item"><div class="l">到期日</div><div class="v num">2026-09-15</div></div>
+        <div class="item"><div class="l">剩余天数</div><div class="v num">28 天</div></div>
+        <div class="item"><div class="l">类型</div><div class="v">欧式</div></div>
+      </div>
+    </div>
+
+    <!-- 行权价 -->
+    <div class="section">
+      <div class="head"><div class="t1">行权价</div></div>
+      <div class="strike-list">
+        <div class="strike">
+          <div class="left"><div class="l">虚值 OTM</div><div class="v num">$1.60</div></div>
+          <div class="right"><div class="prem num">$0.018</div><div class="apr">年化 14%</div></div>
+        </div>
+        <div class="strike is-active">
+          <div class="left"><div class="l">平值 ATM</div><div class="v num">$1.40</div></div>
+          <div class="right"><div class="prem num">$0.052</div><div class="apr">年化 40%</div></div>
+        </div>
+        <div class="strike">
+          <div class="left"><div class="l">实值 ITM</div><div class="v num">$1.20</div></div>
+          <div class="right"><div class="prem num">$0.118</div><div class="apr">年化 92%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 到期日 -->
+    <div class="section">
+      <div class="head"><div class="t1">到期日</div></div>
+      <div class="chips">
+        <div class="chip">7 天</div>
+        <div class="chip">14 天</div>
+        <div class="chip is-active">28 天</div>
+        <div class="chip">60 天</div>
+      </div>
+    </div>
+
+    <!-- 数量 -->
+    <div class="section">
+      <div class="head"><div class="t1">购买数量</div><div class="meta" style="font-size: 11px; color: var(--color-text-tertiary);">最小 10 张</div></div>
+      <div class="field">
+        <div class="input">
+          <input value="100" class="num"/>
+          <span class="unit">张期权</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="lbl"><span>对应 POE 数量</span><span class="meta">1 张 = 10 POE</span></div>
+        <div class="input">
+          <input value="1,000" class="num" disabled style="color: var(--color-text-secondary);"/>
+          <span class="unit">POE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Greeks -->
+    <div class="section">
+      <div class="head"><div class="t1">Greeks 风险指标</div></div>
+      <div class="greeks">
+        <div class="greek"><div class="l">Delta Δ</div><div class="v num">+0.55</div><div class="d">每涨 $1 涨 $0.55</div></div>
+        <div class="greek"><div class="l">Gamma Γ</div><div class="v num">0.025</div><div class="d">Δ 的变化率</div></div>
+        <div class="greek"><div class="l">Theta Θ</div><div class="v num">-0.08</div><div class="d">每日时间损耗</div></div>
+        <div class="greek"><div class="l">Vega ν</div><div class="v num">+0.12</div><div class="d">波动率敏感度</div></div>
+      </div>
+    </div>
+
+    <!-- 盈亏曲线 -->
+    <div class="section">
+      <div class="head"><div class="t1">到期盈亏曲线</div></div>
+      <div class="pl-chart">
+        <div class="head">
+          <span>当前 POE 价: $1.23</span>
+          <span class="v">最大盈利 ∞</span>
+        </div>
+        <svg viewBox="0 0 320 80" preserveAspectRatio="none" width="100%" height="80">
+          <line x1="0" y1="40" x2="320" y2="40" stroke="#E2E8F0" stroke-dasharray="2,2"/>
+          <line x1="140" y1="0" x2="140" y2="80" stroke="#D4AF37" stroke-dasharray="2,2"/>
+          <path d="M 0,40 L 140,40 L 320,5" fill="none" stroke="#16A34A" stroke-width="2"/>
+          <circle cx="160" cy="35" r="3" fill="#0A2540"/>
+        </svg>
+        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--color-text-tertiary); margin-top: 4px;">
+          <span>$1.00</span><span>行权价 $1.40</span><span>$2.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行权流程 -->
+    <div class="section">
+      <div class="head"><div class="t1">行权流程</div></div>
+      <div class="steps">
+        <div class="step is-done"><div class="ic">1</div><div class="t">下单</div></div>
+        <div class="line"></div>
+        <div class="step is-active"><div class="ic">2</div><div class="t">冻结</div></div>
+        <div class="line"></div>
+        <div class="step"><div class="ic">3</div><div class="t">到期</div></div>
+        <div class="line"></div>
+        <div class="step"><div class="ic">4</div><div class="t">结算</div></div>
+      </div>
+      <div style="font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5;">到期日自动行权：若 POE 价 > $1.40，按差价结算 POE；若 ≤ $1.40，最大损失为期权费。</div>
+    </div>
+
+    <!-- 摘要 -->
+    <div class="section">
+      <div class="head"><div class="t1">费用摘要</div></div>
+      <div class="summary">
+        <div class="row"><span class="l">权利金 (100 张)</span><span class="v num">5.20 POE</span></div>
+        <div class="row"><span class="l">平台费 (0.3%)</span><span class="v num">0.02 POE</span></div>
+        <div class="row"><span class="l">Gas 费</span><span class="v num">0.50 POE</span></div>
+        <div class="divider"></div>
+        <div class="row total"><span class="l">应付</span><span class="v num">5.72 POE</span></div>
+      </div>
+    </div>
+
+    <!-- 风险 -->
+    <div class="section">
+      <div class="risk">
+        <div class="t1">⚠️ 期权风险</div>
+        <div class="t2">看涨 CALL 期权最大损失为期权费。若到期 POE 价低于 $1.40，期权作废，最大亏损 100%。建议组合对冲，谨慎使用杠杆。</div>
+      </div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <div class="info">
+      <div class="l">应付 · 100 张</div>
+      <div class="v num">5.72 POE</div>
+    </div>
+    <a class="cta" href="#">确认购买</a>
+  </div>
+
+  <div class="tabbar">
+    <a class="tab" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </a>
+    <a class="tab" href="global-investment.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </a>
+    <a class="tab is-active" href="poe-finance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </a>
+    <a class="tab" href="asset-market.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </a>
+    <a class="tab" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </a>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

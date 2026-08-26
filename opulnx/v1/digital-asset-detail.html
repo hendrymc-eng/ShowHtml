@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · ③ 现货 POE</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-hover: #0F3556;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-hover: #B8941F;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-isolation: #DC2626;
+    --color-isolation-soft: #FEE2E2;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.rec-card, a.center-item, a.tab { display: flex; }
+  a.btn-primary, a.btn-secondary, a.btn-ghost, a.act-btn { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; position: relative; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .icon-btn .dot { position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background: var(--color-down); border-radius: 50%; border: 1.5px solid var(--color-bg); }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .nav .title .badge { display: inline-block; margin-left: 6px; padding: 1px 6px; background: var(--color-accent); color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+
+  .content { height: calc(812px - 44px - 44px - 56px - 34px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  /* 业务隔离 banner */
+  .isolate { margin: 12px; padding: 10px 12px; background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border: 1px solid #FCA5A5; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px; }
+  .isolate .ic { width: 20px; height: 20px; border-radius: 5px; background: #fff; color: var(--color-isolation); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .isolate .ic svg { width: 12px; height: 12px; }
+  .isolate .body { flex: 1; }
+  .isolate .t1 { font-size: 11px; font-weight: 700; color: var(--color-isolation); margin-bottom: 2px; }
+  .isolate .t2 { font-size: 10px; color: #7F1D1D; line-height: 1.5; }
+
+  /* 币种 Hero */
+  .hero { background: var(--color-bg); margin: 0 12px; padding: 16px; border-radius: 16px; box-shadow: var(--shadow-sm); }
+  .hero .top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .hero .icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .hero .name { flex: 1; }
+  .hero .name .t1 { font-size: 16px; font-weight: 700; color: var(--color-text); }
+  .hero .name .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .hero .live { display: flex; align-items: center; gap: 3px; padding: 3px 8px; background: var(--color-accent-soft); border-radius: 999px; font-size: 10px; font-weight: 600; color: #92400E; }
+  .hero .live::before { content: ''; width: 5px; height: 5px; background: var(--color-accent); border-radius: 50%; }
+  .hero .price { font-size: 36px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; margin-bottom: 4px; }
+  .hero .price .currency { font-size: 18px; color: var(--color-accent); font-weight: 600; margin-right: 4px; }
+  .hero .delta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--color-text-secondary); }
+  .hero .delta .up { color: var(--color-up); font-weight: 600; }
+  .hero .delta .up::before { content: '▲'; margin-right: 3px; font-size: 9px; }
+  .hero .delta .divider { color: var(--color-text-tertiary); }
+  .hero .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--color-border); }
+  .hero .stat { }
+  .hero .stat .l { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+  .hero .stat .v { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .hero .actions { display: flex; gap: 8px; margin-top: 14px; }
+  .hero .btn { flex: 1; height: 40px; border-radius: 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+  .hero .btn-primary { background: var(--color-up); color: #fff; }
+  .hero .btn-secondary { background: var(--color-down-soft); color: var(--color-down); }
+  .hero .btn svg { width: 14px; height: 14px; }
+
+  /* K 线图 */
+  .kline { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .kline .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .kline .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .kline .tabs { display: flex; gap: 4px; }
+  .kline .tabs .kt { padding: 4px 10px; font-size: 11px; color: var(--color-text-tertiary); border-radius: 4px; cursor: pointer; }
+  .kline .tabs .kt.is-active { background: var(--color-brand); color: #fff; font-weight: 600; }
+  .kline .chart { width: 100%; height: 130px; }
+  .kline .chart svg { width: 100%; height: 100%; }
+
+  /* section 通用 */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .section .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .section .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .section .head .t1 .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; margin-left: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section .head .more { font-size: 11px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 2px; }
+
+  /* 买卖盘 */
+  .orderbook { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
+  .orderbook .ob-row { display: flex; align-items: center; padding: 4px 0; position: relative; }
+  .orderbook .ob-row .bar { position: absolute; top: 0; bottom: 0; right: 0; }
+  .orderbook .ob-row.ask .bar { background: rgba(220, 38, 38, 0.08); }
+  .orderbook .ob-row.bid .bar { background: rgba(22, 163, 74, 0.08); }
+  .orderbook .ob-row .price { flex: 1; font-weight: 600; z-index: 1; padding-left: 4px; }
+  .orderbook .ob-row.ask .price { color: var(--color-down); }
+  .orderbook .ob-row.bid .price { color: var(--color-up); }
+  .orderbook .ob-row .qty { flex: 1; text-align: right; color: var(--color-text); z-index: 1; padding-right: 4px; font-variant-numeric: tabular-nums; }
+  .orderbook .ob-spread { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 12px; color: var(--color-text-secondary); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); margin: 4px 0; }
+  .orderbook .ob-spread .price { font-weight: 700; color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .orderbook .ob-spread .delta { font-weight: 600; color: var(--color-up); }
+  .orderbook .head-row { display: flex; padding: 4px 0; font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.3px; }
+  .orderbook .head-row .price { flex: 1; padding-left: 4px; }
+  .orderbook .head-row .qty { flex: 1; text-align: right; padding-right: 4px; }
+
+  /* 最近成交 */
+  .trades { display: flex; flex-direction: column; }
+  .trade-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--color-border); font-size: 12px; }
+  .trade-row:last-child { border-bottom: none; }
+  .trade-row .time { width: 60px; color: var(--color-text-tertiary); font-size: 10px; }
+  .trade-row .price { flex: 1; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .trade-row.up .price { color: var(--color-up); }
+  .trade-row.down .price { color: var(--color-down); }
+  .trade-row .qty { flex: 1; text-align: right; color: var(--color-text); font-variant-numeric: tabular-nums; }
+
+  /* 我的持仓 */
+  .position { display: flex; flex-direction: column; gap: 10px; }
+  .position .row { display: flex; align-items: center; justify-content: space-between; }
+  .position .row .l { font-size: 12px; color: var(--color-text-secondary); }
+  .position .row .v { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .position .pnl-card { background: var(--color-up-soft); border-radius: 10px; padding: 10px 12px; margin-top: 6px; }
+  .position .pnl-card .l { font-size: 11px; color: var(--color-up); }
+  .position .pnl-card .v { font-size: 18px; font-weight: 700; color: var(--color-up); }
+
+  /* 5 tab */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="asset-market.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">POE / USD <span class="badge">现货</span></div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- 业务隔离 banner -->
+    <div class="isolate">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="body">
+        <div class="t1">Web3 资产 · 平台仅撮合不持有</div>
+        <div class="t2">POE/USDT 现货订单由平台撮合，资产托管在链上钱包。与 RWA 资产完全独立账户。</div>
+      </div>
+    </div>
+
+    <!-- 币种 Hero -->
+    <div class="hero">
+      <div class="top">
+        <div class="icon">P</div>
+        <div class="name">
+          <div class="t1">POE</div>
+          <div class="t2">OpulnX Ecosystem Token · 流通量 28.5M</div>
+        </div>
+        <div class="live">LIVE</div>
+      </div>
+
+      <div class="price num"><span class="currency">$</span>1.234<span style="font-size: 24px;">5</span></div>
+      <div class="delta">
+        <span class="up num">+0.0264 / +2.18%</span>
+        <span class="divider">·</span>
+        <span>24H</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="l">市值</div>
+          <div class="v num">$35.2M</div>
+        </div>
+        <div class="stat">
+          <div class="l">24H 成交</div>
+          <div class="v num">$8.6M</div>
+        </div>
+        <div class="stat">
+          <div class="l">24H 最高</div>
+          <div class="v up num">$1.248</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-secondary" href="spot-order.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          卖出 POE
+        </a>
+        <a class="btn btn-primary" href="spot-order.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          买入 POE
+        </a>
+      </div>
+    </div>
+
+    <!-- K 线图 -->
+    <div class="kline">
+      <div class="head">
+        <div class="t1">价格走势</div>
+        <div class="tabs">
+          <div class="kt">1H</div>
+          <div class="kt">4H</div>
+          <div class="kt is-active">1D</div>
+          <div class="kt">1W</div>
+        </div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 320 130" preserveAspectRatio="none">
+          <!-- 网格线 -->
+          <line x1="0" y1="25" x2="320" y2="25" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="0" y1="65" x2="320" y2="65" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="0" y1="105" x2="320" y2="105" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <!-- 折线（上涨趋势） -->
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#16A34A" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#16A34A" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,90 L20,80 L40,85 L60,75 L80,82 L100,70 L120,68 L140,72 L160,60 L180,55 L200,50 L220,45 L240,52 L260,40 L280,35 L300,28 L320,32" fill="url(#g)"/>
+          <path d="M0,90 L20,80 L40,85 L60,75 L80,82 L100,70 L120,68 L140,72 L160,60 L180,55 L200,50 L220,45 L240,52 L260,40 L280,35 L300,28 L320,32" fill="none" stroke="#16A34A" stroke-width="2"/>
+          <!-- 当前价标记 -->
+          <circle cx="320" cy="32" r="4" fill="#16A34A"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 买卖盘 -->
+    <div class="section">
+      <div class="head">
+        <div class="t1">订单簿 <span class="eb">ORDER BOOK</span></div>
+        <div class="more">0.01 步长</div>
+      </div>
+      <div class="orderbook">
+        <div class="ob-row ask">
+          <div class="bar" style="width: 60%;"></div>
+          <div class="price num">1.2405</div>
+          <div class="qty num">3,250</div>
+        </div>
+        <div class="ob-row ask">
+          <div class="bar" style="width: 80%;"></div>
+          <div class="price num">1.2400</div>
+          <div class="qty num">4,180</div>
+        </div>
+        <div class="ob-row ask">
+          <div class="bar" style="width: 45%;"></div>
+          <div class="price num">1.2395</div>
+          <div class="qty num">2,460</div>
+        </div>
+        <div class="ob-spread">
+          <span class="delta up num">+0.0264 / +2.18%</span>
+          <span class="price num">$1.2345</span>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 70%;"></div>
+          <div class="price num">1.2340</div>
+          <div class="qty num">3,820</div>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 55%;"></div>
+          <div class="price num">1.2335</div>
+          <div class="qty num">2,940</div>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 90%;"></div>
+          <div class="price num">1.2330</div>
+          <div class="qty num">4,520</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最近成交 -->
+    <div class="section">
+      <div class="head">
+        <div class="t1">最近成交 <span class="eb">RECENT TRADES</span></div>
+        <div class="more">实时</div>
+      </div>
+      <div class="trades">
+        <div class="trade-row up">
+          <div class="time num">14:32:08</div>
+          <div class="price num">1.2348</div>
+          <div class="qty num">+ 250</div>
+        </div>
+        <div class="trade-row up">
+          <div class="time num">14:32:01</div>
+          <div class="price num">1.2346</div>
+          <div class="qty num">+ 80</div>
+        </div>
+        <div class="trade-row down">
+          <div class="time num">14:31:55</div>
+          <div class="price num">1.2342</div>
+          <div class="qty num">- 120</div>
+        </div>
+        <div class="trade-row up">
+          <div class="time num">14:31:48</div>
+          <div class="price num">1.2345</div>
+          <div class="qty num">+ 360</div>
+        </div>
+        <div class="trade-row up">
+          <div class="time num">14:31:40</div>
+          <div class="price num">1.2347</div>
+          <div class="qty num">+ 50</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我的持仓 -->
+    <div class="section">
+      <div class="head">
+        <div class="t1">我的持仓 <span class="eb">MY POSITION</span></div>
+        <div class="more">交易记录 ›</div>
+      </div>
+      <div class="position">
+        <div class="row"><div class="l">持有数量</div><div class="v num">1,250 POE</div></div>
+        <div class="row"><div class="l">成本均价</div><div class="v num">$1.1820</div></div>
+        <div class="row"><div class="l">当前市值</div><div class="v num">$1,543.13 USD</div></div>
+        <div class="pnl-card">
+          <div class="l">浮动盈亏</div>
+          <div class="v num">+ $65.63 (+4.44%)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 16px;"></div>
+  </div>
+
+    <div class="tabbar">
+    
+    <a class="tab" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="lbl">首页</div></a>
+    <a class="tab" href="global-investment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg><div class="lbl">全球投资</div></a>
+    <a class="tab" href="poe-finance.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg><div class="lbl">POE 金融</div></a>
+    <a class="tab" href="asset-market.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg><div class="lbl">资产市场</div></a>
+    <a class="tab" href="me.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg><div class="lbl">我的</div></a>
+  
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+
+  <script>
+    function demoAction(name) {
+      // 原型演示用：点击按钮不跳转，弹提示
+      var el = document.createElement('div');
+      el.textContent = '✓ ' + name + '（原型演示）';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A2540;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 1500);
+    }
+  </script>
+</body>
+</html>

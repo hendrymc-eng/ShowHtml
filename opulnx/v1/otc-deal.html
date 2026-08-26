@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · OTC 撮合确认</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7;
+    --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0; --color-text: #0F172A;
+    --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.tab, a.chip, a.cta { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 20px; }
+
+  /* Escrow 横幅 */
+  .escrow-banner { background: linear-gradient(135deg, #1e3a8a 0%, #0A2540 100%); margin: 12px; border-radius: 12px; padding: 12px 14px; color: #fff; display: flex; align-items: center; gap: 10px; }
+  .escrow-banner .ic { width: 32px; height: 32px; border-radius: 8px; background: rgba(212, 175, 55, 0.2); display: flex; align-items: center; justify-content: center; }
+  .escrow-banner .body { flex: 1; }
+  .escrow-banner .t1 { font-size: 12px; font-weight: 600; }
+  .escrow-banner .t2 { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+
+  /* 卖家卡 */
+  .seller { background: var(--color-bg); margin: 0 12px 12px; border-radius: 12px; padding: 14px; }
+  .seller .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .seller .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 12px; position: relative; }
+  .seller .avatar .lvl { position: absolute; bottom: -2px; right: -2px; background: var(--color-up); color: #fff; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 4px; }
+  .seller .body { flex: 1; }
+  .seller .name { font-size: 14px; font-weight: 600; }
+  .seller .meta { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .seller .trust { text-align: right; }
+  .seller .trust .l { font-size: 9px; color: var(--color-text-tertiary); }
+  .seller .trust .v { font-size: 16px; font-weight: 700; color: var(--color-up); margin-top: 1px; }
+  .seller .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding-top: 10px; border-top: 1px solid var(--color-border); }
+  .seller .stats .stat { text-align: center; }
+  .seller .stats .l { font-size: 9px; color: var(--color-text-tertiary); }
+  .seller .stats .v { font-size: 13px; font-weight: 600; margin-top: 2px; }
+
+  /* 卖单详情 */
+  .order { background: var(--color-bg); margin: 0 12px 12px; border-radius: 12px; padding: 14px; }
+  .order .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .order .head .t1 { font-size: 13px; font-weight: 600; }
+  .order .head .id { font-size: 11px; color: var(--color-text-tertiary); }
+  .order .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+  .order .row .l { color: var(--color-text-secondary); }
+  .order .row .v { font-weight: 600; }
+  .order .row .v .small { font-size: 11px; color: var(--color-text-tertiary); font-weight: 400; margin-left: 4px; }
+  .order .price-big { background: var(--color-accent-soft); border-radius: 8px; padding: 12px; text-align: center; margin: 8px 0; }
+  .order .price-big .l { font-size: 11px; color: var(--color-text-secondary); }
+  .order .price-big .v { font-size: 24px; font-weight: 700; color: var(--color-accent); margin-top: 2px; }
+  .order .price-big .d { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  /* 支付方式 */
+  .pay { display: flex; flex-direction: column; gap: 6px; }
+  .pay .m { padding: 8px 10px; border: 1px solid var(--color-border); border-radius: 8px; display: flex; align-items: center; gap: 8px; }
+  .pay .m.is-active { border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .pay .m .ic { width: 28px; height: 28px; border-radius: 6px; background: var(--color-brand-soft); color: var(--color-brand); display: flex; align-items: center; justify-content: center; }
+  .pay .m .body { flex: 1; }
+  .pay .m .t1 { font-size: 12px; font-weight: 600; }
+  .pay .m .t2 { font-size: 10px; color: var(--color-text-tertiary); }
+
+  /* 4 步时间线 */
+  .timeline { padding: 4px 0; }
+  .timeline .step { display: flex; gap: 10px; padding: 6px 0; position: relative; }
+  .timeline .step::before { content: ''; position: absolute; left: 13px; top: 30px; bottom: -6px; width: 2px; background: var(--color-border); }
+  .timeline .step:last-child::before { display: none; }
+  .timeline .step .ic { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; font-weight: 700; }
+  .timeline .step.is-pending .ic { background: var(--color-surface); color: var(--color-text-tertiary); border: 1.5px solid var(--color-border); }
+  .timeline .step.is-active .ic { background: var(--color-accent); color: #fff; }
+  .timeline .step.is-done .ic { background: var(--color-up); color: #fff; }
+  .timeline .step .body { flex: 1; padding-bottom: 4px; }
+  .timeline .step .t1 { font-size: 13px; font-weight: 600; }
+  .timeline .step.is-pending .t1 { color: var(--color-text-tertiary); }
+  .timeline .step .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; line-height: 1.4; }
+
+  /* 警告 */
+  .warn { padding: 10px; background: var(--color-warn-soft); border-radius: 8px; }
+  .warn .t1 { font-size: 12px; font-weight: 600; color: var(--color-warn); margin-bottom: 4px; }
+  .warn .t2 { font-size: 11px; color: #92400E; line-height: 1.5; }
+
+  /* 摘要 */
+  .summary { display: flex; flex-direction: column; }
+  .summary .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 12px; }
+  .summary .row .l { color: var(--color-text-secondary); }
+  .summary .row .v { font-weight: 600; }
+  .summary .divider { height: 1px; background: var(--color-border); margin: 6px 0; }
+  .summary .row.total .l { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .summary .row.total .v { font-size: 16px; font-weight: 700; color: var(--color-accent); }
+
+  /* CTA */
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border); display: flex; gap: 10px; align-items: center; }
+  .cta-bar .info { flex: 1; }
+  .cta-bar .info .l { font-size: 10px; color: var(--color-text-tertiary); }
+  .cta-bar .info .v { font-size: 16px; font-weight: 700; color: var(--color-accent); }
+  .cta-bar .cta { height: 44px; padding: 0 20px; background: var(--color-brand); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; align-items: center; justify-content: center; }
+
+  /* tabbar */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .tab.is-active .lbl { font-weight: 600; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="otc-order-book.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">OTC 撮合确认</div>
+    <a class="icon-btn right" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9 a2.5 2.5 0 0 1 5 0 c0 1.5 -2.5 2 -2.5 3.5 M12 17 a0.5 0.5 0 0 0 0 0.01"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <!-- Escrow 横幅 -->
+    <div class="escrow-banner">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div class="body">
+        <div class="t1">X-Shield 数字资产托管</div>
+        <div class="t2">资金 100% 平台托管 · 卖家放币后自动划转</div>
+      </div>
+    </div>
+
+    <!-- 卖家卡 -->
+    <div class="seller">
+      <div class="head">
+        <div class="avatar">MC<div class="lvl">L4</div></div>
+        <div class="body">
+          <div class="name">Michael Chen</div>
+          <div class="meta">实名认证 · 持仓 18 月 · 历史 0 纠纷</div>
+        </div>
+        <div class="trust">
+          <div class="l">信任度</div>
+          <div class="v">98</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="l">完成订单</div><div class="v num">128</div></div>
+        <div class="stat"><div class="l">完成率</div><div class="v">100%</div></div>
+        <div class="stat"><div class="l">平均放币</div><div class="v num">8 分</div></div>
+      </div>
+    </div>
+
+    <!-- 卖单详情 -->
+    <div class="order">
+      <div class="head">
+        <div class="t1">卖单详情</div>
+        <div class="id">#OTC-20260817-00234</div>
+      </div>
+      <div class="price-big">
+        <div class="l">单价</div>
+        <div class="v num">$1.235 / POE</div>
+        <div class="d">比市场中间价高 +0.04%</div>
+      </div>
+      <div class="summary">
+        <div class="row"><span class="l">卖币种</span><span class="v">5,000 POE</span></div>
+        <div class="row"><span class="l">买币种</span><span class="v">6,175.00 USDT</span></div>
+        <div class="row"><span class="l">单笔限额</span><span class="v">1,000 - 6,000 USDT</span></div>
+        <div class="row"><span class="l">挂单时间</span><span class="v">2 小时前</span></div>
+        <div class="row"><span class="l">过期时间</span><span class="v">21 小时 47 分</span></div>
+      </div>
+    </div>
+
+    <!-- 支付方式 -->
+    <div class="order">
+      <div class="head"><div class="t1">支付方式</div></div>
+      <div class="pay">
+        <div class="m is-active">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+          <div class="body"><div class="t1">银行卡</div><div class="t2">中国银行 ****1234 · 单日限 5 万</div></div>
+        </div>
+        <div class="m">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+          <div class="body"><div class="t1">USDT 链上</div><div class="t2">TRC20 钱包 · 网络费 1 USDT</div></div>
+        </div>
+        <div class="m">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c0-3 2-5 7-5s7 2 7 5-2 5-7 5h-1l-3 3v-3c-2 0-3-1-3-2"/></svg></div>
+          <div class="body"><div class="t1">微信支付</div><div class="t2">限额 5,000 / 日 · 实时到账</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 撮合流程 -->
+    <div class="order">
+      <div class="head"><div class="t1">撮合流程</div></div>
+      <div class="timeline">
+        <div class="step is-done">
+          <div class="ic">✓</div>
+          <div class="body">
+            <div class="t1">接单锁定</div>
+            <div class="t2">你点击接单，订单锁定 30 分钟（卖币种自动托管到平台）</div>
+          </div>
+        </div>
+        <div class="step is-active">
+          <div class="ic">2</div>
+          <div class="body">
+            <div class="t1">线下支付</div>
+            <div class="t2">通过银行卡 / 微信向卖家转账 6,175.00 USDT，保留转账凭证</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="ic">3</div>
+          <div class="body">
+            <div class="t1">卖家放币</div>
+            <div class="t2">卖家确认收到款后放币（5,000 POE 自动从托管释放到你的账户）</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="ic">4</div>
+          <div class="body">
+            <div class="t1">订单完成</div>
+            <div class="t2">若卖家 30 分钟内未放币，平台自动放币并启动 X-Shield 保护</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 风险告知 -->
+    <div class="order">
+      <div class="warn">
+        <div class="t1">⚠️ 风险提示</div>
+        <div class="t2">OTC 撮合仅托管数字资产，平台不担保法币收付。请确认对方收款账户实名认证后再付款。任何要求线下转账到不同账户、绕开平台托管的行为均为诈骗，请立即申诉并报警。</div>
+      </div>
+    </div>
+
+    <!-- 费用摘要 -->
+    <div class="order">
+      <div class="head"><div class="t1">费用摘要</div></div>
+      <div class="summary">
+        <div class="row"><span class="l">买入 POE</span><span class="v num">5,000 POE</span></div>
+        <div class="row"><span class="l">支付 USDT</span><span class="v num">6,175.00</span></div>
+        <div class="row"><span class="l">平台服务费 (0.2%)</span><span class="v num">12.35</span></div>
+        <div class="divider"></div>
+        <div class="row total"><span class="l">实付 USDT</span><span class="v num">6,187.35</span></div>
+      </div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <div class="info">
+      <div class="l">订单锁定 30:00</div>
+      <div class="v num">6,187.35 USDT</div>
+    </div>
+    <a class="cta" href="#">立即接单</a>
+  </div>
+
+  <div class="tabbar">
+    <a class="tab" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </a>
+    <a class="tab" href="global-investment.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </a>
+    <a class="tab" href="poe-finance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </a>
+    <a class="tab is-active" href="asset-market.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </a>
+    <a class="tab" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </a>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

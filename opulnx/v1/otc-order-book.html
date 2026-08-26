@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · OTC 接单大厅</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-hover: #0F3556;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-hover: #B8941F;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-isolation: #DC2626;
+    --color-isolation-soft: #FEE2E2;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.rec-card, a.center-item, a.tab { display: flex; }
+  a.btn-primary, a.btn-secondary, a.btn-ghost, a.act-btn { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .nav .title .badge { display: inline-block; margin-left: 6px; padding: 1px 6px; background: var(--color-accent); color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+
+  .content { height: calc(812px - 44px - 44px - 56px - 34px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  /* 顶部 X-Shield 托管 banner */
+  .xshield-strip { background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-brand-hover) 100%); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+  .xshield-strip .ic { width: 20px; height: 20px; color: var(--color-accent); flex-shrink: 0; }
+  .xshield-strip .t1 { flex: 1; font-size: 12px; color: #fff; font-weight: 600; }
+  .xshield-strip .t1 .accent { color: var(--color-accent); }
+  .xshield-strip .more { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 2px; }
+
+  /* 搜索 + 筛选条 */
+  .search-bar { background: var(--color-bg); padding: 12px 16px 0; }
+  .search-input { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--color-surface-2); border-radius: 10px; }
+  .search-input svg { width: 16px; height: 16px; color: var(--color-text-tertiary); flex-shrink: 0; }
+  .search-input .placeholder { flex: 1; font-size: 13px; color: var(--color-text-tertiary); }
+  .filter-row { display: flex; gap: 8px; margin-top: 10px; padding-bottom: 12px; overflow-x: auto; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 999px; font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; flex-shrink: 0; }
+  .chip.is-active { background: var(--color-brand); color: #fff; border-color: var(--color-brand); }
+  .chip .num { font-size: 10px; background: rgba(255,255,255,0.2); padding: 0 5px; border-radius: 3px; font-weight: 600; }
+  .chip.is-active .num { background: rgba(255,255,255,0.25); }
+  .chip:not(.is-active) .num { background: var(--color-brand-soft); color: var(--color-brand); }
+
+  /* 排序 tab */
+  .sort-tabs { display: flex; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .sort-tabs .st { flex: 1; padding: 12px 0; font-size: 12px; font-weight: 600; color: var(--color-text-tertiary); text-align: center; cursor: pointer; position: relative; }
+  .sort-tabs .st.is-active { color: var(--color-brand); }
+  .sort-tabs .st.is-active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 2.5px; background: var(--color-brand); border-radius: 2px 2px 0 0; }
+
+  /* 卖单列表 */
+  .order-list { padding: 12px 12px 24px; display: flex; flex-direction: column; gap: 12px; }
+  .order-card { background: var(--color-bg); border-radius: 12px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .order-card .head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .order-card .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; position: relative; }
+  .order-card .avatar .lvl-tag { position: absolute; bottom: -2px; right: -2px; padding: 1px 4px; background: var(--color-accent); color: #0A2540; font-size: 8px; font-weight: 700; border-radius: 3px; line-height: 1.2; }
+  .order-card .avatar .lvl-tag.l1 { background: var(--color-surface-2); color: var(--color-text-secondary); }
+  .order-card .avatar .lvl-tag.l2 { background: var(--color-info); color: #fff; }
+  .order-card .avatar .lvl-tag.l4 { background: var(--color-brand); color: var(--color-accent); border: 1px solid var(--color-accent); }
+  .order-card .seller { flex: 1; min-width: 0; }
+  .order-card .seller .name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .order-card .seller .trust { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .order-card .seller .trust .up { color: var(--color-up); font-weight: 600; }
+  .order-card .time { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .order-card .body { background: var(--color-surface); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+  .order-card .body .row { display: flex; align-items: center; justify-content: space-between; }
+  .order-card .body .row + .row { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--color-border); }
+  .order-card .body .asset { display: flex; align-items: center; gap: 6px; }
+  .order-card .body .asset .sym { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .order-card .body .asset .name { font-size: 11px; color: var(--color-text-tertiary); }
+  .order-card .body .price { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .order-card .body .unit { font-size: 11px; color: var(--color-text-tertiary); }
+  .order-card .body .qty { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .order-card .body .total { font-size: 15px; font-weight: 700; color: var(--color-accent-hover); }
+  .order-card .body .l { font-size: 10px; color: var(--color-text-tertiary); }
+
+  .order-card .meta { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .pay-chip { padding: 2px 8px; background: var(--color-surface); border-radius: 3px; font-size: 10px; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 3px; }
+  .pay-chip .ic { width: 12px; height: 12px; border-radius: 2px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; }
+  .order-card .limit { padding: 2px 8px; background: var(--color-warn-soft); color: var(--color-warn); border-radius: 3px; font-size: 10px; font-weight: 600; }
+
+  .order-card .actions { display: flex; gap: 8px; }
+  .order-card .btn-secondary { flex: 1; height: 36px; border-radius: 8px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); cursor: pointer; }
+  .order-card .btn-primary { flex: 1; height: 36px; border-radius: 8px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; background: var(--color-brand); color: #fff; cursor: pointer; }
+  .order-card .btn-primary:active { background: var(--color-brand-hover); }
+
+  /* 5 tab */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="asset-market.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">OTC 接单大厅 <span class="badge">X-Shield 托管</span></div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- 顶部 X-Shield 托管 banner -->
+    <div class="xshield-strip">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="t1">OpulnX <span class="accent">仅托管数字资产</span> · 卖单发布后由平台锁仓</div>
+      <div class="more">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      </div>
+    </div>
+
+    <!-- 搜索 + 筛选 -->
+    <div class="search-bar">
+      <div class="search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
+        <div class="placeholder">搜索卖单号 / 卖家 / 币种</div>
+      </div>
+      <div class="filter-row">
+        <div class="chip is-active">全部 <span class="num">156</span></div>
+        <div class="chip">POE <span class="num">42</span></div>
+        <div class="chip">UMDT <span class="num">28</span></div>
+        <div class="chip">BTC <span class="num">35</span></div>
+        <div class="chip">ETH <span class="num">31</span></div>
+        <div class="chip">OPX <span class="num">20</span></div>
+        <div class="chip">L4 卖家 <span class="num">12</span></div>
+        <div class="chip">仅银行卡</div>
+      </div>
+    </div>
+
+    <!-- 排序 -->
+    <div class="sort-tabs">
+      <div class="st is-active">默认</div>
+      <div class="st">价格低 → 高</div>
+      <div class="st">数量大 → 小</div>
+      <div class="st">最新发布</div>
+    </div>
+
+    <!-- 卖单列表 -->
+    <div class="order-list">
+
+      <div class="order-card">
+        <div class="head">
+          <div class="avatar" style="background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);">CW<div class="lvl-tag">L4</div></div>
+          <div class="seller">
+            <div class="name">CashWang_88</div>
+            <div class="trust">成交 <b>286</b> · <span class="up">99.6%</span> 好评 · 1 分放币</div>
+          </div>
+          <div class="time num">2 分前</div>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="asset"><span class="sym">POE</span><span class="name">/ USD</span></div>
+            <div class="l">出售</div>
+            <div class="qty num">2,500 POE</div>
+          </div>
+          <div class="row">
+            <div class="l">单价</div>
+            <div class="price num">$1.2387</div>
+            <div class="unit">/ POE</div>
+          </div>
+          <div class="row">
+            <div class="l">总价</div>
+            <div class="total num">$3,096.75 USD</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">银</span>银行卡</span>
+          <span class="pay-chip"><span class="ic" style="background: #1AAD19;">微</span>微信</span>
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">支</span>支付宝</span>
+          <span class="limit">⏱ 30 分钟</span>
+        </div>
+        <div class="actions">
+          <a class="btn-secondary" href="javascript:void(0)" onclick="demoAction('查看详情')">查看详情</a>
+          <a class="btn-primary" href="otc-deal.html">立即接单</a>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="head">
+          <div class="avatar" style="background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);">MT<div class="lvl-tag l2">L2</div></div>
+          <div class="seller">
+            <div class="name">MtTrader</div>
+            <div class="trust">成交 <b>48</b> · <span class="up">97.9%</span> 好评 · 3 分放币</div>
+          </div>
+          <div class="time num">5 分前</div>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="asset"><span class="sym">UMDT</span><span class="name">/ USD</span></div>
+            <div class="l">出售</div>
+            <div class="qty num">5,000 USDT</div>
+          </div>
+          <div class="row">
+            <div class="l">单价</div>
+            <div class="price num">$1.0001</div>
+            <div class="unit">/ USDT</div>
+          </div>
+          <div class="row">
+            <div class="l">总价</div>
+            <div class="total num">$5,000.50 USD</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">银</span>银行卡</span>
+          <span class="limit">⏱ 15 分钟</span>
+        </div>
+        <div class="actions">
+          <a class="btn-secondary" href="javascript:void(0)" onclick="demoAction('查看详情')">查看详情</a>
+          <a class="btn-primary" href="otc-deal.html">立即接单</a>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="head">
+          <div class="avatar" style="background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);">CR<div class="lvl-tag">L3</div></div>
+          <div class="seller">
+            <div class="name">CryptoRich</div>
+            <div class="trust">成交 <b>156</b> · <span class="up">99.2%</span> 好评 · 2 分放币</div>
+          </div>
+          <div class="time num">12 分前</div>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="asset"><span class="sym">BTC</span><span class="name">/ USD</span></div>
+            <div class="l">出售</div>
+            <div class="qty num">0.05 BTC</div>
+          </div>
+          <div class="row">
+            <div class="l">单价</div>
+            <div class="price num">$67,580</div>
+            <div class="unit">/ BTC</div>
+          </div>
+          <div class="row">
+            <div class="l">总价</div>
+            <div class="total num">$3,379.00 USD</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">银</span>银行卡</span>
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">支</span>支付宝</span>
+          <span class="limit">⏱ 60 分钟</span>
+        </div>
+        <div class="actions">
+          <a class="btn-secondary" href="javascript:void(0)" onclick="demoAction('查看详情')">查看详情</a>
+          <a class="btn-primary" href="otc-deal.html">立即接单</a>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="head">
+          <div class="avatar" style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">SH<div class="lvl-tag l1">L1</div></div>
+          <div class="seller">
+            <div class="name">Shelley_New</div>
+            <div class="trust">成交 <b>8</b> · <span class="up">95.0%</span> 好评 · 5 分放币</div>
+          </div>
+          <div class="time num">25 分前</div>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="asset"><span class="sym">ETH</span><span class="name">/ USD</span></div>
+            <div class="l">出售</div>
+            <div class="qty num">1.2 ETH</div>
+          </div>
+          <div class="row">
+            <div class="l">单价</div>
+            <div class="price num">$3,510</div>
+            <div class="unit">/ ETH</div>
+          </div>
+          <div class="row">
+            <div class="l">总价</div>
+            <div class="total num">$4,212.00 USD</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pay-chip"><span class="ic" style="background: #1AAD19;">微</span>微信</span>
+          <span class="limit">⏱ 20 分钟</span>
+        </div>
+        <div class="actions">
+          <a class="btn-secondary" href="javascript:void(0)" onclick="demoAction('查看详情')">查看详情</a>
+          <a class="btn-primary" href="otc-deal.html">立即接单</a>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="head">
+          <div class="avatar" style="background: linear-gradient(135deg, #0A2540 0%, #1E3A5F 100%);">OP<div class="lvl-tag l2">L2</div></div>
+          <div class="seller">
+            <div class="name">OpulnX_Official</div>
+            <div class="trust">成交 <b>1,205</b> · <span class="up">99.9%</span> 好评 · 即时放币</div>
+          </div>
+          <div class="time num">1 时前</div>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="asset"><span class="sym">OPX</span><span class="name">/ USD</span></div>
+            <div class="l">出售</div>
+            <div class="qty num">10,000 OPX</div>
+          </div>
+          <div class="row">
+            <div class="l">单价</div>
+            <div class="price num">$0.125</div>
+            <div class="unit">/ OPX</div>
+          </div>
+          <div class="row">
+            <div class="l">总价</div>
+            <div class="total num">$1,250.00 USD</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">银</span>银行卡</span>
+          <span class="pay-chip"><span class="ic" style="background: #1AAD19;">微</span>微信</span>
+          <span class="pay-chip"><span class="ic" style="background: #1677FF;">支</span>支付宝</span>
+          <span class="limit">⏱ 24 时</span>
+        </div>
+        <div class="actions">
+          <a class="btn-secondary" href="javascript:void(0)" onclick="demoAction('查看详情')">查看详情</a>
+          <a class="btn-primary" href="otc-deal.html">立即接单</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <div class="tabbar">
+    
+    <a class="tab" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="lbl">首页</div></a>
+    <a class="tab" href="global-investment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg><div class="lbl">全球投资</div></a>
+    <a class="tab" href="poe-finance.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg><div class="lbl">POE 金融</div></a>
+    <a class="tab" href="asset-market.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg><div class="lbl">资产市场</div></a>
+    <a class="tab" href="me.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg><div class="lbl">我的</div></a>
+  
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+
+  <script>
+    function demoAction(name) {
+      // 原型演示用：点击按钮不跳转，弹提示
+      var el = document.createElement('div');
+      el.textContent = '✓ ' + name + '（原型演示）';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A2540;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 1500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · ① 港股 腾讯控股</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-hover: #0F3556;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-hover: #B8941F;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .device { width: 375px; height: 2500px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .nav .title .badge { display: inline-block; margin-left: 6px; padding: 1px 6px; background: #E11D48; color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+
+  .content { height: 2500px; overflow: visible; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  /* 平台责任边界 */
+  .boundary { background: #FEF3C7; margin: 12px; padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px; border: 1px solid #FCD34D; }
+  .boundary .ic { color: #92400E; flex-shrink: 0; margin-top: 1px; }
+  .boundary .ic svg { width: 16px; height: 16px; }
+  .boundary .t { font-size: 11px; color: #78350F; line-height: 1.5; }
+
+  /* 港股 Hero (港股红 涨绿跌) */
+  .hero { background: var(--color-bg); margin: 0 12px 12px; padding: 14px 16px; border-radius: 16px; box-shadow: var(--shadow-sm); }
+  .hero .top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .hero .code { font-size: 16px; font-weight: 700; color: var(--color-text); letter-spacing: -0.3px; }
+  .hero .name { font-size: 12px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .hero .badge { padding: 2px 6px; background: var(--color-down-soft); color: var(--color-down); font-size: 9px; font-weight: 700; border-radius: 3px; }
+  .hero .price { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; margin-bottom: 4px; color: var(--color-up); }
+  .hero .price .currency { font-size: 16px; color: var(--color-up); font-weight: 600; margin-right: 2px; }
+  .hero .delta { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+  .hero .delta .up { color: var(--color-up); font-weight: 600; }
+  .hero .delta .up::before { content: '▲'; margin-right: 3px; font-size: 9px; }
+  .hero .delta .divider { color: var(--color-text-tertiary); }
+  .hero .stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border); }
+  .hero .stat .l { font-size: 9px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+  .hero .stat .v { font-size: 12px; font-weight: 700; color: var(--color-text); }
+  .hero .stat .v.up { color: var(--color-up); }
+  .hero .stat .v.down { color: var(--color-down); }
+  .hero .actions { display: flex; gap: 8px; margin-top: 12px; }
+  .hero .btn { flex: 1; height: 40px; border-radius: 10px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .hero .btn-primary { background: var(--color-up); color: #fff; }
+  .hero .btn-secondary { background: var(--color-down-soft); color: var(--color-down); }
+
+  /* K 线 */
+  .kline { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .kline .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .kline .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .kline .tabs { display: flex; gap: 4px; }
+  .kline .tabs .kt { padding: 4px 10px; font-size: 11px; color: var(--color-text-tertiary); border-radius: 4px; cursor: pointer; }
+  .kline .tabs .kt.is-active { background: var(--color-brand); color: #fff; font-weight: 600; }
+  .kline .chart { width: 100%; height: 130px; }
+  .kline .chart svg { width: 100%; height: 100%; }
+
+  /* section 通用 */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .section .head { font-size: 13px; font-weight: 700; color: var(--color-text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .section .head .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section .head .more { font-size: 11px; color: var(--color-text-tertiary); }
+
+  /* 买卖盘 5 档 */
+  .orderbook { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
+  .orderbook .ob-row { display: flex; align-items: center; padding: 4px 0; position: relative; }
+  .orderbook .ob-row .bar { position: absolute; top: 0; bottom: 0; right: 0; border-radius: 2px; }
+  .orderbook .ob-row.ask .bar { background: rgba(22, 163, 74, 0.1); }  /* 港股红涨绿跌 — 卖盘是红 */
+  .orderbook .ob-row.bid .bar { background: rgba(220, 38, 38, 0.1); }  /* 港股红涨绿跌 — 买盘是绿 */
+  .orderbook .ob-row.ask .price { color: var(--color-up); }  /* 港股 红=涨 */
+  .orderbook .ob-row.bid .price { color: var(--color-down); }  /* 港股 绿=跌 */
+  .orderbook .ob-row .price { flex: 1; font-weight: 600; z-index: 1; padding-left: 4px; font-variant-numeric: tabular-nums; }
+  .orderbook .ob-row .qty { flex: 1; text-align: right; color: var(--color-text); z-index: 1; padding-right: 4px; font-variant-numeric: tabular-nums; }
+  .orderbook .ob-spread { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 12px; color: var(--color-text-secondary); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); margin: 4px 0; }
+  .orderbook .ob-spread .price { font-weight: 700; color: var(--color-up); font-variant-numeric: tabular-nums; }
+  .orderbook .ob-spread .delta { font-weight: 600; color: var(--color-up); }
+
+  /* 公司信息 */
+  .info .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; border-bottom: 1px solid var(--color-border); }
+  .info .row:last-child { border-bottom: none; }
+  .info .row .l { color: var(--color-text-secondary); }
+  .info .row .v { font-weight: 600; color: var(--color-text); }
+
+  /* 港股交易时间提示 */
+  .trading-time { background: var(--color-info-soft); margin: 0 12px 12px; padding: 10px 12px; border-radius: 10px; display: flex; align-items: center; gap: 8px; }
+  .trading-time .ic { color: var(--color-info); }
+  .trading-time .t { font-size: 11px; color: var(--color-info); line-height: 1.5; flex: 1; }
+
+  /* 5 tab */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </div>
+    <div class="title">腾讯控股 <span class="badge">港股</span></div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a4 4 0 0 1 4 4v3a4 4 0 0 1-8 0V8a4 4 0 0 1 4-4zM3 20a9 9 0 0 1 18 0"/><line x1="21" y1="3" x2="19" y2="5"/><line x1="15" y1="3" x2="15" y2="5"/><line x1="3" y1="3" x2="5" y2="5"/><line x1="9" y1="3" x2="9" y2="5"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="boundary">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="t">股票交易由合作券商执行 · OpulnX 仅做资料通道 · 投资有风险，盈亏自担</div>
+    </div>
+
+    <div class="hero">
+      <div class="top">
+        <div>
+          <div class="code">00700.HK</div>
+          <div class="name">腾讯控股 · Tencent</div>
+        </div>
+        <div class="badge">+2.34%</div>
+      </div>
+
+      <div class="price num"><span class="currency">HK$</span>396.<span style="font-size: 22px;">20</span></div>
+      <div class="delta">
+        <span class="up num">+9.00 / +2.33%</span>
+        <span class="divider">·</span>
+        <span>今开 388.40</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="l">今开</div><div class="v num">388.4</div></div>
+        <div class="stat"><div class="l">最高</div><div class="v up num">398.0</div></div>
+        <div class="stat"><div class="l">最低</div><div class="v num">385.6</div></div>
+        <div class="stat"><div class="l">成交量</div><div class="v num">8.2M</div></div>
+      </div>
+
+      <div class="actions">
+        <div class="btn btn-secondary">卖出</div>
+        <div class="btn btn-primary">买入</div>
+      </div>
+    </div>
+
+    <div class="kline">
+      <div class="head">
+        <div class="t1">分时走势</div>
+        <div class="tabs">
+          <div class="kt">分时</div>
+          <div class="kt">1日</div>
+          <div class="kt is-active">5日</div>
+          <div class="kt">月</div>
+        </div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 320 130" preserveAspectRatio="none">
+          <line x1="0" y1="25" x2="320" y2="25" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="0" y1="65" x2="320" y2="65" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="0" y1="105" x2="320" y2="105" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#16A34A" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#16A34A" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,90 L20,80 L40,82 L60,75 L80,68 L100,72 L120,60 L140,55 L160,62 L180,50 L200,45 L220,40 L240,48 L260,32 L280,25 L300,28 L320,32" fill="url(#g)"/>
+          <path d="M0,90 L20,80 L40,82 L60,75 L80,68 L100,72 L120,60 L140,55 L160,62 L180,50 L200,45 L220,40 L240,48 L260,32 L280,25 L300,28 L320,32" fill="none" stroke="#16A34A" stroke-width="2"/>
+          <circle cx="320" cy="32" r="4" fill="#16A34A"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div>五档盘口</div><div class="more">Lv2 行情 ›</div></div>
+      <div class="orderbook">
+        <div class="ob-row ask">
+          <div class="bar" style="width: 60%;"></div>
+          <div class="price num">397.40</div>
+          <div class="qty num">12.5K</div>
+        </div>
+        <div class="ob-row ask">
+          <div class="bar" style="width: 80%;"></div>
+          <div class="price num">396.80</div>
+          <div class="qty num">25.8K</div>
+        </div>
+        <div class="ob-row ask">
+          <div class="bar" style="width: 50%;"></div>
+          <div class="price num">396.40</div>
+          <div class="qty num">18.2K</div>
+        </div>
+        <div class="ob-spread">
+          <span class="delta up num">+9.00 +2.33%</span>
+          <span class="price num">396.20</span>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 70%;"></div>
+          <div class="price num">396.00</div>
+          <div class="qty num">22.4K</div>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 55%;"></div>
+          <div class="price num">395.60</div>
+          <div class="qty num">15.6K</div>
+        </div>
+        <div class="ob-row bid">
+          <div class="bar" style="width: 90%;"></div>
+          <div class="price num">395.20</div>
+          <div class="qty num">28.4K</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trading-time">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 16,14"/></svg>
+      </div>
+      <div class="t">港股交易时段 09:30-12:00 / 13:00-16:00（港股市场）· 当前已收盘</div>
+    </div>
+
+    <div class="section info">
+      <div class="head">公司信息</div>
+      <div class="row"><div class="l">股票代码</div><div class="v">00700.HK</div></div>
+      <div class="row"><div class="l">所属行业</div><div class="v">互联网 / 通讯</div></div>
+      <div class="row"><div class="l">总市值</div><div class="v num">HK$ 3.78T</div></div>
+      <div class="row"><div class="l">市盈率 (TTM)</div><div class="v num">19.8</div></div>
+      <div class="row"><div class="l">52 周高/低</div><div class="v num">405.20 / 213.40</div></div>
+      <div class="row"><div class="l">持仓券商</div><div class="v">富途证券</div></div>
+    </div>
+
+    <div style="height: 80px;"></div>
+  </div>
+
+  <div style="position: absolute; bottom: 90px; left: 0; right: 0; padding: 12px 16px; background: var(--color-bg); border-top: 1px solid var(--color-border); z-index: 8; display: flex; gap: 8px;">
+    <div style="flex: 1; height: 44px; border-radius: 10px; background: var(--color-down-soft); color: var(--color-down); border: 1px solid var(--color-down); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">卖出</div>
+    <div style="flex: 1; height: 44px; border-radius: 10px; background: var(--color-up); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">买入</div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </div>
+    <div class="tab is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </div>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · KYC 升级 L3</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a:active { opacity: 0.7; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: transparent; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text-onbrand); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text-onbrand); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text-onbrand); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text-onbrand); width: 80%; height: 100%; border-radius: 1px; }
+
+  .nav { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--color-border); position: absolute; top: 44px; left: 0; right: 0; z-index: 10; }
+  .nav .icon-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--color-text); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 15px; font-weight: 600; flex: 1; text-align: center; }
+  .nav .right-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); }
+  .nav .right-btn svg { width: 20px; height: 20px; }
+
+  .content { height: calc(812px - 44px - 44px - 64px - 34px); overflow-y: auto; background: var(--color-surface); padding-bottom: 24px; }
+
+  /* Hero 升级摘要 */
+  .hero { background: linear-gradient(165deg, #0A2540 0%, #0F3556 100%); padding: 20px 20px 24px; color: #fff; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; top: -40px; right: -30px; width: 140px; height: 140px; background: radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%); border-radius: 50%; }
+  .hero .eyebrow { font-size: 11px; color: var(--color-accent); letter-spacing: 0.5px; font-weight: 600; position: relative; }
+  .hero .title { font-size: 20px; font-weight: 700; margin: 6px 0 4px; letter-spacing: -0.5px; position: relative; }
+  .hero .sub { font-size: 12px; color: rgba(255,255,255,0.7); position: relative; }
+
+  /* 4 步流程 */
+  .steps { background: var(--color-bg); margin: 12px; border-radius: var(--radius-lg); padding: 16px; }
+  .steps .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .steps .head .h { font-size: 14px; font-weight: 700; }
+  .steps .head .h small { font-size: 10px; color: var(--color-text-tertiary); font-weight: 400; margin-left: 6px; }
+  .step-row { display: flex; gap: 4px; align-items: stretch; }
+  .step { flex: 1; padding: 8px 4px; border-radius: 8px; text-align: center; }
+  .step.is-done { background: var(--color-up-soft); border: 1px solid var(--color-up); }
+  .step.is-active { background: var(--color-info-soft); border: 1px solid var(--color-info); }
+  .step.is-pending { background: var(--color-surface); border: 1px solid var(--color-border); }
+  .step .num { width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .step.is-done .num { background: var(--color-up); color: #fff; }
+  .step.is-active .num { background: var(--color-info); color: #fff; }
+  .step.is-pending .num { background: var(--color-border); color: var(--color-text-tertiary); }
+  .step .lbl { font-size: 10px; font-weight: 600; line-height: 1.3; }
+  .step.is-pending .lbl { color: var(--color-text-tertiary); }
+  .step .desc { font-size: 8px; color: var(--color-text-tertiary); margin-top: 1px; }
+
+  /* 4 类资料 */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: var(--radius-lg); padding: 16px; }
+  .section .h { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .upload { aspect-ratio: 4/3; background: var(--color-surface); border: 1.5px dashed var(--color-border); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+  .upload.is-done { background: var(--color-up-soft); border-color: var(--color-up); border-style: solid; }
+  .upload.is-active { background: var(--color-info-soft); border-color: var(--color-info); border-style: solid; }
+  .upload .ic { width: 32px; height: 32px; color: var(--color-text-tertiary); }
+  .upload.is-done .ic, .upload.is-active .ic { color: var(--color-up); }
+  .upload .l { font-size: 11px; font-weight: 600; color: var(--color-text); }
+  .upload .sub { font-size: 9px; color: var(--color-text-tertiary); }
+
+  /* 列表字段 */
+  .list { display: flex; flex-direction: column; gap: 1px; background: var(--color-border); border-radius: 10px; overflow: hidden; }
+  .list .row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--color-bg); }
+  .list .row .ic { width: 24px; height: 24px; border-radius: 6px; background: var(--color-up-soft); color: var(--color-up); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .list .row .ic svg { width: 14px; height: 14px; }
+  .list .row .body { flex: 1; }
+  .list .row .body .t1 { font-size: 13px; font-weight: 600; }
+  .list .row .body .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .list .row .right { font-size: 10px; color: var(--color-up); font-weight: 600; }
+
+  /* 资产证明 */
+  .proof { background: var(--color-surface); border-radius: 10px; padding: 12px; }
+  .proof .h { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .proof .row { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .proof .row .ic { width: 22px; height: 22px; border-radius: 50%; background: var(--color-up); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .proof .row .t { font-size: 12px; }
+  .proof .row .sub { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+
+  /* L3 解锁权益 */
+  .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .benefit { padding: 10px 12px; background: var(--color-accent-soft); border-radius: 8px; }
+  .benefit .ic { width: 20px; height: 20px; color: var(--color-accent); margin-bottom: 6px; }
+  .benefit .ic svg { width: 20px; height: 20px; }
+  .benefit .t { font-size: 12px; font-weight: 700; color: var(--color-text); }
+  .benefit .d { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .warn-card { background: #DBEAFE; border-left: 3px solid var(--color-info); border-radius: 8px; padding: 12px 14px; margin: 0 12px 12px; }
+  .warn-card .h { font-size: 12px; font-weight: 700; color: var(--color-info); margin-bottom: 4px; }
+  .warn-card .t { font-size: 11px; color: #1E3A8A; line-height: 1.5; }
+
+  .agree { padding: 0 12px 12px; display: flex; align-items: center; gap: 8px; }
+  .agree input[type="checkbox"] { width: 16px; height: 16px; }
+  .agree .l { font-size: 11px; color: var(--color-text-secondary); }
+  .agree a { color: var(--color-accent); text-decoration: underline; }
+
+  .cta-bar { position: absolute; bottom: 34px; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--color-border); display: flex; gap: 8px; z-index: 9; }
+  .cta-bar .btn { flex: 1; height: 48px; border-radius: var(--radius-md); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .cta-bar .btn.primary { background: var(--color-info); color: #fff; }
+  .cta-bar .btn.ghost { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); width: 100px; flex: none; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .tabbar .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="kyc-verification.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">KYC 升级 L3</div>
+    <a class="right-btn" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="eyebrow">KYC · L2 → L3</div>
+      <div class="title">升级为合格投资者</div>
+      <div class="sub">解锁 OTC 大额 / 私募 RWA / 高端 POE 金融产品</div>
+    </div>
+
+    <!-- 4 步流程 -->
+    <div class="steps">
+      <div class="head">
+        <div class="h">升级流程 <small>约 5-10 分钟</small></div>
+      </div>
+      <div class="step-row">
+        <div class="step is-done">
+          <div class="num">✓</div>
+          <div class="lbl">基础资料</div>
+          <div class="desc">L2 完成</div>
+        </div>
+        <div class="step is-active">
+          <div class="num">2</div>
+          <div class="lbl">资产证明</div>
+          <div class="desc">上传</div>
+        </div>
+        <div class="step is-pending">
+          <div class="num">3</div>
+          <div class="lbl">人工审核</div>
+          <div class="desc">1-3 工作日</div>
+        </div>
+        <div class="step is-pending">
+          <div class="num">4</div>
+          <div class="lbl">激活 L3</div>
+          <div class="desc">权益解锁</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 类资料上传 -->
+    <div class="section">
+      <div class="h">上传资料 <small>4 类必填</small></div>
+      <div class="upload-grid">
+        <div class="upload is-done">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div class="l">身份证正面</div>
+          <div class="sub">已上传</div>
+        </div>
+        <div class="upload is-done">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div class="l">身份证反面</div>
+          <div class="sub">已上传</div>
+        </div>
+        <div class="upload is-active">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <div class="l">手持人脸照</div>
+          <div class="sub">点击拍摄</div>
+        </div>
+        <div class="upload">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="l">资产证明</div>
+          <div class="sub">PDF / JPG</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 资产证明 4 选 1 -->
+    <div class="section">
+      <div class="h">资产证明 <small>4 选 1 · 满足任一即可</small></div>
+      <div class="proof">
+        <div class="row">
+          <div class="ic">✓</div>
+          <div>
+            <div class="t">银行流水（近 6 个月）</div>
+            <div class="sub">日均资产 ≥ $50,000 USDT</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ic">2</div>
+          <div>
+            <div class="t">持有房产证明</div>
+            <div class="sub">≥ 200 万人民币</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ic">3</div>
+          <div>
+            <div class="t">证券账户资产证明</div>
+            <div class="sub">≥ 100 万人民币等值</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ic">4</div>
+          <div>
+            <div class="t">年收入证明（个税 APP）</div>
+            <div class="sub">近 3 年年均 ≥ 50 万人民币</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 个 L3 权益 -->
+    <div class="section">
+      <div class="h">L3 升级后权益</div>
+      <div class="benefits">
+        <div class="benefit">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg></div>
+          <div class="t">OTC 大额</div>
+          <div class="d">单笔 ≤ $100K</div>
+        </div>
+        <div class="benefit">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
+          <div class="t">RWA 私募</div>
+          <div class="d">受控转让</div>
+        </div>
+        <div class="benefit">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg></div>
+          <div class="t">高端 POE</div>
+          <div class="d">私募产品</div>
+        </div>
+        <div class="benefit">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 6 V12 C4 17 7 21 12 22"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div class="t">专属客服</div>
+          <div class="d">1 对 1 服务</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn-card">
+      <div class="h">合规承诺</div>
+      <div class="t">所有资料仅用于合格投资者身份核验，平台不收集 / 不存储 / 不外传原始证件照。审核 1-3 个工作日完成，结果短信通知。</div>
+    </div>
+
+    <div class="agree">
+      <input type="checkbox" checked>
+      <span class="l">我已阅读并同意 <a href="javascript:;">《合格投资者声明》</a> <a href="javascript:;">《KYC L3 升级协议》</a></span>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <a class="btn ghost" href="kyc-verification.html">取消</a>
+    <a class="btn primary" href="javascript:;">提交审核 →</a>
+  </div>
+
+  <div class="tabbar"><div class="bar"></div></div>
+</div>
+</body>
+</html>

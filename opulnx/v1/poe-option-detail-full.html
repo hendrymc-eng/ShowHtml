@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · ② POE 期权详情</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-hover: #B8941F; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7; --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7; --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5; --color-border: #E2E8F0;
+    --color-text: #0F172A; --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06); --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .device { width: 375px; height: 2500px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .nav .title .core-tag { padding: 1px 6px; background: var(--color-accent); color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+  .nav .icon-btn-r { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); cursor: pointer; }
+  .nav .icon-btn-r svg { width: 20px; height: 20px; }
+
+  .content { height: 2500px; overflow: visible; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  /* 期权 Hero (深蓝 + 紫调) */
+  .hero { background: linear-gradient(165deg, #0A2540 0%, #1E1B4B 60%, #0A2540 100%); margin: 0 12px 12px; padding: 18px 18px 16px; border-radius: 16px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -30px; left: 20%; width: 100px; height: 100px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; }
+  .hero .row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; position: relative; }
+  .hero .badge { padding: 2px 8px; background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; }
+  .hero .dealer { font-size: 11px; color: rgba(255,255,255,0.7); }
+  .hero .dealer b { color: #A78BFA; font-weight: 600; }
+  .hero .name { font-size: 18px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+  .hero .sub { font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 14px; font-family: ui-monospace, monospace; }
+  .hero .price-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; position: relative; }
+  .hero .price-row .l { font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+  .hero .price-row .v { font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: -0.5px; }
+  .hero .price-row .v.acc { color: #C4B5FD; }
+  .hero .price-row .delta { font-size: 12px; color: #4ADE80; font-weight: 600; margin-top: 2px; }
+  .hero .price-row .delta.down { color: #FCA5A5; }
+  .hero .actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; }
+  .hero .btn { flex: 1; height: 36px; border-radius: 999px; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+  .hero .btn-primary { background: #7C3AED; color: #fff; }
+  .hero .btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+  .hero .btn svg { width: 13px; height: 13px; }
+
+  /* 期权要素 */
+  .specs { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .specs .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .specs .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .specs .head .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .specs .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .specs .row { padding: 10px 12px; background: var(--color-surface); border-radius: 8px; }
+  .specs .row .l { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 3px; }
+  .specs .row .v { font-size: 14px; font-weight: 700; color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .specs .row .v .small { font-size: 11px; color: var(--color-text-secondary); font-weight: 500; margin-left: 2px; }
+  .specs .row .v.acc { color: #7C3AED; }
+  .specs .row .v.up { color: var(--color-up); }
+  .specs .row .v.down { color: var(--color-down); }
+
+  /* Greeks */
+  .greeks { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .greeks .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .greeks .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .greeks .head .t2 { font-size: 10px; color: var(--color-text-tertiary); }
+  .greeks .list { display: flex; flex-direction: column; gap: 8px; }
+  .greeks .row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--color-surface); border-radius: 8px; }
+  .greeks .row .sym { width: 36px; height: 36px; border-radius: 8px; background: #F3E8FF; color: #7C3AED; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .greeks .row .body { flex: 1; }
+  .greeks .row .name { font-size: 12px; font-weight: 600; color: var(--color-text); }
+  .greeks .row .desc { font-size: 10px; color: var(--color-text-tertiary); }
+  .greeks .row .v { font-size: 14px; font-weight: 700; color: var(--color-text); font-variant-numeric: tabular-nums; text-align: right; min-width: 50px; }
+  .greeks .row .v.up { color: var(--color-up); }
+  .greeks .row .v.down { color: var(--color-down); }
+
+  /* 盈亏曲线 */
+  .payoff { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .payoff .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .payoff .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .payoff .head .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .payoff .legend { display: flex; gap: 12px; font-size: 10px; margin-bottom: 8px; }
+  .payoff .legend .l-item { display: flex; align-items: center; gap: 4px; }
+  .payoff .legend .l-item .dot { width: 8px; height: 2px; }
+  .payoff .chart { width: 100%; height: 130px; }
+  .payoff .chart svg { width: 100%; height: 100%; }
+
+  /* 行权流程 */
+  .exercise { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .exercise .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .exercise .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .exercise .head .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .exercise .row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--color-border); align-items: flex-start; }
+  .exercise .row:last-child { border-bottom: none; }
+  .exercise .row .num { width: 22px; height: 22px; border-radius: 50%; background: #7C3AED; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .exercise .row .body { flex: 1; }
+  .exercise .row .t1 { font-size: 12px; font-weight: 600; color: var(--color-text); }
+  .exercise .row .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; line-height: 1.5; }
+
+  /* 名词解释 */
+  .glossary { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .glossary .head { font-size: 13px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
+  .glossary .row { display: flex; gap: 10px; padding: 6px 0; }
+  .glossary .row .term { font-size: 12px; font-weight: 600; color: #7C3AED; min-width: 60px; }
+  .glossary .row .def { flex: 1; font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  /* 5 tab */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+
+  .cta-bar { position: absolute; bottom: 90px; left: 0; right: 0; padding: 12px 16px; background: var(--color-bg); border-top: 1px solid var(--color-border); z-index: 8; display: flex; gap: 8px; }
+  .cta-bar .btn-secondary { flex: 1; height: 44px; border-radius: 10px; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .cta-bar .btn-primary { flex: 1; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </div>
+    <div class="title">POE 期权 <span class="core-tag">核心</span></div>
+    <div class="icon-btn-r">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- 期权 Hero -->
+    <div class="hero">
+      <div class="row1">
+        <div class="badge">CALL · 看涨</div>
+        <div class="dealer">发行方：<b>PR-115</b> · L3 Dealer</div>
+      </div>
+      <div class="name">POE-CALL-251225</div>
+      <div class="sub">Underlying POE · Strike $1.50 · Expire 2025-12-25</div>
+      <div class="price-row">
+        <div>
+          <div class="l">权利金 (Premium)</div>
+          <div class="v acc num">$0.082</div>
+          <div class="delta up">▲ +12.3% (24H)</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="l">隐含波动率 IV</div>
+          <div class="v" style="color: #fff;">58.4%</div>
+          <div class="delta" style="color: rgba(255,255,255,0.6);">Annualized</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          卖出
+        </div>
+        <div class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          买入
+        </div>
+      </div>
+    </div>
+
+    <!-- 期权要素 -->
+    <div class="specs">
+      <div class="head">
+        <div class="t1">期权要素</div>
+        <div class="eb">CONTRACT SPECS</div>
+      </div>
+      <div class="grid">
+        <div class="row">
+          <div class="l">标的资产</div>
+          <div class="v acc">POE</div>
+        </div>
+        <div class="row">
+          <div class="l">类型</div>
+          <div class="v up">CALL</div>
+        </div>
+        <div class="row">
+          <div class="l">行权价 (Strike)</div>
+          <div class="v num">$1.50</div>
+        </div>
+        <div class="row">
+          <div class="l">到期日</div>
+          <div class="v num">2025-12-25</div>
+        </div>
+        <div class="row">
+          <div class="l">合约单位</div>
+          <div class="v num">100 <span class="small">POE</span></div>
+        </div>
+        <div class="row">
+          <div class="l">到期天数</div>
+          <div class="v num">87 <span class="small">天</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Greeks -->
+    <div class="greeks">
+      <div class="head">
+        <div class="t1">期权希腊字母</div>
+        <div class="t2">GREEKS · 实时</div>
+      </div>
+      <div class="list">
+        <div class="row">
+          <div class="sym">Δ</div>
+          <div class="body">
+            <div class="name">Delta</div>
+            <div class="desc">标的价格每变动 $1，期权价格变动</div>
+          </div>
+          <div class="v">+0.42</div>
+        </div>
+        <div class="row">
+          <div class="sym">Γ</div>
+          <div class="body">
+            <div class="name">Gamma</div>
+            <div class="desc">Delta 对标的价格的二阶导数</div>
+          </div>
+          <div class="v">+0.08</div>
+        </div>
+        <div class="row">
+          <div class="sym">Θ</div>
+          <div class="body">
+            <div class="name">Theta</div>
+            <div class="desc">每过一天时间价值衰减</div>
+          </div>
+          <div class="v down">-0.0035</div>
+        </div>
+        <div class="row">
+          <div class="sym">V</div>
+          <div class="body">
+            <div class="name">Vega</div>
+            <div class="desc">IV 每变动 1%，期权价格变动</div>
+          </div>
+          <div class="v up">+0.18</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 盈亏曲线 -->
+    <div class="payoff">
+      <div class="head">
+        <div class="t1">到期盈亏曲线</div>
+        <div class="eb">PAYOFF AT EXPIRY</div>
+      </div>
+      <div class="legend">
+        <div class="l-item"><div class="dot" style="background: #7C3AED;"></div>期权盈亏</div>
+        <div class="l-item"><div class="dot" style="background: #94A3B8;"></div>盈亏平衡</div>
+        <div class="l-item"><div class="dot" style="background: #DC2626; border-top: 1px dashed #DC2626; height: 0;"></div>Strike $1.50</div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 320 130" preserveAspectRatio="none">
+          <line x1="0" y1="80" x2="320" y2="80" stroke="#94A3B8" stroke-width="0.5" stroke-dasharray="3,3"/>
+          <line x1="170" y1="20" x2="170" y2="110" stroke="#DC2626" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="172" y="20" font-size="9" fill="#DC2626">$1.50</text>
+          <line x1="200" y1="80" x2="200" y2="80" stroke="#94A3B8" stroke-width="0.5"/>
+          <text x="202" y="78" font-size="9" fill="#94A3B8">盈亏平衡 $1.582</text>
+          <path d="M0,80 L40,80 L80,80 L120,80 L160,80 L170,80 L180,70 L200,40 L240,10 L280,-5 L320,-20" fill="none" stroke="#7C3AED" stroke-width="2"/>
+          <circle cx="320" cy="-20" r="3" fill="#7C3AED"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 行权流程 -->
+    <div class="exercise">
+      <div class="head">
+        <div class="t1">行权流程</div>
+        <div class="eb">EXERCISE</div>
+      </div>
+      <div class="row">
+        <div class="num">1</div>
+        <div class="body">
+          <div class="t1">到期前 7 天通知</div>
+          <div class="t2">Dealer 通知用户行权意向（行权 / 平仓 / 放弃）</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="num">2</div>
+        <div class="body">
+          <div class="t1">到期日自动结算</div>
+          <div class="t2">ITM 自动行权（POE 价 > $1.50 时），OTM 自动放弃</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="num">3</div>
+        <div class="body">
+          <div class="t1">链上 POE 交割</div>
+          <div class="t2">按 Strike 价交割标的 · 多余权利金结算</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="num">4</div>
+        <div class="body">
+          <div class="t1">利润到账</div>
+          <div class="t2">Max(S - K, 0) - Premium 公式 · 实时到账原钱包</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 名词解释 -->
+    <div class="glossary">
+      <div class="head">名词解释</div>
+      <div class="row">
+        <div class="term">Strike</div>
+        <div class="def">行权价 · 到期时以此价交割标的</div>
+      </div>
+      <div class="row">
+        <div class="term">ITM</div>
+        <div class="def">价内 · CALL：标的价格 > Strike，行权有正收益</div>
+      </div>
+      <div class="row">
+        <div class="term">OTM</div>
+        <div class="def">价外 · CALL：标的价格 < Strike，期权作废</div>
+      </div>
+      <div class="row">
+        <div class="term">IV</div>
+        <div class="def">隐含波动率 · 市场对标的未来波动的预期</div>
+      </div>
+    </div>
+
+    <div style="height: 16px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <div class="btn-secondary">查看策略分析</div>
+    <div class="btn-primary">立即交易</div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </div>
+    <div class="tab is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </div>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

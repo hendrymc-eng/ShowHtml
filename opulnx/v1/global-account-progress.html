@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · 开户进度详情</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7;
+    --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0; --color-text: #0F172A;
+    --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.tab, a.chip, a.cta, a.method { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 20px; }
+
+  /* 进度 Hero */
+  .hero { background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%); margin: 12px; border-radius: 12px; padding: 16px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(212, 175, 55, 0.12); border-radius: 50%; }
+  .hero .eyebrow { display: inline-block; padding: 2px 8px; background: rgba(212, 175, 55, 0.2); color: var(--color-accent); border-radius: 4px; font-size: 10px; font-weight: 700; margin-bottom: 6px; position: relative; }
+  .hero .name { font-size: 18px; font-weight: 700; }
+  .hero .t1 { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+  .hero .progress-bar { height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; margin-top: 8px; overflow: hidden; position: relative; }
+  .hero .progress-fill { height: 100%; background: var(--color-accent); border-radius: 3px; width: 75%; }
+  .hero .pct { display: flex; justify-content: space-between; font-size: 11px; margin-top: 6px; }
+  .hero .pct .l { color: rgba(255,255,255,0.6); }
+  .hero .pct .v { font-weight: 700; color: var(--color-accent); }
+
+  /* section */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 12px; padding: 14px; }
+  .section .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .section .head .t1 { font-size: 13px; font-weight: 600; }
+
+  /* 6 步流程 */
+  .steps { display: flex; align-items: center; padding: 4px 0; }
+  .step { flex: 1; text-align: center; }
+  .step .ic { width: 28px; height: 28px; margin: 0 auto 4px; border-radius: 50%; background: var(--color-surface); border: 1.5px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-text-tertiary); font-weight: 700; }
+  .step.is-done .ic { background: var(--color-up); border-color: var(--color-up); color: #fff; }
+  .step.is-active .ic { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+  .step .t { font-size: 9px; color: var(--color-text-tertiary); }
+  .step .line { height: 1.5px; background: var(--color-border); flex: 0.2; margin-top: -16px; }
+  .step.is-done + .line, .step.is-active + .line { background: var(--color-up); }
+
+  /* 详情 */
+  .detail-list { display: flex; flex-direction: column; }
+  .detail-list .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 12px; border-bottom: 1px solid var(--color-border); }
+  .detail-list .row:last-child { border-bottom: 0; }
+  .detail-list .row .l { color: var(--color-text-secondary); }
+  .detail-list .row .v { font-weight: 600; }
+  .detail-list .row .v.is-pending { color: var(--color-warn); }
+  .detail-list .row .v.is-done { color: var(--color-up); }
+  .detail-list .row .badge { padding: 1px 6px; background: var(--color-up-soft); color: var(--color-up); font-size: 9px; font-weight: 700; border-radius: 3px; margin-left: 4px; }
+  .detail-list .row .badge-warn { background: var(--color-warn-soft); color: var(--color-warn); }
+
+  /* 文件上传 */
+  .upload { display: flex; flex-direction: column; gap: 8px; }
+  .upload .item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--color-border); border-radius: 8px; }
+  .upload .item.is-done { background: var(--color-up-soft); border-color: var(--color-up); }
+  .upload .item.is-active { background: var(--color-accent-soft); border-color: var(--color-accent); }
+  .upload .item .ic { width: 32px; height: 32px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); flex-shrink: 0; }
+  .upload .item.is-done .ic { background: var(--color-up); color: #fff; }
+  .upload .item.is-active .ic { background: var(--color-accent); color: #fff; }
+  .upload .item .body { flex: 1; }
+  .upload .item .t1 { font-size: 12px; font-weight: 600; }
+  .upload .item .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .upload .item .badge { padding: 2px 6px; background: var(--color-up); color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+
+  /* 风险 */
+  .risk { padding: 10px; background: var(--color-info-soft); border-radius: 8px; }
+  .risk .t1 { font-size: 12px; font-weight: 600; color: var(--color-info); margin-bottom: 4px; }
+  .risk .t2 { font-size: 11px; color: #1E40AF; line-height: 1.5; }
+
+  /* CTA */
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border); }
+  .cta-bar .cta { height: 44px; background: var(--color-brand); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; align-items: center; justify-content: center; }
+
+  /* tabbar */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .tab.is-active .lbl { font-weight: 600; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="global-account-open.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">开户进度</div>
+    <a class="icon-btn right" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="eyebrow">美股账户 · AAPL</div>
+      <div class="name">老虎证券</div>
+      <div class="t1">当前进度</div>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <div class="pct"><span class="l">第 5 步 / 共 6 步</span><span class="v num">75%</span></div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">开户流程</div></div>
+      <div class="steps">
+        <div class="step is-done"><div class="ic">1</div><div class="t">选择</div></div>
+        <div class="line"></div>
+        <div class="step is-done"><div class="ic">2</div><div class="t">资料</div></div>
+        <div class="line"></div>
+        <div class="step is-done"><div class="ic">3</div><div class="t">视频</div></div>
+        <div class="line"></div>
+        <div class="step is-done"><div class="ic">4</div><div class="t">审核</div></div>
+        <div class="line"></div>
+        <div class="step is-active"><div class="ic">5</div><div class="t">电邮</div></div>
+        <div class="line"></div>
+        <div class="step"><div class="ic">6</div><div class="t">入金</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">申请详情</div></div>
+      <div class="detail-list">
+        <div class="row"><span class="l">申请编号</span><span class="v">#GOP-20260817-0185</span></div>
+        <div class="row"><span class="l">券商</span><span class="v">老虎证券</span></div>
+        <div class="row"><span class="l">市场</span><span class="v">美股 · NYSE / NASDAQ</span></div>
+        <div class="row"><span class="l">提交时间</span><span class="v">2026-08-15 14:32</span></div>
+        <div class="row"><span class="l">预计完成</span><span class="v">2026-08-18</span></div>
+        <div class="row"><span class="l">账户类型</span><span class="v">现金账户</span></div>
+        <div class="row"><span class="l">佣金</span><span class="v">$0.99/笔</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">资料上传</div><div class="meta" style="font-size: 11px; color: var(--color-up); font-weight: 600;">5/5 已完成</div></div>
+      <div class="upload">
+        <div class="item is-done">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+          <div class="body"><div class="t1">身份证正面</div><div class="t2">已通过 OCR 识别</div></div>
+          <div class="badge">通过</div>
+        </div>
+        <div class="item is-done">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+          <div class="body"><div class="t1">身份证反面</div><div class="t2">已通过 OCR 识别</div></div>
+          <div class="badge">通过</div>
+        </div>
+        <div class="item is-done">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+          <div class="body"><div class="t1">手持身份证自拍</div><div class="t2">已通过活体检测</div></div>
+          <div class="badge">通过</div>
+        </div>
+        <div class="item is-done">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+          <div class="body"><div class="t1">地址证明</div><div class="t2">30 天内银行流水</div></div>
+          <div class="badge">通过</div>
+        </div>
+        <div class="item is-done">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+          <div class="body"><div class="t1">W-8BEN 税表</div><div class="t2">已电子签署</div></div>
+          <div class="badge">通过</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">审核状态</div></div>
+      <div class="detail-list">
+        <div class="row"><span class="l">资料审核</span><span class="v is-done">已通过<span class="badge">24h</span></span></div>
+        <div class="row"><span class="l">视频见证</span><span class="v is-done">已完成</span></div>
+        <div class="row"><span class="l">风险评估</span><span class="v is-done">已通过</span></div>
+        <div class="row"><span class="l">邮件确认</span><span class="v is-pending">审核中<span class="badge badge-warn">2-3 天</span></span></div>
+        <div class="row"><span class="l">首次入金</span><span class="v is-pending">未开始</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="risk">
+        <div class="t1">ℹ️ 流程说明</div>
+        <div class="t2">老虎证券开户通常需要 3-5 个工作日。完成开户后，账户信息将通过短信和邮件发送至您预留的联系方式。首次入金 ≥ $2,000 可享受 30 天 0 佣金 + 持仓返现。</div>
+      </div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <a class="cta" href="#">立即首次入金 · 享 30 天免佣</a>
+  </div>
+
+  <div class="tabbar">
+    <a class="tab" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </a>
+    <a class="tab is-active" href="global-investment.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </a>
+    <a class="tab" href="poe-finance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </a>
+    <a class="tab" href="asset-market.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </a>
+    <a class="tab" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </a>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

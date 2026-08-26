@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · OTC 撮合确认</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-isolation: #DC2626;
+    --color-isolation-soft: #FEE2E2;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a:active { opacity: 0.7; }
+  .device { width: 375px; height: 1900px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: transparent; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text-onbrand); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text-onbrand); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text-onbrand); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text-onbrand); width: 80%; height: 100%; border-radius: 1px; }
+
+  .nav { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--color-border); position: absolute; top: 44px; left: 0; right: 0; z-index: 10; }
+  .nav .icon-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--color-text); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 15px; font-weight: 600; flex: 1; text-align: center; }
+  .nav .right-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); }
+  .nav .right-btn svg { width: 20px; height: 20px; }
+
+  .content { height: 1900px; overflow: visible; background: var(--color-surface); padding-bottom: 24px; }
+
+  /* Hero 卖家摘要 */
+  .hero { background: linear-gradient(165deg, #0A2540 0%, #0F3556 100%); padding: 20px 20px 24px; color: #fff; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; top: -40px; right: -30px; width: 140px; height: 140px; background: radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%); border-radius: 50%; }
+  .hero .top-row { display: flex; justify-content: space-between; align-items: center; position: relative; }
+  .hero .badge { background: var(--color-up); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+  .hero .title { font-size: 16px; font-weight: 700; margin: 8px 0 4px; letter-spacing: -0.3px; position: relative; }
+  .hero .meta { font-size: 11px; color: rgba(255,255,255,0.65); position: relative; }
+  .hero .price { font-size: 32px; font-weight: 700; line-height: 1.1; margin-top: 12px; position: relative; font-variant-numeric: tabular-nums; color: var(--color-accent); }
+  .hero .price .lbl { font-size: 12px; color: rgba(255,255,255,0.7); margin-left: 6px; font-weight: 500; }
+
+  /* 4 步 escrow 流程 */
+  .escrow { background: var(--color-bg); margin: 12px; border-radius: var(--radius-lg); padding: 16px; }
+  .escrow .head { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: baseline; }
+  .escrow .head small { font-size: 10px; color: var(--color-text-tertiary); font-weight: 400; }
+  .esc-row { position: relative; }
+  .esc-step { display: flex; align-items: center; gap: 10px; padding: 10px 0; position: relative; }
+  .esc-step .ico { width: 32px; height: 32px; border-radius: 50%; background: var(--color-border); color: var(--color-text-tertiary); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .esc-step .ico.is-done { background: var(--color-up); color: #fff; }
+  .esc-step .ico.is-active { background: var(--color-accent); color: #0A2540; }
+  .esc-step .body { flex: 1; }
+  .esc-step .body .t1 { font-size: 13px; font-weight: 600; }
+  .esc-step .body .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .esc-step .amt { font-size: 11px; color: var(--color-text-tertiary); }
+  .esc-step .amt b { color: var(--color-up); }
+  .esc-line { width: 1px; height: 12px; background: var(--color-border); margin-left: 15px; }
+
+  /* 卖家信任度 */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: var(--radius-lg); padding: 16px; }
+  .section .h { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .seller { display: flex; align-items: center; gap: 10px; }
+  .seller .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #D4AF37, #B8941F); color: #0A2540; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .seller .info { flex: 1; }
+  .seller .info .t1 { font-size: 14px; font-weight: 700; }
+  .seller .info .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .trust { display: flex; align-items: center; gap: 4px; }
+  .star { color: var(--color-accent); font-size: 14px; }
+  .trust .score { font-size: 12px; font-weight: 700; margin-left: 4px; }
+
+  .trust-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .trust-item { text-align: center; padding: 8px; background: var(--color-surface); border-radius: 8px; }
+  .trust-item .v { font-size: 14px; font-weight: 700; color: var(--color-up); }
+  .trust-item .l { font-size: 9px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  /* 支付方式 */
+  .pay { display: flex; flex-direction: column; gap: 8px; }
+  .pay-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; cursor: pointer; }
+  .pay-row.is-active { background: var(--color-up-soft); border-color: var(--color-up); }
+  .pay-row .ic { width: 32px; height: 32px; border-radius: 8px; background: #fff; color: var(--color-brand); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; font-size: 11px; }
+  .pay-row .body { flex: 1; }
+  .pay-row .body .t1 { font-size: 13px; font-weight: 600; }
+  .pay-row .body .t2 { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .pay-row .radio { width: 18px; height: 18px; border: 2px solid var(--color-border); border-radius: 50%; flex-shrink: 0; }
+  .pay-row.is-active .radio { border-color: var(--color-up); background: var(--color-up); box-shadow: inset 0 0 0 3px #fff; }
+
+  /* 计算 */
+  .calc { background: linear-gradient(135deg, #FAF3DC 0%, #FEF3C7 100%); border-radius: 10px; padding: 14px; margin-top: 12px; }
+  .calc .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .calc .row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px solid rgba(212,175,55,0.2); }
+  .calc .l { font-size: 12px; color: var(--color-text-secondary); }
+  .calc .v { font-size: 13px; font-weight: 600; }
+  .calc .v.big { font-size: 18px; font-weight: 700; color: var(--color-accent); }
+
+  .warn-card { background: #FEE2E2; border-left: 3px solid var(--color-isolation); border-radius: 8px; padding: 12px 14px; margin: 0 12px 12px; }
+  .warn-card .h { font-size: 12px; font-weight: 700; color: var(--color-isolation); margin-bottom: 4px; }
+  .warn-card .t { font-size: 11px; color: #7F1D1D; line-height: 1.5; }
+
+  .agree { padding: 0 12px 12px; display: flex; align-items: center; gap: 8px; }
+  .agree input[type="checkbox"] { width: 16px; height: 16px; }
+  .agree .l { font-size: 11px; color: var(--color-text-secondary); }
+  .agree a { color: var(--color-accent); text-decoration: underline; }
+
+  .cta-bar { position: absolute; bottom: 34px; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--color-border); display: flex; gap: 8px; z-index: 9; }
+  .cta-bar .btn { flex: 1; height: 48px; border-radius: var(--radius-md); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .cta-bar .btn.primary { background: var(--color-up); color: #fff; }
+  .cta-bar .btn.ghost { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); width: 100px; flex: none; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .tabbar .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="otc-order-book.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">OTC 撮合确认</div>
+    <a class="right-btn" href="javascript:;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="top-row">
+        <div class="badge">USDT → POE</div>
+        <span style="font-size: 11px; opacity: 0.7;">挂单 #OTC-2026-08-17-08842</span>
+      </div>
+      <div class="title">POE 1,000 出售挂单</div>
+      <div class="meta">汇率 1 POE = 1.235 USDT · 卖家 30 分钟前发布</div>
+      <div class="price num">1,235.00<span class="lbl">USDT 总价</span></div>
+    </div>
+
+    <!-- 4 步 escrow -->
+    <div class="escrow">
+      <div class="head">托管流程 <small>资金安全</small></div>
+      <div class="esc-row">
+        <div class="esc-step">
+          <div class="ico is-done">✓</div>
+          <div class="body">
+            <div class="t1">卖家挂单</div>
+            <div class="t2">POE 锁定至托管合约</div>
+          </div>
+          <div class="amt">1,000 POE</div>
+        </div>
+        <div class="esc-line"></div>
+        <div class="esc-step">
+          <div class="ico is-active">2</div>
+          <div class="body">
+            <div class="t1">买家接单</div>
+            <div class="t2">USDT 转入托管</div>
+          </div>
+          <div class="amt"><b>1,235 USDT</b></div>
+        </div>
+        <div class="esc-line"></div>
+        <div class="esc-step">
+          <div class="ico">3</div>
+          <div class="body">
+            <div class="t1">平台托管双锁</div>
+            <div class="t2">POE + USDT 全部锁定</div>
+          </div>
+          <div class="amt">15 分钟冷静期</div>
+        </div>
+        <div class="esc-line"></div>
+        <div class="esc-step">
+          <div class="ico">4</div>
+          <div class="body">
+            <div class="t1">自动释放</div>
+            <div class="t2">冷静期后到账</div>
+          </div>
+          <div class="amt">T+15min</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 卖家信任度 -->
+    <div class="section">
+      <div class="h">卖家信息 <small>已通过 UMAX 实名认证</small></div>
+      <div class="seller">
+        <div class="avatar">MC<div class="lvl" style="position: absolute; bottom: -2px; right: -2px; background: var(--color-accent); color: #0A2540; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 4px;">L4</div></div>
+        <div class="info">
+          <div class="t1">Michael Chen @HK-8801</div>
+          <div class="t2">累计成交 248 单 · 履约率 99.2% · 入驻 24 月</div>
+        </div>
+        <div class="trust">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color: var(--color-border);">★</span>
+          <span class="score">4.8</span>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <div class="trust-item"><div class="v num">248</div><div class="l">历史成交</div></div>
+        <div class="trust-item"><div class="v num">99.2%</div><div class="l">履约率</div></div>
+        <div class="trust-item"><div class="v num">15 min</div><div class="l">平均放币</div></div>
+      </div>
+    </div>
+
+    <!-- 支付方式 -->
+    <div class="section">
+      <div class="h">支付方式</div>
+      <div class="pay">
+        <div class="pay-row is-active">
+          <div class="ic" style="background: var(--color-accent); color: #0A2540;">支</div>
+          <div class="body">
+            <div class="t1">支付宝转账</div>
+            <div class="t2">实名同 UMAX 认证</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+        <div class="pay-row">
+          <div class="ic" style="background: var(--color-up); color: #fff;">微</div>
+          <div class="body">
+            <div class="t1">微信支付</div>
+            <div class="t2">同实名账户优先</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+        <div class="pay-row">
+          <div class="ic" style="background: var(--color-info); color: #fff;">银</div>
+          <div class="body">
+            <div class="t1">银行卡</div>
+            <div class="t2">同行转账 T+0</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 费用 -->
+    <div class="section">
+      <div class="h">费用明细</div>
+      <div class="calc">
+        <div class="row"><span class="l">POE 数量</span><span class="v num">1,000</span></div>
+        <div class="row"><span class="l">汇率</span><span class="v num">1.235 USDT/POE</span></div>
+        <div class="row"><span class="l">平台服务费 (0.1%)</span><span class="v num">$1.235 USDT</span></div>
+        <div class="row"><span class="l big">需支付</span><span class="v big num">$1,236.24</span></div>
+      </div>
+    </div>
+
+    <div class="warn-card">
+      <div class="h">⚠️ 平台规则</div>
+      <div class="t">OTC 平台仅托管数字资产（POE），不担保法币收付。法币转账由买卖双方私下完成，平台不介入。15 分钟冷静期内可申诉，超时自动释放 POE 给买家。</div>
+    </div>
+
+    <div class="agree">
+      <input type="checkbox" checked>
+      <span class="l">我已阅读并同意 <a href="javascript:;">《OTC 撮合协议》</a> <a href="javascript:;">《托管冷静期规则》</a></span>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <a class="btn ghost" href="otc-order-book.html">取消</a>
+    <a class="btn primary" href="javascript:;">立即接单 $1,236 →</a>
+  </div>
+
+  <div class="tabbar"><div class="bar"></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpulnX V1.0 · Prototype 导航</title>
+<style>
+  /* ============================================
+     OpulnX V1.0 · Prototype 导航入口
+     PC 视角 · 左侧 5 tab sidebar + 右侧 iframe
+     ============================================ */
+
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); height: 100vh; overflow: hidden; }
+
+  .layout { display: flex; height: 100vh; }
+
+  /* 左侧 sidebar */
+  .sidebar {
+    width: 320px;
+    background: var(--color-bg);
+    border-right: 1px solid var(--color-border);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sidebar .head {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .sidebar .head .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .sidebar .head .logo {
+    width: 32px; height: 32px;
+    background: var(--color-brand);
+    color: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px;
+  }
+  .sidebar .head .name { font-size: 18px; font-weight: 700; color: var(--color-text); letter-spacing: -0.3px; }
+  .sidebar .head .v { display: inline-block; padding: 2px 8px; background: var(--color-accent); color: #0A2540; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 6px; }
+  .sidebar .head .sub { font-size: 12px; color: var(--color-text-tertiary); }
+
+  .sidebar .progress { padding: 16px 20px; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+  .sidebar .progress .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .sidebar .progress .l { font-size: 11px; color: var(--color-text-tertiary); }
+  .sidebar .progress .r { font-size: 11px; color: var(--color-brand); font-weight: 600; }
+  .sidebar .progress .bar { height: 4px; background: var(--color-border); border-radius: 2px; overflow: hidden; }
+  .sidebar .progress .fill { height: 100%; background: linear-gradient(90deg, var(--color-accent) 0%, #FBBF24 100%); border-radius: 2px; }
+  .sidebar .progress .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .sidebar .progress .s { text-align: center; padding: 8px 0; background: var(--color-bg); border-radius: 6px; }
+  .sidebar .progress .s .v { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .sidebar .progress .s .l { font-size: 9px; color: var(--color-text-tertiary); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .sidebar .nav-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { background: var(--color-surface); color: var(--color-text); }
+  .nav-item.is-active {
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    border-left-color: var(--color-brand);
+    font-weight: 600;
+  }
+  .nav-item .ic { width: 24px; height: 24px; flex-shrink: 0; }
+  .nav-item .body { flex: 1; min-width: 0; }
+  .nav-item .t1 { font-size: 14px; font-weight: 600; }
+  .nav-item .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .nav-item.is-active .t2 { color: var(--color-brand); opacity: 0.7; }
+  .nav-item .status { padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+  .nav-item .status.done { background: var(--color-up-soft); color: var(--color-up); }
+  .nav-item .status.todo { background: var(--color-surface-2); color: var(--color-text-tertiary); }
+
+  .sidebar .foot {
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+  }
+  .sidebar .foot .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .sidebar .foot .row b { color: var(--color-text); }
+
+  /* 右侧主区 */
+  .main {
+    flex: 1;
+    display: flex; flex-direction: column;
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+  .toolbar {
+    height: 56px;
+    padding: 0 24px;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex; align-items: center;
+    justify-content: space-between;
+  }
+  .toolbar .left { display: flex; align-items: center; gap: 12px; }
+  .toolbar .crumb { font-size: 13px; color: var(--color-text-tertiary); }
+  .toolbar .crumb b { color: var(--color-text); }
+  .toolbar .actions { display: flex; gap: 8px; }
+  .toolbar .btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .toolbar .btn:hover { background: var(--color-surface); }
+  .toolbar .btn.primary { background: var(--color-brand); color: #fff; border-color: var(--color-brand); }
+  .toolbar .btn.primary:hover { background: var(--color-brand-hover); }
+
+  .viewport {
+    flex: 1;
+    display: flex;
+    overflow: auto;
+    background: var(--color-surface);
+  }
+  .viewport iframe {
+    border: 0;
+    background: #fff;
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+    border-radius: 8px;
+    margin: auto;
+    display: block;
+  }
+
+  /* 欢迎页（项目导览默认） */
+  .welcome {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px 56px;
+    background: var(--color-bg);
+  }
+  .welcome-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .welcome-hero {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .welcome-hero .logo {
+    width: 56px; height: 56px;
+    background: var(--color-brand);
+    color: #fff;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 26px;
+    flex-shrink: 0;
+  }
+  .welcome-hero h1 { font-size: 26px; font-weight: 700; color: var(--color-text); letter-spacing: -0.5px; margin-bottom: 4px; }
+  .welcome-hero .sub { font-size: 14px; color: var(--color-text-secondary); }
+
+  .section-title {
+    font-size: 11px; font-weight: 700;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 28px 0 12px;
+  }
+
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .page-card {
+    display: flex; flex-direction: column;
+    padding: 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .page-card:hover {
+    border-color: var(--color-brand);
+    box-shadow: 0 4px 16px rgba(10, 37, 64, 0.08);
+    transform: translateY(-1px);
+  }
+  .page-card .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .page-card .num {
+    font-size: 10px; font-weight: 700;
+    color: var(--color-text-tertiary);
+    background: var(--color-surface);
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .page-card .badge {
+    font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .page-card .badge.done { background: var(--color-up-soft); color: var(--color-up); }
+  .page-card .badge.here { background: var(--color-accent-soft); color: #92400E; }
+  .page-card .t1 { font-size: 15px; font-weight: 700; color: var(--color-text); margin-bottom: 6px; line-height: 1.3; }
+  .page-card .t2 { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; flex: 1; }
+  .page-card .open {
+    margin-top: 12px;
+    font-size: 11px; color: var(--color-brand); font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .doc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .doc-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    text-decoration: none; color: inherit;
+    transition: all 0.15s;
+  }
+  .doc-card:hover {
+    border-color: var(--color-brand);
+    background: var(--color-surface);
+  }
+  .doc-card .ic {
+    width: 36px; height: 36px;
+    background: var(--color-accent-soft);
+    color: #92400E;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px;
+    flex-shrink: 0;
+  }
+  .doc-card .t1 { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
+  .doc-card .t2 { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .tip {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    border-radius: 10px;
+  }
+  .tip .h { font-size: 13px; font-weight: 700; color: #92400E; margin-bottom: 8px; }
+  .tip .t { font-size: 12px; color: #78350F; line-height: 1.6; margin-bottom: 10px; }
+  .tip .code {
+    background: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    color: #78350F;
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- 左侧 sidebar -->
+  <aside class="sidebar">
+    <div class="head">
+      <div class="brand">
+        <div class="logo">O</div>
+        <div>
+          <div class="name">OpulnX <span class="v">V1.0</span></div>
+        </div>
+      </div>
+      <div class="sub">Prototype · 5 tab 主页全集</div>
+    </div>
+
+    <div class="progress">
+      <div class="row">
+        <span class="l">全流程完成度</span>
+        <span class="r">33 / 33</span>
+      </div>
+      <div class="bar"><div class="fill" style="width: 100%;"></div></div>
+      <div class="stats">
+        <div class="s"><div class="v">5</div><div class="l">主页</div></div>
+        <div class="s"><div class="v">17</div><div class="l">子页</div></div>
+        <div class="s"><div class="v">16</div><div class="l">流程</div></div>
+      </div>
+    </div>
+
+    <nav class="nav-list" id="navList">
+      <div class="nav-item is-active" data-src="index.html" data-name="项目导览" data-sub="5 tab 主页 + 17 子页 + 16 流程">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+        <div class="body">
+          <div class="t1">项目导览</div>
+          <div class="t2">5 tab 主页 + 17 子页 + 16 流程</div>
+        </div>
+        <div class="status done">HERE</div>
+      </div>
+
+      <div class="nav-item" data-src="home.html" data-name="① 首页（资产总览）" data-sub="资产总览 + 6 中心入口 + X-Shield + 推荐">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        <div class="body">
+          <div class="t1">① 首页（资产总览）</div>
+          <div class="t2">6 中心入口 · X-Shield · 推荐</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="global-investment.html" data-name="① 全球投资服务中心" data-sub="港美股开户 + IPO + ETF + 资讯工具">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+        <div class="body">
+          <div class="t1">① 全球投资服务中心</div>
+          <div class="t2">港美股 · IPO · ETF · 工具</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="poe-finance.html" data-name="② POE 金融市场" data-sub="Dealer 经营 + 借贷/保险/期权/收益理财">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+        <div class="body">
+          <div class="t1">② POE 金融市场（核心）</div>
+          <div class="t2">Dealer · 借贷/保险/期权/理财</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="asset-market.html" data-name="资产市场（③+OTC+④）" data-sub="数字资产 + OTC + RWA 企业金融">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+        <div class="body">
+          <div class="t1">资产市场（③+OTC+④）</div>
+          <div class="t2">数字资产 · OTC · RWA</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="me.html" data-name="我的（个人中心）" data-sub="4 徽章 + NP 进度 + KYC + 会员 + 设置">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+        <div class="body">
+          <div class="t1">我的（个人中心）</div>
+          <div class="t2">身份徽章 · 会员 · 设置</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="otc-order-book.html" data-name="A5 OTC 接单大厅（买方）" data-sub="卖单列表 + 卖家信任度 + 立即接单">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <div class="body">
+          <div class="t1">A5 OTC 接单大厅</div>
+          <div class="t2">卖单列表 · 卖家信任度</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="digital-asset-detail.html" data-name="A6 数字资产现货详情" data-sub="POE 行情 + 订单簿 + 持仓">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        <div class="body">
+          <div class="t1">A6 数字资产现货详情</div>
+          <div class="t2">POE 行情 · 订单簿 · 持仓</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="insurance-product-detail.html" data-name="A7 金融保障产品详情" data-sub="持牌机构 + 理赔流程 + 投保">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="body">
+          <div class="t1">A7 金融保障产品详情</div>
+          <div class="t2">持牌机构 · 理赔流程</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="poe-insurance-detail.html" data-name="A8 POE 借贷履约保障险" data-sub="Dealer 跑路 + 抵押清算 + 合约漏洞">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9,12 11,14 15,10"/></svg>
+        <div class="body">
+          <div class="t1">A8 POE 借贷履约险</div>
+          <div class="t2">Dealer 跑路 · 抵押清算</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="poe-option-detail.html" data-name="A9 POE 期权详情" data-sub="Greeks + 盈亏曲线 + 行权流程">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+        <div class="body">
+          <div class="t1">A9 POE 期权详情</div>
+          <div class="t2">Greeks · 盈亏曲线</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="poe-wealth-detail.html" data-name="A10 POE 稳健理财" data-sub="7.2% 年化 + 资金流向 + 收益历史">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div class="body">
+          <div class="t1">A10 POE 稳健理财</div>
+          <div class="t2">7.2% · 30 天锁定期</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="hk-stock-detail.html" data-name="A11 港股个股详情" data-sub="00700 腾讯 + K 线 + 五档盘口">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 2,17"/><polyline points="16,7 22,7 22,13"/></svg>
+        <div class="body">
+          <div class="t1">A11 港股个股详情</div>
+          <div class="t2">腾讯 00700 · K 线</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="us-stock-detail.html" data-name="A12 美股个股详情" data-sub="AAPL Apple + 盘前盘后 + 财报">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+        <div class="body">
+          <div class="t1">A12 美股个股详情</div>
+          <div class="t2">AAPL · 盘前盘后</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="hk-ipo-detail.html" data-name="A13 IPO 新股详情" data-sub="海蓝集团 + 招股信息 + 申购">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <div class="body">
+          <div class="t1">A13 港股 IPO 新股</div>
+          <div class="t2">海蓝集团 · 招股申购</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="etf-detail.html" data-name="A14 ETF 详情" data-sub="沪深 300 ETF + 跟踪指数 + 持仓">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <div class="body">
+          <div class="t1">A14 ETF 详情</div>
+          <div class="t2">沪深 300 · 跟踪指数</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="kyc-verification.html" data-name="A15 KYC 实名认证" data-sub="L1-L4 等级 + 升级 L3 + 资料上传">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="body">
+          <div class="t1">A15 KYC 实名认证</div>
+          <div class="t2">L1-L4 等级 · 升级 L3</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="deposit.html" data-name="A16 充值" data-sub="银行卡/微信/支付宝 + 数字资产转入">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="19,12 12,19 5,12"/></svg>
+        <div class="body">
+          <div class="t1">A16 法币充值</div>
+          <div class="t2">银行卡 / 微信 / 支付宝</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <div class="nav-item" data-src="withdraw.html" data-name="A17 提现" data-sub="银行卡/USDT 链上 + 2FA 验证">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5,12 12,5 19,12"/></svg>
+        <div class="body">
+          <div class="t1">A17 法币提现</div>
+          <div class="t2">银行卡 / USDT · 2FA</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <!-- 8 个 3 级子页面 (POE 金融 + 全球投资 + 基础流程) -->
+      <div class="nav-item" data-src="poe-lending-apply.html" data-name="B1 POE 借贷申请" data-sub="期限 / 数量 / 抵押率 + 确认">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
+        <div class="body">
+          <div class="t1">B1 POE 借贷申请</div>
+          <div class="t2">90 天固定期 + 抵押率 70%</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="poe-option-buy.html" data-name="B2 POE 期权购买" data-sub="CALL/PUT + 行权价 + Greeks">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3v18"/><path d="M5 8 Q12 4 19 8M5 16 Q12 20 19 16"/></svg>
+        <div class="body">
+          <div class="t1">B2 POE 期权购买</div>
+          <div class="t2">CALL $1.40 · Δ/Γ/Θ/ν</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="poe-wealth-subscribe.html" data-name="B3 POE 收益申购" data-sub="海棠湾月月派 + 9.2% 年化">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h6M9 14h6"/></svg>
+        <div class="body">
+          <div class="t1">B3 POE 收益申购</div>
+          <div class="t2">月月派 + 月分红</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="poe-insurance-buy.html" data-name="B4 POE 保险投保" data-sub="履约险 0.15%/月 + 太平洋">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div class="body">
+          <div class="t1">B4 POE 保险投保</div>
+          <div class="t2">履约险 0.15%/月</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="otc-deal.html" data-name="B5 OTC 撮合确认" data-sub="卖家 L4 + escrow 4 步">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="body">
+          <div class="t1">B5 OTC 撮合确认</div>
+          <div class="t2">Michael Chen L4 + 30 分</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="hk-us-order.html" data-name="B6 港美股下单" data-sub="限价/市价 + 止盈止损">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+        <div class="body">
+          <div class="t1">B6 港美股下单</div>
+          <div class="t2">腾讯 00700 + 限价 385.20</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="kyc-upgrade.html" data-name="B7 KYC 升级 L3" data-sub="4 资料 + L3 特权">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div class="body">
+          <div class="t1">B7 KYC 升级 L3</div>
+          <div class="t2">2/4 资料 + 特权解锁</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="deposit-confirm.html" data-name="B8 充值确认" data-sub="银行卡 + 实名验证">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        <div class="body">
+          <div class="t1">B8 充值确认</div>
+          <div class="t2">中行 ****1234 + 5,000 CNY</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+
+      <!-- 8 个 3 级 (B9-B16, 第二批) -->
+      <div class="nav-item" data-src="otc-order-create-confirm.html" data-name="B9 OTC 卖单发布确认" data-sub="限价/市价 + 收款方式 + Escrow">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="body">
+          <div class="t1">B9 OTC 卖单发布确认</div>
+          <div class="t2">5,000 POE + 4 步 escrow</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="rwa-invest.html" data-name="B10 RWA 投资申请" data-sub="海棠湾酒店 + 12% 年化 + 12 月锁定">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+        <div class="body">
+          <div class="t1">B10 RWA 投资申请</div>
+          <div class="t2">7 重 KYB + 4 项目方 + 12 月</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="spot-order.html" data-name="B11 现货下单" data-sub="限价/市价 + 杠杆 + 强平价">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+        <div class="body">
+          <div class="t1">B11 现货下单</div>
+          <div class="t2">POE/USDT + 3x 杠杆</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="insurance-apply.html" data-name="B12 金融保障投保" data-sub="人身意外 + 持牌机构承保">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="body">
+          <div class="t1">B12 金融保障投保</div>
+          <div class="t2">3 年保费 $960 + 太平洋</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="ipo-subscribe.html" data-name="B13 IPO 申购提交" data-sub="海蓝集团 09999 + 1-3 手">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 6 V12 C4 17 7 21 12 22 C17 21 20 17 20 12 V6 Z"/></svg>
+        <div class="body">
+          <div class="t1">B13 IPO 申购提交</div>
+          <div class="t2">海蓝 09999 + 3 手 1,500 股</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="etf-buy.html" data-name="B14 ETF 申购" data-sub="沪深 300ETF + 1,000 股">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+        <div class="body">
+          <div class="t1">B14 ETF 申购</div>
+          <div class="t2">沪深 300 + HK$ 4,857</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="withdraw-confirm.html" data-name="B15 提现确认" data-sub="2FA + 银行卡/USDT 链上">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5,12 12,5 19,12"/></svg>
+        <div class="body">
+          <div class="t1">B15 提现确认</div>
+          <div class="t2">2FA + 中行 ****1234</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+      <div class="nav-item" data-src="account-open-form.html" data-name="B16 港美股开户填写" data-sub="个人资料 + 视频见证">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+        <div class="body">
+          <div class="t1">B16 港美股开户填写</div>
+          <div class="t2">富途 + 4 步开户</div>
+        </div>
+        <div class="status done">DONE</div>
+      </div>
+    </nav>
+
+    <div class="foot">
+      <div class="row"><span>项目编号</span><b>project_04</b></div>
+      <div class="row"><span>编制日期</span><b>2026-08-12</b></div>
+      <div class="row"><span>阶段</span><b>1 · 需求调研 ✓</b></div>
+    </div>
+  </aside>
+
+  <!-- 右侧主区 -->
+  <main class="main">
+    <div class="toolbar">
+      <div class="left">
+        <div class="crumb" id="crumb">项目 / <b>项目导览</b></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" id="openNew" target="_blank">新窗口打开</a>
+      </div>
+    </div>
+    <div class="viewport" id="viewport">
+      <div class="welcome">
+        <div class="welcome-inner">
+          <div class="welcome-hero">
+            <div class="logo">O</div>
+            <div>
+              <h1>OpulnX V1.0 Prototype</h1>
+              <div class="sub">5 tab 主页 + 17 子页 + 16 流程 · 已通过 PM Review · iPhone 视口 375×812</div>
+            </div>
+          </div>
+
+          <div class="section-title">5 tab 主页（手机原型）</div>
+          <div class="page-grid">
+            <a class="page-card" href="home.html" target="_blank">
+              <div class="top"><span class="num">①</span><span class="badge done">DONE</span></div>
+              <div class="t1">首页（资产总览）</div>
+              <div class="t2">资产总览 + 6 中心入口 + X-Shield + 推荐</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="global-investment.html" target="_blank">
+              <div class="top"><span class="num">①</span><span class="badge done">DONE</span></div>
+              <div class="t1">全球投资服务中心</div>
+              <div class="t2">港美股开户 + IPO + ETF + 资讯工具</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-finance.html" target="_blank">
+              <div class="top"><span class="num">②</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 金融市场（核心）</div>
+              <div class="t2">Dealer + 借贷/保险/期权/理财 4 大产品</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="asset-market.html" target="_blank">
+              <div class="top"><span class="num">③+OTC+④</span><span class="badge done">DONE</span></div>
+              <div class="t1">资产市场</div>
+              <div class="t2">数字资产 + OTC + RWA 企业金融（红色业务隔离）</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="me.html" target="_blank">
+              <div class="top"><span class="num">⑤</span><span class="badge done">DONE</span></div>
+              <div class="t1">我的（个人中心）</div>
+              <div class="t2">4 徽章 + NP 进度 + KYC + 会员 + 设置</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+          </div>
+
+          <div class="section-title">17 子页（点击查看完整流程）</div>
+          <div class="page-grid">
+            <a class="page-card" href="poe-lending-list.html" target="_blank">
+              <div class="top"><span class="num">A1</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 借贷产品列表</div>
+              <div class="t2">币种 + 期限 + 利率筛选 · 抵押率 LTV · L1-L4 Dealer 等级</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="global-account-open.html" target="_blank">
+              <div class="top"><span class="num">A2</span><span class="badge done">DONE</span></div>
+              <div class="t1">港美股开户</div>
+              <div class="t2">港/美切换 + 富途/老虎/辉立 3 家券商对比</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="otc-order-create.html" target="_blank">
+              <div class="top"><span class="num">A3</span><span class="badge done">DONE</span></div>
+              <div class="t1">OTC 发布卖单</div>
+              <div class="t2">限价/市价 · escrow 4 步 · 数字资产仅托管不担保法币</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="rwa-project-detail.html" target="_blank">
+              <div class="top"><span class="num">A4</span><span class="badge done">DONE</span></div>
+              <div class="t1">RWA 项目详情</div>
+              <div class="t2">KYB 7 重靠前 · 6 月营收图 · 4 方项目方介绍</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="otc-order-book.html" target="_blank">
+              <div class="top"><span class="num">A5</span><span class="badge done">DONE</span></div>
+              <div class="t1">OTC 接单大厅（买方）</div>
+              <div class="t2">156 卖单 + 卖家 L1-L4 信任度 + 立即接单</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="digital-asset-detail.html" target="_blank">
+              <div class="top"><span class="num">A6</span><span class="badge done">DONE</span></div>
+              <div class="t1">数字资产现货详情</div>
+              <div class="t2">POE K线 + 订单簿 + 持仓 + 浮动盈亏</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="insurance-product-detail.html" target="_blank">
+              <div class="top"><span class="num">A7</span><span class="badge done">DONE</span></div>
+              <div class="t1">金融保障产品详情</div>
+              <div class="t2">持牌机构 + 理赔 4 步 + 仅展示不自营</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-insurance-detail.html" target="_blank">
+              <div class="top"><span class="num">A8</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 借贷履约险</div>
+              <div class="t2">Dealer 跑路 + 抵押清算 + 合约漏洞（POE 计价）</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-option-detail.html" target="_blank">
+              <div class="top"><span class="num">A9</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 期权详情</div>
+              <div class="t2">Greeks + 盈亏曲线 + 欧式 CALL</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-wealth-detail.html" target="_blank">
+              <div class="top"><span class="num">A10</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 稳健理财</div>
+              <div class="t2">7.2% 年化 + 资金流向 + 7 日走势</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="hk-stock-detail.html" target="_blank">
+              <div class="top"><span class="num">A11</span><span class="badge done">DONE</span></div>
+              <div class="t1">港股个股详情</div>
+              <div class="t2">00700 腾讯 + K 线 + 五档盘口</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="us-stock-detail.html" target="_blank">
+              <div class="top"><span class="num">A12</span><span class="badge done">DONE</span></div>
+              <div class="t1">美股个股详情</div>
+              <div class="t2">AAPL Apple + 盘前盘后 + 财报</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="hk-ipo-detail.html" target="_blank">
+              <div class="top"><span class="num">A13</span><span class="badge done">DONE</span></div>
+              <div class="t1">港股 IPO 新股详情</div>
+              <div class="t2">海蓝集团 + 招股信息 + 申购/撤单</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="etf-detail.html" target="_blank">
+              <div class="top"><span class="num">A14</span><span class="badge done">DONE</span></div>
+              <div class="t1">ETF 详情</div>
+              <div class="t2">沪深 300 + 跟踪指数 + 持仓前 10</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="kyc-verification.html" target="_blank">
+              <div class="top"><span class="num">A15</span><span class="badge done">DONE</span></div>
+              <div class="t1">KYC 实名认证</div>
+              <div class="t2">L1-L4 等级 + 升级 L3 + 人脸 + 资产证明</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="deposit.html" target="_blank">
+              <div class="top"><span class="num">A16</span><span class="badge done">DONE</span></div>
+              <div class="t1">法币充值</div>
+              <div class="t2">银行卡/微信/支付宝 + 数字资产转入</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="withdraw.html" target="_blank">
+              <div class="top"><span class="num">A17</span><span class="badge done">DONE</span></div>
+              <div class="t1">法币提现</div>
+              <div class="t2">银行卡/USDT 链上 + 2FA 验证</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+          </div>
+
+          <div class="section-title">8 三级流程页（详情页下一步操作）</div>
+          <div class="page-grid">
+            <a class="page-card" href="poe-lending-apply.html" target="_blank">
+              <div class="top"><span class="num">B1</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 借贷申请</div>
+              <div class="t2">期限 + 数量 + 抵押率 + 自动续借</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-option-buy.html" target="_blank">
+              <div class="top"><span class="num">B2</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 期权购买</div>
+              <div class="t2">CALL/PUT + 行权价 + Greeks + 盈亏曲线</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-wealth-subscribe.html" target="_blank">
+              <div class="top"><span class="num">B3</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 收益申购</div>
+              <div class="t2">海棠湾月月派 + 9.2% 年化 + 月分红</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="poe-insurance-buy.html" target="_blank">
+              <div class="top"><span class="num">B4</span><span class="badge done">DONE</span></div>
+              <div class="t1">POE 保险投保</div>
+              <div class="t2">履约险 0.15%/月 + 太平洋承保</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="otc-deal.html" target="_blank">
+              <div class="top"><span class="num">B5</span><span class="badge done">DONE</span></div>
+              <div class="t1">OTC 撮合确认</div>
+              <div class="t2">卖家 L4 + 信任度 98 + escrow 4 步</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="hk-us-order.html" target="_blank">
+              <div class="top"><span class="num">B6</span><span class="badge done">DONE</span></div>
+              <div class="t1">港美股下单</div>
+              <div class="t2">限价/市价 + 数量 + 止盈止损</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="kyc-upgrade.html" target="_blank">
+              <div class="top"><span class="num">B7</span><span class="badge done">DONE</span></div>
+              <div class="t1">KYC 升级 L3</div>
+              <div class="t2">4 资料 + L3 特权 + 1-2 工作日审核</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="deposit-confirm.html" target="_blank">
+              <div class="top"><span class="num">B8</span><span class="badge done">DONE</span></div>
+              <div class="t1">充值确认</div>
+              <div class="t2">银行卡 + 实名验证 + 实时到账</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+          </div>
+
+          <div class="section-title">8 三级流程页（第二批 · 全部完成 16 个）</div>
+          <div class="page-grid">
+            <a class="page-card" href="otc-order-create-confirm.html" target="_blank">
+              <div class="top"><span class="num">B9</span><span class="badge done">DONE</span></div>
+              <div class="t1">OTC 卖单发布确认</div>
+              <div class="t2">限价/市价 + 收款方式 + Escrow 4 步</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="rwa-invest.html" target="_blank">
+              <div class="top"><span class="num">B10</span><span class="badge done">DONE</span></div>
+              <div class="t1">RWA 投资申请</div>
+              <div class="t2">海棠湾酒店 12% + 12 月锁定 + 7 重 KYB</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="spot-order.html" target="_blank">
+              <div class="top"><span class="num">B11</span><span class="badge done">DONE</span></div>
+              <div class="t1">现货下单</div>
+              <div class="t2">限价/市价 + 杠杆 + 强平价 + 业务隔离</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="insurance-apply.html" target="_blank">
+              <div class="top"><span class="num">B12</span><span class="badge done">DONE</span></div>
+              <div class="t1">金融保障投保</div>
+              <div class="t2">人身意外 + 持牌机构承保 + 受益人</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="ipo-subscribe.html" target="_blank">
+              <div class="top"><span class="num">B13</span><span class="badge done">DONE</span></div>
+              <div class="t1">IPO 申购提交</div>
+              <div class="t2">海蓝集团 09999 + 1-3 手 + 融资/现金</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="etf-buy.html" target="_blank">
+              <div class="top"><span class="num">B14</span><span class="badge done">DONE</span></div>
+              <div class="t1">ETF 申购</div>
+              <div class="t2">沪深 300ETF + 1,000 股 + 分红</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="withdraw-confirm.html" target="_blank">
+              <div class="top"><span class="num">B15</span><span class="badge done">DONE</span></div>
+              <div class="t1">提现确认</div>
+              <div class="t2">2FA + 银行卡/USDT 链上 + 手续费</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+            <a class="page-card" href="account-open-form.html" target="_blank">
+              <div class="top"><span class="num">B16</span><span class="badge done">DONE</span></div>
+              <div class="t1">港美股开户填写</div>
+              <div class="t2">个人资料 + 视频见证 + 投资经验</div>
+              <div class="open">在新窗口打开 →</div>
+            </a>
+          </div>
+
+          <div class="tip">
+            <div class="h">⚠️ iPhone 视口用 `file://` 打开 OK，但建议用本地 HTTP server 看</div>
+            <div class="t">file:// 协议在某些浏览器（如 Safari）会限制 iframe 跨页加载。Chrome 允许 file:// iframe 嵌套但打印有时出 bug。<br>推荐方式：起一个本地 server，然后用浏览器访问 http://localhost:8080/</div>
+            <div class="code">cd /Users/Admin/minimax_project/project_04_OpulnX-app/prototype/v1<br>python3 -m http.server 8080</div>
+            <div class="t">启动后访问：<a href="http://localhost:8080/index.html" target="_blank" style="color:#2563EB;">http://localhost:8080/index.html</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const navItems = document.querySelectorAll('.nav-item');
+  const viewport = document.getElementById('viewport');
+  const crumb = document.getElementById('crumb');
+  const openNew = document.getElementById('openNew');
+  let currentSrc = '';
+
+  function loadPage(src, name) {
+    if (src === currentSrc) return;
+    currentSrc = src;
+    // 项目导览/子页占位：保持在欢迎页（不递归嵌入 index.html）
+    if (!src || src === 'index.html') {
+      crumb.innerHTML = '项目 / <b>' + name + '</b>';
+      openNew.setAttribute('href', 'index.html');
+      openNew.style.opacity = '';
+      openNew.style.pointerEvents = '';
+      return;
+    }
+    // 真实子页：iframe 加载（file:// 协议在 Chrome 上能用，Safari 会失败）
+    viewport.innerHTML = '<iframe src="' + src + '" width="375" height="812"></iframe>';
+    crumb.innerHTML = '项目 / <b>' + name + '</b>';
+    openNew.setAttribute('href', src);
+    openNew.style.opacity = '';
+    openNew.style.pointerEvents = '';
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(i => i.classList.remove('is-active'));
+      item.classList.add('is-active');
+      const src = item.getAttribute('data-src');
+      const name = item.getAttribute('data-name');
+      loadPage(src, name);
+    });
+  });
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    const first = document.querySelector('.nav-item[data-src="index.html"]');
+    first.click();
+  });
+</script>
+</body>
+</html>

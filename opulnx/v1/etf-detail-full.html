@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · ① ETF 沪深300</title>
+<style>
+  :root { --color-brand: #0A2540; --color-brand-soft: #E6EDF5; --color-accent: #D4AF37; --color-accent-soft: #FAF3DC; --color-up: #16A34A; --color-up-soft: #DCFCE7; --color-down: #DC2626; --color-down-soft: #FEE2E2; --color-warn: #D97706; --color-warn-soft: #FEF3C7; --color-info: #2563EB; --color-info-soft: #DBEAFE; --color-teal: #0D9488; --color-teal-soft: #CCFBF1; --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5; --color-border: #E2E8F0; --color-text: #0F172A; --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8; --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px; --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06); }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .device { width: 375px; height: 2500px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .nav .title .badge { display: inline-block; margin-left: 6px; padding: 1px 6px; background: var(--color-teal); color: #fff; font-size: 9px; font-weight: 700; border-radius: 3px; }
+  .content { height: 2500px; overflow: visible; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  .hero { background: linear-gradient(165deg, #134E4A 0%, #0D9488 50%, #14B8A6 100%); padding: 20px 20px 24px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(94, 234, 212, 0.3) 0%, transparent 70%); border-radius: 50%; }
+  .hero .head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: relative; }
+  .hero .icon { width: 48px; height: 48px; border-radius: 12px; background: #fff; color: #0D9488; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .hero .body .t1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .hero .body .t1 .code { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; margin-left: 6px; }
+  .hero .body .t2 { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .hero .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; position: relative; }
+  .hero .price-row .v { font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+  .hero .price-row .v .cur { font-size: 14px; color: #5EEAD4; font-weight: 600; }
+  .hero .price-row .delta { font-size: 13px; color: #4ADE80; font-weight: 600; }
+  .hero .meta { font-size: 11px; color: rgba(255,255,255,0.85); position: relative; }
+  .hero .meta b { color: #5EEAD4; font-weight: 600; }
+
+  .section { background: var(--color-bg); margin: 12px 12px 0; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .section .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .section .head .t1 { font-size: 13px; font-weight: 700; color: var(--color-text); }
+  .section .head .t1 .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; margin-left: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section .head .more { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .params { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .param { background: var(--color-surface); border-radius: 10px; padding: 12px; }
+  .param .l { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .param .v { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .param .v .small { font-size: 10px; color: var(--color-text-secondary); font-weight: 500; }
+  .param .v .up { color: var(--color-up); }
+  .param .v .down { color: var(--color-down); }
+
+  .holding-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .holding-table th { text-align: left; padding: 6px 0; font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--color-border); }
+  .holding-table th.num { text-align: right; }
+  .holding-table td { padding: 8px 0; border-bottom: 1px solid var(--color-border); }
+  .holding-table tr:last-child td { border-bottom: none; }
+  .holding-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .holding-table td .bar { width: 50px; height: 4px; background: var(--color-teal); border-radius: 2px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+  .premium-card { background: var(--color-up-soft); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+  .premium-card .ic { width: 32px; height: 32px; border-radius: 8px; background: var(--color-up); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .premium-card .ic svg { width: 16px; height: 16px; }
+  .premium-card .body { flex: 1; }
+  .premium-card .body .l { font-size: 11px; color: var(--color-text-secondary); }
+  .premium-card .body .v { font-size: 18px; font-weight: 700; color: var(--color-up); }
+  .premium-card .body .v .small { font-size: 12px; color: var(--color-text-secondary); font-weight: 500; }
+
+  .info-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border); }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .l { font-size: 12px; color: var(--color-text-secondary); }
+  .info-row .v { font-size: 12px; color: var(--color-text); font-weight: 600; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </div>
+    <div class="title">沪深300 ETF<span class="badge">基金</span></div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="head">
+        <div class="icon">沪深</div>
+        <div class="body">
+          <div class="t1">沪深300 ETF<span class="code">510300</span></div>
+          <div class="t2">被动指数型 · 跟踪沪深300指数</div>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="v"><span class="cur">¥</span>4.286</span>
+        <span class="delta">+0.028 (+0.66%)</span>
+      </div>
+      <div class="meta">IOPV <b>¥4.289</b> · 折溢价 <b>+0.07%</b> · 规模 <b>¥1,486 亿</b></div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">关键数据 <span class="eb">QUOTE</span></div></div>
+      <div class="params">
+        <div class="param"><div class="l">单位净值</div><div class="v num">¥ 4.286</div></div>
+        <div class="param"><div class="l">IOPV</div><div class="v num">¥ 4.289</div></div>
+        <div class="param"><div class="l">折溢价率</div><div class="v up num">+0.07%</div></div>
+        <div class="param"><div class="l">规模</div><div class="v num">¥ 1,486<span class="small">亿</span></div></div>
+        <div class="param"><div class="l">管理费</div><div class="v num">0.15%<span class="small">/年</span></div></div>
+        <div class="param"><div class="l">跟踪误差</div><div class="v num">0.05%</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">
+        <div class="t1">折溢价状态</div>
+        <div class="more">实时</div>
+      </div>
+      <div class="premium-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg></div>
+        <div class="body">
+          <div class="l">折溢价</div>
+          <div class="v">+0.07% <span class="small">· 极小折溢价</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">
+        <div class="t1">前 10 大持仓 <span class="eb">TOP HOLDINGS</span></div>
+        <div class="more">查看全部 300 ›</div>
+      </div>
+      <table class="holding-table">
+        <thead>
+          <tr><th>名称</th><th class="num">权重</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>贵州茅台 600519</td><td class="num"><span class="bar"></span>5.82%</td></tr>
+          <tr><td>宁德时代 300750</td><td class="num"><span class="bar"></span>3.84%</td></tr>
+          <tr><td>中国平安 601318</td><td class="num"><span class="bar"></span>2.96%</td></tr>
+          <tr><td>招商银行 600036</td><td class="num"><span class="bar"></span>2.42%</td></tr>
+          <tr><td>五粮液 000858</td><td class="num"><span class="bar"></span>1.68%</td></tr>
+          <tr><td>长江电力 600900</td><td class="num"><span class="bar"></span>1.45%</td></tr>
+          <tr><td>比亚迪 002594</td><td class="num"><span class="bar"></span>1.32%</td></tr>
+          <tr><td>中国中免 601888</td><td class="num"><span class="bar"></span>1.18%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">基金信息 <span class="eb">FUND</span></div></div>
+      <div class="info-row"><div class="l">基金类型</div><div class="v">被动指数 ETF</div></div>
+      <div class="info-row"><div class="l">跟踪指数</div><div class="v">沪深300 (000300.SH)</div></div>
+      <div class="info-row"><div class="l">成立日期</div><div class="v">2012-05-04</div></div>
+      <div class="info-row"><div class="l">基金管理人</div><div class="v">华泰柏瑞基金</div></div>
+      <div class="info-row"><div class="l">1 年回报</div><div class="v up num">+12.84%</div></div>
+      <div class="info-row"><div class="l">3 年年化</div><div class="v up num">+5.62%</div></div>
+    </div>
+
+    <div style="height: 16px;"></div>
+  </div>
+
+  <div style="position: absolute; bottom: 90px; left: 0; right: 0; padding: 12px 16px; background: var(--color-bg); border-top: 1px solid var(--color-border); z-index: 8;">
+    <div style="display: flex; gap: 8px;">
+      <div style="flex: 1; height: 44px; border-radius: 10px; background: var(--color-up-soft); color: var(--color-up); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">买入</div>
+      <div style="flex: 1; height: 44px; border-radius: 10px; background: var(--color-down-soft); color: var(--color-down); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">卖出</div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab is-active">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </div>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

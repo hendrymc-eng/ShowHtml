@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · 数字资产兑换</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7;
+    --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0; --color-text: #0F172A;
+    --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.tab, a.chip, a.cta { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 20px; }
+
+  /* From / To 兑换卡 */
+  .swap-card { background: var(--color-bg); margin: 12px; border-radius: 12px; padding: 14px; position: relative; }
+  .swap-card .label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .swap-card .balance { font-size: 11px; color: var(--color-text-tertiary); }
+  .swap-card .balance b { color: var(--color-text); font-weight: 600; }
+  .swap-card .row { display: flex; align-items: center; gap: 10px; }
+  .swap-card .token { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--color-surface); border-radius: 999px; cursor: pointer; }
+  .swap-card .token .ic { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+  .swap-card .token .name { font-size: 13px; font-weight: 600; }
+  .swap-card .token svg { width: 12px; height: 12px; }
+  .swap-card .input { flex: 1; text-align: right; font-size: 24px; font-weight: 700; border: 0; outline: 0; background: transparent; color: var(--color-text); }
+  .swap-card .usd { font-size: 11px; color: var(--color-text-tertiary); text-align: right; margin-top: 2px; }
+
+  .swap-toggle { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; border-radius: 50%; background: var(--color-brand); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; box-shadow: 0 2px 8px rgba(10, 37, 64, 0.25); }
+  .swap-toggle svg { width: 18px; height: 18px; }
+
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 12px; padding: 14px; }
+  .section .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .section .head .t1 { font-size: 13px; font-weight: 600; }
+
+  .rate-list { display: flex; flex-direction: column; }
+  .rate-list .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 12px; }
+  .rate-list .row .l { color: var(--color-text-secondary); }
+  .rate-list .row .v { font-weight: 600; }
+  .rate-list .row .v .small { font-size: 10px; color: var(--color-text-tertiary); font-weight: 400; margin-left: 4px; }
+  .rate-list .divider { height: 1px; background: var(--color-border); margin: 6px 0; }
+
+  .slippage { padding: 8px 10px; background: var(--color-warn-soft); border-radius: 8px; }
+  .slippage .l { font-size: 11px; color: #92400E; display: flex; justify-content: space-between; }
+  .slippage .l .v { font-weight: 600; }
+  .slippage .l .v.danger { color: var(--color-down); }
+
+  .risk { padding: 10px; background: var(--color-surface); border-radius: 8px; font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; }
+
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border); }
+  .cta-bar .cta { height: 44px; background: var(--color-brand); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; align-items: center; justify-content: center; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .tab.is-active .lbl { font-weight: 600; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">数字资产兑换</div>
+    <a class="icon-btn right" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </a>
+  </div>
+
+  <div class="content">
+    <div class="swap-card">
+      <div class="label">
+        <span>卖出</span>
+        <span class="balance">可用 <b>12,839.28 POE</b></span>
+      </div>
+      <div class="row">
+        <div class="token">
+          <div class="ic" style="background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%);">P</div>
+          <span class="name">POE</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
+        <input class="input num" value="1,000" />
+      </div>
+      <div class="usd">≈ $1,234.50 USD</div>
+    </div>
+
+    <div class="swap-toggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7,4 7,20"/><polyline points="17,8 17,20"/><polyline points="3,8 7,4 11,8"/><polyline points="13,16 17,20 21,16"/></svg>
+    </div>
+
+    <div class="swap-card" style="margin-top: -6px;">
+      <div class="label">
+        <span>买入</span>
+        <span class="balance">可用 <b>87,420 USDT</b></span>
+      </div>
+      <div class="row">
+        <div class="token">
+          <div class="ic" style="background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);">U</div>
+          <span class="name">USDT</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
+        <input class="input num" value="1,234.50" />
+      </div>
+      <div class="usd">实时汇率 1 POE = 1.2345 USDT</div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">兑换详情</div></div>
+      <div class="rate-list">
+        <div class="row"><span class="l">汇率</span><span class="v num">1 POE = 1.2345 USDT</span></div>
+        <div class="row"><span class="l">价格影响</span><span class="v num" style="color: var(--color-up);">&lt; 0.01%</span></div>
+        <div class="row"><span class="l">最低收到</span><span class="v num">1,232.27 USDT</span></div>
+        <div class="row"><span class="l">流动性池深度</span><span class="v num">$2.4M</span></div>
+        <div class="row"><span class="l">协议费 (0.3%)</span><span class="v num">3.70 USDT</span></div>
+        <div class="divider"></div>
+        <div class="row"><span class="l">实际到账</span><span class="v num" style="color: var(--color-accent);">1,230.80 USDT</span></div>
+      </div>
+    </div>
+
+    <div class="section" style="padding: 10px 14px;">
+      <div class="slippage">
+        <div class="l">
+          <span>滑点保护 0.5%</span>
+          <span class="v">触发自动撤销</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">兑换路径</div></div>
+      <div class="risk">POE → USDT（直兑）<br>智能合约自动匹配最优流动性池，无需中介，秒级到账。本兑换由 X-Shield 智能合约保障，0 中间人风险。</div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <a class="cta" href="#">确认兑换 · 1,000 POE</a>
+  </div>
+
+  <div class="tabbar">
+    <a class="tab is-active" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </a>
+    <a class="tab" href="global-investment.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </a>
+    <a class="tab" href="poe-finance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </a>
+    <a class="tab" href="asset-market.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </a>
+    <a class="tab" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </a>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

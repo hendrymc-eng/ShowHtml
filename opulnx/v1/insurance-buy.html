@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · 金融保障投保</title>
+<style>
+  :root {
+    --color-brand: #0A2540; --color-brand-hover: #0F3556; --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37; --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A; --color-up-soft: #DCFCE7;
+    --color-down: #DC2626; --color-down-soft: #FEE2E2;
+    --color-warn: #D97706; --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB; --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF; --color-surface: #F7F8FA; --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0; --color-text: #0F172A;
+    --color-text-secondary: #64748B; --color-text-tertiary: #94A3B8;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.tab, a.chip, a.cta, a.method { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; border: 1px solid var(--color-border); }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; position: relative; }
+  .status-bar .battery::after { content: ''; position: absolute; right: -3px; top: 3px; width: 2px; height: 4px; background: var(--color-text); border-radius: 0 1px 1px 0; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 90px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 20px; }
+
+  /* 平台不自营 banner */
+  .info-banner { background: #FEF3C7; border-bottom: 1px solid #FCD34D; padding: 8px 16px; display: flex; align-items: center; gap: 8px; font-size: 11px; color: #92400E; line-height: 1.4; }
+  .info-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%); margin: 12px; border-radius: 12px; padding: 14px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(212, 175, 55, 0.12); border-radius: 50%; }
+  .hero .badge { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.15); border-radius: 4px; font-size: 10px; font-weight: 700; margin-bottom: 6px; position: relative; }
+  .hero .name { font-size: 18px; font-weight: 700; }
+  .hero .t1 { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+  .hero .apy { font-size: 32px; font-weight: 700; line-height: 1; margin-top: 4px; }
+  .hero .apy .lbl { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500; margin-left: 4px; }
+  .hero .stats { display: flex; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; }
+  .hero .stat .l { font-size: 10px; color: rgba(255,255,255,0.6); }
+  .hero .stat .v { font-size: 13px; font-weight: 600; margin-top: 2px; }
+
+  /* section */
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 12px; padding: 14px; }
+  .section .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .section .head .t1 { font-size: 13px; font-weight: 600; }
+
+  /* 险种 */
+  .type-toggle { display: flex; background: var(--color-bg); margin: 0 12px 12px; border-radius: 10px; padding: 4px; }
+  .type-toggle .opt { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--color-text-secondary); border-radius: 8px; cursor: pointer; }
+  .type-toggle .opt.is-active { background: var(--color-brand-soft); color: var(--color-brand); }
+
+  /* 输入 */
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .field .lbl { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .field .lbl .meta { color: var(--color-text-tertiary); font-size: 11px; }
+  .input { display: flex; align-items: center; height: 40px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 12px; background: var(--color-bg); }
+  .input input { flex: 1; border: 0; outline: 0; font-size: 14px; background: transparent; }
+  .input .unit { font-size: 12px; color: var(--color-text-tertiary); margin-left: 4px; }
+
+  /* chips */
+  .chips { display: flex; gap: 6px; }
+  .chip { flex: 1; height: 32px; border-radius: 8px; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-text-secondary); cursor: pointer; }
+  .chip.is-active { border-color: var(--color-accent); background: var(--color-accent-soft); color: var(--color-text); font-weight: 600; }
+
+  /* 受益人 */
+  .beneficiary-list { display: flex; flex-direction: column; gap: 6px; }
+  .method { padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; align-items: center; gap: 10px; cursor: pointer; }
+  .method.is-active { border-color: var(--color-accent); background: var(--color-accent-soft); }
+  .method .ic { width: 32px; height: 32px; border-radius: 50%; background: var(--color-brand-soft); color: var(--color-brand); display: flex; align-items: center; justify-content: center; }
+  .method .body { flex: 1; }
+  .method .t1 { font-size: 13px; font-weight: 600; }
+  .method .t2 { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .method .check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--color-border); display: flex; align-items: center; justify-content: center; }
+  .method.is-active .check { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+
+  /* 摘要 */
+  .summary { display: flex; flex-direction: column; }
+  .summary .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 12px; }
+  .summary .row .l { color: var(--color-text-secondary); }
+  .summary .row .v { font-weight: 600; }
+  .summary .divider { height: 1px; background: var(--color-border); margin: 6px 0; }
+  .summary .row.total .l { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .summary .row.total .v { font-size: 16px; font-weight: 700; color: var(--color-accent); }
+
+  /* 风险 */
+  .risk { padding: 10px; background: var(--color-warn-soft); border-radius: 8px; }
+  .risk .t1 { font-size: 12px; font-weight: 600; color: var(--color-warn); margin-bottom: 4px; }
+  .risk .t2 { font-size: 11px; color: #92400E; line-height: 1.5; }
+
+  /* 协议 */
+  .protocol { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; }
+  .protocol .chk { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px; }
+  .protocol .chk .box { width: 14px; height: 14px; border: 1.5px solid var(--color-border); border-radius: 3px; flex-shrink: 0; margin-top: 1px; }
+  .protocol .chk.is-on .box { background: var(--color-accent); border-color: var(--color-accent); }
+  .protocol .chk .t { color: var(--color-text-secondary); }
+
+  /* CTA */
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--color-border); }
+  .cta-bar .cta { height: 44px; background: var(--color-brand); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; align-items: center; justify-content: center; }
+
+  /* tabbar */
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .tab.is-active .lbl { font-weight: 600; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="insurance-product-detail.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">金融保障投保</div>
+    <a class="icon-btn right" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9 a2.5 2.5 0 0 1 5 0 c0 1.5 -2.5 2 -2.5 3.5 M12 17 a0.5 0.5 0 0 0 0 0.01"/></svg>
+    </a>
+  </div>
+
+  <div class="info-banner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17 a0.5 0.5 0 0 0 0 0.01"/><path d="M10.3 3.86 L1.82 18 a2 2 0 0 0 1.71 3 h16.94 a2 2 0 0 0 1.71-3 L13.7 3.86 a2 2 0 0 0-3.4 0 z"/></svg>
+    <span>本保险由持牌保险机构承保，平台仅展示不自营不承保。理赔与服务由承保方负责。</span>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="badge">太平洋保险 · 持牌机构</div>
+      <div class="name">综合意外保障</div>
+      <div class="t1">年保费</div>
+      <div class="apy num">¥365<span class="lbl">/年</span></div>
+      <div class="stats">
+        <div class="stat"><div class="l">保障额度</div><div class="v num">¥50万</div></div>
+        <div class="stat"><div class="l">免赔额</div><div class="v num">¥100</div></div>
+        <div class="stat"><div class="l">保障期</div><div class="v num">1 年</div></div>
+      </div>
+    </div>
+
+    <div class="type-toggle">
+      <div class="opt is-active">意外险</div>
+      <div class="opt">医疗险</div>
+      <div class="opt">财产险</div>
+    </div>
+
+    <div class="section">
+      <div class="head">
+        <div class="t1">保障额度</div>
+        <div class="meta" style="font-size: 11px; color: var(--color-text-tertiary);">3 档可选</div>
+      </div>
+      <div class="chips">
+        <div class="chip">¥20万</div>
+        <div class="chip is-active">¥50万</div>
+        <div class="chip">¥100万</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">
+        <div class="t1">被保人信息</div>
+      </div>
+      <div class="field">
+        <div class="lbl"><span>姓名</span><span class="meta">与 KYC 一致</span></div>
+        <div class="input">
+          <input value="Michael Chen" class="num"/>
+        </div>
+      </div>
+      <div class="field">
+        <div class="lbl"><span>身份证</span><span class="meta">脱敏显示</span></div>
+        <div class="input">
+          <input value="4401**********1234" class="num"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">
+        <div class="t1">受益人</div>
+        <div class="meta" style="font-size: 11px; color: var(--color-text-tertiary);">默认法定</div>
+      </div>
+      <div class="beneficiary-list">
+        <div class="method is-active">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg></div>
+          <div class="body"><div class="t1">法定受益人</div><div class="t2">按《保险法》继承顺序</div></div>
+          <div class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg></div>
+        </div>
+        <div class="method">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 21a6 6 0 0 1 12 0M14 19a4 4 0 0 1 8 0"/></svg></div>
+          <div class="body"><div class="t1">指定受益人</div><div class="t2">需提供受益人身份证明</div></div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head"><div class="t1">费用摘要</div></div>
+      <div class="summary">
+        <div class="row"><span class="l">年保费</span><span class="v num">¥365.00</span></div>
+        <div class="row"><span class="l">保障额度</span><span class="v num">¥50万</span></div>
+        <div class="row"><span class="l">生效时间</span><span class="v">T+1 0:00</span></div>
+        <div class="divider"></div>
+        <div class="row total"><span class="l">应付保费</span><span class="v num">¥365.00</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="risk">
+        <div class="t1">⚠️ 投保须知</div>
+        <div class="t2">本保险由太平洋保险承保，平台仅展示不自营。出险后需在 30 天内提交理赔材料，理赔款由保险公司直接赔付。详细责任免除以保险条款为准。请仔细阅读条款后确认投保。</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="protocol">
+        <div class="chk is-on"><div class="box"></div><div class="t">我已阅读并同意 <a href="#" style="color: var(--color-accent);">《综合意外保障保险条款》</a></div></div>
+        <div class="chk is-on"><div class="box"></div><div class="t">我确认所提供被保人信息真实有效</div></div>
+        <div class="chk"><div class="box"></div><div class="t">我同意自动从 POE 钱包扣除保费</div></div>
+      </div>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <div class="cta-bar">
+    <a class="cta" href="#">立即投保 · 太平洋保险</a>
+  </div>
+
+  <div class="tabbar">
+    <a class="tab" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <div class="lbl">首页</div>
+    </a>
+    <a class="tab" href="global-investment.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <div class="lbl">全球投资</div>
+    </a>
+    <a class="tab" href="poe-finance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <div class="lbl">POE 金融</div>
+    </a>
+    <a class="tab" href="asset-market.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+      <div class="lbl">资产市场</div>
+    </a>
+    <a class="tab is-active" href="me.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg>
+      <div class="lbl">我的</div>
+    </a>
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+</body>
+</html>

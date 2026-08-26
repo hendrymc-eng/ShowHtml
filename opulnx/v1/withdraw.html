@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpulnX · 提现</title>
+<style>
+  :root {
+    --color-brand: #0A2540;
+    --color-brand-hover: #0F3556;
+    --color-brand-soft: #E6EDF5;
+    --color-accent: #D4AF37;
+    --color-accent-hover: #B8941F;
+    --color-accent-soft: #FAF3DC;
+    --color-up: #16A34A;
+    --color-up-soft: #DCFCE7;
+    --color-down: #DC2626;
+    --color-down-soft: #FEE2E2;
+    --color-warn: #D97706;
+    --color-warn-soft: #FEF3C7;
+    --color-info: #2563EB;
+    --color-info-soft: #DBEAFE;
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F8FA;
+    --color-surface-2: #EEF1F5;
+    --color-border: #E2E8F0;
+    --color-text: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary: #94A3B8;
+    --color-text-onbrand: #FFFFFF;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { font-family: var(--font-family); color: var(--color-text); background: var(--color-bg); font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a.btn, a.icon-btn, a.rec-card, a.center-item, a.tab { display: flex; }
+  a.btn-primary, a.btn-secondary, a.btn-ghost, a.act-btn { display: flex; }
+  .device { width: 375px; height: 812px; margin: 0 auto; background: var(--color-bg); position: relative; overflow: hidden; }
+  .status-bar { height: 44px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .status-bar .icons { display: flex; align-items: center; gap: 6px; }
+  .status-bar svg { width: 16px; height: 16px; color: var(--color-text); }
+  .status-bar .battery { width: 24px; height: 11px; border: 1.2px solid var(--color-text); border-radius: 3px; padding: 1px; }
+  .status-bar .battery .level { background: var(--color-text); width: 80%; height: 100%; border-radius: 1px; }
+  .nav { height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .nav .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); cursor: pointer; }
+  .nav .icon-btn svg { width: 22px; height: 22px; }
+  .nav .title { font-size: 16px; font-weight: 600; color: var(--color-text); flex: 1; text-align: center; }
+  .content { height: calc(812px - 44px - 44px - 56px - 34px); overflow-y: auto; background: var(--color-surface); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  .balance-card { background: linear-gradient(135deg, #0A2540 0%, #0F3556 100%); margin: 12px; padding: 18px 16px; border-radius: 16px; color: #fff; position: relative; overflow: hidden; }
+  .balance-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; background: rgba(212, 175, 55, 0.15); border-radius: 50%; }
+  .balance-card .l { font-size: 11px; color: rgba(255,255,255,0.7); position: relative; }
+  .balance-card .v { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; margin-top: 6px; position: relative; }
+  .balance-card .v .sym { font-size: 18px; color: var(--color-accent); font-weight: 600; margin-right: 4px; }
+  .balance-card .sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; position: relative; }
+  .balance-card .limit { background: rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 10px; margin-top: 12px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.8); position: relative; }
+  .balance-card .limit .v { color: var(--color-accent); font-weight: 600; }
+
+  .section { background: var(--color-bg); margin: 0 12px 12px; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-sm); }
+  .section .head { font-size: 13px; font-weight: 700; color: var(--color-text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .section .head .eb { font-size: 10px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .field { margin-bottom: 12px; }
+  .field .label { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .field .label .balance { color: var(--color-text-tertiary); font-size: 11px; }
+  .field .input { display: flex; align-items: center; padding: 12px; background: var(--color-surface); border-radius: 10px; border: 1px solid var(--color-border); }
+  .field .input.is-focus { border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-soft); }
+  .field .input .prefix { color: var(--color-text-secondary); font-size: 13px; margin-right: 8px; }
+  .field .input .value { flex: 1; font-size: 15px; font-weight: 600; color: var(--color-text); }
+  .field .input .value input { flex: 1; font-size: 15px; font-weight: 600; color: var(--color-text); border: 0; outline: 0; background: transparent; width: 100%; }
+  .field .input .suffix { color: var(--color-text-tertiary); font-size: 12px; margin-left: 8px; }
+
+  .address-card { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 12px; }
+  .address-card .row { display: flex; align-items: center; padding: 6px 0; font-size: 12px; }
+  .address-card .row .l { flex: 1; color: var(--color-text-secondary); }
+  .address-card .row .v { font-family: monospace; font-size: 11px; color: var(--color-text); word-break: break-all; }
+  .address-card .qr { width: 100%; height: 120px; background: var(--color-surface); border-radius: 8px; margin: 8px 0; display: flex; align-items: center; justify-content: center; }
+
+  .verify { background: var(--color-info-soft); border-radius: 10px; padding: 12px; }
+  .verify .head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .verify .head .ic { width: 18px; height: 18px; color: var(--color-info); }
+  .verify .head .t1 { font-size: 12px; font-weight: 700; color: var(--color-info); }
+  .verify .row { display: flex; align-items: center; padding: 6px 0; font-size: 11px; }
+  .verify .row .ic { width: 14px; height: 14px; color: var(--color-up); margin-right: 6px; }
+  .verify .row .l { color: var(--color-text); }
+  .verify .row .v { margin-left: auto; color: var(--color-up); font-weight: 600; }
+  .verify .row .v.pending { color: var(--color-text-tertiary); }
+
+  .summary { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 12px; }
+  .summary .row { display: flex; align-items: center; padding: 6px 0; font-size: 12px; }
+  .summary .row .l { flex: 1; color: var(--color-text-secondary); }
+  .summary .row .v { font-weight: 600; color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .summary .row .v.up { color: var(--color-up); }
+  .summary .row.divider { border-top: 1px solid var(--color-border); padding-top: 10px; margin-top: 4px; }
+
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(255, 255, 255, 0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--color-border); display: flex; padding: 0; z-index: 9; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-text-tertiary); cursor: pointer; padding: 6px 0; }
+  .tab.is-active { color: var(--color-brand); }
+  .tab.is-active .lbl { font-weight: 600; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab .lbl { font-size: 10px; font-weight: 500; }
+  .home-area { position: absolute; bottom: 0; left: 0; right: 0; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; }
+  .home-area .bar { width: 134px; height: 5px; background: var(--color-text); border-radius: 3px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="icons">
+      <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 Q13 2 14 7 M8 2 Q3 2 2 7 M8 5 Q11 5 11.5 8 M8 5 Q5 5 4.5 8 M8 8 a1 1 0 0 0 0 0.01"/></svg>
+      <div class="battery"><div class="level"></div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="icon-btn" href="home.html" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+    </a>
+    <div class="title">提现</div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="balance-card">
+      <div class="l">可提现余额</div>
+      <div class="v"><span class="sym">$</span>12,840.50</div>
+      <div class="sub">≈ 12,839.28 USDT · 1 USDT ≈ $1.0001</div>
+      <div class="limit">
+        <span>今日已用 / 剩余</span>
+        <span class="v">$2,000 / $18,000</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">提现地址 <span class="eb">ADDRESS</span></div>
+      <div class="address-card">
+        <div class="row"><div class="l">网络</div><div class="v">TRC20 (Tron) · 推荐</div></div>
+        <div class="row"><div class="l">地址</div><div class="v">TXx...8B2F</div></div>
+        <div class="qr">
+          <svg viewBox="0 0 80 80" width="80" height="80">
+            <rect x="0" y="0" width="20" height="20" fill="#0F172A"/>
+            <rect x="2" y="2" width="16" height="16" fill="#fff"/>
+            <rect x="6" y="6" width="8" height="8" fill="#0F172A"/>
+            <rect x="60" y="0" width="20" height="20" fill="#0F172A"/>
+            <rect x="62" y="2" width="16" height="16" fill="#fff"/>
+            <rect x="66" y="6" width="8" height="8" fill="#0F172A"/>
+            <rect x="0" y="60" width="20" height="20" fill="#0F172A"/>
+            <rect x="2" y="62" width="16" height="16" fill="#fff"/>
+            <rect x="6" y="66" width="8" height="8" fill="#0F172A"/>
+            <rect x="30" y="20" width="4" height="4" fill="#0F172A"/>
+            <rect x="38" y="22" width="4" height="4" fill="#0F172A"/>
+            <rect x="44" y="28" width="4" height="4" fill="#0F172A"/>
+            <rect x="32" y="40" width="4" height="4" fill="#0F172A"/>
+            <rect x="42" y="44" width="4" height="4" fill="#0F172A"/>
+            <rect x="50" y="40" width="4" height="4" fill="#0F172A"/>
+            <rect x="56" y="48" width="4" height="4" fill="#0F172A"/>
+            <rect x="28" y="56" width="4" height="4" fill="#0F172A"/>
+            <rect x="40" y="60" width="4" height="4" fill="#0F172A"/>
+            <rect x="52" y="56" width="4" height="4" fill="#0F172A"/>
+          </svg>
+        </div>
+        <div class="row"><div class="l">标签</div><div class="v">Ledger Nano X</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">提现金额 <span class="eb">AMOUNT</span></div>
+      <div class="field">
+        <div class="label">
+          <span>数量 <span style="color: var(--color-down);">*</span></span>
+          <span class="balance">可用 12,840.50 · 全部</span>
+        </div>
+        <div class="input is-focus">
+          <input type="text" value="2,000" inputmode="decimal">
+          <span class="suffix">USDT</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="label">
+          <span>资金密码 <span style="color: var(--color-down);">*</span></span>
+          <span class="balance">6 位数字</span>
+        </div>
+        <div class="input">
+          <input type="password" value="••••••" inputmode="numeric">
+        </div>
+      </div>
+      <div class="field">
+        <div class="label">
+          <span>2FA 验证码 <span style="color: var(--color-down);">*</span></span>
+          <span class="balance">Authenticator · 30s</span>
+        </div>
+        <div class="input">
+          <input type="text" value="123 456" inputmode="numeric" maxlength="6">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">安全验证 <span class="eb">SECURITY</span></div>
+      <div class="verify">
+        <div class="head">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div class="t1">本次提现需 3 重验证</div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+          <div class="l">登录密码</div>
+          <div class="v">已验证</div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+          <div class="l">资金密码 (6 位)</div>
+          <div class="v">已验证</div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+          <div class="l">2FA 验证码</div>
+          <div class="v">已验证</div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div class="l">2 小时冷静期 (大额 ≥ $10K)</div>
+          <div class="v pending">不适用</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="head">到账金额 <span class="eb">RECEIVE</span></div>
+      <div class="summary">
+        <div class="row"><div class="l">提现数量</div><div class="v num">2,000.00 USDT</div></div>
+        <div class="row"><div class="l">网络手续费 (TRC20)</div><div class="v num">1.00 USDT</div></div>
+        <div class="row"><div class="l">平台手续费 (0.1%)</div><div class="v num">2.00 USDT</div></div>
+        <div class="row divider"><div class="l">实际到账</div><div class="v up num">1,997.00 USDT</div></div>
+        <div class="row"><div class="l">预计到账时间</div><div class="v" style="color: var(--color-up);">1-3 分钟</div></div>
+      </div>
+    </div>
+
+    <div style="height: 16px;"></div>
+  </div>
+
+  <div style="position: absolute; bottom: 90px; left: 0; right: 0; padding: 12px 16px; background: var(--color-bg); border-top: 1px solid var(--color-border); z-index: 8;">
+    <a style="height: 44px; border-radius: 10px; background: var(--color-brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;; display: flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer;" href="withdraw-confirm.html">确认提现 · 1,997 USDT</a>
+  </div>
+
+    <div class="tabbar">
+    
+    <a class="tab" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><div class="lbl">首页</div></a>
+    <a class="tab" href="global-investment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg><div class="lbl">全球投资</div></a>
+    <a class="tab" href="poe-finance.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg><div class="lbl">POE 金融</div></a>
+    <a class="tab" href="asset-market.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg><div class="lbl">资产市场</div></a>
+    <a class="tab" href="me.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M3 21a9 9 0 0 1 18 0"/></svg><div class="lbl">我的</div></a>
+  
+  </div>
+  <div class="home-area"><div class="bar"></div></div>
+</div>
+
+  <script>
+    function demoAction(name) {
+      // 原型演示用：点击按钮不跳转，弹提示
+      var el = document.createElement('div');
+      el.textContent = '✓ ' + name + '（原型演示）';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A2540;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 1500);
+    }
+  </script>
+</body>
+</html>
